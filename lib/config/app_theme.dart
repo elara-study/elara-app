@@ -29,14 +29,15 @@ class AppTheme {
 
     scaffoldBackgroundColor: LightModeColors.surfaceApp,
 
-    // AppBar theme
+    // AppBar theme (fallback for screens not using AppAppBar - Figma: surface bg, dark text)
     appBarTheme: AppBarTheme(
       elevation: 0,
       centerTitle: true,
-      backgroundColor: AppColors.brandPrimary500,
-      foregroundColor: AppColors.white,
-      titleTextStyle: AppTypography.h6(color: AppColors.white),
-      iconTheme: const IconThemeData(color: AppColors.white),
+      backgroundColor: LightModeColors.surfacePrimary,
+      foregroundColor: LightModeColors.textPrimary,
+      titleTextStyle: AppTypography.h6(color: LightModeColors.textPrimary),
+      iconTheme: IconThemeData(color: LightModeColors.textPrimary),
+      surfaceTintColor: Colors.transparent,
     ),
 
     // Card theme
@@ -178,6 +179,21 @@ class AppTheme {
       elevation: 8,
       type: BottomNavigationBarType.fixed,
     ),
+
+    // Material 3 NavigationBar - attached to bottom, no floating. Selection = icon outlined→filled only.
+    navigationBarTheme: NavigationBarThemeData(
+      elevation: 2,
+      height: 80,
+      surfaceTintColor: Colors.transparent,
+      backgroundColor: LightModeColors.surfacePrimary,
+      indicatorColor: Colors.transparent,
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppTypography.labelMedium(color: AppColors.brandPrimary500);
+        }
+        return AppTypography.labelMedium(color: LightModeColors.textSecondary);
+      }),
+    ),
   );
 
   /// Dark theme
@@ -201,14 +217,15 @@ class AppTheme {
 
     scaffoldBackgroundColor: DarkModeColors.surfaceApp,
 
-    // AppBar theme
+    // AppBar theme (fallback for screens not using AppAppBar)
     appBarTheme: AppBarTheme(
       elevation: 0,
       centerTitle: true,
       backgroundColor: DarkModeColors.surfacePrimary,
       foregroundColor: DarkModeColors.textPrimary,
       titleTextStyle: AppTypography.h6(color: DarkModeColors.textPrimary),
-      iconTheme: const IconThemeData(color: DarkModeColors.textPrimary),
+      iconTheme: IconThemeData(color: DarkModeColors.textPrimary),
+      surfaceTintColor: Colors.transparent,
     ),
 
     // Card theme
@@ -342,6 +359,20 @@ class AppTheme {
       unselectedItemColor: DarkModeColors.textSecondary,
       elevation: 8,
       type: BottomNavigationBarType.fixed,
+    ),
+
+    navigationBarTheme: NavigationBarThemeData(
+      elevation: 0,
+      height: 80,
+      surfaceTintColor: Colors.transparent,
+      backgroundColor: DarkModeColors.surfacePrimary,
+      indicatorColor: Colors.transparent,
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppTypography.labelMedium(color: AppColors.brandPrimary400);
+        }
+        return AppTypography.labelMedium(color: DarkModeColors.textSecondary);
+      }),
     ),
   );
 }

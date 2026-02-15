@@ -70,7 +70,15 @@ class AppColors {
     0x33E86B42,
   ); // rgba(232, 107, 66, 0.2)
 
-  // ============= BRAND ACCENT COLORS =============
+  // Figma aliases: primary=brandPrimary, secondary=brandSecondary, tertiary=brandAccent
+  static const Color primary50 = brandPrimary50;
+  static const Color primary500 = brandPrimary500;
+  static const Color secondary50 = brandSecondary50;
+  static const Color secondary500 = brandSecondary500;
+  static const Color tertiary50 = brandAccent50;
+  static const Color tertiary500 = brandAccent500;
+
+  // ============= BRAND ACCENT COLORS (Figma: tertiary) =============
   static const Color brandAccent50 = Color(0xFFFFF8E6);
   static const Color brandAccent100 = Color(0xFFFFEFC0);
   static const Color brandAccent200 = Color(0xFFFFE599);
@@ -129,6 +137,43 @@ class AppColors {
   static const Color info700 = Color(0xFF1D4ED8);
   static const Color info800 = Color(0xFF1E40AF);
   static const Color info900 = Color(0xFF1E3A8A);
+}
+
+/// App gradient definitions - use with AppGradientPrimaryButton.
+class AppGradients {
+  AppGradients._();
+
+  /// Primary gradient: brandPrimary400 -> brandPrimary500
+  static const LinearGradient primary = LinearGradient(
+    colors: [AppColors.brandPrimary400, AppColors.brandPrimary500],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  /// Secondary gradient: brandSecondary400 -> brandSecondary500
+  static const LinearGradient secondary = LinearGradient(
+    colors: [AppColors.brandSecondary400, AppColors.brandSecondary500],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  /// Accent gradient: brandAccent400 -> brandAccent500
+  static const LinearGradient accent = LinearGradient(
+    colors: [AppColors.brandAccent400, AppColors.brandAccent500],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+  /// Create a custom gradient from two colors.
+  static LinearGradient custom(Color start, Color end,
+      {Alignment beginAlign = Alignment.centerLeft,
+      Alignment endAlign = Alignment.centerRight}) {
+    return LinearGradient(
+      colors: [start, end],
+      begin: beginAlign,
+      end: endAlign,
+    );
+  }
 }
 
 /// Light mode semantic colors
