@@ -60,7 +60,7 @@ class RoleSelectorScreen extends StatelessWidget {
                 secondaryText: 'Join as a student',
                 icon: Icons.school_outlined,
                 iconColor: AppColors.primary500,
-                onPressed: () => _selectRole(context, UserRole.teacher),
+                onPressed: () => _selectRole(context, UserRole.student),
               ),
               const SizedBox(height: AppSpacing.spacingLg),
               AppGradientButton(
@@ -69,7 +69,7 @@ class RoleSelectorScreen extends StatelessWidget {
                 secondaryText: 'Join as a Teacher',
                 iconColor: AppColors.secondary500,
                 icon: Icons.person_2_outlined,
-                onPressed: () => _selectRole(context, UserRole.student),
+                onPressed: () => _selectRole(context, UserRole.teacher),
               ),
               const SizedBox(height: AppSpacing.spacing4xl),
               Row(

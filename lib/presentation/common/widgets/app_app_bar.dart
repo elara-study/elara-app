@@ -33,13 +33,10 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   /// Main tab screens (Learn, My Classes, Profile): no back button.
-  const AppAppBar.mainTab({
-    super.key,
-    required this.title,
-    this.actions,
-  })  : leading = null,
-        automaticallyImplyLeading = false,
-        bottom = null;
+  const AppAppBar.mainTab({super.key, required this.title, this.actions})
+    : leading = null,
+      automaticallyImplyLeading = false,
+      bottom = null;
 
   /// Detail/drill-down screens: shows back button when navigator can pop.
   const AppAppBar.detail({
@@ -51,13 +48,11 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   }) : automaticallyImplyLeading = true;
 
   /// Title only, no leading or actions.
-  const AppAppBar.minimal({
-    super.key,
-    required this.title,
-  })  : actions = null,
-        leading = null,
-        automaticallyImplyLeading = false,
-        bottom = null;
+  const AppAppBar.minimal({super.key, required this.title})
+    : actions = null,
+      leading = null,
+      automaticallyImplyLeading = false,
+      bottom = null;
 
   /// Detail screen with TabBar (e.g. class detail with Students/Quizzes tabs).
   const AppAppBar.withTabs({
@@ -65,51 +60,41 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     required this.bottom,
     this.actions,
-  })  : leading = null,
-        automaticallyImplyLeading = true;
+  }) : leading = null,
+       automaticallyImplyLeading = true;
 
   /// Build common action buttons for easy reuse.
-  static List<Widget> notificationAction({VoidCallback? onPressed}) => [
-        IconButton(
-          icon: const Icon(Icons.notifications_none),
-          onPressed: onPressed ?? () {},
-        ),
-      ];
-
   static List<Widget> switchRoleAction(BuildContext context) => [
-        IconButton(
-          icon: const Icon(Icons.swap_horiz),
-          tooltip: 'Switch role',
-          onPressed: () =>
-              Navigator.of(context).pushReplacementNamed(AppRoutes.roleSelector),
-        ),
-      ];
+    IconButton(
+      icon: const Icon(Icons.swap_horiz),
+      tooltip: 'Switch role',
+      onPressed: () =>
+          Navigator.of(context).pushReplacementNamed(AppRoutes.roleSelector),
+    ),
+  ];
 
   static List<Widget> addAction({VoidCallback? onPressed}) => [
-        IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: onPressed ?? () {},
-        ),
-      ];
+    IconButton(icon: const Icon(Icons.add), onPressed: onPressed ?? () {}),
+  ];
 
   static List<Widget> settingsAction({VoidCallback? onPressed}) => [
-        IconButton(
-          icon: const Icon(Icons.settings),
-          onPressed: onPressed ?? () {},
-        ),
-      ];
+    IconButton(icon: const Icon(Icons.settings), onPressed: onPressed ?? () {}),
+  ];
 
   /// Main tab with notifications + switch role (Teacher/Student).
-  static List<Widget> mainTabActions(BuildContext context,
-      {VoidCallback? onNotificationPressed}) => [
-        ...notificationAction(onPressed: onNotificationPressed),
-        ...switchRoleAction(context),
-      ];
+  static List<Widget> mainTabActions(
+    BuildContext context, {
+    VoidCallback? onNotificationPressed,
+  }) => [...switchRoleAction(context)];
 
   @override
   Size get preferredSize {
     final bottomHeight = bottom?.preferredSize.height ?? 0.0;
-    return Size.fromHeight(kToolbarHeight + bottomHeight);
+    // Include top safe area (SafeArea adds padding in toolbar) to prevent overflow
+    const topSafeArea = 47.0; // typical notch height
+    return Size.fromHeight(
+      topSafeArea + kToolbarHeight + bottomHeight + 1,
+    );
   }
 
   @override
@@ -118,12 +103,8 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     final bgColor = isDark
         ? AppColors.neutral900Alpha70
         : AppColors.neutral50Alpha70;
-    final borderColor = isDark
-        ? AppColors.neutral700
-        : AppColors.neutral200;
-    final fgColor = isDark
-        ? AppColors.neutral50
-        : AppColors.neutral900;
+    final borderColor = isDark ? AppColors.neutral700 : AppColors.neutral200;
+    final fgColor = isDark ? AppColors.neutral50 : AppColors.neutral900;
 
     final toolbar = ClipRect(
       child: BackdropFilter(
@@ -151,43 +132,43 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                  Text(
-                    title,
-                    style: AppTypography.h6(color: fgColor),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (leading != null)
-                          leading!
-                        else if (automaticallyImplyLeading &&
-                            Navigator.of(context).canPop())
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back),
-                            onPressed: () => Navigator.of(context).pop(),
-                            color: fgColor,
-                          )
-                        else
-                          const SizedBox(width: 48),
-                      ],
+                    Text(
+                      title,
+                      style: AppTypography.h6(color: fgColor),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: actions ?? [],
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (leading != null)
+                            leading!
+                          else if (automaticallyImplyLeading &&
+                              Navigator.of(context).canPop())
+                            IconButton(
+                              icon: const Icon(Icons.arrow_back),
+                              onPressed: () => Navigator.of(context).pop(),
+                              color: fgColor,
+                            )
+                          else
+                            const SizedBox(width: 48),
+                        ],
+                      ),
                     ),
-                  ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: actions ?? [],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -198,15 +179,13 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
 
     if (bottom != null) {
+      final bottomHeight = bottom!.preferredSize.height;
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           toolbar,
-          bottom!,
-          Container(
-            height: 1,
-            color: borderColor,
-          ),
+          SizedBox(height: bottomHeight, child: bottom!),
+          Container(height: 1, color: borderColor),
         ],
       );
     }
