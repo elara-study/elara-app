@@ -4,6 +4,7 @@ import 'package:elara/presentation/common/widgets/app_app_bar.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// Teacher profile/settings screen (per Figma).
 class TeacherProfileScreen extends StatelessWidget {
@@ -13,7 +14,7 @@ class TeacherProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppAppBar.mainTab(
-        title: 'Profile',
+        title: 'teacher.profile'.tr,
         actions: AppAppBar.settingsAction(),
       ),
       body: ListView(
@@ -21,31 +22,31 @@ class TeacherProfileScreen extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.edit),
-            title: Text('Edit Profile', style: AppTypography.bodyLarge()),
+            title: Text('teacher.editProfile'.tr, style: AppTypography.bodyLarge()),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.lock),
-            title: Text('Change Password', style: AppTypography.bodyLarge()),
+            title: Text('teacher.changePassword'.tr, style: AppTypography.bodyLarge()),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.notifications_outlined),
-            title: Text('Notifications', style: AppTypography.bodyLarge()),
+            title: Text('teacher.notifications'.tr, style: AppTypography.bodyLarge()),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.help_outline),
-            title: Text('Help Center', style: AppTypography.bodyLarge()),
+            title: Text('teacher.helpCenter'.tr, style: AppTypography.bodyLarge()),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: Text('About Us', style: AppTypography.bodyLarge()),
+            title: Text('teacher.aboutUs'.tr, style: AppTypography.bodyLarge()),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {},
           ),
@@ -53,7 +54,7 @@ class TeacherProfileScreen extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout, color: AppColors.error500),
             title: Text(
-              'Logout',
+              'teacher.logout'.tr,
               style: AppTypography.bodyLarge(color: AppColors.error500),
             ),
             onTap: () => Navigator.of(

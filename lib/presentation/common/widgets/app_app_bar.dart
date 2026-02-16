@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/localization/locale_controller.dart';
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
@@ -87,6 +89,18 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
        automaticallyImplyLeading = showBackButton;
 
   /// Build common action buttons for easy reuse.
+  /// Toggle language (Arabic / English).
+  static List<Widget> languageAction() => [
+    Obx(() {
+      final c = Get.find<LocaleController>();
+      return IconButton(
+        icon: Text(c.isArabic ? 'EN' : 'ع', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+        tooltip: c.isArabic ? 'Switch to English' : 'التبديل إلى العربية',
+        onPressed: () => c.toggleLocale(),
+      );
+    }),
+  ];
+
   static List<Widget> switchRoleAction(BuildContext context) => [
     IconButton(
       icon: const Icon(Icons.swap_horiz),
@@ -104,11 +118,11 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     IconButton(icon: const Icon(Icons.settings), onPressed: onPressed ?? () {}),
   ];
 
-  /// Main tab with notifications + switch role (Teacher/Student).
+  /// Main tab with language toggle + switch role (Teacher/Student).
   static List<Widget> mainTabActions(
     BuildContext context, {
     VoidCallback? onNotificationPressed,
-  }) => [...switchRoleAction(context)];
+  }) => [...languageAction(), ...switchRoleAction(context)];
 
   @override
   Size get preferredSize {

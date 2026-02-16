@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/presentation/common/widgets/app_app_bar.dart';
 import 'package:elara/presentation/common/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// Add student by email (per Figma).
 class AddStudentScreen extends StatelessWidget {
@@ -10,23 +11,23 @@ class AddStudentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppAppBar.detail(title: 'Add Student', showBackButton: false),
+      appBar: AppAppBar.detail(title: 'teacher.addStudent'.tr, showBackButton: false),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.spacing2xl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const TextField(
+              TextField(
                 decoration: InputDecoration(
-                  labelText: 'Student email',
-                  hintText: 'student@example.com',
+                  labelText: 'teacher.studentEmail'.tr,
+                  hintText: 'teacher.studentEmailHint'.tr,
                 ),
                 keyboardType: TextInputType.emailAddress,
               ),
               const Spacer(),
               AppPrimaryButton(
-                text: 'Add Student',
+                text: 'teacher.addStudent'.tr,
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ],

@@ -7,6 +7,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/presentation/common/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// Sign in screen per Figma: Welcome to elara, email/password, Sign in, Sign up link.
 class LoginScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Login failed: ${e.toString()}'),
+              content: Text('${'auth.loginFailed'.tr}: ${e.toString()}'),
               backgroundColor: Colors.red,
             ),
           );
@@ -90,13 +91,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: AppSpacing.spacing2xl),
                 Text(
-                  'Welcome to elara',
+                  'auth.welcomeToElara'.tr,
                   style: AppTypography.h3(color: AppColors.neutral900),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.spacingSm),
                 Text(
-                  'Sign in to start your study journey',
+                  'auth.signInSubtitle'.tr,
                   style: AppTypography.bodyLarge(color: AppColors.neutral600),
                   textAlign: TextAlign.center,
                 ),
@@ -104,12 +105,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'Enter your email address',
+                  decoration: InputDecoration(
+                    labelText: 'auth.email'.tr,
+                    hintText: 'auth.emailHint'.tr,
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'Enter your email';
+                    if (v == null || v.isEmpty) return 'auth.emailRequired'.tr;
                     return null;
                   },
                 ),
@@ -118,8 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: 'Password',
-                    hintText: 'Enter your password',
+                    labelText: 'auth.password'.tr,
+                    hintText: 'auth.passwordHint'.tr,
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -130,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'Enter your password';
+                    if (v == null || v.isEmpty) return 'auth.passwordRequired'.tr;
                     return null;
                   },
                 ),
@@ -138,13 +139,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: AppGhostButton(
-                    text: 'Forgot password?',
+                    text: 'auth.forgotPassword'.tr,
                     onPressed: _onForgotPassword,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.spacingLg),
                 AppPrimaryButton(
-                  text: 'Sign in',
+                  text: 'auth.signIn'.tr,
                   onPressed: _isLoading ? null : _onSignIn,
                   isLoading: _isLoading,
                 ),
@@ -153,14 +154,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have an account?",
+                      'auth.dontHaveAccount'.tr,
                       style: AppTypography.labelSmall(color: AppColors.neutral900),
                     ),
                     const SizedBox(width: AppSpacing.spacingXs),
                     TextButton(
                       onPressed: _onSignUp,
                       child: Text(
-                        'Sign up',
+                        'auth.signUp'.tr,
                         style: AppTypography.labelSmall(
                           color: AppColors.brandPrimary500,
                         ),

@@ -7,6 +7,7 @@ import 'package:elara/presentation/common/widgets/app_buttons.dart';
 import 'package:elara/presentation/teacher/bloc/quiz_generation_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 /// Create quiz with AI + options for number, type, difficulty.
 class CreateQuizScreen extends StatefulWidget {
@@ -32,34 +33,21 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< Updated upstream
-    return Scaffold(
-      appBar: AppAppBar.detail(title: 'Create Quiz', showBackButton: false),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.spacing2xl),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Quiz title',
-                  hintText: 'e.g. Chapter 5 Quiz',
-=======
     return BlocProvider(
       create: (context) => getIt<QuizGenerationBloc>(),
       child: Scaffold(
-        appBar: AppAppBar.detail(title: 'Create Quiz'),
+        appBar: AppAppBar.detail(title: 'teacher.createQuiz'.tr),
         body: BlocConsumer<QuizGenerationBloc, QuizGenerationState>(
           listener: (context, state) {
             if (state is QuizGenerationSuccess) {
-              Navigator.of(
-                context,
-              ).pushNamed(AppRoutes.teacherQuizEditor, arguments: state.quiz);
+              Navigator.of(context).pushNamed(
+                AppRoutes.teacherQuizEditor,
+                arguments: state.quiz,
+              );
             } else if (state is QuizGenerationFailure) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('Error: ${state.error}')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error: ${state.error}')),
+              );
             }
           },
           builder: (context, state) {
@@ -72,28 +60,28 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                   children: [
                     TextField(
                       controller: _titleController,
-                      decoration: const InputDecoration(
-                        labelText: 'Quiz title',
-                        hintText: 'e.g. Chapter 5 Quiz',
+                      decoration: InputDecoration(
+                        labelText: 'teacher.quizTitle'.tr,
+                        hintText: 'teacher.quizTitleHint'.tr,
                       ),
                       enabled: !isLoading,
                     ),
                     const SizedBox(height: AppSpacing.spacingLg),
                     TextField(
                       controller: _topicController,
-                      decoration: const InputDecoration(
-                        labelText: 'Topic / Subject',
-                        hintText: 'What should the quiz cover?',
+                      decoration: InputDecoration(
+                        labelText: 'teacher.topicSubject'.tr,
+                        hintText: 'teacher.topicHint'.tr,
                       ),
                       maxLines: 2,
                       enabled: !isLoading,
                     ),
                     const SizedBox(height: AppSpacing.spacing2xl),
-                    Text('Generate with AI', style: AppTypography.h6()),
+                    Text('teacher.generateWithAi'.tr, style: AppTypography.h6()),
                     const SizedBox(height: AppSpacing.spacingMd),
                     DropdownButtonFormField<int>(
-                      decoration: const InputDecoration(
-                        labelText: 'Number of Questions',
+                      decoration: InputDecoration(
+                        labelText: 'teacher.numberOfQuestions'.tr,
                       ),
                       value: _questionCount,
                       items: [5, 10, 15, 20]
@@ -108,8 +96,8 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                     ),
                     const SizedBox(height: AppSpacing.spacingLg),
                     DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Question Type',
+                      decoration: InputDecoration(
+                        labelText: 'teacher.questionType'.tr,
                       ),
                       value: _questionType,
                       items: ['MCQ only', 'Written only', 'Mixed']
@@ -123,8 +111,8 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                     ),
                     const SizedBox(height: AppSpacing.spacingLg),
                     DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Difficulty',
+                      decoration: InputDecoration(
+                        labelText: 'teacher.difficulty'.tr,
                       ),
                       value: _difficulty,
                       items: ['Easy', 'Medium', 'Hard']
@@ -141,13 +129,13 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                       const Center(child: CircularProgressIndicator())
                     else
                       AppPrimaryButton(
-                        text: 'Generate Questions with AI',
+                        text: 'teacher.generateQuestions'.tr,
                         icon: Icons.auto_awesome,
                         onPressed: () {
                           if (_topicController.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please enter a topic'),
+                              SnackBar(
+                                content: Text('teacher.enterTopic'.tr),
                               ),
                             );
                             return;
@@ -164,22 +152,19 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
                       ),
                     const SizedBox(height: AppSpacing.spacingLg),
                     TextButton.icon(
-                      onPressed: () => Navigator.of(
-                        context,
-                      ).pushNamed(AppRoutes.teacherRubricBuilder),
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed(AppRoutes.teacherRubricBuilder),
                       icon: const Icon(Icons.playlist_add),
-                      label: const Text('Create Custom Rubric'),
+                      label: Text('teacher.createCustomRubric'.tr),
                     ),
                     const SizedBox(height: AppSpacing.spacingMd),
                     TextButton.icon(
-                      onPressed: () => Navigator.of(
-                        context,
-                      ).pushNamed(AppRoutes.teacherEssayGrading),
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed(AppRoutes.teacherEssayGrading),
                       icon: const Icon(Icons.analytics),
-                      label: const Text('AI Essay Grading'),
+                      label: Text('teacher.aiEssayGrading'.tr),
                     ),
                   ],
->>>>>>> Stashed changes
                 ),
               ),
             );

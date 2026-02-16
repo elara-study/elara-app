@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/presentation/common/widgets/app_buttons.dart';
 import 'package:elara/domain/models/rubric.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CriterionDialog extends StatefulWidget {
   final RubricCriterion? criterion;
@@ -64,7 +65,7 @@ class _CriterionDialogState extends State<CriterionDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.criterion == null ? 'Add Criterion' : 'Edit Criterion'),
+      title: Text(widget.criterion == null ? 'teacher.addCriterionTitle'.tr : 'teacher.editCriterionTitle'.tr),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -72,10 +73,10 @@ class _CriterionDialogState extends State<CriterionDialog> {
           children: [
             TextField(
               controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Criterion Title'),
+              decoration: InputDecoration(labelText: 'teacher.criterionTitle'.tr),
             ),
             const SizedBox(height: AppSpacing.spacingMd),
-            Text('Weight: ${_weight.round()}%', style: AppTypography.labelLarge()),
+            Text('${'teacher.weight'.tr}: ${_weight.round()}%', style: AppTypography.labelLarge()),
             Slider(
               value: _weight,
               min: 0,
@@ -85,22 +86,22 @@ class _CriterionDialogState extends State<CriterionDialog> {
               onChanged: (val) => setState(() => _weight = val),
             ),
             const Divider(),
-            Text('Performance Levels', style: AppTypography.h6()),
+            Text('teacher.performanceLevels'.tr, style: AppTypography.h6()),
             const SizedBox(height: AppSpacing.spacingSm),
-            _buildLevelField('Excellent (4 pts)', _excellentController),
-            _buildLevelField('Good (3 pts)', _goodController),
-            _buildLevelField('Average (2 pts)', _averageController),
-            _buildLevelField('Poor (1 pt)', _poorController),
+            _buildLevelField('teacher.excellent'.tr, _excellentController),
+            _buildLevelField('teacher.good'.tr, _goodController),
+            _buildLevelField('teacher.average'.tr, _averageController),
+            _buildLevelField('teacher.poor'.tr, _poorController),
           ],
         ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text('common.cancel'.tr),
         ),
         AppPrimaryButton(
-          text: 'Save',
+          text: 'common.save'.tr,
           onPressed: _save,
         ),
       ],
@@ -126,7 +127,7 @@ class _CriterionDialogState extends State<CriterionDialog> {
   void _save() {
     if (_titleController.text.isEmpty) {
        ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a title')),
+        SnackBar(content: Text('teacher.enterTitle'.tr)),
       );
       return;
     }

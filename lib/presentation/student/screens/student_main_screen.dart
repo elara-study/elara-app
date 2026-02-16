@@ -11,6 +11,7 @@ import 'package:elara/presentation/common/widgets/daily_goal_item.dart';
 import 'package:elara/presentation/common/widgets/stat_badge.dart';
 import 'package:elara/presentation/student/widgets/student_home_group_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// Student shell with bottom nav: Home, Learn, Rewards, Alerts, Profile (per Figma).
 class StudentMainScreen extends StatefulWidget {
@@ -39,31 +40,31 @@ class _StudentMainScreenState extends State<StudentMainScreen> {
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
-        items: const [
+        items: [
           AppNavBarItem(
             icon: Icons.home_outlined,
             selectedIcon: Icons.home,
-            label: 'Home',
+            label: 'student.home'.tr,
           ),
           AppNavBarItem(
             icon: Icons.book_outlined,
             selectedIcon: Icons.book,
-            label: 'Learn',
+            label: 'student.learn'.tr,
           ),
           AppNavBarItem(
             icon: Icons.emoji_events_outlined,
             selectedIcon: Icons.emoji_events,
-            label: 'Rewards',
+            label: 'student.rewards'.tr,
           ),
           AppNavBarItem(
             icon: Icons.notifications_outlined,
             selectedIcon: Icons.notifications,
-            label: 'Alerts',
+            label: 'student.alerts'.tr,
           ),
           AppNavBarItem(
             icon: Icons.person_outline,
             selectedIcon: Icons.person,
-            label: 'Profile',
+            label: 'student.profile'.tr,
           ),
         ],
       ),
@@ -75,8 +76,8 @@ class _StudentHomeTab extends StatelessWidget {
   const _StudentHomeTab();
 
   static const _sampleGroups = [
-    StudentHomeGroup(name: 'Physics 101', progress: 5, isPrimary: true),
-    StudentHomeGroup(name: 'Science Explorers', progress: 45, isPrimary: false),
+    StudentHomeGroup(nameKey: 'student.physics101', progress: 5, isPrimary: true),
+    StudentHomeGroup(nameKey: 'student.scienceExplorers', progress: 45, isPrimary: false),
   ];
 
   @override
@@ -115,9 +116,9 @@ class _StudentHomeTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Good evening, Tyler!', style: AppTypography.h3()),
+              Text('student.greetingEvening'.tr, style: AppTypography.h3()),
               Text(
-                'Ready to continue your learning journey?',
+                'student.readyToContinue'.tr,
                 style: AppTypography.bodyLarge(color: AppColors.neutral600),
               ),
               const SizedBox(height: AppSpacing.spacing2xl),
@@ -154,7 +155,7 @@ class _StudentHomeTab extends StatelessWidget {
                                   ),
                                   const SizedBox(width: AppSpacing.spacingXs),
                                   Text(
-                                    'Continue where you left off',
+                                    'student.continueWhereLeftOff'.tr,
                                     style: AppTypography.caption(
                                       color: AppColors.white.withValues(
                                         alpha: 0.85,
@@ -165,14 +166,14 @@ class _StudentHomeTab extends StatelessWidget {
                               ),
                               const SizedBox(height: AppSpacing.spacingLg),
                               Text(
-                                'Physics 101',
+                                'student.physics101'.tr,
                                 style: AppTypography.h5(color: AppColors.white),
                               ),
                               const SizedBox(height: AppSpacing.spacingLg),
                               Row(
                                 children: [
                                   Text(
-                                    'Lesson 2 of 20',
+                                    '${'student.lesson'.tr} 2 ${'student.of'.tr} 20',
                                     style: AppTypography.bodySmall(
                                       color: AppColors.white.withValues(
                                         alpha: 0.85,
@@ -240,33 +241,33 @@ class _StudentHomeTab extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Daily Goals', style: AppTypography.h5()),
+                  Text('student.dailyGoals'.tr, style: AppTypography.h5()),
                   Text(
-                    '1/3 completed',
+                    '1/3 ${'student.complete'.tr}',
                     style: AppTypography.caption(color: AppColors.neutral600),
                   ),
                 ],
               ),
               const SizedBox(height: AppSpacing.spacingLg),
-              const DailyGoalsCard(
+              DailyGoalsCard(
                 children: [
                   DailyGoalItem(
                     icon: Icons.flag_outlined,
-                    label: 'Complete 3 lessons',
+                    label: 'student.completeLessons'.tr,
                     progress: 0.33,
                     points: 50,
                     backgroundColor: AppColors.primary50,
                   ),
                   DailyGoalItem(
                     icon: Icons.emoji_events_outlined,
-                    label: 'Score 80% on a quiz',
+                    label: 'student.scoreQuiz'.tr,
                     progress: 0.50,
                     points: 30,
                     backgroundColor: AppColors.brandSecondary500Alpha20,
                   ),
                   DailyGoalItem(
                     icon: Icons.flag_outlined,
-                    label: 'Practice for 15 mins',
+                    label: 'student.practiceMins'.tr,
                     progress: 0.65,
                     points: 25,
                     backgroundColor: AppColors.primary50,
@@ -278,11 +279,11 @@ class _StudentHomeTab extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('My Groups', style: AppTypography.h5()),
+                  Text('student.myGroups'.tr, style: AppTypography.h5()),
                   GestureDetector(
                     onTap: () {},
                     child: Text(
-                      'See All >',
+                      'student.seeAll'.tr,
                       style: AppTypography.bodySmall(
                         color: AppColors.brandPrimary500,
                       ),
@@ -313,12 +314,12 @@ class _StudentRewardsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppAppBar.mainTab(
-        title: 'Rewards',
+        title: 'student.rewards'.tr,
         actions: AppAppBar.mainTabActions(context),
       ),
       body: Center(
         child: Text(
-          'Rewards',
+          'student.rewards'.tr,
           style: AppTypography.h5(color: AppColors.neutral600),
         ),
       ),
@@ -333,12 +334,12 @@ class _StudentAlertsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppAppBar.mainTab(
-        title: 'Alerts',
+        title: 'student.alerts'.tr,
         actions: AppAppBar.mainTabActions(context),
       ),
       body: Center(
         child: Text(
-          'Alerts',
+          'student.alerts'.tr,
           style: AppTypography.h5(color: AppColors.neutral600),
         ),
       ),
@@ -349,19 +350,19 @@ class _StudentAlertsTab extends StatelessWidget {
 class _StudentLearnTab extends StatelessWidget {
   const _StudentLearnTab();
 
-  static const _sampleClasses = [
+  static final _sampleClasses = [
     _StudentClassCard(
-      name: 'Mathematics 7A',
-      subject: 'MATHEMATICS',
-      grade: 'Grade 7',
+      nameKey: 'student.classMath7A',
+      subjectKey: 'student.subjectMath',
+      gradeKey: 'student.grade7',
       progress: 65,
       studentCount: 28,
       lessons: '12/20',
     ),
     _StudentClassCard(
-      name: 'Science Explorers',
-      subject: 'SCIENCE',
-      grade: 'Grade 7',
+      nameKey: 'student.classScienceExplorers',
+      subjectKey: 'student.subjectScience',
+      gradeKey: 'student.grade7',
       progress: 45,
       studentCount: 25,
       lessons: '8/18',
@@ -372,7 +373,7 @@ class _StudentLearnTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppAppBar.mainTab(
-        title: 'Learn',
+        title: 'student.learn'.tr,
         actions: AppAppBar.mainTabActions(context),
       ),
       body: SafeArea(
@@ -390,10 +391,10 @@ class _StudentLearnTab extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('My Classes', style: AppTypography.h3()),
+                        Text('student.myClasses'.tr, style: AppTypography.h3()),
                         const SizedBox(height: AppSpacing.spacingXs),
                         Text(
-                          'Your enrolled classes',
+                          'student.enrolledClasses'.tr,
                           style: AppTypography.bodyLarge(
                             color: AppColors.neutral600,
                           ),
@@ -404,7 +405,7 @@ class _StudentLearnTab extends StatelessWidget {
                   const SizedBox(width: AppSpacing.spacingMd),
                   Flexible(
                     child: AppOutlineButton(
-                      text: 'Join',
+                      text: 'student.join'.tr,
                       icon: Icons.login,
                       onPressed: () => Navigator.of(
                         context,
@@ -432,16 +433,16 @@ class _StudentLearnTab extends StatelessWidget {
 
 class _StudentClassCard {
   const _StudentClassCard({
-    required this.name,
-    required this.subject,
-    required this.grade,
+    required this.nameKey,
+    required this.subjectKey,
+    required this.gradeKey,
     required this.progress,
     required this.studentCount,
     required this.lessons,
   });
-  final String name;
-  final String subject;
-  final String grade;
+  final String nameKey;
+  final String subjectKey;
+  final String gradeKey;
   final int progress;
   final int studentCount;
   final String lessons;
@@ -476,7 +477,7 @@ class _StudentClassCardWidget extends StatelessWidget {
                 runSpacing: AppSpacing.spacingXs,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  Text(card.name, style: AppTypography.h6()),
+                  Text(card.nameKey.tr, style: AppTypography.h6()),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.spacingSm,
@@ -487,7 +488,7 @@ class _StudentClassCardWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppRadius.radiusXs),
                     ),
                     child: Text(
-                      card.subject,
+                      card.subjectKey.tr,
                       style: AppTypography.caption(
                         color: AppColors.brandPrimary700,
                       ),
@@ -503,7 +504,7 @@ class _StudentClassCardWidget extends StatelessWidget {
                       ),
                       const SizedBox(width: AppSpacing.spacing2xs),
                       Text(
-                        card.grade,
+                        card.gradeKey.tr,
                         style: AppTypography.bodySmall(
                           color: AppColors.neutral600,
                         ),
@@ -523,7 +524,7 @@ class _StudentClassCardWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.spacingXs),
                   Text(
-                    '${card.studentCount} students',
+                    '${card.studentCount} ${'student.students'.tr}',
                     style: AppTypography.bodySmall(color: AppColors.neutral600),
                   ),
                   const SizedBox(width: AppSpacing.spacingLg),
@@ -534,7 +535,7 @@ class _StudentClassCardWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.spacingXs),
                   Text(
-                    '${card.lessons} lessons',
+                    '${card.lessons} ${'student.lessons'.tr}',
                     style: AppTypography.bodySmall(color: AppColors.neutral600),
                   ),
                 ],
@@ -544,7 +545,7 @@ class _StudentClassCardWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Your progress', style: AppTypography.bodyMedium()),
+                  Text('student.yourProgress'.tr, style: AppTypography.bodyMedium()),
                   Text('${card.progress}%', style: AppTypography.bodyMedium()),
                 ],
               ),
@@ -575,7 +576,7 @@ class _StudentProfileTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppAppBar.mainTab(
-        title: 'Profile',
+        title: 'student.profile'.tr,
         actions: AppAppBar.settingsAction(),
       ),
       body: ListView(
@@ -583,25 +584,25 @@ class _StudentProfileTab extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.edit),
-            title: Text('Edit Profile', style: AppTypography.bodyLarge()),
+            title: Text('teacher.editProfile'.tr, style: AppTypography.bodyLarge()),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.lock),
-            title: Text('Change Password', style: AppTypography.bodyLarge()),
+            title: Text('teacher.changePassword'.tr, style: AppTypography.bodyLarge()),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.notifications_outlined),
-            title: Text('Notifications', style: AppTypography.bodyLarge()),
+            title: Text('teacher.notifications'.tr, style: AppTypography.bodyLarge()),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.help_outline),
-            title: Text('Help Center', style: AppTypography.bodyLarge()),
+            title: Text('teacher.helpCenter'.tr, style: AppTypography.bodyLarge()),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {},
           ),
@@ -609,7 +610,7 @@ class _StudentProfileTab extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout, color: AppColors.error500),
             title: Text(
-              'Logout',
+              'teacher.logout'.tr,
               style: AppTypography.bodyLarge(color: AppColors.error500),
             ),
             onTap: () => Navigator.of(

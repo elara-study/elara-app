@@ -9,6 +9,7 @@ import 'package:elara/presentation/teacher/screens/teacher_classes_screen.dart'
     show TeacherClassesScreenContent;
 import 'package:elara/presentation/teacher/screens/teacher_profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// Teacher shell with bottom nav: Home, Groups, Alerts, Profile (per Figma).
 class TeacherMainScreen extends StatefulWidget {
@@ -26,36 +27,36 @@ class _TeacherMainScreenState extends State<TeacherMainScreen> {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: const [
-          _TeacherDashboardTab(),
-          TeacherClassesScreenContent(),
-          _TeacherAlertsTab(),
-          TeacherProfileScreen(),
+        children: [
+          const _TeacherDashboardTab(),
+          const TeacherClassesScreenContent(),
+          const _TeacherAlertsTab(),
+          const TeacherProfileScreen(),
         ],
       ),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
-        items: const [
+        items: [
           AppNavBarItem(
             icon: Icons.home_outlined,
             selectedIcon: Icons.home,
-            label: 'Home',
+            label: 'teacher.home'.tr,
           ),
           AppNavBarItem(
             icon: Icons.group_outlined,
             selectedIcon: Icons.group,
-            label: 'Groups',
+            label: 'teacher.groups'.tr,
           ),
           AppNavBarItem(
             icon: Icons.notifications_outlined,
             selectedIcon: Icons.notifications,
-            label: 'Alerts',
+            label: 'teacher.alerts'.tr,
           ),
           AppNavBarItem(
             icon: Icons.person_outline,
             selectedIcon: Icons.person,
-            label: 'Profile',
+            label: 'teacher.profile'.tr,
           ),
         ],
       ),
@@ -71,12 +72,12 @@ class _TeacherAlertsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppAppBar.mainTab(
-        title: 'Alerts',
+        title: 'teacher.alerts'.tr,
         actions: AppAppBar.mainTabActions(context),
       ),
       body: Center(
         child: Text(
-          'Alerts',
+          'teacher.alerts'.tr,
           style: AppTypography.h5(color: AppColors.neutral600),
         ),
       ),
@@ -98,14 +99,8 @@ class _TeacherDashboardTab extends StatelessWidget {
   ];
 
   static const _sampleActivity = [
-    _ActivityItem(
-      text: 'Alex M. completed Quantum Physics Basics',
-      timeAgo: '2m ago',
-    ),
-    _ActivityItem(
-      text: 'Mike R. submitted Calculus Homework',
-      timeAgo: '1h ago',
-    ),
+    _ActivityItem(textKey: 'teacher.activityCompleted', timeAgoKey: 'teacher.timeAgo2m'),
+    _ActivityItem(textKey: 'teacher.activitySubmitted', timeAgoKey: 'teacher.timeAgo1h'),
   ];
 
   @override
@@ -122,10 +117,10 @@ class _TeacherDashboardTab extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Greeting
-              Text('Hello, Prof. Dalia', style: AppTypography.h3()),
+              Text('teacher.greetingProf'.tr, style: AppTypography.h3()),
               const SizedBox(height: AppSpacing.spacingXs),
               Text(
-                'Ready to inspire today?',
+                'teacher.readyToInspire'.tr,
                 style: AppTypography.bodyMedium(color: AppColors.neutral600),
               ),
               const SizedBox(height: AppSpacing.spacing2xl),
@@ -133,11 +128,11 @@ class _TeacherDashboardTab extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('My Groups', style: AppTypography.h5()),
+                  Text('teacher.myGroups'.tr, style: AppTypography.h5()),
                   GestureDetector(
                     onTap: () {},
                     child: Text(
-                      'See All >',
+                      'teacher.seeAll'.tr,
                       style: AppTypography.bodySmall(
                         color: AppColors.brandPrimary500,
                       ),
@@ -156,19 +151,19 @@ class _TeacherDashboardTab extends StatelessWidget {
               // Statistics
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: _StatCard(
                       icon: Icons.person,
-                      label: 'Active Students',
+                      label: 'teacher.activeStudents'.tr,
                       value: '124',
                       gradient: AppGradients.primary,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.spacingLg),
-                  const Expanded(
+                  Expanded(
                     child: _StatCard(
                       icon: Icons.check_circle,
-                      label: 'Avg. Completion',
+                      label: 'teacher.avgCompletion'.tr,
                       value: '87%',
                       gradient: AppGradients.secondary,
                     ),
@@ -177,7 +172,7 @@ class _TeacherDashboardTab extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.spacing2xl),
               // Recent Activity
-              Text('Recent Activity', style: AppTypography.h5()),
+              Text('teacher.recentActivity'.tr, style: AppTypography.h5()),
               const SizedBox(height: AppSpacing.spacingLg),
               ..._sampleActivity.map(
                 (a) => Padding(
@@ -247,7 +242,7 @@ class _GroupCardWidget extends StatelessWidget {
                       style: AppTypography.h6(color: AppColors.white),
                     ),
                     Text(
-                      '${card.studentCount} students',
+                      '${card.studentCount} ${'teacher.students'.tr}',
                       style: AppTypography.bodySmall(color: AppColors.white),
                     ),
                   ],
@@ -317,9 +312,9 @@ class _StatCard extends StatelessWidget {
 }
 
 class _ActivityItem {
-  const _ActivityItem({required this.text, required this.timeAgo});
-  final String text;
-  final String timeAgo;
+  const _ActivityItem({required this.textKey, required this.timeAgoKey});
+  final String textKey;
+  final String timeAgoKey;
 }
 
 class _ActivityCard extends StatelessWidget {
@@ -346,9 +341,9 @@ class _ActivityCard extends StatelessWidget {
         children: [
           Icon(Icons.notifications_none, size: 24, color: AppColors.neutral600),
           const SizedBox(width: AppSpacing.spacingMd),
-          Expanded(child: Text(item.text, style: AppTypography.bodyMedium())),
+          Expanded(child: Text(item.textKey.tr, style: AppTypography.bodyMedium())),
           Text(
-            item.timeAgo,
+            item.timeAgoKey.tr,
             style: AppTypography.caption(color: AppColors.neutral600),
           ),
         ],

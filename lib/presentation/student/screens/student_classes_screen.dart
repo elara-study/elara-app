@@ -2,6 +2,7 @@ import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class StudentClassesScreen extends StatelessWidget {
   const StudentClassesScreen({super.key});
@@ -10,7 +11,7 @@ class StudentClassesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Classes'),
+        title: Text('student.myClasses'.tr),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
@@ -24,7 +25,7 @@ class StudentClassesScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Your enrolled classes appear here.',
+                  'student.enrolledClassesHint'.tr,
                   style: AppTypography.bodyLarge(),
                   textAlign: TextAlign.center,
                 ),
@@ -32,7 +33,7 @@ class StudentClassesScreen extends StatelessWidget {
                 TextButton(
                   onPressed: () =>
                       Navigator.of(context).pushNamed(AppRoutes.studentClassDetail),
-                  child: const Text('View sample class'),
+                  child: Text('student.viewSampleClass'.tr),
                 ),
               ],
             ),

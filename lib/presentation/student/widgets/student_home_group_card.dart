@@ -5,16 +5,17 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/presentation/common/widgets/card_with_circle_background.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// Data for a Student Home group card.
 class StudentHomeGroup {
   const StudentHomeGroup({
-    required this.name,
+    required this.nameKey,
     required this.progress,
     required this.isPrimary,
   });
 
-  final String name;
+  final String nameKey;
   final int progress;
   final bool isPrimary;
 }
@@ -63,11 +64,11 @@ class StudentHomeGroupCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      group.name,
+                      group.nameKey.tr,
                       style: AppTypography.h6(color: AppColors.white),
                     ),
                     Text(
-                      '${group.progress}% complete',
+                      '${group.progress}% ${'student.complete'.tr}',
                       style: AppTypography.bodySmall(color: AppColors.white),
                     ),
                   ],

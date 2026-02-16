@@ -8,6 +8,7 @@ import 'package:elara/data/api/class_api_service.dart';
 import 'package:elara/data/models/api_models.dart';
 import 'package:elara/presentation/common/widgets/app_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// Groups list content for Teacher - fetches from backend API.
 class TeacherClassesScreenContent extends StatefulWidget {
@@ -58,12 +59,12 @@ class _TeacherClassesScreenContentState extends State<TeacherClassesScreenConten
       length: 1,
       child: Scaffold(
         appBar: AppAppBar.withTabs(
-          title: 'Groups',
+          title: 'teacher.groups'.tr,
           bottom: TabBar(
             indicatorColor: AppColors.brandPrimary500,
             labelColor: AppColors.brandPrimary500,
             unselectedLabelColor: AppColors.neutral600,
-            tabs: const [Tab(text: 'Groups')],
+            tabs: [Tab(text: 'teacher.groups'.tr)],
           ),
           actions: AppAppBar.mainTabActions(context),
         ),
@@ -84,7 +85,7 @@ class _TeacherClassesScreenContentState extends State<TeacherClassesScreenConten
           children: [
             const Icon(Icons.error_outline, size: 48, color: Colors.red),
             const SizedBox(height: 16),
-            Text('Error loading classes', style: AppTypography.h6()),
+            Text('teacher.errorLoadingClasses'.tr, style: AppTypography.h6()),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -93,7 +94,7 @@ class _TeacherClassesScreenContentState extends State<TeacherClassesScreenConten
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _loadClasses,
-              child: const Text('Retry'),
+              child: Text('common.retry'.tr),
             ),
           ],
         ),
@@ -107,14 +108,14 @@ class _TeacherClassesScreenContentState extends State<TeacherClassesScreenConten
           children: [
             const Icon(Icons.class_outlined, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
-            Text('No classes yet', style: AppTypography.h5()),
+            Text('teacher.noClassesYet'.tr, style: AppTypography.h5()),
             const SizedBox(height: 8),
-            const Text('Create your first class to get started'),
+            Text('teacher.createFirstClass'.tr),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pushNamed(AppRoutes.teacherCreateClass),
               icon: const Icon(Icons.add),
-              label: const Text('Create Class'),
+              label: Text('teacher.createClass'.tr),
             ),
           ],
         ),
@@ -129,7 +130,7 @@ class _TeacherClassesScreenContentState extends State<TeacherClassesScreenConten
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('My Groups', style: AppTypography.h5()),
+              Text('teacher.myGroups'.tr, style: AppTypography.h5()),
               Material(
                 color: AppColors.neutral200,
                 borderRadius: BorderRadius.circular(AppRadius.radiusMd),
@@ -146,7 +147,7 @@ class _TeacherClassesScreenContentState extends State<TeacherClassesScreenConten
                       children: [
                         Icon(Icons.add, size: 18, color: AppColors.neutral700),
                         const SizedBox(width: AppSpacing.spacingXs),
-                        Text('Create', style: AppTypography.labelMedium(color: AppColors.neutral800)),
+                        Text('common.create'.tr, style: AppTypography.labelMedium(color: AppColors.neutral800)),
                       ],
                     ),
                   ),
@@ -192,10 +193,6 @@ class _ClassCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-<<<<<<< Updated upstream
-              // Header with class name
-=======
->>>>>>> Stashed changes
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.spacingLg,
@@ -208,7 +205,6 @@ class _ClassCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-<<<<<<< Updated upstream
                     Expanded(
                       child: Text(
                         classModel.name,
@@ -225,24 +221,11 @@ class _ClassCard extends StatelessWidget {
                       child: Text(
                         classModel.joinCode,
                         style: AppTypography.caption(color: AppColors.white),
-=======
-                    Text(classModel.name.toUpperCase(), style: AppTypography.labelLarge(color: AppColors.white)),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.neutral300,
-                        borderRadius: BorderRadius.circular(AppRadius.radiusFull),
->>>>>>> Stashed changes
                       ),
-                      child: Text(classModel.joinCode, style: AppTypography.caption(color: AppColors.neutral700)),
                     ),
                   ],
                 ),
               ),
-<<<<<<< Updated upstream
-              // Body with description and teacher
-=======
->>>>>>> Stashed changes
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.spacingLg),
                 child: Column(
@@ -250,7 +233,6 @@ class _ClassCard extends StatelessWidget {
                   children: [
                     Text(classModel.description, style: AppTypography.bodyMedium()),
                     const SizedBox(height: AppSpacing.spacingSm),
-<<<<<<< Updated upstream
                     Row(
                       children: [
                         Icon(Icons.person_outline, size: 16, color: AppColors.neutral600),
@@ -261,9 +243,6 @@ class _ClassCard extends StatelessWidget {
                         ),
                       ],
                     ),
-=======
-                    Text('Teacher: ${classModel.teacherName}', style: AppTypography.bodySmall(color: AppColors.neutral600)),
->>>>>>> Stashed changes
                   ],
                 ),
               ),

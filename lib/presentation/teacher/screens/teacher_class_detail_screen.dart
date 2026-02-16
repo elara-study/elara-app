@@ -5,6 +5,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/presentation/common/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// Class detail with Students and Quizzes tabs (per Figma).
 class TeacherClassDetailScreen extends StatefulWidget {
@@ -35,12 +36,12 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppAppBar.withTabs(
-        title: 'Mathematics Class',
+        title: 'teacher.classTitle'.tr,
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Students'),
-            Tab(text: 'Quizzes'),
+          tabs: [
+            Tab(text: 'teacher.studentsTab'.tr),
+            Tab(text: 'teacher.quizzesTab'.tr),
           ],
         ),
         actions: AppAppBar.addAction(
@@ -111,10 +112,10 @@ class _QuizzesTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Class quizzes', style: AppTypography.bodyLarge()),
+          Text('teacher.classQuizzes'.tr, style: AppTypography.bodyLarge()),
           const SizedBox(height: AppSpacing.spacingLg),
           AppPrimaryButton(
-            text: 'Create Quiz',
+            text: 'teacher.createQuiz'.tr,
             icon: Icons.add,
             onPressed: () =>
                 Navigator.of(context).pushNamed(AppRoutes.teacherCreateQuiz),

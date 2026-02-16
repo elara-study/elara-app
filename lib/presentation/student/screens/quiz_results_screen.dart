@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/presentation/common/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class QuizResultsScreen extends StatelessWidget {
   const QuizResultsScreen({super.key});
@@ -11,7 +12,7 @@ class QuizResultsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppAppBar.detail(title: 'Quiz Results', showBackButton: false),
+      appBar: AppAppBar.detail(title: 'student.quizResults'.tr, showBackButton: false),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.spacing2xl),
@@ -19,18 +20,18 @@ class QuizResultsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Your score: 85%',
+                '${'student.yourScoreLabel'.tr} 85%',
                 style: AppTypography.h3(),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.spacingLg),
               Text(
-                'AI feedback and identified gaps will appear here.',
+                'student.aiFeedbackHint'.tr,
                 style: AppTypography.bodyMedium(),
               ),
               const Spacer(),
               AppPrimaryButton(
-                text: 'Back to Class',
+                text: 'student.backToClass'.tr,
                 onPressed: () => Navigator.of(context).popUntil(
                   (route) => route.settings.name == AppRoutes.student || route.isFirst,
                 ),

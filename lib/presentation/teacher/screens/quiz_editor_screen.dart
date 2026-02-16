@@ -1,4 +1,3 @@
-import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/domain/models/question.dart';
@@ -6,6 +5,7 @@ import 'package:elara/domain/models/quiz.dart';
 import 'package:elara/presentation/common/widgets/app_app_bar.dart';
 import 'package:elara/presentation/common/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class QuizEditorScreen extends StatefulWidget {
   final Quiz quiz;
@@ -28,7 +28,7 @@ class _QuizEditorScreenState extends State<QuizEditorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppAppBar.detail(title: 'Edit Quiz: ${_quiz.title}'),
+      appBar: AppAppBar.detail(title: '${'teacher.editQuizTitle'.tr}: ${_quiz.title}'),
       body: SafeArea(
         child: Column(
           children: [
@@ -95,7 +95,7 @@ class _QuizEditorScreenState extends State<QuizEditorScreen> {
                           if (question.gradingCriteria != null) ...[
                             const SizedBox(height: AppSpacing.spacingMd),
                             Text(
-                              'Grading Criteria:',
+                              '${'teacher.gradingCriteria'.tr}:',
                               style: AppTypography.labelMedium(),
                             ),
                             Text(
@@ -112,7 +112,7 @@ class _QuizEditorScreenState extends State<QuizEditorScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(AppSpacing.spacingLg),
-              child: AppPrimaryButton(text: 'Save Quiz', onPressed: _saveQuiz),
+              child: AppPrimaryButton(text: 'teacher.saveQuiz'.tr, onPressed: _saveQuiz),
             ),
           ],
         ),
@@ -128,16 +128,16 @@ class _QuizEditorScreenState extends State<QuizEditorScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Edit Question'),
+          title: Text('teacher.editQuestion'.tr),
           content: TextField(
             controller: controller,
             maxLines: 3,
-            decoration: const InputDecoration(labelText: 'Question Text'),
+            decoration: InputDecoration(labelText: 'teacher.questionText'.tr),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text('common.cancel'.tr),
             ),
             TextButton(
               onPressed: () {
@@ -151,7 +151,7 @@ class _QuizEditorScreenState extends State<QuizEditorScreen> {
                 });
                 Navigator.of(context).pop();
               },
-              child: const Text('Save'),
+              child: Text('common.save'.tr),
             ),
           ],
         );
@@ -163,7 +163,7 @@ class _QuizEditorScreenState extends State<QuizEditorScreen> {
     // TODO: Implement actual persistence (e.g., save to Hive or DB)
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Quiz Saved Successfully!')));
+    ).showSnackBar(SnackBar(content: Text('teacher.quizSaved'.tr)));
     // Navigate back to the previous screen (CreateQuizScreen)
     Navigator.of(context).pop();
   }

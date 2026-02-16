@@ -9,6 +9,8 @@ import 'package:elara/presentation/teacher/bloc/student_detail_state.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elara/core/localization/student_detail_translations.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class StudentDetailScreen extends StatelessWidget {
@@ -21,13 +23,13 @@ class StudentDetailScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<StudentDetailBloc>()..add(LoadStudentDetails(studentId)),
       child: Scaffold(
-        appBar: AppAppBar.detail(title: 'Student Insights'),
+        appBar: AppAppBar.detail(title: 'teacher.studentInsights'.tr),
         body: BlocBuilder<StudentDetailBloc, StudentDetailState>(
           builder: (context, state) {
             if (state is StudentDetailLoading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is StudentDetailError) {
-              return Center(child: Text('Error: ${state.message}'));
+            } else             if (state is StudentDetailError) {
+              return Center(child: Text('${'common.error'.tr}: ${state.message}'));
             } else if (state is StudentDetailLoaded) {
               return _StudentDetailContent(performance: state.performance);
             }
@@ -51,12 +53,12 @@ class _StudentDetailContent extends StatelessWidget {
       child: Column(
         children: [
           _buildHeader(),
-          const TabBar(
+          TabBar(
             tabs: [
-              Tab(text: 'Overview'),
-              Tab(text: 'Quizzes'),
-              Tab(text: 'Essays'),
-              Tab(text: 'Analysis'),
+              Tab(text: 'teacher.overview'.tr),
+              Tab(text: 'teacher.quizzesTab'.tr),
+              Tab(text: 'teacher.essaysTab'.tr),
+              Tab(text: 'teacher.analysis'.tr),
             ],
           ),
           Expanded(
@@ -102,7 +104,7 @@ class _StudentDetailContent extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
-                    'Overall: ${performance.overallGrade.toStringAsFixed(1)}% (${_getGradeLetter(performance.overallGrade)})',
+                    '${'teacher.overall'.tr}: ${performance.overallGrade.toStringAsFixed(1)}% (${_getGradeLetter(performance.overallGrade)})',
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -122,21 +124,21 @@ class _StudentDetailContent extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: _buildStatCard('Total Quizzes', performance.totalQuizzes.toString(), Icons.quiz)),
+              Expanded(child: _buildStatCard('teacher.totalQuizzes'.tr, performance.totalQuizzes.toString(), Icons.quiz)),
               const SizedBox(width: AppSpacing.spacingMd),
-              Expanded(child: _buildStatCard('Total Essays', performance.totalEssays.toString(), Icons.article)),
+              Expanded(child: _buildStatCard('teacher.totalEssays'.tr, performance.totalEssays.toString(), Icons.article)),
             ],
           ),
           const SizedBox(height: AppSpacing.spacingMd),
           Row(
             children: [
-              Expanded(child: _buildStatCard('Quiz Avg', '${performance.averageQuizScore.toStringAsFixed(1)}%', Icons.analytics)),
+              Expanded(child: _buildStatCard('teacher.quizAvg'.tr, '${performance.averageQuizScore.toStringAsFixed(1)}%', Icons.analytics)),
               const SizedBox(width: AppSpacing.spacingMd),
-              Expanded(child: _buildStatCard('Essay Avg', '${performance.averageEssayScore.toStringAsFixed(1)}%', Icons.analytics_outlined)),
+              Expanded(child: _buildStatCard('teacher.essayAvg'.tr, '${performance.averageEssayScore.toStringAsFixed(1)}%', Icons.analytics_outlined)),
             ],
           ),
           const SizedBox(height: AppSpacing.spacingXl),
-          Text('Recent Activity', style: AppTypography.h6()),
+          Text('teacher.recentActivity'.tr, style: AppTypography.h6()),
           const SizedBox(height: AppSpacing.spacingMd),
           ...performance.activityLog.map((activity) => _buildActivityItem(activity)),
         ],
@@ -160,12 +162,12 @@ class _StudentDetailContent extends StatelessWidget {
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
               ),
             ),
-            title: Text(quiz.quizTitle, style: AppTypography.labelLarge()),
+            title: Text(StudentDetailTranslations.translate(quiz.quizTitle), style: AppTypography.labelLarge()),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Score: ${quiz.score}/${quiz.maxScore}'),
-                Text('Time: ${quiz.timeSpentMinutes} min • ${DateFormat('MMM d, y').format(quiz.submittedAt)}'),
+                Text('${'teacher.score'.tr}: ${quiz.score}/${quiz.maxScore}'),
+                Text('${'teacher.time'.tr}: ${quiz.timeSpentMinutes} ${'teacher.min'.tr} • ${DateFormat('MMM d, y', Get.locale?.languageCode ?? 'en').format(quiz.submittedAt)}'),
               ],
             ),
             isThreeLine: true,
@@ -197,13 +199,13 @@ class _StudentDetailContent extends StatelessWidget {
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
               ),
             ),
-            title: Text(essay.essayTitle, style: AppTypography.labelLarge()),
+            title: Text(StudentDetailTranslations.translate(essay.essayTitle), style: AppTypography.labelLarge()),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Score: ${essay.score}/${essay.maxScore}'),
-                Text('Rubric: ${essay.rubricName}'),
-                Text(DateFormat('MMM d, y').format(essay.submittedAt)),
+                Text('${'teacher.score'.tr}: ${essay.score}/${essay.maxScore}'),
+                Text('${'teacher.rubric'.tr}: ${StudentDetailTranslations.translate(essay.rubricName)}'),
+                Text(DateFormat('MMM d, y', Get.locale?.languageCode ?? 'en').format(essay.submittedAt)),
               ],
             ),
             children: [
@@ -212,7 +214,7 @@ class _StudentDetailContent extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text('Criteria Breakdown:', style: AppTypography.h6()),
+                    Text('${'teacher.criteriaBreakdown'.tr}:', style: AppTypography.h6()),
                     const SizedBox(height: AppSpacing.spacingSm),
                     ...essay.criteriaScores.map((cs) => Padding(
                           padding: const EdgeInsets.only(bottom: AppSpacing.spacingSm),
@@ -220,7 +222,7 @@ class _StudentDetailContent extends StatelessWidget {
                             children: [
                               Expanded(
                                 flex: 2,
-                                child: Text(cs.criterionName),
+                                child: Text(StudentDetailTranslations.translate(cs.criterionName)),
                               ),
                               Expanded(
                                 flex: 3,
@@ -240,7 +242,7 @@ class _StudentDetailContent extends StatelessWidget {
                                         Text('${cs.score}/${cs.maxScore}'),
                                       ],
                                     ),
-                                    Text(cs.feedback, style: AppTypography.bodySmall()),
+                                    Text(StudentDetailTranslations.translate(cs.feedback), style: AppTypography.bodySmall()),
                                   ],
                                 ),
                               ),
@@ -263,18 +265,18 @@ class _StudentDetailContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Performance Trend', style: AppTypography.h6()),
+          Text('teacher.performanceTrend'.tr, style: AppTypography.h6()),
           const SizedBox(height: AppSpacing.spacingMd),
           SizedBox(
             height: 200,
             child: _buildPerformanceChart(),
           ),
           const SizedBox(height: AppSpacing.spacingXl),
-          Text('Strengths', style: AppTypography.h6()),
+          Text('teacher.strengths'.tr, style: AppTypography.h6()),
           const SizedBox(height: AppSpacing.spacingMd),
           ...performance.strengths.map((s) => _buildMetricCard(s, Colors.green)),
           const SizedBox(height: AppSpacing.spacingXl),
-          Text('Areas for Improvement', style: AppTypography.h6()),
+          Text('teacher.areasForImprovement'.tr, style: AppTypography.h6()),
           const SizedBox(height: AppSpacing.spacingMd),
           ...performance.weaknesses.map((w) => _buildMetricCard(w, Colors.orange)),
         ],
@@ -304,10 +306,10 @@ class _StudentDetailContent extends StatelessWidget {
         activity.type == 'quiz' ? Icons.quiz : Icons.article,
         color: activity.status == 'graded' ? Colors.green : Colors.orange,
       ),
-      title: Text(activity.title),
-      subtitle: Text('${activity.type} • ${DateFormat('MMM d, h:mm a').format(activity.timestamp)}'),
+      title: Text(StudentDetailTranslations.translate(activity.title)),
+      subtitle: Text('${StudentDetailTranslations.translate(activity.type)} • ${DateFormat('MMM d, h:mm a', Get.locale?.languageCode ?? 'en').format(activity.timestamp)}'),
       trailing: Chip(
-        label: Text(activity.status),
+        label: Text(StudentDetailTranslations.translate(activity.status)),
         backgroundColor: activity.status == 'graded' ? Colors.green[50] : Colors.orange[50],
       ),
     );
@@ -343,8 +345,8 @@ class _StudentDetailContent extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(metric.criterionName, style: AppTypography.labelLarge()),
-                  Text(metric.description, style: AppTypography.bodySmall()),
+                  Text(StudentDetailTranslations.translate(metric.criterionName), style: AppTypography.labelLarge()),
+                  Text(StudentDetailTranslations.translate(metric.description), style: AppTypography.bodySmall()),
                 ],
               ),
             ),
@@ -361,7 +363,7 @@ class _StudentDetailContent extends StatelessWidget {
     ];
 
     if (allScores.isEmpty) {
-      return const Center(child: Text('No data available'));
+      return Center(child: Text('teacher.noDataAvailable'.tr));
     }
 
     return LineChart(
@@ -417,7 +419,7 @@ class _StudentDetailContent extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(quiz.quizTitle),
+        title: Text(StudentDetailTranslations.translate(quiz.quizTitle)),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -442,7 +444,7 @@ class _StudentDetailContent extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text('common.close'.tr),
           ),
         ],
       ),

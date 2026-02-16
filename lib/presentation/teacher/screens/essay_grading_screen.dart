@@ -8,6 +8,7 @@ import 'package:elara/presentation/common/widgets/app_buttons.dart';
 import 'package:elara/presentation/teacher/bloc/essay_grading_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class EssayGradingScreen extends StatefulWidget {
   final Rubric? rubric;
@@ -58,7 +59,7 @@ class _EssayGradingScreenState extends State<EssayGradingScreen> {
     return BlocProvider(
       create: (context) => getIt<EssayGradingBloc>(),
       child: Scaffold(
-        appBar: AppAppBar.detail(title: 'AI Essay Grader'),
+        appBar: AppAppBar.detail(title: 'teacher.aiEssayGrader'.tr),
         body: BlocBuilder<EssayGradingBloc, EssayGradingState>(
           builder: (context, state) {
             return SafeArea(
@@ -71,10 +72,10 @@ class _EssayGradingScreenState extends State<EssayGradingScreen> {
                       if (_isLoadingRubrics)
                          const Center(child: LinearProgressIndicator())
                       else if (_rubrics.isEmpty)
-                         Text('No rubrics found. Create one first.', style: AppTypography.bodyLarge().copyWith(color: Colors.red))
+                         Text('teacher.noRubricsFound'.tr, style: AppTypography.bodyLarge().copyWith(color: Colors.red))
                       else
                         DropdownButtonFormField<Rubric>(
-                          decoration: const InputDecoration(labelText: 'Select Rubric'),
+                          decoration: InputDecoration(labelText: 'teacher.selectRubric'.tr),
                           value: _selectedRubric,
                           items: _rubrics.map((r) => DropdownMenuItem(value: r, child: Text(r.title))).toList(),
                           onChanged: (val) => setState(() => _selectedRubric = val),
@@ -82,9 +83,9 @@ class _EssayGradingScreenState extends State<EssayGradingScreen> {
                       const SizedBox(height: AppSpacing.spacingMd),
                       TextField(
                         controller: _essayController,
-                        decoration: const InputDecoration(
-                          labelText: 'Paste Student Essay',
-                          hintText: 'Paste the essay content here...',
+                        decoration: InputDecoration(
+                          labelText: 'teacher.pasteEssay'.tr,
+                          hintText: 'teacher.pasteEssayHint'.tr,
                           border: OutlineInputBorder(),
                         ),
                         maxLines: 10,
@@ -95,15 +96,13 @@ class _EssayGradingScreenState extends State<EssayGradingScreen> {
                         const Center(child: CircularProgressIndicator())
                       else
                         AppPrimaryButton(
-                          text: 'Grade Essay with AI',
+                          text: 'teacher.gradeEssayWithAi'.tr,
                           icon: Icons.analytics,
                           onPressed: (_selectedRubric == null) ? null : () {
                             if (_essayController.text.length < 50) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Essay looks too short. Please add more content.',
-                                  ),
+                                SnackBar(
+                                  content: Text('teacher.essayTooShort'.tr),
                                 ),
                               );
                               return;
@@ -121,7 +120,7 @@ class _EssayGradingScreenState extends State<EssayGradingScreen> {
                       _buildResults(context, state),
                       const SizedBox(height: AppSpacing.spacingLg),
                       AppSecondaryButton(
-                        text: 'Grade Another Essay',
+                        text: 'teacher.gradeAnotherEssay'.tr,
                         onPressed: () {
                           // Reset state (simple way is to just pop and push, or add ResetEvent)
                           // Here we just use Navigator for simplicity or implement ResetEvent
@@ -141,7 +140,7 @@ class _EssayGradingScreenState extends State<EssayGradingScreen> {
                           top: AppSpacing.spacingLg,
                         ),
                         child: Text(
-                          'Error: ${state.error}',
+                          '${'common.error'.tr}: ${state.error}',
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
@@ -169,7 +168,7 @@ class _EssayGradingScreenState extends State<EssayGradingScreen> {
           child: Column(
             children: [
               Text(
-                'Overall Score',
+                'teacher.overallScore'.tr,
                 style: AppTypography.labelLarge().copyWith(
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
@@ -186,7 +185,7 @@ class _EssayGradingScreenState extends State<EssayGradingScreen> {
           ),
         ),
         const SizedBox(height: AppSpacing.spacingLg),
-        Text('Detailed Breakdown', style: AppTypography.h6()),
+        Text('teacher.detailedBreakdown'.tr, style: AppTypography.h6()),
         const SizedBox(height: AppSpacing.spacingMd),
         ...result.criterionScores.map((score) {
           return Card(

@@ -7,6 +7,7 @@ import 'package:elara/presentation/common/widgets/app_app_bar.dart';
 import 'package:elara/presentation/common/widgets/app_buttons.dart';
 import 'package:elara/presentation/teacher/widgets/criterion_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class RubricBuilderScreen extends StatefulWidget {
   const RubricBuilderScreen({super.key});
@@ -69,12 +70,12 @@ class _RubricBuilderScreenState extends State<RubricBuilderScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Criterion?'),
-        content: const Text('Are you sure you want to remove this criterion?'),
+        title: Text('teacher.deleteCriterion'.tr),
+        content: Text('teacher.deleteCriterionConfirm'.tr),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text('common.cancel'.tr),
           ),
           TextButton(
             onPressed: () {
@@ -85,7 +86,7 @@ class _RubricBuilderScreenState extends State<RubricBuilderScreen> {
               });
               Navigator.of(context).pop();
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text('teacher.delete'.tr, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -110,7 +111,7 @@ class _RubricBuilderScreenState extends State<RubricBuilderScreen> {
     final bool isValid = _rubric.isValid;
 
     return Scaffold(
-      appBar: AppAppBar.detail(title: 'Rubric Builder'),
+      appBar: AppAppBar.detail(title: 'teacher.rubricBuilder'.tr),
       body: SafeArea(
         child: Column(
           children: [
@@ -118,9 +119,9 @@ class _RubricBuilderScreenState extends State<RubricBuilderScreen> {
               padding: const EdgeInsets.all(AppSpacing.spacingLg),
               child: TextField(
                 controller: _titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Rubric Name',
-                  hintText: 'e.g. Argumentative Essay Rubric',
+                decoration: InputDecoration(
+                  labelText: 'teacher.rubricName'.tr,
+                  hintText: 'teacher.rubricNameHint'.tr,
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (val) => _rubric = _rubric.copyWith(title: val),
@@ -128,7 +129,7 @@ class _RubricBuilderScreenState extends State<RubricBuilderScreen> {
             ),
             Expanded(
               child: _rubric.criteria.isEmpty 
-                  ? Center(child: Text('Add criteria to build your rubric', style: AppTypography.bodyLarge()))
+                  ? Center(child: Text('teacher.addCriteriaHint'.tr, style: AppTypography.bodyLarge()))
                   : ReorderableListView.builder(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.spacingLg,
@@ -150,8 +151,8 @@ class _RubricBuilderScreenState extends State<RubricBuilderScreen> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Weight: ${criterion.weight.toStringAsFixed(0)}%', style: AppTypography.bodySmall()),
-                          Text('${criterion.levels.length} levels defined', style: AppTypography.bodySmall()),
+                          Text('${'teacher.weight'.tr}: ${criterion.weight.toStringAsFixed(0)}%', style: AppTypography.bodySmall()),
+                          Text('${criterion.levels.length} ${'teacher.levelsDefined'.tr}', style: AppTypography.bodySmall()),
                         ],
                       ),
                       trailing: Row(
@@ -190,7 +191,7 @@ class _RubricBuilderScreenState extends State<RubricBuilderScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Total Weight:', style: AppTypography.h6()),
+                      Text('${'teacher.totalWeight'.tr}:', style: AppTypography.h6()),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
@@ -211,19 +212,19 @@ class _RubricBuilderScreenState extends State<RubricBuilderScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: AppSecondaryButton(
-                      text: 'Add Criterion',
+                      text: 'teacher.addCriterion'.tr,
                       icon: Icons.add,
                       onPressed: _addCriterion,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.spacingSm),
                   AppPrimaryButton(
-                    text: 'Save Rubric',
+                    text: 'teacher.saveRubric'.tr,
                     onPressed: isValid
                         ? () async {
                             if (_titleController.text.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Please enter a rubric name')),
+                                SnackBar(content: Text('teacher.enterRubricName'.tr)),
                               );
                               return;
                             }
@@ -233,7 +234,7 @@ class _RubricBuilderScreenState extends State<RubricBuilderScreen> {
                             
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Rubric Saved Successfully!')),
+                                SnackBar(content: Text('teacher.rubricSaved'.tr)),
                               );
                               Navigator.of(context).pop();
                             }
