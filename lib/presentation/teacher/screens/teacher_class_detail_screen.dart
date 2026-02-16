@@ -62,8 +62,8 @@ class _StudentsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final students = [
-      _StudentRow(name: 'Ahmed Mohamed', email: 'ahmed@example.com'),
-      _StudentRow(name: 'Sara Ali', email: 'sara@example.com'),
+      _StudentRow(name: 'Ahmed Hassan', email: 'ahmed.hassan@student.edu', id: 'ahmed'),
+      _StudentRow(name: 'Sara Mohamed', email: 'sara.mohamed@student.edu', id: 'sara'),
     ];
     return ListView.builder(
       padding: const EdgeInsets.all(AppSpacing.spacing2xl),
@@ -79,6 +79,13 @@ class _StudentsTab extends StatelessWidget {
             ),
             title: Text(s.name, style: AppTypography.labelLarge()),
             subtitle: Text(s.email, style: AppTypography.bodySmall()),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                AppRoutes.teacherStudentDetail,
+                arguments: s.id,
+              );
+            },
           ),
         );
       },
@@ -87,9 +94,10 @@ class _StudentsTab extends StatelessWidget {
 }
 
 class _StudentRow {
-  const _StudentRow({required this.name, required this.email});
+  const _StudentRow({required this.name, required this.email, required this.id});
   final String name;
   final String email;
+  final String id;
 }
 
 class _QuizzesTab extends StatelessWidget {

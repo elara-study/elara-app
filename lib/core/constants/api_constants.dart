@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String baseUrl = 'https://api.example.com/';
+  static const String baseUrl = 'http://elara.runasp.net';
   static const int connectionTimeout = 30000;
   static const int receiveTimeout = 30000;
 

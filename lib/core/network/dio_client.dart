@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/api_constants.dart';
 import '../utils/logger.dart';
 
@@ -24,7 +25,13 @@ class DioClient {
 
     _dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (options, handler) {
+        onRequest: (options, handler) async {
+          // Attach auth token to all requests
+          final prefs = await SharedPreferences.getInstance();
+          final token = prefs.getString('auth_token');
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
           AppLogger.log('REQUEST[${options.method}] => PATH: ${options.path}');
           return handler.next(options);
         },

@@ -1,5 +1,7 @@
 import 'package:elara/config/routes.dart';
+import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/data/services/auth_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
@@ -19,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -27,9 +30,32 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _onSignIn() {
+  Future<void> _onSignIn() async {
     if (_formKey.currentState?.validate() ?? false) {
-      Navigator.of(context).pushReplacementNamed(AppRoutes.roleSelector);
+      setState(() => _isLoading = true);
+      try {
+        final authService = getIt<AuthService>();
+        await authService.login(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+        );
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed(AppRoutes.roleSelector);
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Login failed: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
     }
   }
 
@@ -119,7 +145,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: AppSpacing.spacingLg),
                 AppPrimaryButton(
                   text: 'Sign in',
-                  onPressed: _onSignIn,
+                  onPressed: _isLoading ? null : _onSignIn,
+                  isLoading: _isLoading,
                 ),
                 const SizedBox(height: AppSpacing.spacing2xl),
                 Row(
