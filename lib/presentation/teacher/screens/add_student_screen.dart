@@ -10,7 +10,7 @@ class AddStudentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppAppBar.detail(title: 'Add Student'),
+      appBar: AppAppBar.detail(title: 'Add Student', showBackButton: false),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.spacing2xl),

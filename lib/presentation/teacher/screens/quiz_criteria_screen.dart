@@ -12,7 +12,7 @@ class QuizCriteriaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppAppBar.detail(title: 'Quiz Grading Criteria'),
+      appBar: AppAppBar.detail(title: 'Quiz Grading Criteria', showBackButton: false),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.spacing2xl),

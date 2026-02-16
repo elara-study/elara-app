@@ -18,50 +18,73 @@ import 'package:flutter/material.dart';
 /// [settingsAction], [mainTabActions]
 class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final Widget? titleWidget;
+  final Alignment titleAlign;
   final List<Widget>? actions;
   final Widget? leading;
   final bool automaticallyImplyLeading;
+  final bool showBackButton;
   final PreferredSizeWidget? bottom;
 
   const AppAppBar({
     super.key,
     required this.title,
+    this.titleWidget,
+    this.titleAlign = Alignment.center,
     this.actions,
     this.leading,
     this.automaticallyImplyLeading = true,
+    this.showBackButton = true,
     this.bottom,
   });
 
   /// Main tab screens (Learn, My Classes, Profile): no back button.
-  const AppAppBar.mainTab({super.key, required this.title, this.actions})
-    : leading = null,
-      automaticallyImplyLeading = false,
-      bottom = null;
+  const AppAppBar.mainTab({
+    super.key,
+    required this.title,
+    this.titleWidget,
+    this.titleAlign = Alignment.center,
+    this.actions,
+  }) : leading = null,
+       automaticallyImplyLeading = false,
+       showBackButton = false,
+       bottom = null;
 
-  /// Detail/drill-down screens: shows back button when navigator can pop.
+  /// Detail/drill-down screens. Set [showBackButton] false to hide the back button.
   const AppAppBar.detail({
     super.key,
     required this.title,
+    this.titleWidget,
+    this.titleAlign = Alignment.center,
     this.actions,
     this.leading,
     this.bottom,
-  }) : automaticallyImplyLeading = true;
+    this.showBackButton = true,
+  }) : automaticallyImplyLeading = showBackButton;
 
   /// Title only, no leading or actions.
-  const AppAppBar.minimal({super.key, required this.title})
-    : actions = null,
-      leading = null,
-      automaticallyImplyLeading = false,
-      bottom = null;
+  const AppAppBar.minimal({
+    super.key,
+    required this.title,
+    this.titleAlign = Alignment.center,
+    this.titleWidget,
+  }) : actions = null,
+       leading = null,
+       automaticallyImplyLeading = false,
+       showBackButton = false,
+       bottom = null;
 
   /// Detail screen with TabBar (e.g. class detail with Students/Quizzes tabs).
   const AppAppBar.withTabs({
     super.key,
     required this.title,
+    this.titleWidget,
+    this.titleAlign = Alignment.center,
     required this.bottom,
     this.actions,
+    this.showBackButton = true,
   }) : leading = null,
-       automaticallyImplyLeading = true;
+       automaticallyImplyLeading = showBackButton;
 
   /// Build common action buttons for easy reuse.
   static List<Widget> switchRoleAction(BuildContext context) => [
@@ -92,9 +115,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     final bottomHeight = bottom?.preferredSize.height ?? 0.0;
     // Include top safe area (SafeArea adds padding in toolbar) to prevent overflow
     const topSafeArea = 47.0; // typical notch height
-    return Size.fromHeight(
-      topSafeArea + kToolbarHeight + bottomHeight + 1,
-    );
+    return Size.fromHeight(topSafeArea + kToolbarHeight + bottomHeight + 1);
   }
 
   @override
@@ -132,12 +153,22 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Text(
-                      title,
-                      style: AppTypography.h6(color: fgColor),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Align(
+                      alignment: titleAlign,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child:
+                            titleWidget ??
+                            Text(
+                              title,
+                              style: AppTypography.h6(color: fgColor),
+                              textAlign: titleAlign == Alignment.center
+                                  ? TextAlign.center
+                                  : TextAlign.left,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                      ),
                     ),
                     Positioned(
                       left: 0,
@@ -155,7 +186,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
                               onPressed: () => Navigator.of(context).pop(),
                               color: fgColor,
                             )
-                          else
+                          else if (titleAlign != Alignment.centerLeft)
                             const SizedBox(width: 48),
                         ],
                       ),

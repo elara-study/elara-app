@@ -12,7 +12,7 @@ class CreateQuizScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppAppBar.detail(title: 'Create Quiz'),
+      appBar: AppAppBar.detail(title: 'Create Quiz', showBackButton: false),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.spacing2xl),

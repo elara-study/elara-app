@@ -10,7 +10,7 @@ class JoinClassScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppAppBar.detail(title: 'Join Class'),
+      appBar: AppAppBar.detail(title: 'Join Class', showBackButton: false),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.spacing2xl),

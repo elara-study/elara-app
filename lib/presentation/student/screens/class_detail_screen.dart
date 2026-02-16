@@ -11,17 +11,14 @@ class ClassDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppAppBar.detail(title: 'Class Detail'),
+      appBar: AppAppBar.detail(title: 'Class Detail', showBackButton: false),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.spacing2xl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Mathematics 101',
-                style: AppTypography.h4(),
-              ),
+              Text('Mathematics 101', style: AppTypography.h4()),
               const SizedBox(height: AppSpacing.spacingSm),
               Text(
                 'Assigned quizzes will appear here.',

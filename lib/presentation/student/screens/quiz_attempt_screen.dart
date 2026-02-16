@@ -11,7 +11,7 @@ class QuizAttemptScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppAppBar.detail(title: 'Quiz'),
+      appBar: AppAppBar.detail(title: 'Quiz', showBackButton: false),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.spacing2xl),
