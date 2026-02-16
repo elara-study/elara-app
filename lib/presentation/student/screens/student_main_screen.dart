@@ -6,6 +6,10 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/presentation/common/widgets/app_app_bar.dart';
 import 'package:elara/presentation/common/widgets/app_bottom_nav_bar.dart';
 import 'package:elara/presentation/common/widgets/app_buttons.dart';
+import 'package:elara/presentation/common/widgets/card_with_circle_background.dart';
+import 'package:elara/presentation/common/widgets/daily_goal_item.dart';
+import 'package:elara/presentation/common/widgets/stat_badge.dart';
+import 'package:elara/presentation/student/widgets/student_home_group_card.dart';
 import 'package:flutter/material.dart';
 
 /// Student shell with bottom nav: Home, Learn, Rewards, Alerts, Profile (per Figma).
@@ -67,89 +71,12 @@ class _StudentMainScreenState extends State<StudentMainScreen> {
   }
 }
 
-/// Card with decorative circles at edges (light opacity) - rounded box style.
-/// Circles are a lighter shade overlay, clipped by card bounds.
-class _CardWithCircleBackground extends StatelessWidget {
-  const _CardWithCircleBackground({
-    required this.backgroundColor,
-    required this.child,
-  });
-
-  final Color backgroundColor;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    const radius = AppRadius.radiusLg;
-    // Lighter circles for subtle overlay (lighter shade than card background)
-    final circleColor = AppColors.white.withValues(alpha: 0.12);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(radius),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(radius),
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.topLeft,
-          children: [
-            // Semi-transparent circles at top-right and bottom-left edges
-            Positioned(
-              top: -50,
-              right: -50,
-              child: IgnorePointer(
-                child: Container(
-                  width: 160,
-                  height: 160,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: circleColor,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -60,
-              left: -60,
-              child: IgnorePointer(
-                child: Container(
-                  width: 180,
-                  height: 180,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: circleColor,
-                  ),
-                ),
-              ),
-            ),
-            // Content on top, drives stack size
-            child,
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _StudentHomeTab extends StatelessWidget {
   const _StudentHomeTab();
 
   static const _sampleGroups = [
-    _StudentHomeGroup(name: 'Physics 101', progress: 5, isPrimary: true),
-    _StudentHomeGroup(
-      name: 'Science Explorers',
-      progress: 45,
-      isPrimary: false,
-    ),
+    StudentHomeGroup(name: 'Physics 101', progress: 5, isPrimary: true),
+    StudentHomeGroup(name: 'Science Explorers', progress: 45, isPrimary: false),
   ];
 
   @override
@@ -165,14 +92,14 @@ class _StudentHomeTab extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('elara', style: AppTypography.h6(color: fgColor)),
-            const SizedBox(width: AppSpacing.spacingLg),
-            _StatBadge(
+            const Spacer(),
+            const StatBadge(
               icon: Icons.local_fire_department,
               value: '7',
               color: AppColors.brandSecondary500,
             ),
             const SizedBox(width: AppSpacing.spacingSm),
-            _StatBadge(
+            const StatBadge(
               icon: Icons.emoji_events,
               value: '1250',
               color: AppColors.neutral500,
@@ -191,19 +118,25 @@ class _StudentHomeTab extends StatelessWidget {
               Text('Good evening, Tyler!', style: AppTypography.h3()),
               Text(
                 'Ready to continue your learning journey?',
-                style: AppTypography.bodyMedium(color: AppColors.neutral600),
+                style: AppTypography.bodyLarge(color: AppColors.neutral600),
               ),
               const SizedBox(height: AppSpacing.spacing2xl),
               // Continue where you left off
-              _CardWithCircleBackground(
-                backgroundColor: AppColors.brandPrimary600,
+              CardWithCircleBackground(
+                gradient: AppGradients.custom(
+                  AppColors.brandPrimary600,
+                  AppColors.brandPrimary400,
+                ),
                 child: InkWell(
                   onTap: () => Navigator.of(
                     context,
                   ).pushNamed(AppRoutes.studentClassDetail),
                   borderRadius: BorderRadius.circular(AppRadius.radiusLg),
                   child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.spacingLg),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.spacingLg,
+                      vertical: AppSpacing.spacing3xl,
+                    ),
                     child: Row(
                       children: [
                         Expanded(
@@ -230,12 +163,12 @@ class _StudentHomeTab extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: AppSpacing.spacingSm),
+                              const SizedBox(height: AppSpacing.spacingLg),
                               Text(
                                 'Physics 101',
                                 style: AppTypography.h5(color: AppColors.white),
                               ),
-                              const SizedBox(height: AppSpacing.spacing2xs),
+                              const SizedBox(height: AppSpacing.spacingLg),
                               Row(
                                 children: [
                                   Text(
@@ -292,9 +225,9 @@ class _StudentHomeTab extends StatelessWidget {
                             ],
                           ),
                           child: const Icon(
-                            Icons.play_arrow,
-                            color: AppColors.neutral800,
-                            size: 32,
+                            Icons.play_arrow_outlined,
+                            color: Color(0xff4D6A8A),
+                            size: 24,
                           ),
                         ),
                       ],
@@ -315,23 +248,30 @@ class _StudentHomeTab extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.spacingLg),
-              _DailyGoalItem(
-                icon: Icons.flag_outlined,
-                label: 'Complete 3 lessons',
-                progress: 0.33,
-                points: 50,
-              ),
-              _DailyGoalItem(
-                icon: Icons.emoji_events_outlined,
-                label: 'Score 80% on a quiz',
-                progress: 0,
-                points: 30,
-              ),
-              _DailyGoalItem(
-                icon: Icons.flag_outlined,
-                label: 'Practice for 15 mins',
-                progress: 0,
-                points: 25,
+              const DailyGoalsCard(
+                children: [
+                  DailyGoalItem(
+                    icon: Icons.flag_outlined,
+                    label: 'Complete 3 lessons',
+                    progress: 0.33,
+                    points: 50,
+                    backgroundColor: AppColors.primary50,
+                  ),
+                  DailyGoalItem(
+                    icon: Icons.emoji_events_outlined,
+                    label: 'Score 80% on a quiz',
+                    progress: 0.50,
+                    points: 30,
+                    backgroundColor: AppColors.brandSecondary500Alpha20,
+                  ),
+                  DailyGoalItem(
+                    icon: Icons.flag_outlined,
+                    label: 'Practice for 15 mins',
+                    progress: 0.65,
+                    points: 25,
+                    backgroundColor: AppColors.primary50,
+                  ),
+                ],
               ),
               const SizedBox(height: AppSpacing.spacing2xl),
               // My Groups
@@ -354,209 +294,10 @@ class _StudentHomeTab extends StatelessWidget {
               ..._sampleGroups.map(
                 (g) => Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.spacingLg),
-                  child: _StudentHomeGroupCard(group: g),
+                  child: StudentHomeGroupCard(group: g),
                 ),
               ),
               const SizedBox(height: AppSpacing.spacing2xl),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _StatBadge extends StatelessWidget {
-  const _StatBadge({
-    required this.icon,
-    required this.value,
-    required this.color,
-  });
-
-  final IconData icon;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.spacingSm,
-        vertical: AppSpacing.spacing2xs,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(AppRadius.radiusFull),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: AppSpacing.spacing2xs),
-          Text(value, style: AppTypography.labelMedium(color: color)),
-        ],
-      ),
-    );
-  }
-}
-
-class _DailyGoalItem extends StatelessWidget {
-  const _DailyGoalItem({
-    required this.icon,
-    required this.label,
-    required this.progress,
-    required this.points,
-  });
-
-  final IconData icon;
-  final String label;
-  final double progress;
-  final int points;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.spacingMd),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.spacingLg),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(AppRadius.radiusMd),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.black.withValues(alpha: 0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.brandPrimary100,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: AppColors.brandPrimary600, size: 20),
-            ),
-            const SizedBox(width: AppSpacing.spacingMd),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(label, style: AppTypography.bodyMedium()),
-                  const SizedBox(height: AppSpacing.spacingXs),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadius.radiusFull),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      backgroundColor: AppColors.neutral200,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        AppColors.brandPrimary500,
-                      ),
-                      minHeight: 4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '+$points',
-                  style: AppTypography.labelMedium(
-                    color: AppColors.brandSecondary600,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.spacing2xs),
-                Icon(Icons.bolt, size: 14, color: AppColors.brandAccent500),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _StudentHomeGroup {
-  const _StudentHomeGroup({
-    required this.name,
-    required this.progress,
-    required this.isPrimary,
-  });
-  final String name;
-  final int progress;
-  final bool isPrimary;
-}
-
-class _StudentHomeGroupCard extends StatelessWidget {
-  const _StudentHomeGroupCard({required this.group});
-
-  final _StudentHomeGroup group;
-
-  @override
-  Widget build(BuildContext context) {
-    final bgColor = group.isPrimary
-        ? AppColors.brandPrimary600
-        : AppColors.brandSecondary500;
-    return _CardWithCircleBackground(
-      backgroundColor: bgColor,
-      child: InkWell(
-        onTap: () =>
-            Navigator.of(context).pushNamed(AppRoutes.studentClassDetail),
-        borderRadius: BorderRadius.circular(AppRadius.radiusLg),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.spacingLg),
-          child: Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: AppColors.white.withValues(alpha: 0.3),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.group,
-                  color: AppColors.white,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.spacingMd),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      group.name,
-                      style: AppTypography.h6(color: AppColors.white),
-                    ),
-                    Text(
-                      '${group.progress}% complete',
-                      style: AppTypography.bodySmall(color: AppColors.white),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  color: AppColors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                  color: group.isPrimary
-                      ? AppColors.neutral600
-                      : AppColors.brandSecondary600,
-                ),
-              ),
             ],
           ),
         ),
