@@ -15,9 +15,14 @@ import 'package:elara/presentation/student/screens/student_main_screen.dart';
 import 'package:elara/presentation/teacher/screens/add_student_screen.dart';
 import 'package:elara/presentation/teacher/screens/create_class_screen.dart';
 import 'package:elara/presentation/teacher/screens/create_quiz_screen.dart';
+import 'package:elara/presentation/teacher/screens/essay_grading_screen.dart';
 import 'package:elara/presentation/teacher/screens/quiz_criteria_screen.dart';
+import 'package:elara/presentation/teacher/screens/rubric_builder_screen.dart';
 import 'package:elara/presentation/teacher/screens/teacher_class_detail_screen.dart';
 import 'package:elara/presentation/teacher/screens/teacher_main_screen.dart';
+import 'package:elara/presentation/teacher/screens/quiz_editor_screen.dart';
+import 'package:elara/presentation/teacher/screens/student_detail_screen.dart';
+import 'package:elara/domain/models/quiz.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -32,7 +37,11 @@ class AppRoutes {
   static const String teacherAddStudent = '/teacher/add-student';
   static const String teacherCreateClass = '/teacher/create-class';
   static const String teacherCreateQuiz = '/teacher/create-quiz';
+  static const String teacherQuizEditor = '/teacher/quiz-editor';
+  static const String teacherRubricBuilder = '/teacher/rubric-builder';
+  static const String teacherEssayGrading = '/teacher/essay-grading';
   static const String teacherQuizCriteria = '/teacher/quiz-criteria';
+  static const String teacherStudentDetail = '/teacher/student-detail';
   static const String student = '/student';
   static const String studentClasses = '/student/classes';
   static const String studentJoinClass = '/student/join-class';
@@ -92,9 +101,35 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => const CreateQuizScreen(),
         );
+      case teacherQuizEditor:
+        if (settings.arguments is! Quiz) {
+          return MaterialPageRoute(
+            builder: (_) => const Scaffold(body: Center(child: Text('Error: No quiz provided'))),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => QuizEditorScreen(quiz: settings.arguments as Quiz),
+        );
+      case teacherRubricBuilder:
+        return MaterialPageRoute(
+          builder: (_) => const RubricBuilderScreen(),
+        );
+      case teacherEssayGrading:
+        return MaterialPageRoute(
+          builder: (_) => const EssayGradingScreen(),
+        );
       case teacherQuizCriteria:
         return MaterialPageRoute(
           builder: (_) => const QuizCriteriaScreen(),
+        );
+      case teacherStudentDetail:
+        if (settings.arguments is! String) {
+          return MaterialPageRoute(
+            builder: (_) => const Scaffold(body: Center(child: Text('Error: No student ID provided'))),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => StudentDetailScreen(studentId: settings.arguments as String),
         );
       case student:
         return MaterialPageRoute(

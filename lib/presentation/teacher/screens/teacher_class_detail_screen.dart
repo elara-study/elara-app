@@ -11,7 +11,8 @@ class TeacherClassDetailScreen extends StatefulWidget {
   const TeacherClassDetailScreen({super.key});
 
   @override
-  State<TeacherClassDetailScreen> createState() => _TeacherClassDetailScreenState();
+  State<TeacherClassDetailScreen> createState() =>
+      _TeacherClassDetailScreenState();
 }
 
 class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen>
@@ -49,10 +50,7 @@ class _TeacherClassDetailScreenState extends State<TeacherClassDetailScreen>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          _StudentsTab(),
-          _QuizzesTab(),
-        ],
+        children: [_StudentsTab(), _QuizzesTab()],
       ),
     );
   }
@@ -75,7 +73,12 @@ class _StudentsTab extends StatelessWidget {
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: AppColors.brandPrimary100,
-              child: Text(s.name[0], style: AppTypography.labelLarge(color: AppColors.brandPrimary600)),
+              child: Text(
+                s.name[0],
+                style: AppTypography.labelLarge(
+                  color: AppColors.brandPrimary600,
+                ),
+              ),
             ),
             title: Text(s.name, style: AppTypography.labelLarge()),
             subtitle: Text(s.email, style: AppTypography.bodySmall()),

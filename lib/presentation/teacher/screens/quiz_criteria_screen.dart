@@ -19,10 +19,7 @@ class QuizCriteriaScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Written Question Criteria',
-                style: AppTypography.h5(),
-              ),
+              Text('Written Question Criteria', style: AppTypography.h5()),
               const SizedBox(height: AppSpacing.spacingSm),
               Text(
                 'Define criteria for AI to grade written answers and identify gaps.',
@@ -32,7 +29,8 @@ class QuizCriteriaScreen extends StatelessWidget {
               TextField(
                 decoration: const InputDecoration(
                   labelText: 'Grading criteria',
-                  hintText: 'e.g. Must mention X, structure: intro-body-conclusion',
+                  hintText:
+                      'e.g. Must mention X, structure: intro-body-conclusion',
                 ),
                 maxLines: 5,
               ),

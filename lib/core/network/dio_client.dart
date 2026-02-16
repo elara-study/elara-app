@@ -9,7 +9,7 @@ class DioClient {
   DioClient() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: ApiConstants.baseUrl,
+        baseUrl: 'http://elara.runasp.net',
         connectTimeout: const Duration(
           milliseconds: ApiConstants.connectionTimeout,
         ),
@@ -23,6 +23,7 @@ class DioClient {
       ),
     );
 
+    // Auth token interceptor
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {

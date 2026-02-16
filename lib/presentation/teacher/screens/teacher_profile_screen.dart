@@ -52,8 +52,13 @@ class TeacherProfileScreen extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: Icon(Icons.logout, color: AppColors.error500),
-            title: Text('Logout', style: AppTypography.bodyLarge(color: AppColors.error500)),
-            onTap: () => Navigator.of(context).pushReplacementNamed(AppRoutes.roleSelector),
+            title: Text(
+              'Logout',
+              style: AppTypography.bodyLarge(color: AppColors.error500),
+            ),
+            onTap: () => Navigator.of(
+              context,
+            ).pushReplacementNamed(AppRoutes.roleSelector),
           ),
         ],
       ),

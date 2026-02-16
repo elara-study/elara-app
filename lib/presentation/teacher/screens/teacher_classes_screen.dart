@@ -192,7 +192,10 @@ class _ClassCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+<<<<<<< Updated upstream
               // Header with class name
+=======
+>>>>>>> Stashed changes
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.spacingLg,
@@ -205,6 +208,7 @@ class _ClassCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+<<<<<<< Updated upstream
                     Expanded(
                       child: Text(
                         classModel.name,
@@ -221,12 +225,24 @@ class _ClassCard extends StatelessWidget {
                       child: Text(
                         classModel.joinCode,
                         style: AppTypography.caption(color: AppColors.white),
+=======
+                    Text(classModel.name.toUpperCase(), style: AppTypography.labelLarge(color: AppColors.white)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.neutral300,
+                        borderRadius: BorderRadius.circular(AppRadius.radiusFull),
+>>>>>>> Stashed changes
                       ),
+                      child: Text(classModel.joinCode, style: AppTypography.caption(color: AppColors.neutral700)),
                     ),
                   ],
                 ),
               ),
+<<<<<<< Updated upstream
               // Body with description and teacher
+=======
+>>>>>>> Stashed changes
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.spacingLg),
                 child: Column(
@@ -234,6 +250,7 @@ class _ClassCard extends StatelessWidget {
                   children: [
                     Text(classModel.description, style: AppTypography.bodyMedium()),
                     const SizedBox(height: AppSpacing.spacingSm),
+<<<<<<< Updated upstream
                     Row(
                       children: [
                         Icon(Icons.person_outline, size: 16, color: AppColors.neutral600),
@@ -244,6 +261,9 @@ class _ClassCard extends StatelessWidget {
                         ),
                       ],
                     ),
+=======
+                    Text('Teacher: ${classModel.teacherName}', style: AppTypography.bodySmall(color: AppColors.neutral600)),
+>>>>>>> Stashed changes
                   ],
                 ),
               ),

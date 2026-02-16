@@ -5,7 +5,8 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/presentation/common/widgets/app_app_bar.dart';
 import 'package:elara/presentation/common/widgets/app_bottom_nav_bar.dart';
-import 'package:elara/presentation/teacher/screens/teacher_classes_screen.dart' show TeacherClassesScreenContent;
+import 'package:elara/presentation/teacher/screens/teacher_classes_screen.dart'
+    show TeacherClassesScreenContent;
 import 'package:elara/presentation/teacher/screens/teacher_profile_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -89,7 +90,11 @@ class _TeacherDashboardTab extends StatelessWidget {
 
   static const _sampleGroups = [
     _GroupCard(name: 'Physics 101', studentCount: 24, isPrimaryGradient: true),
-    _GroupCard(name: 'Advanced Math', studentCount: 18, isPrimaryGradient: false),
+    _GroupCard(
+      name: 'Advanced Math',
+      studentCount: 18,
+      isPrimaryGradient: false,
+    ),
   ];
 
   static const _sampleActivity = [
@@ -117,10 +122,7 @@ class _TeacherDashboardTab extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Greeting
-              Text(
-                'Hello, Prof. Dalia',
-                style: AppTypography.h3(),
-              ),
+              Text('Hello, Prof. Dalia', style: AppTypography.h3()),
               const SizedBox(height: AppSpacing.spacingXs),
               Text(
                 'Ready to inspire today?',
@@ -216,7 +218,8 @@ class _GroupCardWidget extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => Navigator.of(context).pushNamed(AppRoutes.teacherClassDetail),
+        onTap: () =>
+            Navigator.of(context).pushNamed(AppRoutes.teacherClassDetail),
         borderRadius: BorderRadius.circular(AppRadius.radiusLg),
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.spacingLg),
@@ -233,11 +236,7 @@ class _GroupCardWidget extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                Icons.group,
-                color: AppColors.white,
-                size: 28,
-              ),
+              Icon(Icons.group, color: AppColors.white, size: 28),
               const SizedBox(width: AppSpacing.spacingMd),
               Expanded(
                 child: Column(
@@ -303,20 +302,14 @@ class _StatCard extends StatelessWidget {
           ),
         ],
       ),
-          child: Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: AppColors.white, size: 24),
           const SizedBox(height: AppSpacing.spacingSm),
-          Text(
-            label,
-            style: AppTypography.caption(color: AppColors.white),
-          ),
+          Text(label, style: AppTypography.caption(color: AppColors.white)),
           const SizedBox(height: AppSpacing.spacing2xs),
-          Text(
-            value,
-            style: AppTypography.h4(color: AppColors.white),
-          ),
+          Text(value, style: AppTypography.h4(color: AppColors.white)),
         ],
       ),
     );
@@ -351,18 +344,9 @@ class _ActivityCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.notifications_none,
-            size: 24,
-            color: AppColors.neutral600,
-          ),
+          Icon(Icons.notifications_none, size: 24, color: AppColors.neutral600),
           const SizedBox(width: AppSpacing.spacingMd),
-          Expanded(
-            child: Text(
-              item.text,
-              style: AppTypography.bodyMedium(),
-            ),
-          ),
+          Expanded(child: Text(item.text, style: AppTypography.bodyMedium())),
           Text(
             item.timeAgo,
             style: AppTypography.caption(color: AppColors.neutral600),
@@ -372,4 +356,3 @@ class _ActivityCard extends StatelessWidget {
     );
   }
 }
-

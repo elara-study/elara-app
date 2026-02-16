@@ -19,6 +19,49 @@ class Question extends Equatable {
   final int? correctOptionIndex;
   final String? gradingCriteria;
 
+  Question copyWith({
+    String? id,
+    QuestionType? type,
+    String? text,
+    List<String>? options,
+    int? correctOptionIndex,
+    String? gradingCriteria,
+  }) {
+    return Question(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      text: text ?? this.text,
+      options: options ?? this.options,
+      correctOptionIndex: correctOptionIndex ?? this.correctOptionIndex,
+      gradingCriteria: gradingCriteria ?? this.gradingCriteria,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'type': type.toString().split('.').last,
+      'text': text,
+      'options': options,
+      'correctOptionIndex': correctOptionIndex,
+      'gradingCriteria': gradingCriteria,
+    };
+  }
+
+  factory Question.fromJson(Map<String, dynamic> json) {
+    return Question(
+      id: json['id'],
+      type: QuestionType.values.firstWhere(
+          (e) => e.toString().split('.').last == json['type'],
+          orElse: () => QuestionType.mcq),
+      text: json['text'],
+      options: json['options'] != null ? List<String>.from(json['options']) : null,
+      correctOptionIndex: json['correctOptionIndex'],
+      gradingCriteria: json['gradingCriteria'],
+    );
+  }
+
   @override
-  List<Object?> get props => [id, type, text, options, correctOptionIndex, gradingCriteria];
+  List<Object?> get props =>
+      [id, type, text, options, correctOptionIndex, gradingCriteria];
 }
