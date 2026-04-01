@@ -80,6 +80,7 @@ You are an expert in Flutter and Dart development. Your goal is to build beautif
 * **Composition:** Prefer composing smaller widgets over extending existing ones. Use this to avoid deep widget nesting.
 * **Private Widgets:** Use small, private `Widget` classes instead of private helper methods that return a `Widget`.
 * **Build Methods:** Break down large `build()` methods into smaller, reusable private Widget classes.
+* **File Hygiene (Widgets):** Avoid “mega widget files.” Prefer **one public widget per file** and keep extra helper widgets in separate files once a widget file grows beyond ~150 lines or contains multiple distinct UI responsibilities. Private widgets local to a single component are fine when small.
 * **List Performance:** Use `ListView.builder` or `SliverList` for long lists to create lazy-loaded lists for performance.
 * **Isolates:** Use `compute()` to run expensive calculations in a separate isolate to avoid blocking the UI thread, such as JSON parsing.
 * **Const Constructors:** Use `const` constructors for widgets and in `build()` methods whenever possible to reduce rebuilds.

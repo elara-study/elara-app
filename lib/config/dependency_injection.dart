@@ -1,4 +1,7 @@
 import 'package:elara/core/network/dio_client.dart';
+import 'package:elara/features/student/group/data/repositories/mock_student_group_repository.dart';
+import 'package:elara/features/student/group/domain/repositories/student_group_repository.dart';
+import 'package:elara/features/student/group/presentation/cubits/student_group_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,7 +20,11 @@ Future<void> setupDependencyInjection() async {
 
   // Repositories
   // Register   repositories here
+  getIt.registerLazySingleton<StudentGroupRepository>(
+    () => MockStudentGroupRepository(),
+  );
 
   // Cubits
   // Register   cubits here
+  getIt.registerFactory<StudentGroupCubit>(() => StudentGroupCubit(getIt()));
 }

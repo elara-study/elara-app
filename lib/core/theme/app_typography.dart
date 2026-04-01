@@ -44,7 +44,7 @@ class AppTypography {
   static TextStyle h4({Color? color}) => TextStyle(
     fontFamily: fontFamily,
     fontSize: 20,
-    fontWeight: semiBold,
+    fontWeight: extraBold,
     height: 1.3,
     color: color,
   );

@@ -16,6 +16,8 @@ class AppTheme {
     // Color scheme
     colorScheme: const ColorScheme.light(
       primary: AppColors.brandPrimary500,
+      primaryContainer: AppColors.brandPrimary600,
+      primaryFixedDim: AppColors.brandPrimary400,
       secondary: AppColors.brandSecondary500,
       tertiary: AppColors.brandAccent500,
       error: AppColors.error500,
@@ -188,6 +190,8 @@ class AppTheme {
     // Color scheme
     colorScheme: const ColorScheme.dark(
       primary: AppColors.brandPrimary500,
+      primaryContainer: AppColors.brandPrimary600,
+      primaryFixedDim: AppColors.brandPrimary400,
       secondary: AppColors.brandSecondary500,
       tertiary: AppColors.brandAccent500,
       error: AppColors.error500,
