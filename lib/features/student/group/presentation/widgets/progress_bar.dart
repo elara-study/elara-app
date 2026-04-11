@@ -8,19 +8,26 @@ class ProgressBar extends StatelessWidget {
   final String completedLabel;
   final String percentLabel;
   final double progress; // 0..1
+  /// Null: meta labels use [AppColors.neutral50]. Else this color.
+  final Color? metaLabelColor;
 
   const ProgressBar({
     super.key,
     required this.completedLabel,
     required this.percentLabel,
     required this.progress,
+    this.metaLabelColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _MetaRow(completedLabel: completedLabel, percentLabel: percentLabel),
+        _MetaRow(
+          completedLabel: completedLabel,
+          percentLabel: percentLabel,
+          metaLabelColor: metaLabelColor,
+        ),
         const SizedBox(height: AppSpacing.spacingXs),
         _Bar(progress: progress),
       ],
@@ -31,21 +38,27 @@ class ProgressBar extends StatelessWidget {
 class _MetaRow extends StatelessWidget {
   final String completedLabel;
   final String percentLabel;
+  final Color? metaLabelColor;
 
-  const _MetaRow({required this.completedLabel, required this.percentLabel});
+  const _MetaRow({
+    required this.completedLabel,
+    required this.percentLabel,
+    this.metaLabelColor,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final color = metaLabelColor ?? AppColors.neutral50;
     return Row(
       children: [
         Text(
           completedLabel,
-          style: AppTypography.bodyMedium(color: AppColors.neutral50),
+          style: AppTypography.bodyMedium(color: color),
         ),
         const Spacer(),
         Text(
           percentLabel,
-          style: AppTypography.bodyMedium(color: AppColors.neutral50),
+          style: AppTypography.bodyMedium(color: color),
         ),
       ],
     );
