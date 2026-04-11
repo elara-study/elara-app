@@ -47,7 +47,7 @@ class SignUpCredentialsScreen extends StatelessWidget {
           if (state is AuthAuthenticated) {
             Navigator.pushNamedAndRemoveUntil(
               context,
-              AppRoutes.home,
+              AppRoutes.studentDashboard,
               (_) => false,
             );
           } else if (state is AuthError) {
