@@ -5,15 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Generic action card molecule.
-///
-/// Renders a gradient card with:
-/// - A decorative background circle (top-left)
-/// - A leading icon in a solid circle
-/// - A title + subtitle text column
-/// - A glowing white arrow button on the right
-///
-/// Use [RoleCard] as a thin wrapper for the auth role-selection flow.
-/// Reuse [AppActionCard] directly anywhere else (e.g. My Groups, dashboards).
+
 class AppActionCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -94,11 +86,7 @@ class AppActionCard extends StatelessWidget {
                       color: primaryColor,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      icon,
-                      color: AppColors.neutral50,
-                      size: 20.sp,
-                    ),
+                    child: Icon(icon, color: AppColors.neutral50, size: 20.sp),
                   ),
 
                   SizedBox(width: 12.w),

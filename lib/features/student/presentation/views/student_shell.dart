@@ -44,10 +44,7 @@ class _StudentShellState extends State<StudentShell> {
       ],
       child: Scaffold(
         backgroundColor: LightModeColors.surfaceApp,
-        body: IndexedStack(
-          index: _currentIndex,
-          children: _pages,
-        ),
+        body: IndexedStack(index: _currentIndex, children: _pages),
         bottomNavigationBar: AppBottomNavBar(
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
@@ -57,7 +54,7 @@ class _StudentShellState extends State<StudentShell> {
   }
 }
 
-// ── Placeholder wrappers — will be replaced with real screens in Step 5 & 6 ──
+// ── Placeholder wrappers —
 
 class _HomePagePlaceholder extends StatelessWidget {
   const _HomePagePlaceholder();
