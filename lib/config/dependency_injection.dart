@@ -10,6 +10,12 @@ import 'package:elara/features/auth/domain/usecases/login_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/register_use_case.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
+import 'package:elara/features/student/data/datasources/student_remote_data_source.dart';
+import 'package:elara/features/student/data/datasources/student_remote_data_source_impl.dart';
+import 'package:elara/features/student/data/repositories/student_repository_impl.dart';
+import 'package:elara/features/student/domain/repositories/student_repository.dart';
+import 'package:elara/features/student/presentation/cubits/home/student_home_cubit.dart';
+import 'package:elara/features/student/presentation/cubits/learn/student_learn_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -59,5 +65,28 @@ Future<void> setupDependencyInjection() async {
       logoutUseCase: getIt<LogoutUseCase>(),
       getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
     ),
+  );
+
+  // ── Student: Data Source ──────────────────────────────────────────────────
+  getIt.registerLazySingleton<StudentRemoteDataSource>(
+    () => StudentRemoteDataSourceImpl(),
+    // TODO: pass DioClient when backend is ready:
+    // () => StudentRemoteDataSourceImpl(getIt<DioClient>()),
+  );
+
+  // ── Student: Repository ───────────────────────────────────────────────────
+  getIt.registerLazySingleton<StudentRepository>(
+    () => StudentRepositoryImpl(
+      remoteDataSource: getIt<StudentRemoteDataSource>(),
+    ),
+  );
+
+  // ── Student: Cubits ───────────────────────────────────────────────────────
+  // Factories so each shell tab gets its own independent instance
+  getIt.registerFactory(
+    () => StudentHomeCubit(repository: getIt<StudentRepository>()),
+  );
+  getIt.registerFactory(
+    () => StudentLearnCubit(repository: getIt<StudentRepository>()),
   );
 }
