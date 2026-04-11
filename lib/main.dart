@@ -18,7 +18,6 @@ class Elara extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      // Design baseline
       designSize: const Size(390, 844),
       minTextAdapt: true,
       splitScreenMode: true,
@@ -30,8 +29,8 @@ class Elara extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: ThemeMode.light,
-            initialRoute: AppRoutes.splash,
+            themeMode: ThemeMode.dark,
+            initialRoute: AppRoutes.studentGroup,
             onGenerateRoute: AppRoutes.generateRoute,
           ),
         );

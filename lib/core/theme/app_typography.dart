@@ -45,7 +45,7 @@ class AppTypography {
   static TextStyle h4({Color? color, String? font}) => TextStyle(
     fontFamily: font ?? nunito,
     fontSize: 20,
-    fontWeight: semiBold,
+    fontWeight: extraBold,
     height: 1.3,
     color: color,
   );
@@ -120,6 +120,15 @@ class AppTypography {
     fontSize: 12,
     fontWeight: semiBold,
     height: 1.4,
+    color: color,
+  );
+
+  /// Roadmap status chip (matches design ~8px semibold).
+  static TextStyle label2xs({Color? color}) => TextStyle(
+    fontFamily: nunito,
+    fontSize: 8,
+    fontWeight: semiBold,
+    height: 1.25,
     color: color,
   );
 

@@ -4,6 +4,22 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+List<BoxShadow> _selectionGlow(Color primaryColor) => [
+  BoxShadow(
+    color: primaryColor.withValues(alpha: 0.4),
+    blurRadius: 12,
+    offset: const Offset(0, 4),
+  ),
+];
+
+List<BoxShadow> _arrowChipGlow(Color surface) => [
+  BoxShadow(
+    color: surface.withValues(alpha: 0.4),
+    blurRadius: 20,
+    spreadRadius: 5,
+  ),
+];
+
 /// Generic action card molecule.
 ///
 /// Renders a gradient card with:
@@ -55,15 +71,7 @@ class AppActionCard extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: primaryColor.withValues(alpha: 0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : [],
+          boxShadow: isSelected ? _selectionGlow(primaryColor) : const [],
         ),
         child: Stack(
           alignment: Alignment.center,
@@ -94,11 +102,7 @@ class AppActionCard extends StatelessWidget {
                       color: primaryColor,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      icon,
-                      color: AppColors.neutral50,
-                      size: 20.sp,
-                    ),
+                    child: Icon(icon, color: AppColors.neutral50, size: 20.sp),
                   ),
 
                   SizedBox(width: 12.w),
@@ -131,14 +135,9 @@ class AppActionCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: ButtonColors.secondaryReversedDefault,
                       shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: ButtonColors.secondaryReversedDefault
-                              .withValues(alpha: 0.4),
-                          blurRadius: 20,
-                          spreadRadius: 5,
-                        ),
-                      ],
+                      boxShadow: _arrowChipGlow(
+                        ButtonColors.secondaryReversedDefault,
+                      ),
                     ),
                     child: Icon(
                       Icons.arrow_forward_ios_rounded,
