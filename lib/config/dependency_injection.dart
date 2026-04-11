@@ -12,6 +12,7 @@ import 'package:elara/features/auth/domain/usecases/register_use_case.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/student/group/data/repositories/mock_student_group_repository.dart';
 import 'package:elara/features/student/group/domain/repositories/student_group_repository.dart';
+import 'package:elara/features/student/group/domain/usecases/get_group_announcements_usecase.dart';
 import 'package:elara/features/student/group/domain/usecases/get_group_roadmap_usecase.dart';
 import 'package:elara/features/student/group/domain/usecases/load_student_group_usecase.dart';
 import 'package:elara/features/student/group/presentation/cubits/student_group_cubit.dart';
@@ -85,6 +86,9 @@ Future<void> setupDependencyInjection() async {
   );
   getIt.registerLazySingleton<GetGroupRoadmapUseCase>(
     () => GetGroupRoadmapUseCase(getIt<StudentGroupRepository>()),
+  );
+  getIt.registerLazySingleton<GetGroupAnnouncementsUseCase>(
+    () => GetGroupAnnouncementsUseCase(getIt<StudentGroupRepository>()),
   );
   getIt.registerLazySingleton<GetStudentRewardsOverviewUseCase>(
     () => GetStudentRewardsOverviewUseCase(getIt<StudentRewardsRepository>()),

@@ -1,5 +1,6 @@
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
+import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
@@ -41,9 +42,11 @@ class AppTheme {
       iconTheme: const IconThemeData(color: AppColors.white),
     ),
 
-    // Card theme
+    // Card theme — shadow tint matches [AppShadows.elevationLight].
     cardTheme: CardThemeData(
-      elevation: 2,
+      elevation: AppShadows.cardMaterialElevation,
+      shadowColor: AppShadows.materialElevationShadowColor(Brightness.light),
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.radiusMd),
       ),
@@ -215,9 +218,11 @@ class AppTheme {
       iconTheme: const IconThemeData(color: DarkModeColors.textPrimary),
     ),
 
-    // Card theme
+    // Card theme — shadow tint matches [AppShadows.elevationDark].
     cardTheme: CardThemeData(
-      elevation: 2,
+      elevation: AppShadows.cardMaterialElevation,
+      shadowColor: AppShadows.materialElevationShadowColor(Brightness.dark),
+      surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.radiusMd),
       ),

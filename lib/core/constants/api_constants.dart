@@ -34,9 +34,12 @@ class ApiConstants {
   static String studentLearnGroupRoadmap(String groupId) =>
       'student/learn/groups/$groupId/roadmap';
 
+  /// Student > Learn — Announcements for a group.
+  static String studentLearnGroupAnnouncements(String groupId) =>
+      'student/learn/groups/$groupId/announcements';
+
   /// Student > Rewards — Overview (GET /v1/student/rewards/overview).
-  static const String studentRewardsOverview =
-      'v1/student/rewards/overview';
+  static const String studentRewardsOverview = 'v1/student/rewards/overview';
 
   /// Student > Rewards — Leaderboard (GET /v1/student/rewards/leaderboard).
   static const String studentRewardsLeaderboard =
