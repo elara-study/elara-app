@@ -1,5 +1,6 @@
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/group/presentation/widgets/progress_bar.dart';
@@ -17,7 +18,8 @@ class GroupProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
     final clamped = progress.clamp(0.0, 1.0);
 
     final gradient = LinearGradient(
@@ -28,13 +30,7 @@ class GroupProgressCard extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.radiusLg),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.10),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        boxShadow: AppShadows.elevation(theme.brightness),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.radiusLg),

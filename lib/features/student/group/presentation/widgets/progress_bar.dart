@@ -51,15 +51,9 @@ class _MetaRow extends StatelessWidget {
     final color = metaLabelColor ?? AppColors.neutral50;
     return Row(
       children: [
-        Text(
-          completedLabel,
-          style: AppTypography.bodyMedium(color: color),
-        ),
+        Text(completedLabel, style: AppTypography.bodyMedium(color: color)),
         const Spacer(),
-        Text(
-          percentLabel,
-          style: AppTypography.bodyMedium(color: color),
-        ),
+        Text(percentLabel, style: AppTypography.bodyMedium(color: color)),
       ],
     );
   }

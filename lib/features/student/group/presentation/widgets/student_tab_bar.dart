@@ -1,4 +1,5 @@
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
@@ -40,13 +41,7 @@ class StudentTabBar extends StatelessWidget {
               indicator: BoxDecoration(
                 color: AppColors.brandPrimary500,
                 borderRadius: BorderRadius.circular(999),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.brandPrimary500.withValues(alpha: 0.35),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                boxShadow: AppShadows.brandPrimaryPillGlow(),
               ),
               labelColor: AppColors.white,
               unselectedLabelColor: cs.onSurfaceVariant,
