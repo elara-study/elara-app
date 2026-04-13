@@ -10,6 +10,7 @@ import 'package:elara/features/auth/domain/usecases/login_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/register_use_case.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
+import 'package:elara/features/student/presentation/cubits/tab/student_tab_cubit.dart';
 import 'package:elara/features/student/data/datasources/student_remote_data_source.dart';
 import 'package:elara/features/student/data/datasources/student_remote_data_source_impl.dart';
 import 'package:elara/features/student/data/repositories/student_repository_impl.dart';
@@ -89,4 +90,7 @@ Future<void> setupDependencyInjection() async {
   getIt.registerFactory(
     () => StudentLearnCubit(repository: getIt<StudentRepository>()),
   );
+
+  // Singleton — the shell keeps one tab index for its lifetime
+  getIt.registerLazySingleton(() => StudentTabCubit());
 }

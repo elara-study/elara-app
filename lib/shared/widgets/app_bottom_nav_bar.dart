@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// A custom styled bottom navigation bar used across all student screens.
+/// Floating pill-shaped bottom navigation bar.
 ///
-/// Uses SVG icons from [assets/icons/]. Active tab tints the icon with
-/// [brandPrimary500]; inactive tabs use [neutral400].
+/// Renders as a white rounded card floating above the screen background,
+/// with horizontal margins and a soft shadow — matching the design.
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -28,57 +28,61 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: LightModeColors.surfacePrimary,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.neutral900.withValues(alpha: 0.06),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: 64.h,
-          child: Row(
-            children: List.generate(_tabs.length, (index) {
-              final tab = _tabs[index];
-              final isActive = currentIndex == index;
-              final color = isActive
-                  ? AppColors.brandPrimary500
-                  : AppColors.neutral400;
+    return SafeArea(
+      top: false,
+      child: Container(
+        // Floating white pill card
+        margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 24.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          color: LightModeColors.surfacePrimaryAlpha80,
+          borderRadius: BorderRadius.circular(28.r),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.neutral900.withValues(alpha: 0.08),
+              blurRadius: 20,
+              spreadRadius: 0,
+              offset: const Offset(0, 4),
+            ),
+            BoxShadow(
+              color: AppColors.neutral900.withValues(alpha: 0.04),
+              blurRadius: 6,
+              spreadRadius: 0,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Row(
+          children: List.generate(_tabs.length, (index) {
+            final tab = _tabs[index];
+            final isActive = currentIndex == index;
+            final color = isActive
+                ? AppColors.brandPrimary700
+                : AppColors.neutral400;
 
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => onTap(index),
-                  behavior: HitTestBehavior.opaque,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    curve: Curves.easeInOut,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          tab.assetPath,
-                          width: 22.w,
-                          height: 22.w,
-                          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-                        ),
-                        SizedBox(height: 3.h),
-                        Text(
-                          tab.label,
-                          style: AppTypography.labelMedium(color: color),
-                        ),
-                      ],
+            return Expanded(
+              child: GestureDetector(
+                onTap: () => onTap(index),
+                behavior: HitTestBehavior.opaque,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      tab.assetPath,
+                      width: 22.r,
+                      height: 22.r,
+                      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                     ),
-                  ),
+                    SizedBox(height: 3.h),
+                    Text(
+                      tab.label,
+                      style: AppTypography.labelMedium(color: color),
+                    ),
+                  ],
                 ),
-              );
-            }),
-          ),
+              ),
+            );
+          }),
         ),
       ),
     );

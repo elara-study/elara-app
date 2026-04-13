@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 /// Generic action card molecule.
 
@@ -86,7 +87,16 @@ class AppActionCard extends StatelessWidget {
                       color: primaryColor,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(icon, color: AppColors.neutral50, size: 20.sp),
+                    child: SvgPicture.asset(
+                      'assets/icons/people_outline.svg',
+                      width: 20.w,
+                      height: 20.w,
+                      fit: BoxFit.scaleDown,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.neutral50,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
 
                   SizedBox(width: 12.w),

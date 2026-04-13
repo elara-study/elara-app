@@ -3,6 +3,9 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/presentation/cubits/home/student_home_cubit.dart';
 import 'package:elara/features/student/presentation/cubits/learn/student_learn_cubit.dart';
+import 'package:elara/features/student/presentation/cubits/tab/student_tab_cubit.dart';
+import 'package:elara/features/student/presentation/views/home_screen.dart';
+import 'package:elara/features/student/presentation/views/learn_screen.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,22 +13,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Root shell for the Student dashboard.
 ///
-/// Hosts 5 tabs in an [IndexedStack] so state is preserved when switching tabs.
-/// Provides [StudentHomeCubit] and [StudentLearnCubit] scoped to this shell.
-class StudentShell extends StatefulWidget {
+/// Provides [StudentTabCubit], [StudentHomeCubit] and [StudentLearnCubit]
+/// scoped to this shell. Any descendant can call
+/// `context.read<StudentTabCubit>().goToLearn()` to switch tabs.
+class StudentShell extends StatelessWidget {
   const StudentShell({super.key});
 
-  @override
-  State<StudentShell> createState() => _StudentShellState();
-}
-
-class _StudentShellState extends State<StudentShell> {
-  int _currentIndex = 0;
-
-  // Placeholder pages for tabs not yet implemented
   static const List<Widget> _pages = [
-    _HomePagePlaceholder(),
-    _LearnPagePlaceholder(),
+    HomeScreen(),
+    LearnScreen(),
     _ComingSoonPage(label: 'Rewards'),
     _ComingSoonPage(label: 'Alerts'),
     _ComingSoonPage(label: 'Profile'),
@@ -35,44 +31,41 @@ class _StudentShellState extends State<StudentShell> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<StudentTabCubit>(create: (_) => getIt<StudentTabCubit>()),
         BlocProvider<StudentHomeCubit>(
-          create: (_) => getIt<StudentHomeCubit>(),
+          create: (_) => getIt<StudentHomeCubit>()..loadHome(),
         ),
         BlocProvider<StudentLearnCubit>(
-          create: (_) => getIt<StudentLearnCubit>(),
+          create: (_) => getIt<StudentLearnCubit>()..loadGroups(),
         ),
       ],
-      child: Scaffold(
-        backgroundColor: LightModeColors.surfaceApp,
-        body: IndexedStack(index: _currentIndex, children: _pages),
-        bottomNavigationBar: AppBottomNavBar(
-          currentIndex: _currentIndex,
-          onTap: (index) => setState(() => _currentIndex = index),
-        ),
+      child: BlocBuilder<StudentTabCubit, int>(
+        builder: (context, currentTab) {
+          return Scaffold(
+            backgroundColor: LightModeColors.surfaceApp,
+            body: Stack(
+              children: [
+                IndexedStack(index: currentTab, children: _pages),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: AppBottomNavBar(
+                    currentIndex: currentTab,
+                    onTap: (i) => context.read<StudentTabCubit>().goToTab(i),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-// ── Placeholder wrappers —
+// ── Coming soon placeholder for future tabs ───────────────────────────────────
 
-class _HomePagePlaceholder extends StatelessWidget {
-  const _HomePagePlaceholder();
-
-  @override
-  Widget build(BuildContext context) =>
-      const Center(child: Text('Home — Step 5'));
-}
-
-class _LearnPagePlaceholder extends StatelessWidget {
-  const _LearnPagePlaceholder();
-
-  @override
-  Widget build(BuildContext context) =>
-      const Center(child: Text('Learn — Step 6'));
-}
-
-/// Generic "Coming soon" placeholder shown for tabs not yet implemented.
 class _ComingSoonPage extends StatelessWidget {
   final String label;
 

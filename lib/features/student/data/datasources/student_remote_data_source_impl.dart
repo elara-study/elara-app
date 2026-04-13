@@ -58,14 +58,14 @@ class StudentRemoteDataSourceImpl implements StudentRemoteDataSource {
         label: 'Complete 3 lessons',
         iconKey: 'book',
         xpReward: 50,
-        isCompleted: true,
+        isCompleted: false,
       ),
       DailyGoalModel(
         id: 'goal-002',
         label: 'Score 80% on a quiz',
         iconKey: 'quiz',
         xpReward: 30,
-        isCompleted: false,
+        isCompleted: true,
       ),
       DailyGoalModel(
         id: 'goal-003',

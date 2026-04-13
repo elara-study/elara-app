@@ -4,17 +4,13 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/entities/course_progress_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-/// Dark gradient card for the "Continue where you left off" section.
 class ContinueLearningCard extends StatelessWidget {
   final CourseProgressEntity progress;
   final VoidCallback? onTap;
 
-  const ContinueLearningCard({
-    super.key,
-    required this.progress,
-    this.onTap,
-  });
+  const ContinueLearningCard({super.key, required this.progress, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -22,111 +18,208 @@ class ContinueLearningCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [AppColors.brandPrimary700, AppColors.brandPrimary900],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
-        ),
-        child: Row(
+        decoration: _cardDecoration,
+        child: Stack(
           children: [
-            // ── Left: text content ──────────────────────────────────────────
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            const Positioned.fill(child: _DecorativeCircles()),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 16.w),
+              child: Row(
                 children: [
-                  // Caption
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.access_time_rounded,
-                        size: 12.sp,
-                        color: AppColors.neutral400,
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        'Continue where you left off',
-                        style: AppTypography.caption(
-                          color: AppColors.neutral400,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 8.h),
-
-                  // Course name
-                  Text(
-                    progress.courseName,
-                    style: AppTypography.h5(color: AppColors.white),
-                  ),
-
-                  SizedBox(height: 2.h),
-
-                  // Lesson label
-                  Text(
-                    progress.lessonLabel,
-                    style: AppTypography.bodySmall(color: AppColors.neutral300),
-                  ),
-
-                  SizedBox(height: 12.h),
-
-                  // Progress bar + percentage
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4.r),
-                          child: LinearProgressIndicator(
-                            value: progress.progressPercent,
-                            minHeight: 6.h,
-                            backgroundColor: AppColors.white.withValues(alpha: 0.15),
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppColors.brandPrimary300,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10.w),
-                      Text(
-                        '${(progress.progressPercent * 100).round()}%',
-                        style: AppTypography.labelMedium(
-                          color: AppColors.brandPrimary300,
-                        ),
-                      ),
-                    ],
-                  ),
+                  Expanded(child: _CardContent(progress: progress)),
+                  const _PlayButton(),
                 ],
-              ),
-            ),
-
-            SizedBox(width: 16.w),
-
-            // ── Right: play button ──────────────────────────────────────────
-            Container(
-              width: 44.w,
-              height: 44.w,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.white.withValues(alpha: 0.25),
-                    blurRadius: 12,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: Icon(
-                Icons.play_arrow_rounded,
-                color: AppColors.brandPrimary700,
-                size: 24.sp,
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration get _cardDecoration => BoxDecoration(
+    gradient: const LinearGradient(
+      colors: [AppColors.brandPrimary600, AppColors.brandPrimary400],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+    borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
+  );
+}
+
+// background circles
+class _DecorativeCircles extends StatelessWidget {
+  const _DecorativeCircles();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        _circle(right: -62.w, top: -64.h, alpha: 0.2),
+        _circle(right: 280.w, bottom: -55.h, alpha: 0.09),
+      ],
+    );
+  }
+
+  Widget _circle({
+    double? right,
+    double? top,
+    double? bottom,
+    required double alpha,
+  }) {
+    return Positioned(
+      right: right,
+      top: top,
+      bottom: bottom,
+      child: Container(
+        width: 128.r,
+        height: 128.r,
+        decoration: BoxDecoration(
+          color: AppColors.brandPrimary50.withValues(alpha: alpha),
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
+  }
+}
+
+//   Main Content
+class _CardContent extends StatelessWidget {
+  final CourseProgressEntity progress;
+
+  const _CardContent({required this.progress});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _CaptionRow(),
+        SizedBox(height: 12.h),
+
+        Text(
+          progress.courseName,
+          style: AppTypography.h5(
+            color: AppColors.neutral50,
+          ).copyWith(fontWeight: FontWeight.w900),
+        ),
+
+        SizedBox(height: 12.h),
+
+        _LessonRow(progress: progress),
+
+        SizedBox(height: 4.h),
+        _ProgressBar(progress: progress),
+      ],
+    );
+  }
+}
+
+//   Caption
+class _CaptionRow extends StatelessWidget {
+  const _CaptionRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SvgPicture.asset(
+          'assets/icons/time_icon.svg',
+          width: 16.sp,
+          height: 16.sp,
+          colorFilter: const ColorFilter.mode(
+            AppColors.neutral200,
+            BlendMode.srcIn,
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Text(
+          'Continue where you left off',
+          style: AppTypography.bodyMedium(color: AppColors.neutral200),
+        ),
+      ],
+    );
+  }
+}
+
+//   Lesson + %
+class _LessonRow extends StatelessWidget {
+  final CourseProgressEntity progress;
+
+  const _LessonRow({required this.progress});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          progress.lessonLabel,
+          style: AppTypography.bodyMedium(color: AppColors.neutral50),
+        ),
+        SizedBox(width: 88.w),
+        Text(
+          '${(progress.progressPercent * 100).round()}%',
+          style: AppTypography.bodyMedium(color: AppColors.neutral50),
+        ),
+      ],
+    );
+  }
+}
+
+//   Progress Bar
+class _ProgressBar extends StatelessWidget {
+  final CourseProgressEntity progress;
+
+  const _ProgressBar({required this.progress});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 218.w,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
+        child: LinearProgressIndicator(
+          value: progress.progressPercent,
+          minHeight: 8.h,
+          backgroundColor: AppColors.brandPrimary100.withValues(alpha: 0.5),
+          valueColor: const AlwaysStoppedAnimation<Color>(
+            AppColors.brandPrimary700,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//   Play Button
+class _PlayButton extends StatelessWidget {
+  const _PlayButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 48.r,
+      height: 48.r,
+      decoration: BoxDecoration(
+        color: ButtonColors.secondaryReversedDefault,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: ButtonColors.secondaryReversedDefault.withValues(alpha: 0.3),
+            blurRadius: 20,
+            spreadRadius: 5,
+          ),
+        ],
+      ),
+      child: SvgPicture.asset(
+        'assets/icons/video_player_icon.svg',
+        width: 24.r,
+        height: 24.r,
+        fit: BoxFit.scaleDown,
+        colorFilter: const ColorFilter.mode(
+          ButtonColors.primaryReversedText,
+          BlendMode.srcIn,
         ),
       ),
     );
