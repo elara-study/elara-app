@@ -7,6 +7,7 @@ import 'package:elara/features/student/presentation/cubits/tab/student_tab_cubit
 import 'package:elara/features/student/presentation/views/home_screen.dart';
 import 'package:elara/features/student/presentation/views/learn_screen.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
+import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -75,6 +76,14 @@ class _ComingSoonPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LightModeColors.surfaceApp,
+      extendBodyBehindAppBar: true,
+      appBar: AppGlassHeader(
+        title: Text(
+          label,
+          style: AppTypography.h5(color: LightModeColors.textPrimary)
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -9,6 +9,7 @@ import 'package:elara/features/student/presentation/widgets/home/continue_learni
 import 'package:elara/features/student/presentation/widgets/home/daily_goal_item.dart';
 import 'package:elara/features/student/presentation/widgets/home/home_header.dart';
 import 'package:elara/shared/widgets/app_action_card.dart';
+import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,27 +20,38 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: LightModeColors.surfacePrimary,
-      body: SafeArea(
-        child: BlocBuilder<StudentHomeCubit, StudentHomeState>(
-          builder: (context, state) {
-            if (state is StudentHomeLoading || state is StudentHomeInitial) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (state is StudentHomeError) {
-              return _ErrorView(
-                message: state.message,
-                onRetry: () => context.read<StudentHomeCubit>().loadHome(),
-              );
-            }
-            if (state is StudentHomeLoaded) {
-              return _HomeContent(state: state);
-            }
-            return const SizedBox.shrink();
-          },
-        ),
-      ),
+    return BlocBuilder<StudentHomeCubit, StudentHomeState>(
+      builder: (context, state) {
+        if (state is StudentHomeLoading || state is StudentHomeInitial) {
+          return const Scaffold(
+            backgroundColor: LightModeColors.surfacePrimary,
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        if (state is StudentHomeError) {
+          return Scaffold(
+            backgroundColor: LightModeColors.surfacePrimary,
+            body: _ErrorView(
+              message: state.message,
+              onRetry: () => context.read<StudentHomeCubit>().loadHome(),
+            ),
+          );
+        }
+        if (state is StudentHomeLoaded) {
+          return Scaffold(
+            backgroundColor: LightModeColors.surfacePrimary,
+            extendBodyBehindAppBar: true,
+            appBar: AppGlassHeader(
+              title: HomeHeader(
+                notificationCount: state.profile.notificationCount,
+                points: state.profile.points,
+              ),
+            ),
+            body: _HomeContent(state: state),
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }
@@ -62,167 +74,148 @@ class _HomeContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final previewGroups = state.groups.take(2).toList();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        //   header
-        Container(
-          color: LightModeColors.surfacePrimary,
-          padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 16.w),
-          child: HomeHeader(
-            notificationCount: state.profile.notificationCount,
-            points: state.profile.points,
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        left: 16.w,
+        right: 16.w,
+        top: kToolbarHeight + 62.h,
+        bottom: 120.h,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //SizedBox(height: 20.h),
+          Text(
+            '$_greeting, ${state.profile.firstName}!',
+            style: AppTypography.h3(
+              color: LightModeColors.textPrimary,
+            ).copyWith(fontWeight: FontWeight.w900, fontSize: 25.sp),
           ),
-        ),
-        const Divider(),
-        //  Scrollable content
-        Expanded(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(
-              left: 16.w,
-              right: 16.w,
-              top: 24.h,
-              bottom: 80.h,
+
+          SizedBox(height: 2.h),
+
+          Text(
+            'Ready to continue your learning journey?',
+            style: AppTypography.bodyLarge(
+              color: LightModeColors.textSecondary,
+            ),
+          ),
+
+          SizedBox(height: 24.h),
+
+          ContinueLearningCard(
+            progress: state.continuelearning,
+            onTap: () {
+              //  Navigate to lesson
+            },
+          ),
+
+          SizedBox(height: 24.h),
+
+          // ── Daily Goals ──────────────────────────────────────────────────
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Daily Goals',
+                style: AppTypography.h4(
+                  color: LightModeColors.textPrimary,
+                ).copyWith(fontWeight: FontWeight.w900),
+              ),
+              Text(
+                '${state.completedGoalsCount}/${state.dailyGoals.length} completed',
+                style: AppTypography.bodyMedium(
+                  color: LightModeColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 16.h),
+
+          // All goals inside one white card
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: LightModeColors.surfacePrimary,
+              borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.neutral900.withValues(alpha: 0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //SizedBox(height: 20.h),
-                Text(
-                  '$_greeting, ${state.profile.firstName}!',
-                  style: AppTypography.h3(
-                    color: LightModeColors.textPrimary,
-                  ).copyWith(fontWeight: FontWeight.w900, fontSize: 25.sp),
-                ),
-
-                SizedBox(height: 2.h),
-
-                Text(
-                  'Ready to continue your learning journey?',
-                  style: AppTypography.bodyLarge(
-                    color: LightModeColors.textSecondary,
+                for (int i = 0; i < state.dailyGoals.length; i++) ...[
+                  DailyGoalItem(
+                    goal: state.dailyGoals[i],
+                    progressPercent: _goalProgress(i),
                   ),
-                ),
-
-                SizedBox(height: 24.h),
-
-                ContinueLearningCard(
-                  progress: state.continuelearning,
-                  onTap: () {
-                    //  Navigate to lesson
-                  },
-                ),
-
-                SizedBox(height: 24.h),
-
-                // ── Daily Goals ──────────────────────────────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Daily Goals',
-                      style: AppTypography.h4(
-                        color: LightModeColors.textPrimary,
-                      ).copyWith(fontWeight: FontWeight.w900),
-                    ),
-                    Text(
-                      '${state.completedGoalsCount}/${state.dailyGoals.length} completed',
-                      style: AppTypography.bodyMedium(
-                        color: LightModeColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: 16.h),
-
-                // All goals inside one white card
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16.w),
-                  decoration: BoxDecoration(
-                    color: LightModeColors.surfacePrimary,
-                    borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.neutral900.withValues(alpha: 0.1),
-                        blurRadius: 12,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      for (int i = 0; i < state.dailyGoals.length; i++) ...[
-                        DailyGoalItem(
-                          goal: state.dailyGoals[i],
-                          progressPercent: _goalProgress(i),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 24.h),
-
-                // ── My Groups ────────────────────────────────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'My Groups',
-                      style: AppTypography.h4(
-                        color: LightModeColors.textPrimary,
-                      ).copyWith(fontWeight: FontWeight.w900),
-                    ),
-                    GestureDetector(
-                      onTap: () => context.read<StudentTabCubit>().goToLearn(),
-                      child: Row(
-                        children: [
-                          Text(
-                            'See All',
-                            style: AppTypography.labelSmall(
-                              color: ButtonColors.ghostText,
-                            ),
-                          ),
-                          SvgPicture.asset(
-                            'assets/icons/right_arrow_ios.svg',
-                            width: 16.w,
-                            height: 16.w,
-                            colorFilter: const ColorFilter.mode(
-                              ButtonColors.ghostText,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: 12.h),
-
-                ...previewGroups.map(
-                  (group) => Padding(
-                    padding: EdgeInsets.only(bottom: 12.h),
-                    child: AppActionCard(
-                      title: group.name,
-                      subtitle:
-                          '${(group.progressPercent * 100).round()}% complete',
-                      icon: _iconForGroup(group),
-                      primaryColor: _primaryColor(group),
-                      secondaryColor: _secondaryColor(group),
-                      onTap: () {},
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 8.h),
+                ],
               ],
             ),
           ),
-        ),
-      ],
+
+          SizedBox(height: 24.h),
+
+          // ── My Groups ────────────────────────────────────────────────────
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'My Groups',
+                style: AppTypography.h4(
+                  color: LightModeColors.textPrimary,
+                ).copyWith(fontWeight: FontWeight.w900),
+              ),
+              GestureDetector(
+                onTap: () => context.read<StudentTabCubit>().goToLearn(),
+                child: Row(
+                  children: [
+                    Text(
+                      'See All',
+                      style: AppTypography.labelSmall(
+                        color: ButtonColors.ghostText,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      'assets/icons/right_arrow_ios.svg',
+                      width: 16.w,
+                      height: 16.w,
+                      colorFilter: const ColorFilter.mode(
+                        ButtonColors.ghostText,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 12.h),
+
+          ...previewGroups.map(
+            (group) => Padding(
+              padding: EdgeInsets.only(bottom: 12.h),
+              child: AppActionCard(
+                title: group.name,
+                subtitle: '${(group.progressPercent * 100).round()}% complete',
+                icon: _iconForGroup(group),
+                primaryColor: _primaryColor(group),
+                secondaryColor: _secondaryColor(group),
+                onTap: () {},
+              ),
+            ),
+          ),
+
+          SizedBox(height: 8.h),
+        ],
+      ),
     );
   }
 
