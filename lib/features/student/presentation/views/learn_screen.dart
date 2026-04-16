@@ -25,22 +25,24 @@ class LearnScreen extends StatelessWidget {
       appBar: AppGlassHeader(
         title: Text(
           'Learn',
-          style: AppTypography.h3(color: LightModeColors.textPrimary)
-              .copyWith(fontWeight: FontWeight.bold),
+          style: AppTypography.h4(
+            font: "Comfortaa",
+            color: LightModeColors.textPrimary,
+          ).copyWith(fontWeight: AppTypography.bold),
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(
-          20.w,
-          MediaQuery.paddingOf(context).top + kToolbarHeight + 8.h,
-          20.w,
-          24.h,
+        padding: EdgeInsets.only(
+          left: 16.w,
+          right: 16.w,
+          top: kToolbarHeight + 62.h,
+          bottom: 120.h,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _MyGroupsHeaderRow(onJoin: () => _openJoinSheet(context)),
-            SizedBox(height: 20.h),
+            SizedBox(height: 24.h),
             BlocBuilder<StudentLearnCubit, StudentLearnState>(
               builder: (context, state) {
                 if (state is StudentLearnLoading ||
@@ -111,15 +113,15 @@ class _MyGroupsHeaderRow extends StatelessWidget {
           children: [
             Text(
               'My Groups',
-              style: AppTypography.h6(
+              style: AppTypography.h3(
                 color: LightModeColors.textPrimary,
-              ),
+              ).copyWith(fontWeight: AppTypography.black),
             ),
             Text(
               'Your enrolled classes',
-              style: AppTypography.bodySmall(
+              style: AppTypography.bodyLarge(
                 color: LightModeColors.textSecondary,
-              ),
+              ).copyWith(fontWeight: AppTypography.regular),
             ),
           ],
         ),
@@ -130,28 +132,20 @@ class _MyGroupsHeaderRow extends StatelessWidget {
             width: 16.w,
             height: 16.w,
             colorFilter: const ColorFilter.mode(
-              AppColors.brandPrimary500,
+              ButtonColors.outlineText,
               BlendMode.srcIn,
             ),
           ),
           label: Text(
             'Join',
-            style: AppTypography.button(
-              color: AppColors.brandPrimary500,
-            ),
+            style: AppTypography.labelLarge(color: ButtonColors.outlineText),
           ),
           style: OutlinedButton.styleFrom(
-            side: const BorderSide(
-              color: AppColors.brandPrimary500,
-              width: 1.5,
-            ),
+            side: const BorderSide(color: ButtonColors.outlineText, width: 1.5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.r),
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: 14.w,
-              vertical: 7.h,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ),

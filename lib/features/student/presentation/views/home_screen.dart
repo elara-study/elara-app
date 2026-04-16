@@ -89,7 +89,7 @@ class _HomeContent extends StatelessWidget {
             '$_greeting, ${state.profile.firstName}!',
             style: AppTypography.h3(
               color: LightModeColors.textPrimary,
-            ).copyWith(fontWeight: FontWeight.w900, fontSize: 25.sp),
+            ).copyWith(fontWeight: AppTypography.black, fontSize: 25.sp),
           ),
 
           SizedBox(height: 2.h),

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// Subject group card — matching the design with SVG icons.
+/// Subject group card
 class SubjectGroupCard extends StatelessWidget {
   final StudentGroupEntity group;
   final VoidCallback? onTap;
@@ -19,66 +19,83 @@ class SubjectGroupCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: LightModeColors.surfacePrimary,
-          borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
+          borderRadius: BorderRadius.circular(32.r),
           boxShadow: [
             BoxShadow(
-              color: AppColors.neutral900.withValues(alpha: 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 2),
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            // ── Subject header band ──────────────────────────────────────
+            //   The Blue Header Background
             Container(
+              height: 86.h,
               width: double.infinity,
-              color: AppColors.brandPrimary600,
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                // color: AppColors.brandPrimary400,
+                gradient: const LinearGradient(
+                  colors: [
+                    AppColors.brandPrimary400,
+                    AppColors.brandPrimary500,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(AppRadius.radiusLg.r),
+                  topRight: Radius.circular(AppRadius.radiusLg.r),
+                ),
+              ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    group.subject,
-                    style: AppTypography.overline(color: AppColors.white)
+                    group.subject.toUpperCase(),
+                    style: AppTypography.labelLarge(color: AppColors.neutral50)
                         .copyWith(
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.2,
-                    ),
+                          fontWeight: AppTypography.semiBold,
+                          fontSize: 16.sp,
+                        ),
                   ),
-
                   const Spacer(),
-
-                  // Grade chip with graduation cap SVG
+                  // Grade Chip
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 8.w,
-                      vertical: 3.h,
+                      vertical: 4.h,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.white.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(12.r),
+                      color: AppColors.neutral50.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(
+                        AppRadius.radiusFull.r,
+                      ),
                     ),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
                           'assets/icons/graduation_cap_icon.svg',
-                          width: 11.w,
-                          height: 11.w,
+                          width: 14.w,
+                          height: 12.w,
                           colorFilter: const ColorFilter.mode(
-                            AppColors.white,
+                            AppColors.neutral50,
                             BlendMode.srcIn,
                           ),
                         ),
-                        SizedBox(width: 4.w),
+                        SizedBox(width: 2.w),
                         Text(
                           group.grade,
-                          style: AppTypography.labelSmall(
-                            color: AppColors.white,
-                          ),
+                          style:
+                              AppTypography.labelSmall(
+                                color: AppColors.neutral50,
+                              ).copyWith(
+                                fontWeight: AppTypography.semiBold,
+                                fontSize: 12.sp,
+                              ),
                         ),
                       ],
                     ),
@@ -87,117 +104,120 @@ class SubjectGroupCard extends StatelessWidget {
               ),
             ),
 
-            // ── White card body ──────────────────────────────────────────
-            Padding(
-              padding: EdgeInsets.all(14.w),
+            Container(
+              margin: EdgeInsets.only(top: 56.h),
+              decoration: BoxDecoration(
+                color: LightModeColors.surfacePrimary,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(AppRadius.radiusLg.r),
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     group.teacherName,
-                    style: AppTypography.bodySmall(
-                      color: LightModeColors.textSecondary,
-                    ),
+                    style:
+                        AppTypography.bodySmall(
+                          color: LightModeColors.textSecondary,
+                        ).copyWith(
+                          fontWeight: AppTypography.regular,
+                          fontSize: 12.sp,
+                        ),
                   ),
-
-                  SizedBox(height: 2.h),
-
-                  // Course name + right arrow SVG
                   Row(
                     children: [
                       Expanded(
                         child: Text(
                           group.name,
-                          style: AppTypography.h6(
-                            color: LightModeColors.textPrimary,
-                          ),
+                          style:
+                              AppTypography.labelLarge(
+                                color: LightModeColors.textPrimary,
+                              ).copyWith(
+                                fontWeight: AppTypography.semiBold,
+                                fontSize: 20.sp,
+                              ),
                         ),
                       ),
                       SvgPicture.asset(
                         'assets/icons/right_arrow_ios.svg',
-                        width: 18.w,
-                        height: 18.w,
+                        width: 24.w,
+                        height: 24.w,
                         colorFilter: const ColorFilter.mode(
-                          LightModeColors.textSecondary,
+                          ButtonColors.ghostText,
                           BlendMode.srcIn,
                         ),
                       ),
                     ],
                   ),
-
-                  SizedBox(height: 8.h),
-
-                  // Stats row — people_outline + book SVGs, both orange
+                  SizedBox(height: 12.h),
+                  // Stats Row
                   Row(
                     children: [
                       SvgPicture.asset(
                         'assets/icons/people_outline.svg',
-                        width: 13.w,
-                        height: 13.w,
+                        width: 16.w,
+                        height: 16.w,
                         colorFilter: const ColorFilter.mode(
                           AppColors.brandSecondary500,
                           BlendMode.srcIn,
                         ),
                       ),
-                      SizedBox(width: 3.w),
+                      SizedBox(width: 1.w),
                       Text(
                         '${group.studentCount} students',
                         style: AppTypography.bodySmall(
                           color: AppColors.brandSecondary500,
-                        ).copyWith(fontWeight: FontWeight.w600),
+                        ).copyWith(fontWeight: AppTypography.regular),
                       ),
                       SizedBox(width: 14.w),
                       SvgPicture.asset(
                         'assets/icons/book_icon.svg',
-                        width: 13.w,
-                        height: 13.w,
+                        width: 16.w,
+                        height: 16.w,
                         colorFilter: const ColorFilter.mode(
                           AppColors.brandSecondary500,
                           BlendMode.srcIn,
                         ),
                       ),
-                      SizedBox(width: 3.w),
+                      SizedBox(width: 1.w),
                       Text(
                         group.lessonProgressLabel,
                         style: AppTypography.bodySmall(
                           color: AppColors.brandSecondary500,
-                        ).copyWith(fontWeight: FontWeight.w600),
+                        ).copyWith(fontWeight: AppTypography.regular),
                       ),
                     ],
                   ),
-
-                  SizedBox(height: 10.h),
-
+                  SizedBox(height: 12.h),
+                  // Progress Row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Your progress',
-                        style: AppTypography.bodySmall(
+                        "Your progress",
+                        style: AppTypography.bodyMedium(
                           color: LightModeColors.textSecondary,
-                        ),
+                        ).copyWith(fontWeight: AppTypography.regular),
                       ),
                       Text(
-                        '${(group.progressPercent * 100).round()}%',
-                        style: AppTypography.labelRegular(
-                          color: AppColors.brandPrimary700,
-                        ),
+                        "${(group.progressPercent * 100).round()}%",
+                        style: AppTypography.bodyMedium(
+                          color: LightModeColors.textPrimary,
+                        ).copyWith(fontWeight: AppTypography.regular),
                       ),
                     ],
                   ),
-
-                  SizedBox(height: 5.h),
-
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4.r),
-                    child: LinearProgressIndicator(
-                      value: group.progressPercent,
-                      minHeight: 6.h,
-                      backgroundColor: AppColors.neutral200,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        AppColors.brandPrimary800,
-                      ),
-                    ),
+                  SizedBox(height: 4.h),
+                  LinearProgressIndicator(
+                    value: group.progressPercent,
+                    minHeight: 8.h,
+                    backgroundColor: AppColors.brandPrimary100,
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.brandPrimary700,
+                    ), // Dark Navy
+                    borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
                   ),
                 ],
               ),

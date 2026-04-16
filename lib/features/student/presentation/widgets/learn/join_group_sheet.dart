@@ -6,6 +6,7 @@ import 'package:elara/features/student/presentation/cubits/learn/student_learn_s
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 /// "Join a Group" modal dialog overlay.
 ///
@@ -16,30 +17,29 @@ class JoinGroupDialog extends StatefulWidget {
   /// Convenience method — launches the dialog above everything including
   /// the bottom nav bar. [cubit] must be passed since the dialog is
   /// rendered in a new overlay route outside the current BlocProvider tree.
-  static Future<void> show(
-    BuildContext context,
-    StudentLearnCubit cubit,
-  ) {
+  static Future<void> show(BuildContext context, StudentLearnCubit cubit) {
     return showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Join Group',
-      barrierColor: Colors.black.withValues(alpha: 0.5),
+      barrierColor: AppColors.neutral900.withValues(alpha: 0.5),
       transitionDuration: const Duration(milliseconds: 280),
-      pageBuilder: (ctx, _, __) => BlocProvider.value(
-        value: cubit,
-        child: const JoinGroupDialog(),
-      ),
+      pageBuilder: (ctx, _, __) =>
+          BlocProvider.value(value: cubit, child: const JoinGroupDialog()),
       transitionBuilder: (ctx, animation, _, child) {
         return FadeTransition(
           opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
           child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 0.12),
-              end: Offset.zero,
-            ).animate(
-              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-            ),
+            position:
+                Tween<Offset>(
+                  begin: const Offset(0, 0.12),
+                  end: Offset.zero,
+                ).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ),
             child: child,
           ),
         );
@@ -69,7 +69,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Successfully joined the group! 🎉'),
+              content: Text('Successfully joined the group!'),
               backgroundColor: AppColors.success500,
               behavior: SnackBarBehavior.floating,
             ),
@@ -89,7 +89,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
           color: Colors.transparent,
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 24.w),
-            padding: EdgeInsets.fromLTRB(24.w, 24.h, 24.w, 28.h),
+            padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
               color: LightModeColors.surfacePrimary,
               borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
@@ -115,28 +115,22 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                         'Join a Group',
                         style: AppTypography.h5(
                           color: LightModeColors.textPrimary,
-                        ),
+                        ).copyWith(fontWeight: AppTypography.extraBold),
                       ),
                       GestureDetector(
                         onTap: () => Navigator.of(context).pop(),
-                        child: Container(
-                          width: 32.w,
-                          height: 32.w,
-                          decoration: const BoxDecoration(
-                            color: AppColors.neutral100,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.close_rounded,
-                            size: 16.sp,
-                            color: LightModeColors.textSecondary,
+                        child: SvgPicture.asset(
+                          'assets/icons/clear_icon.svg',
+                          width: 10.w,
+                          height: 10.w,
+                          colorFilter: const ColorFilter.mode(
+                            LightModeColors.textPrimary,
+                            BlendMode.srcIn,
                           ),
                         ),
                       ),
                     ],
                   ),
-
-                  SizedBox(height: 6.h),
 
                   Text(
                     'Enter the group code provided by your teacher',
@@ -145,64 +139,48 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                     ),
                   ),
 
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 16.h),
 
-                  // ── Code input ────────────────────────────────────────
+                  // ── Code input ─
                   TextFormField(
                     controller: _codeController,
+                    textAlign: TextAlign.center,
                     textCapitalization: TextCapitalization.characters,
                     textInputAction: TextInputAction.done,
                     style: AppTypography.bodyMedium(
                       color: LightModeColors.textPrimary,
-                    ),
+                    ).copyWith(fontWeight: AppTypography.regular),
                     decoration: InputDecoration(
-                      hintText: 'Enter group code (e.g., ABCD1234)',
-                      hintStyle: AppTypography.bodySmall(
-                        color: LightModeColors.textSecondary,
-                      ),
                       filled: true,
                       fillColor: LightModeColors.surfaceApp,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 14.w,
-                        vertical: 14.h,
+                        horizontal: 12.w,
+                        vertical: 8.h,
                       ),
+                      hintText: 'Enter group code (e.g., ABCD1234)',
+                      hintStyle: AppTypography.bodySmall(
+                        color: LightModeColors.textSecondary,
+                      ).copyWith(fontWeight: AppTypography.regular),
+
                       border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppRadius.radiusMd.r),
-                        borderSide: const BorderSide(
-                          color: LightModeColors.borderDefault,
-                        ),
+                        borderRadius: BorderRadius.circular(
+                          100,
+                        ), // Full pill shape
+                        borderSide: BorderSide.none,
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppRadius.radiusMd.r),
-                        borderSide: const BorderSide(
-                          color: LightModeColors.borderDefault,
-                          width: 2,
-                        ),
+                        borderRadius: BorderRadius.circular(100),
+                        borderSide: BorderSide.none,
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppRadius.radiusMd.r),
-                        borderSide: const BorderSide(
-                          color: LightModeColors.borderFocused,
-                          width: 2,
-                        ),
+                        borderRadius: BorderRadius.circular(100),
+                        borderSide: BorderSide.none,
                       ),
                       errorBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppRadius.radiusMd.r),
+                        borderRadius: BorderRadius.circular(100),
                         borderSide: const BorderSide(
-                          color: AppColors.error500,
-                          width: 2,
-                        ),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppRadius.radiusMd.r),
-                        borderSide: const BorderSide(
-                          color: AppColors.error500,
-                          width: 2,
+                          color: Colors.red,
+                          width: 1,
                         ),
                       ),
                     ),
@@ -217,38 +195,47 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                     },
                   ),
 
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 8.h),
 
                   // ── Join button ───────────────────────────────────────
                   BlocBuilder<StudentLearnCubit, StudentLearnState>(
                     builder: (context, state) {
                       final isJoining = state is StudentLearnJoining;
-                      return SizedBox(
+                      return Container(
                         width: double.infinity,
-                        height: 48.h,
+                        height: 24.h,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            AppRadius.radiusFull.r,
+                          ),
+                        ),
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ButtonColors.primaryDefault,
+                            foregroundColor: ButtonColors.primaryText,
+                            elevation: 0,
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.radiusFull.r,
+                              ),
+                            ),
+                          ),
                           onPressed: isJoining
                               ? null
                               : () {
                                   if (_formKey.currentState!.validate()) {
                                     context.read<StudentLearnCubit>().joinGroup(
-                                          _codeController.text.trim(),
-                                        );
+                                      _codeController.text.trim(),
+                                    );
                                   }
                                 },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.brandPrimary500,
-                            disabledBackgroundColor: AppColors.brandPrimary200,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(AppRadius.radiusMd.r),
-                            ),
-                          ),
                           child: isJoining
                               ? SizedBox(
-                                  width: 20.w,
-                                  height: 20.w,
+                                  width: 16.w,
+                                  height: 16.w,
                                   child: const CircularProgressIndicator(
                                     color: AppColors.white,
                                     strokeWidth: 2,
@@ -256,8 +243,8 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                                 )
                               : Text(
                                   'Join Group',
-                                  style: AppTypography.button(
-                                    color: AppColors.white,
+                                  style: AppTypography.labelSmall(
+                                    color: ButtonColors.primaryText,
                                   ),
                                 ),
                         ),
