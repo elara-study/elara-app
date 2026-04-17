@@ -9,6 +9,7 @@ import 'package:elara/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
@@ -40,7 +41,7 @@ class SignInScreen extends StatelessWidget {
 
           return SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingLg.w),
               child: Form(
                 key: formKey,
                 child: Column(
@@ -53,7 +54,7 @@ class SignInScreen extends StatelessWidget {
                       subtitle: 'Sign in to start your study journey',
                     ),
 
-                    SizedBox(height: 36.h),
+                    SizedBox(height: AppSpacing.spacing4xl.h),
 
                     // Email
                     AuthTextField(
@@ -73,7 +74,7 @@ class SignInScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 8.h),
+                    SizedBox(height: AppSpacing.spacingSm.h),
 
                     // Password
                     AuthTextField(
@@ -98,7 +99,7 @@ class SignInScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 4.h),
+                    SizedBox(height: AppSpacing.spacingXs.h),
 
                     // Forgot password
                     Align(
@@ -119,7 +120,7 @@ class SignInScreen extends StatelessWidget {
                       ),
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: AppSpacing.spacingLg.h),
 
                     AuthPrimaryButton(
                       label: 'Sign in',
@@ -135,7 +136,7 @@ class SignInScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: AppSpacing.spacingLg.h),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

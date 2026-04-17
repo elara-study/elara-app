@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 class LearnScreen extends StatelessWidget {
   const LearnScreen({super.key});
@@ -22,41 +23,35 @@ class LearnScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: LightModeColors.surfaceApp,
       extendBodyBehindAppBar: true,
-      appBar: AppGlassHeader(
-        title: Text(
-          'Learn',
-          style: AppTypography.h4(
-            font: "Comfortaa",
-            color: LightModeColors.textPrimary,
-          ).copyWith(fontWeight: AppTypography.bold),
-        ),
+      appBar: const AppGlassHeader(
+        title: 'Learn',
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(
-          left: 16.w,
-          right: 16.w,
+          left: AppSpacing.spacingLg.w,
+          right: AppSpacing.spacingLg.w,
           top: kToolbarHeight + 62.h,
-          bottom: 120.h,
+          bottom: 120.w,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _MyGroupsHeaderRow(onJoin: () => _openJoinSheet(context)),
-            SizedBox(height: 24.h),
+            SizedBox(height: AppSpacing.spacing2xl.h),
             BlocBuilder<StudentLearnCubit, StudentLearnState>(
               builder: (context, state) {
                 if (state is StudentLearnLoading ||
                     state is StudentLearnInitial) {
                   return Center(
                     child: Padding(
-                      padding: EdgeInsets.only(top: 40.h),
+                      padding: EdgeInsets.only(top: AppSpacing.spacing5xl.h),
                       child: const CircularProgressIndicator(),
                     ),
                   );
                 }
                 if (state is StudentLearnError) {
                   return Padding(
-                    padding: EdgeInsets.only(top: 40.h),
+                    padding: EdgeInsets.only(top: AppSpacing.spacing5xl.h),
                     child: _ErrorView(
                       message: state.message,
                       onRetry: () =>
@@ -67,7 +62,7 @@ class LearnScreen extends StatelessWidget {
                 if (state is StudentLearnLoaded) {
                   if (state.groups.isEmpty) {
                     return Padding(
-                      padding: EdgeInsets.only(top: 40.h),
+                      padding: EdgeInsets.only(top: AppSpacing.spacing5xl.h),
                       child: _EmptyGroupsView(
                         onJoin: () => _openJoinSheet(context),
                       ),
@@ -78,11 +73,15 @@ class LearnScreen extends StatelessWidget {
                     shrinkWrap: true,
                     padding: EdgeInsets.zero,
                     itemCount: state.groups.length,
-                    separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                    separatorBuilder: (_, __) => SizedBox(height: AppSpacing.spacingMd.h),
                     itemBuilder: (_, index) => SubjectGroupCard(
                       group: state.groups[index],
                       onTap: () {
-                        // TODO: Navigate to group detail
+                        Navigator.pushNamed(
+                          context,
+                          '/student-group',
+                          arguments: state.groups[index].id,
+                        );
                       },
                     ),
                   );
@@ -129,8 +128,8 @@ class _MyGroupsHeaderRow extends StatelessWidget {
           onPressed: onJoin,
           icon: SvgPicture.asset(
             'assets/icons/join_icon.svg',
-            width: 16.w,
-            height: 16.w,
+            width: AppSpacing.spacingLg.w,
+            height: AppSpacing.spacingLg.w,
             colorFilter: const ColorFilter.mode(
               ButtonColors.outlineText,
               BlendMode.srcIn,
@@ -168,7 +167,7 @@ class _EmptyGroupsView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.groups_outlined, size: 52.sp, color: AppColors.neutral300),
-          SizedBox(height: 12.h),
+          SizedBox(height: AppSpacing.spacingMd.h),
           Text(
             'No groups yet',
             style: AppTypography.h6(color: LightModeColors.textPrimary),
@@ -181,7 +180,7 @@ class _EmptyGroupsView extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: AppSpacing.spacingXl.h),
           ElevatedButton.icon(
             onPressed: onJoin,
             icon: SvgPicture.asset(
@@ -230,7 +229,7 @@ class _ErrorView extends StatelessWidget {
             size: 48.sp,
             color: AppColors.neutral300,
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.spacingLg.h),
           Text(
             message,
             style: AppTypography.bodyMedium(
@@ -238,7 +237,7 @@ class _ErrorView extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: AppSpacing.spacingXl.h),
           TextButton(
             onPressed: onRetry,
             child: Text(

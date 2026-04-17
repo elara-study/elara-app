@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 /// Floating pill-shaped bottom navigation bar.
 ///
@@ -32,8 +33,15 @@ class AppBottomNavBar extends StatelessWidget {
       top: false,
       child: Container(
         // Floating white pill card
-        margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 24.h),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        margin: EdgeInsets.only(
+          left: AppSpacing.spacingLg.w,
+          right: AppSpacing.spacingLg.w,
+          bottom: AppSpacing.spacing2xl.h,
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.spacingLg.w,
+          vertical: AppSpacing.spacingMd.h,
+        ),
         decoration: BoxDecoration(
           color: LightModeColors.surfacePrimaryAlpha80,
           borderRadius: BorderRadius.circular(28.r),
@@ -65,12 +73,16 @@ class AppBottomNavBar extends StatelessWidget {
                 onTap: () => onTap(index),
                 behavior: HitTestBehavior.opaque,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SvgPicture.asset(
-                      tab.assetPath,
-                      width: 22.r,
-                      height: 22.r,
+                      isActive
+                          ? tab.assetPath.replaceAll('.svg', '_filled.svg')
+                          : tab.assetPath,
+                      width: 20.w,
+                      height: 17.w,
+                      fit: BoxFit.contain,
                       colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                     ),
                     SizedBox(height: 3.h),

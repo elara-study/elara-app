@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 /// Home screen top bar — elara SVG wordmark + notification badge chip + points chip.
 class HomeHeader extends StatelessWidget {
@@ -37,7 +38,7 @@ class HomeHeader extends StatelessWidget {
           color: AppColors.brandSecondary500,
         ),
 
-        SizedBox(width: 8.w),
+        SizedBox(width: AppSpacing.spacingSm.w),
 
         //   Points chip
         _HeaderChip(
@@ -64,7 +65,7 @@ class _HeaderChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingMd.w, vertical: AppSpacing.spacingSm.h),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadius.radiusFull),
@@ -78,7 +79,7 @@ class _HeaderChip extends StatelessWidget {
             height: 13.w,
             colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
           ),
-          SizedBox(width: 4.w),
+          SizedBox(width: AppSpacing.spacingXs.w),
           Text(label, style: AppTypography.labelRegular(color: color)),
         ],
       ),

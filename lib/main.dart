@@ -29,8 +29,8 @@ class Elara extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: ThemeMode.dark,
-            initialRoute: AppRoutes.studentGroup,
+            // themeMode: ThemeMode.dark,
+            //initialRoute: AppRoutes.studentGroup,
             onGenerateRoute: AppRoutes.generateRoute,
           ),
         );

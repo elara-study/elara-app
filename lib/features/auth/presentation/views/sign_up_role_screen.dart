@@ -8,6 +8,7 @@ import 'package:elara/features/auth/presentation/widgets/role_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 class SignUpRoleScreen extends StatefulWidget {
   const SignUpRoleScreen({super.key});
@@ -38,7 +39,7 @@ class _SignUpRoleScreenState extends State<SignUpRoleScreen> {
       backgroundColor: AppColors.brandPrimary100,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingLg.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -49,11 +50,11 @@ class _SignUpRoleScreenState extends State<SignUpRoleScreen> {
                 subtitle: 'Sign up to start your study journey',
               ),
 
-              SizedBox(height: 36.h),
+              SizedBox(height: AppSpacing.spacing4xl.h),
 
               ...UserRole.values.map(
                 (role) => Padding(
-                  padding: EdgeInsets.only(bottom: 16.h),
+                  padding: EdgeInsets.only(bottom: AppSpacing.spacingLg.h),
                   child: RoleCard(
                     role: role,
                     isSelected: _selectedRole == role,
@@ -62,7 +63,7 @@ class _SignUpRoleScreenState extends State<SignUpRoleScreen> {
                 ),
               ),
 
-              SizedBox(height: 20.h),
+              SizedBox(height: AppSpacing.spacingXl.h),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

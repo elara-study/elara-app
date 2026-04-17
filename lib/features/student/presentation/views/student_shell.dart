@@ -11,6 +11,7 @@ import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 /// Root shell for the Student dashboard.
 ///
@@ -78,11 +79,7 @@ class _ComingSoonPage extends StatelessWidget {
       backgroundColor: LightModeColors.surfaceApp,
       extendBodyBehindAppBar: true,
       appBar: AppGlassHeader(
-        title: Text(
-          label,
-          style: AppTypography.h5(color: LightModeColors.textPrimary)
-              .copyWith(fontWeight: FontWeight.bold),
-        ),
+        title: label,
       ),
       body: Center(
         child: Column(
@@ -93,7 +90,7 @@ class _ComingSoonPage extends StatelessWidget {
               size: 48.sp,
               color: AppColors.neutral300,
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: AppSpacing.spacingMd.h),
             Text(
               label,
               style: AppTypography.h5(color: LightModeColors.textPrimary),

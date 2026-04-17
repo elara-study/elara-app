@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 /// "Join a Group" modal dialog overlay.
 ///
@@ -88,8 +89,8 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
         child: Material(
           color: Colors.transparent,
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 24.w),
-            padding: EdgeInsets.all(16.w),
+            margin: EdgeInsets.symmetric(horizontal: AppSpacing.spacing2xl.w),
+            padding: EdgeInsets.all(AppSpacing.spacingLg.w),
             decoration: BoxDecoration(
               color: LightModeColors.surfacePrimary,
               borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
@@ -139,7 +140,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                     ),
                   ),
 
-                  SizedBox(height: 16.h),
+                  SizedBox(height: AppSpacing.spacingLg.h),
 
                   // ── Code input ─
                   TextFormField(
@@ -154,8 +155,8 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                       filled: true,
                       fillColor: LightModeColors.surfaceApp,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 8.h,
+                        horizontal: AppSpacing.spacingMd.w,
+                        vertical: AppSpacing.spacingSm.h,
                       ),
                       hintText: 'Enter group code (e.g., ABCD1234)',
                       hintStyle: AppTypography.bodySmall(
@@ -195,7 +196,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                     },
                   ),
 
-                  SizedBox(height: 8.h),
+                  SizedBox(height: AppSpacing.spacingSm.h),
 
                   // ── Join button ───────────────────────────────────────
                   BlocBuilder<StudentLearnCubit, StudentLearnState>(
@@ -203,7 +204,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                       final isJoining = state is StudentLearnJoining;
                       return Container(
                         width: double.infinity,
-                        height: 24.h,
+                        height: AppSpacing.spacing2xl.h,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
                             AppRadius.radiusFull.r,
@@ -234,8 +235,8 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                                 },
                           child: isJoining
                               ? SizedBox(
-                                  width: 16.w,
-                                  height: 16.w,
+                                  width: AppSpacing.spacingLg.w,
+                                  height: AppSpacing.spacingLg.w,
                                   child: const CircularProgressIndicator(
                                     color: AppColors.white,
                                     strokeWidth: 2,

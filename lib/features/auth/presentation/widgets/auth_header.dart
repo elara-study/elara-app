@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 /// Molecule: Elara logo + screen title + subtitle
 class AuthHeader extends StatelessWidget {
@@ -20,7 +21,7 @@ class AuthHeader extends StatelessWidget {
           width: 164.w,
           height: 96.83.w,
         ),
-        SizedBox(height: 36.h),
+        SizedBox(height: AppSpacing.spacing4xl.h),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -30,7 +31,7 @@ class AuthHeader extends StatelessWidget {
                 color: LightModeColors.textPrimary,
               ).copyWith(fontFamily: AppTypography.comfortaa),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: AppSpacing.spacingSm.h),
             Text(
               subtitle,
               style: AppTypography.bodyLarge(

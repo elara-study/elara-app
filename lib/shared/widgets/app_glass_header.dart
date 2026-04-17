@@ -1,13 +1,15 @@
 import 'dart:ui';
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
 class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
-  final Widget title;
+  final String title;
   final List<Widget>? actions;
   final Widget? leading;
   final double height;
   final bool showDivider;
+  final bool automaticallyImplyLeading;
 
   const AppGlassHeader({
     super.key,
@@ -16,6 +18,7 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.height = kToolbarHeight,
     this.showDivider = true,
+    this.automaticallyImplyLeading = false,
   });
 
   @override
@@ -28,7 +31,13 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
           surfaceTintColor: Colors.transparent, // Prevents Material 3 tinting overlay
           elevation: 0,
           leading: leading,
-          title: title,
+          automaticallyImplyLeading: automaticallyImplyLeading,
+          title: Text(
+            title,
+            style: AppTypography.h5(
+              color: LightModeColors.textPrimary,
+            ).copyWith(fontWeight: FontWeight.bold),
+          ),
           actions: actions,
           centerTitle: false,
           bottom: showDivider

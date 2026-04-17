@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 List<BoxShadow> _selectionGlow(Color primaryColor) => [
   BoxShadow(
@@ -84,7 +85,7 @@ class AppActionCard extends StatelessWidget {
 
             // Content row
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingLg.w, vertical: AppSpacing.spacing2xl.h),
               child: Row(
                 children: [
                   // Leading icon circle
@@ -95,20 +96,19 @@ class AppActionCard extends StatelessWidget {
                       color: primaryColor,
                       shape: BoxShape.circle,
                     ),
-                     child: SvgPicture.asset(
+                    child: SvgPicture.asset(
                       'assets/icons/people_outline.svg',
-                      width: 20.w,
-                      height: 20.w,
+                      width: AppSpacing.spacingXl.w,
+                      height: AppSpacing.spacingXl.w,
                       fit: BoxFit.scaleDown,
                       colorFilter: const ColorFilter.mode(
                         AppColors.neutral50,
                         BlendMode.srcIn,
                       ),
                     ),
-                     child: Icon(icon, color: AppColors.neutral50, size: 20.sp),
-                   ),
+                  ),
 
-                  SizedBox(width: 12.w),
+                  SizedBox(width: AppSpacing.spacingMd.w),
 
                   // Title + subtitle
                   Expanded(
@@ -133,8 +133,8 @@ class AppActionCard extends StatelessWidget {
 
                   // Glowing arrow button
                   Container(
-                    width: 36.w,
-                    height: 36.w,
+                    width: AppSpacing.spacing4xl.w,
+                    height: AppSpacing.spacing4xl.w,
                     decoration: BoxDecoration(
                       color: ButtonColors.secondaryReversedDefault,
                       shape: BoxShape.circle,

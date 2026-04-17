@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 ///   full-width primary button with loading state
 class AuthPrimaryButton extends StatelessWidget {
@@ -23,11 +24,10 @@ class AuthPrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 40.h,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 0),
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.spacingMd.h),
           backgroundColor: ButtonColors.primaryDefault,
           foregroundColor: ButtonColors.primaryText,
           disabledBackgroundColor: AppColors.brandPrimary200,
@@ -38,8 +38,8 @@ class AuthPrimaryButton extends StatelessWidget {
         ),
         child: isLoading
             ? SizedBox(
-                height: 20.h,
-                width: 20.h,
+                height: AppSpacing.spacingXl.h,
+                width: AppSpacing.spacingXl.h,
                 child: const CircularProgressIndicator(
                   strokeWidth: 2.5,
                   valueColor: AlwaysStoppedAnimation<Color>(
@@ -49,7 +49,6 @@ class AuthPrimaryButton extends StatelessWidget {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                // mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     label,
@@ -58,7 +57,7 @@ class AuthPrimaryButton extends StatelessWidget {
                     ),
                   ),
                   if (icon != null) ...[
-                    SizedBox(width: 8.w),
+                    SizedBox(width: AppSpacing.spacingSm.w),
                     Icon(icon, size: 16.sp),
                   ],
                 ],

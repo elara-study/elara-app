@@ -7,13 +7,13 @@ import 'package:elara/features/student/presentation/cubits/home/student_home_cub
 import 'package:elara/features/student/presentation/cubits/home/student_home_state.dart';
 import 'package:elara/features/student/presentation/widgets/home/continue_learning_card.dart';
 import 'package:elara/features/student/presentation/widgets/home/daily_goal_item.dart';
-import 'package:elara/features/student/presentation/widgets/home/home_header.dart';
 import 'package:elara/shared/widgets/app_action_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -42,10 +42,21 @@ class HomeScreen extends StatelessWidget {
             backgroundColor: LightModeColors.surfacePrimary,
             extendBodyBehindAppBar: true,
             appBar: AppGlassHeader(
-              title: HomeHeader(
-                notificationCount: state.profile.notificationCount,
-                points: state.profile.points,
-              ),
+              title: 'elara',
+              actions: [
+                _HeaderChip(
+                  iconAsset: 'assets/icons/fire_icon.svg',
+                  label: '${state.profile.notificationCount}',
+                  color: AppColors.brandSecondary500,
+                ),
+                SizedBox(width: AppSpacing.spacingSm.w),
+                _HeaderChip(
+                  iconAsset: 'assets/icons/rewards_icon.svg',
+                  label: '${state.profile.points}',
+                  color: AppColors.brandPrimary500,
+                ),
+                SizedBox(width: AppSpacing.spacingLg.w),
+              ],
             ),
             body: _HomeContent(state: state),
           );
@@ -76,15 +87,15 @@ class _HomeContent extends StatelessWidget {
 
     return SingleChildScrollView(
       padding: EdgeInsets.only(
-        left: 16.w,
-        right: 16.w,
+        left: AppSpacing.spacingLg.w,
+        right: AppSpacing.spacingLg.w,
         top: kToolbarHeight + 62.h,
-        bottom: 120.h,
+        bottom: 120.w,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //SizedBox(height: 20.h),
+          //SizedBox(height: AppSpacing.spacingXl.h),
           Text(
             '$_greeting, ${state.profile.firstName}!',
             style: AppTypography.h3(
@@ -92,7 +103,7 @@ class _HomeContent extends StatelessWidget {
             ).copyWith(fontWeight: AppTypography.black, fontSize: 25.sp),
           ),
 
-          SizedBox(height: 2.h),
+          SizedBox(height: AppSpacing.spacing2xs.h),
 
           Text(
             'Ready to continue your learning journey?',
@@ -101,7 +112,7 @@ class _HomeContent extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: AppSpacing.spacing2xl.h),
 
           ContinueLearningCard(
             progress: state.continuelearning,
@@ -110,7 +121,7 @@ class _HomeContent extends StatelessWidget {
             },
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: AppSpacing.spacing2xl.h),
 
           // ── Daily Goals ──────────────────────────────────────────────────
           Row(
@@ -131,12 +142,12 @@ class _HomeContent extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: AppSpacing.spacingLg.h),
 
           // All goals inside one white card
           Container(
             width: double.infinity,
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(AppSpacing.spacingLg.w),
             decoration: BoxDecoration(
               color: LightModeColors.surfacePrimary,
               borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
@@ -160,7 +171,7 @@ class _HomeContent extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: AppSpacing.spacing2xl.h),
 
           // ── My Groups ────────────────────────────────────────────────────
           Row(
@@ -184,8 +195,8 @@ class _HomeContent extends StatelessWidget {
                     ),
                     SvgPicture.asset(
                       'assets/icons/right_arrow_ios.svg',
-                      width: 16.w,
-                      height: 16.w,
+                      width: AppSpacing.spacingLg.w,
+                      height: AppSpacing.spacingLg.w,
                       colorFilter: const ColorFilter.mode(
                         ButtonColors.ghostText,
                         BlendMode.srcIn,
@@ -197,23 +208,29 @@ class _HomeContent extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 12.h),
+          SizedBox(height: AppSpacing.spacingMd.h),
 
           ...previewGroups.map(
             (group) => Padding(
-              padding: EdgeInsets.only(bottom: 12.h),
+              padding: EdgeInsets.only(bottom: AppSpacing.spacingMd.h),
               child: AppActionCard(
                 title: group.name,
                 subtitle: '${(group.progressPercent * 100).round()}% complete',
                 icon: _iconForGroup(group),
                 primaryColor: _primaryColor(group),
                 secondaryColor: _secondaryColor(group),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/student-group',
+                    arguments: group.id,
+                  );
+                },
               ),
             ),
           ),
 
-          SizedBox(height: 8.h),
+          SizedBox(height: AppSpacing.spacingSm.h),
         ],
       ),
     );
@@ -274,7 +291,7 @@ class _ErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(24.w),
+        padding: EdgeInsets.all(AppSpacing.spacing2xl.w),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -283,7 +300,7 @@ class _ErrorView extends StatelessWidget {
               size: 48.sp,
               color: AppColors.neutral300,
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: AppSpacing.spacingLg.h),
             Text(
               message,
               style: AppTypography.bodyMedium(
@@ -291,7 +308,7 @@ class _ErrorView extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: AppSpacing.spacingXl.h),
             TextButton(
               onPressed: onRetry,
               child: Text(
@@ -301,6 +318,42 @@ class _ErrorView extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _HeaderChip extends StatelessWidget {
+  final String iconAsset;
+  final String label;
+  final Color color;
+
+  const _HeaderChip({
+    required this.iconAsset,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingMd.w, vertical: AppSpacing.spacingSm.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppRadius.radiusFull),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(
+            iconAsset,
+            width: 10.w,
+            height: 13.w,
+            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          ),
+          SizedBox(width: AppSpacing.spacingXs.w),
+          Text(label, style: AppTypography.labelRegular(color: color)),
+        ],
       ),
     );
   }

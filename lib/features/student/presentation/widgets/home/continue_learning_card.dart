@@ -5,6 +5,7 @@ import 'package:elara/features/student/domain/entities/course_progress_entity.da
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 class ContinueLearningCard extends StatelessWidget {
   final CourseProgressEntity progress;
@@ -23,7 +24,10 @@ class ContinueLearningCard extends StatelessWidget {
           children: [
             const Positioned.fill(child: _DecorativeCircles()),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 16.w),
+              padding: EdgeInsets.symmetric(
+                vertical: AppSpacing.spacing3xl.h,
+                horizontal: AppSpacing.spacingLg.w,
+              ),
               child: Row(
                 children: [
                   Expanded(child: _CardContent(progress: progress)),
@@ -55,20 +59,22 @@ class _DecorativeCircles extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        _circle(right: -62.w, top: -64.h, alpha: 0.2),
-        _circle(right: 280.w, bottom: -55.h, alpha: 0.09),
+        _circle(right: -40, top: -40, alpha: 0.2),
+        _circle(left: -20, bottom: -50, alpha: 0.09),
       ],
     );
   }
 
   Widget _circle({
     double? right,
+    double? left,
     double? top,
     double? bottom,
     required double alpha,
   }) {
     return Positioned(
       right: right,
+      left: left,
       top: top,
       bottom: bottom,
       child: Container(
@@ -95,7 +101,7 @@ class _CardContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _CaptionRow(),
-        SizedBox(height: 12.h),
+        SizedBox(height: AppSpacing.spacingMd.h),
 
         Text(
           progress.courseName,
@@ -104,11 +110,11 @@ class _CardContent extends StatelessWidget {
           ).copyWith(fontWeight: FontWeight.w900),
         ),
 
-        SizedBox(height: 12.h),
+        SizedBox(height: AppSpacing.spacingMd.h),
 
         _LessonRow(progress: progress),
 
-        SizedBox(height: 4.h),
+        SizedBox(height: AppSpacing.spacingXs.h),
         _ProgressBar(progress: progress),
       ],
     );
@@ -132,7 +138,7 @@ class _CaptionRow extends StatelessWidget {
             BlendMode.srcIn,
           ),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: AppSpacing.spacingSm.w),
         Text(
           'Continue where you left off',
           style: AppTypography.bodyMedium(color: AppColors.neutral200),
@@ -151,13 +157,12 @@ class _LessonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           progress.lessonLabel,
           style: AppTypography.bodyMedium(color: AppColors.neutral50),
         ),
-        SizedBox(width: 88.w),
         Text(
           '${(progress.progressPercent * 100).round()}%',
           style: AppTypography.bodyMedium(color: AppColors.neutral50),
@@ -176,12 +181,12 @@ class _ProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 218.w,
+      width: double.infinity,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
         child: LinearProgressIndicator(
           value: progress.progressPercent,
-          minHeight: 8.h,
+          minHeight: AppSpacing.spacingSm.h,
           backgroundColor: AppColors.brandPrimary100.withValues(alpha: 0.5),
           valueColor: const AlwaysStoppedAnimation<Color>(
             AppColors.brandPrimary700,

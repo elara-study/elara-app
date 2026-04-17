@@ -5,6 +5,7 @@ import 'package:elara/features/student/domain/entities/daily_goal_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 class DailyGoalItem extends StatelessWidget {
   final DailyGoalEntity goal;
@@ -53,7 +54,7 @@ class DailyGoalItem extends StatelessWidget {
             ),
           ),
 
-          SizedBox(width: 12.w),
+          SizedBox(width: AppSpacing.spacingMd.w),
 
           // ── Label + progress bar ──────────────────────────────────────
           Expanded(
@@ -73,13 +74,13 @@ class DailyGoalItem extends StatelessWidget {
                       ),
                 ),
 
-                SizedBox(height: 4.h),
+                SizedBox(height: AppSpacing.spacingXs.h),
 
                 ClipRRect(
                   borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
                   child: LinearProgressIndicator(
                     value: _barProgress,
-                    minHeight: 8.h,
+                    minHeight: AppSpacing.spacingSm.h,
                     backgroundColor: AppColors.neutral100,
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       AppColors.brandPrimary700,
@@ -90,7 +91,7 @@ class DailyGoalItem extends StatelessWidget {
             ),
           ),
 
-          SizedBox(width: 12.w),
+          SizedBox(width: AppSpacing.spacingMd.w),
 
           //  ⚡ XP — design icon + text, no pill
           Row(
@@ -98,14 +99,14 @@ class DailyGoalItem extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 'assets/icons/electric_icon.svg',
-                width: 16.w,
-                height: 16.h,
+                width: AppSpacing.spacingLg.w,
+                height: AppSpacing.spacingLg.h,
                 colorFilter: const ColorFilter.mode(
                   AppColors.brandSecondary500,
                   BlendMode.srcIn,
                 ),
               ),
-              SizedBox(width: 4.w),
+              SizedBox(width: AppSpacing.spacingXs.w),
               Text(
                 '+${goal.xpReward}',
                 style: AppTypography.labelRegular(
