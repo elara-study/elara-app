@@ -23,14 +23,14 @@ class HomeScreen extends StatelessWidget {
     return BlocBuilder<StudentHomeCubit, StudentHomeState>(
       builder: (context, state) {
         if (state is StudentHomeLoading || state is StudentHomeInitial) {
-          return const Scaffold(
-            backgroundColor: LightModeColors.surfacePrimary,
-            body: Center(child: CircularProgressIndicator()),
+          return Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            body: const Center(child: CircularProgressIndicator()),
           );
         }
         if (state is StudentHomeError) {
           return Scaffold(
-            backgroundColor: LightModeColors.surfacePrimary,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             body: _ErrorView(
               message: state.message,
               onRetry: () => context.read<StudentHomeCubit>().loadHome(),
@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
         }
         if (state is StudentHomeLoaded) {
           return Scaffold(
-            backgroundColor: LightModeColors.surfacePrimary,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             extendBodyBehindAppBar: true,
             appBar: AppGlassHeader(
               title: 'elara',
@@ -83,6 +83,7 @@ class _HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final previewGroups = state.groups.take(2).toList();
 
     return SingleChildScrollView(
@@ -99,7 +100,7 @@ class _HomeContent extends StatelessWidget {
           Text(
             '$_greeting, ${state.profile.firstName}!',
             style: AppTypography.h3(
-              color: LightModeColors.textPrimary,
+              color: cs.onSurface,
             ).copyWith(fontWeight: AppTypography.black, fontSize: 25.sp),
           ),
 
@@ -108,7 +109,7 @@ class _HomeContent extends StatelessWidget {
           Text(
             'Ready to continue your learning journey?',
             style: AppTypography.bodyLarge(
-              color: LightModeColors.textSecondary,
+              color: cs.onSurfaceVariant,
             ),
           ),
 
@@ -130,13 +131,13 @@ class _HomeContent extends StatelessWidget {
               Text(
                 'Daily Goals',
                 style: AppTypography.h4(
-                  color: LightModeColors.textPrimary,
+                  color: cs.onSurface,
                 ).copyWith(fontWeight: FontWeight.w900),
               ),
               Text(
                 '${state.completedGoalsCount}/${state.dailyGoals.length} completed',
                 style: AppTypography.bodyMedium(
-                  color: LightModeColors.textSecondary,
+                  color: cs.onSurfaceVariant,
                 ),
               ),
             ],
@@ -149,11 +150,11 @@ class _HomeContent extends StatelessWidget {
             width: double.infinity,
             padding: EdgeInsets.all(AppSpacing.spacingLg.w),
             decoration: BoxDecoration(
-              color: LightModeColors.surfacePrimary,
+              color: cs.surface,
               borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.neutral900.withValues(alpha: 0.1),
+                  color: cs.shadow.withValues(alpha: 0.12),
                   blurRadius: 12,
                   offset: const Offset(0, 2),
                 ),
@@ -180,7 +181,7 @@ class _HomeContent extends StatelessWidget {
               Text(
                 'My Groups',
                 style: AppTypography.h4(
-                  color: LightModeColors.textPrimary,
+                  color: cs.onSurface,
                 ).copyWith(fontWeight: FontWeight.w900),
               ),
               GestureDetector(
@@ -289,6 +290,7 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
         padding: EdgeInsets.all(AppSpacing.spacing2xl.w),
@@ -304,7 +306,7 @@ class _ErrorView extends StatelessWidget {
             Text(
               message,
               style: AppTypography.bodyMedium(
-                color: LightModeColors.textSecondary,
+                color: cs.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),

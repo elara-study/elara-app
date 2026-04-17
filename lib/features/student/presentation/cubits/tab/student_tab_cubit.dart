@@ -9,10 +9,13 @@ import 'package:injectable/injectable.dart';
 class StudentTabCubit extends Cubit<int> {
   StudentTabCubit() : super(0);
 
-  void goToTab(int index) => emit(index);
+  void goToTab(int index) {
+    if (isClosed) return;
+    emit(index);
+  }
 
-  void goToLearn() => emit(1);
-  void goToRewards() => emit(2);
-  void goToAlerts() => emit(3);
-  void goToProfile() => emit(4);
+  void goToLearn() => goToTab(1);
+  void goToRewards() => goToTab(2);
+  void goToAlerts() => goToTab(3);
+  void goToProfile() => goToTab(4);
 }

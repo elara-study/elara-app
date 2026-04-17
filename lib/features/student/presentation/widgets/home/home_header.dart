@@ -19,13 +19,14 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Row(
       children: [
         Text(
           'elara',
           style: AppTypography.h5(
             font: "Comfortaa",
-            color: LightModeColors.textPrimary,
+            color: cs.onSurface,
           ).copyWith(fontWeight: FontWeight.bold),
         ),
 

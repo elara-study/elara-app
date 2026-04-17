@@ -11,6 +11,7 @@ class StudentHomeCubit extends Cubit<StudentHomeState> {
 
   /// Loads all Home screen data in a single parallel fetch.
   Future<void> loadHome() async {
+    if (isClosed) return;
     emit(const StudentHomeLoading());
     try {
       // Fire all requests concurrently — no waterfall delays.
@@ -21,6 +22,7 @@ class StudentHomeCubit extends Cubit<StudentHomeState> {
         _repository.getGroups(),
       ]);
 
+      if (isClosed) return;
       emit(
         StudentHomeLoaded(
           profile: results[0] as dynamic,
@@ -30,6 +32,7 @@ class StudentHomeCubit extends Cubit<StudentHomeState> {
         ),
       );
     } catch (e) {
+      if (isClosed) return;
       emit(StudentHomeError(_extractMessage(e)));
     }
   }

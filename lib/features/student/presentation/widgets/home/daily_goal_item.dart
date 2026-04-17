@@ -22,18 +22,18 @@ class DailyGoalItem extends StatelessWidget {
       ? 'assets/icons/rewards_icon.svg' // trophy for completed
       : 'assets/icons/flag_icon.svg'; // flag for incomplete
 
-  Color get _iconColor => goal.isCompleted
-      ? AppColors.brandSecondary500
-      : LightModeColors.textSecondary;
-
-  Color get _iconBg => goal.isCompleted
-      ? AppColors.brandSecondary500.withValues(alpha: 0.20)
-      : LightModeColors.surfaceSecondary;
-
   double get _barProgress => goal.isCompleted ? 1.0 : progressPercent;
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final iconColor = goal.isCompleted
+        ? AppColors.brandSecondary500
+        : cs.onSurfaceVariant;
+    final iconBg = goal.isCompleted
+        ? AppColors.brandSecondary500.withValues(alpha: 0.20)
+        : cs.surfaceContainerHighest;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Row(
@@ -43,13 +43,13 @@ class DailyGoalItem extends StatelessWidget {
           Container(
             width: 44.w,
             height: 44.h,
-            decoration: BoxDecoration(color: _iconBg, shape: BoxShape.circle),
+            decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
             child: Center(
               child: SvgPicture.asset(
                 _iconAsset,
                 width: 15.w,
                 height: 15.w,
-                colorFilter: ColorFilter.mode(_iconColor, BlendMode.srcIn),
+                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
               ),
             ),
           ),
@@ -65,12 +65,12 @@ class DailyGoalItem extends StatelessWidget {
                   goal.label,
                   style:
                       AppTypography.bodyMedium(
-                        color: LightModeColors.textPrimary,
+                        color: cs.onSurface,
                       ).copyWith(
                         decoration: goal.isCompleted
                             ? TextDecoration.lineThrough
                             : TextDecoration.none,
-                        decorationColor: LightModeColors.textPrimary,
+                        decorationColor: cs.onSurface,
                       ),
                 ),
 
@@ -81,7 +81,7 @@ class DailyGoalItem extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: _barProgress,
                     minHeight: AppSpacing.spacingSm.h,
-                    backgroundColor: AppColors.neutral100,
+                    backgroundColor: cs.surfaceContainerHighest,
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       AppColors.brandPrimary700,
                     ),

@@ -26,8 +26,11 @@ class AppTheme {
       onPrimary: ButtonColors.primaryText,
       onSecondary: ButtonColors.secondaryText,
       onSurface: LightModeColors.textPrimary,
+      onSurfaceVariant: LightModeColors.textSecondary,
       onError: AppColors.white,
       outline: LightModeColors.borderDefault,
+      outlineVariant: LightModeColors.borderDivider,
+      shadow: AppColors.neutral900,
     ),
 
     scaffoldBackgroundColor: LightModeColors.surfaceApp,
@@ -202,8 +205,11 @@ class AppTheme {
       onPrimary: ButtonColors.primaryText,
       onSecondary: ButtonColors.secondaryText,
       onSurface: DarkModeColors.textPrimary,
+      onSurfaceVariant: DarkModeColors.textSecondary,
       onError: AppColors.white,
       outline: DarkModeColors.borderDefault,
+      outlineVariant: DarkModeColors.borderDivider,
+      shadow: AppColors.black,
     ),
 
     scaffoldBackgroundColor: DarkModeColors.surfaceApp,

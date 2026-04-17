@@ -21,7 +21,7 @@ class LearnScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: LightModeColors.surfaceApp,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       appBar: const AppGlassHeader(
         title: 'Learn',
@@ -103,6 +103,7 @@ class _MyGroupsHeaderRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,13 +114,13 @@ class _MyGroupsHeaderRow extends StatelessWidget {
             Text(
               'My Groups',
               style: AppTypography.h3(
-                color: LightModeColors.textPrimary,
+                color: cs.onSurface,
               ).copyWith(fontWeight: AppTypography.black),
             ),
             Text(
               'Your enrolled classes',
               style: AppTypography.bodyLarge(
-                color: LightModeColors.textSecondary,
+                color: cs.onSurfaceVariant,
               ).copyWith(fontWeight: AppTypography.regular),
             ),
           ],
@@ -162,6 +163,7 @@ class _EmptyGroupsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -170,13 +172,13 @@ class _EmptyGroupsView extends StatelessWidget {
           SizedBox(height: AppSpacing.spacingMd.h),
           Text(
             'No groups yet',
-            style: AppTypography.h6(color: LightModeColors.textPrimary),
+            style: AppTypography.h6(color: cs.onSurface),
           ),
           SizedBox(height: 6.h),
           Text(
             'Ask your teacher for a group code\nand tap Join to get started.',
             style: AppTypography.bodySmall(
-              color: LightModeColors.textSecondary,
+              color: cs.onSurfaceVariant,
             ),
             textAlign: TextAlign.center,
           ),
@@ -220,6 +222,7 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -233,7 +236,7 @@ class _ErrorView extends StatelessWidget {
           Text(
             message,
             style: AppTypography.bodyMedium(
-              color: LightModeColors.textSecondary,
+              color: cs.onSurfaceVariant,
             ),
             textAlign: TextAlign.center,
           ),

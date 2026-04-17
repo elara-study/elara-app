@@ -16,6 +16,11 @@ class SubjectGroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final topRadius = BorderRadius.only(
+      topLeft: Radius.circular(AppRadius.radiusLg.r),
+      topRight: Radius.circular(AppRadius.radiusLg.r),
+    );
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(32.r),
@@ -29,24 +34,18 @@ class SubjectGroupCard extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          //   The Blue Header Background
           Container(
             height: 86.w,
             width: double.infinity,
-            padding: EdgeInsets.all(AppSpacing.spacingLg.w),
             decoration: BoxDecoration(
-              // color: AppColors.brandPrimary400,
               gradient: const LinearGradient(
                 colors: [AppColors.brandPrimary400, AppColors.brandPrimary500],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(AppRadius.radiusLg.r),
-                topRight: Radius.circular(AppRadius.radiusLg.r),
-              ),
+              borderRadius: topRadius,
             ),
+            padding: EdgeInsets.all(AppSpacing.spacingLg.w),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -59,9 +58,11 @@ class SubjectGroupCard extends StatelessWidget {
                       ),
                 ),
                 const Spacer(),
-                // Grade Chip
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingSm.w, vertical: AppSpacing.spacingXs.w),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacingSm.w,
+                    vertical: AppSpacing.spacingXs.w,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.neutral50.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
@@ -98,7 +99,7 @@ class SubjectGroupCard extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(top: AppSpacing.spacing7xl.w),
             decoration: BoxDecoration(
-              color: LightModeColors.surfacePrimary,
+              color: cs.surface,
               borderRadius: BorderRadius.all(
                 Radius.circular(AppRadius.radiusLg.r),
               ),
@@ -111,7 +112,7 @@ class SubjectGroupCard extends StatelessWidget {
                   group.teacherName,
                   style:
                       AppTypography.bodySmall(
-                        color: LightModeColors.textSecondary,
+                        color: cs.onSurfaceVariant,
                       ).copyWith(
                         fontWeight: AppTypography.regular,
                         fontSize: 12.sp,
@@ -124,7 +125,7 @@ class SubjectGroupCard extends StatelessWidget {
                         group.name,
                         style:
                             AppTypography.labelLarge(
-                              color: LightModeColors.textPrimary,
+                              color: cs.onSurface,
                             ).copyWith(
                               fontWeight: AppTypography.semiBold,
                               fontSize: 20.sp,
@@ -192,13 +193,13 @@ class SubjectGroupCard extends StatelessWidget {
                     Text(
                       "Your progress",
                       style: AppTypography.bodyMedium(
-                        color: LightModeColors.textSecondary,
+                        color: cs.onSurfaceVariant,
                       ).copyWith(fontWeight: AppTypography.regular),
                     ),
                     Text(
                       "${(group.progressPercent * 100).round()}%",
                       style: AppTypography.bodyMedium(
-                        color: LightModeColors.textPrimary,
+                        color: cs.onSurface,
                       ).copyWith(fontWeight: AppTypography.regular),
                     ),
                   ],

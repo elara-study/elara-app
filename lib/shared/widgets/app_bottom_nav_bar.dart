@@ -1,4 +1,5 @@
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,10 +30,13 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final brightness = theme.brightness;
+    final inactiveColor = cs.onSurfaceVariant;
     return SafeArea(
       top: false,
       child: Container(
-        // Floating white pill card
         margin: EdgeInsets.only(
           left: AppSpacing.spacingLg.w,
           right: AppSpacing.spacingLg.w,
@@ -43,22 +47,12 @@ class AppBottomNavBar extends StatelessWidget {
           vertical: AppSpacing.spacingMd.h,
         ),
         decoration: BoxDecoration(
-          color: LightModeColors.surfacePrimaryAlpha80,
+          color: cs.surface,
           borderRadius: BorderRadius.circular(28.r),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.neutral900.withValues(alpha: 0.08),
-              blurRadius: 20,
-              spreadRadius: 0,
-              offset: const Offset(0, 4),
-            ),
-            BoxShadow(
-              color: AppColors.neutral900.withValues(alpha: 0.04),
-              blurRadius: 6,
-              spreadRadius: 0,
-              offset: const Offset(0, 1),
-            ),
-          ],
+          border: Border.all(
+            color: cs.outlineVariant.withValues(alpha: 0.55),
+          ),
+          boxShadow: AppShadows.elevation(brightness),
         ),
         child: Row(
           children: List.generate(_tabs.length, (index) {
@@ -66,7 +60,7 @@ class AppBottomNavBar extends StatelessWidget {
             final isActive = currentIndex == index;
             final color = isActive
                 ? AppColors.brandPrimary700
-                : AppColors.neutral400;
+                : inactiveColor;
 
             return Expanded(
               child: GestureDetector(

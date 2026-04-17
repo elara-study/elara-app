@@ -44,7 +44,7 @@ class StudentShell extends StatelessWidget {
       child: BlocBuilder<StudentTabCubit, int>(
         builder: (context, currentTab) {
           return Scaffold(
-            backgroundColor: LightModeColors.surfaceApp,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             body: Stack(
               children: [
                 IndexedStack(index: currentTab, children: _pages),
@@ -75,8 +75,9 @@ class _ComingSoonPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: LightModeColors.surfaceApp,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       appBar: AppGlassHeader(
         title: label,
@@ -93,13 +94,13 @@ class _ComingSoonPage extends StatelessWidget {
             SizedBox(height: AppSpacing.spacingMd.h),
             Text(
               label,
-              style: AppTypography.h5(color: LightModeColors.textPrimary),
+              style: AppTypography.h5(color: cs.onSurface),
             ),
             SizedBox(height: 6.h),
             Text(
               'Coming soon',
               style: AppTypography.bodyMedium(
-                color: LightModeColors.textSecondary,
+                color: cs.onSurfaceVariant,
               ),
             ),
           ],

@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/entities/course_progress_entity.dart';
+import 'package:elara/shared/widgets/gradient_glow_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,74 +16,29 @@ class ContinueLearningCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(AppRadius.radiusLg.r);
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        decoration: _cardDecoration,
-        child: Stack(
-          children: [
-            const Positioned.fill(child: _DecorativeCircles()),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: AppSpacing.spacing3xl.h,
-                horizontal: AppSpacing.spacingLg.w,
-              ),
-              child: Row(
-                children: [
-                  Expanded(child: _CardContent(progress: progress)),
-                  const _PlayButton(),
-                ],
-              ),
-            ),
-          ],
+      child: GradientGlowCard(
+        borderRadius: radius,
+        gradient: const LinearGradient(
+          colors: [AppColors.brandPrimary600, AppColors.brandPrimary400],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-      ),
-    );
-  }
-
-  BoxDecoration get _cardDecoration => BoxDecoration(
-    gradient: const LinearGradient(
-      colors: [AppColors.brandPrimary600, AppColors.brandPrimary400],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
-    borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
-  );
-}
-
-// background circles
-class _DecorativeCircles extends StatelessWidget {
-  const _DecorativeCircles();
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        _circle(right: -40, top: -40, alpha: 0.2),
-        _circle(left: -20, bottom: -50, alpha: 0.09),
-      ],
-    );
-  }
-
-  Widget _circle({
-    double? right,
-    double? left,
-    double? top,
-    double? bottom,
-    required double alpha,
-  }) {
-    return Positioned(
-      right: right,
-      left: left,
-      top: top,
-      bottom: bottom,
-      child: Container(
-        width: 128.r,
-        height: 128.r,
-        decoration: BoxDecoration(
-          color: AppColors.brandPrimary50.withValues(alpha: alpha),
-          shape: BoxShape.circle,
+        glowTint: GradientGlowTints.brandWash,
+        glowOrbs: GradientGlowOrbs.courseHero,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: AppSpacing.spacing3xl.h,
+            horizontal: AppSpacing.spacingLg.w,
+          ),
+          child: Row(
+            children: [
+              Expanded(child: _CardContent(progress: progress)),
+              const _PlayButton(),
+            ],
+          ),
         ),
       ),
     );
