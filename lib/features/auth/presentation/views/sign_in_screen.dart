@@ -1,5 +1,6 @@
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
@@ -24,11 +25,7 @@ class SignInScreen extends StatelessWidget {
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            Navigator.pushReplacementNamed(
-              context,
-              AppRoutes.studentGroup,
-              arguments: AppRoutes.demoGroupId,
-            );
+            AppRoutes.navigateAfterAuth(context, state.user);
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -44,7 +41,7 @@ class SignInScreen extends StatelessWidget {
 
           return SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingLg.w),
               child: Form(
                 key: formKey,
                 child: Column(
@@ -57,7 +54,7 @@ class SignInScreen extends StatelessWidget {
                       subtitle: 'Sign in to start your study journey',
                     ),
 
-                    SizedBox(height: 36.h),
+                    SizedBox(height: AppSpacing.spacing4xl.h),
 
                     // Email
                     AuthTextField(
@@ -77,7 +74,7 @@ class SignInScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 8.h),
+                    SizedBox(height: AppSpacing.spacingSm.h),
 
                     // Password
                     AuthTextField(
@@ -102,7 +99,7 @@ class SignInScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 4.h),
+                    SizedBox(height: AppSpacing.spacingXs.h),
 
                     // Forgot password
                     Align(
@@ -123,7 +120,7 @@ class SignInScreen extends StatelessWidget {
                       ),
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: AppSpacing.spacingLg.h),
 
                     AuthPrimaryButton(
                       label: 'Sign in',
@@ -139,7 +136,7 @@ class SignInScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: AppSpacing.spacingLg.h),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

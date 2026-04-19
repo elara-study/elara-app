@@ -10,6 +10,13 @@ import 'package:elara/features/auth/domain/usecases/login_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/register_use_case.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
+import 'package:elara/features/student/presentation/cubits/tab/student_tab_cubit.dart';
+import 'package:elara/features/student/data/datasources/student_remote_data_source.dart';
+import 'package:elara/features/student/data/datasources/student_remote_data_source_impl.dart';
+import 'package:elara/features/student/data/repositories/student_repository_impl.dart';
+import 'package:elara/features/student/domain/repositories/student_repository.dart';
+import 'package:elara/features/student/presentation/cubits/home/student_home_cubit.dart';
+import 'package:elara/features/student/presentation/cubits/learn/student_learn_cubit.dart';
 import 'package:elara/features/student/group/data/repositories/mock_student_group_repository.dart';
 import 'package:elara/features/student/group/domain/repositories/student_group_repository.dart';
 import 'package:elara/features/student/group/domain/usecases/get_group_announcements_usecase.dart';
@@ -74,6 +81,33 @@ Future<void> setupDependencyInjection() async {
       getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
     ),
   );
+
+  // ── Student: Data Source ──────────────────────────────────────────────────
+  getIt.registerLazySingleton<StudentRemoteDataSource>(
+    () => StudentRemoteDataSourceImpl(),
+    // TODO: pass DioClient when backend is ready:
+    // () => StudentRemoteDataSourceImpl(getIt<DioClient>()),
+  );
+
+  // ── Student: Repository ───────────────────────────────────────────────────
+  getIt.registerLazySingleton<StudentRepository>(
+    () => StudentRepositoryImpl(
+      remoteDataSource: getIt<StudentRemoteDataSource>(),
+    ),
+  );
+
+  // ── Student: Cubits ───────────────────────────────────────────────────────
+  // Factories so each shell tab gets its own independent instance
+  getIt.registerFactory(
+    () => StudentHomeCubit(repository: getIt<StudentRepository>()),
+  );
+  getIt.registerFactory(
+    () => StudentLearnCubit(repository: getIt<StudentRepository>()),
+  );
+
+  // Factory: must not be a singleton — [BlocProvider] closes the cubit when the
+  // shell disposes; a reused closed singleton would throw on emit.
+  getIt.registerFactory(() => StudentTabCubit());
 
   // ── Student group (Learn) ─────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentGroupRepository>(

@@ -30,7 +30,7 @@ class Elara extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: ThemeMode.system,
-            initialRoute: AppRoutes.quiz,
+            initialRoute: AppRoutes.splash,
             onGenerateRoute: AppRoutes.generateRoute,
           ),
         );

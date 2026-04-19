@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/group/presentation/widgets/progress_bar.dart';
+import 'package:elara/shared/widgets/gradient_glow_card.dart';
 import 'package:flutter/material.dart';
 
 class GroupProgressCard extends StatelessWidget {
@@ -42,19 +43,11 @@ class GroupProgressCard extends StatelessWidget {
                 decoration: BoxDecoration(gradient: gradient),
               ),
             ),
-            const _GlowCircle(
-              size: 128,
-              top: -74,
-              right: -64,
-              solidFill: AppColors.brandPrimary50,
-              layerOpacity: 0.15,
-            ),
-            const _GlowCircle(
-              size: 128,
-              bottom: -76,
-              left: -64,
-              solidFill: AppColors.brandPrimary50,
-              layerOpacity: 0.15,
+            const Positioned.fill(
+              child: GlowOrbLayer(
+                tint: GradientGlowTints.brandWash,
+                orbs: GradientGlowOrbs.groupProgress,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -83,51 +76,6 @@ class GroupProgressCard extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GlowCircle extends StatelessWidget {
-  final double size;
-  final double? top;
-  final double? left;
-  final double? right;
-  final double? bottom;
-  final Color solidFill;
-  final double layerOpacity;
-
-  const _GlowCircle({
-    required this.size,
-    this.top,
-    this.left,
-    this.right,
-    this.bottom,
-    required this.solidFill,
-    required this.layerOpacity,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: top,
-      left: left,
-      right: right,
-      bottom: bottom,
-      child: IgnorePointer(
-        child: SizedBox(
-          width: size,
-          height: size,
-          child: Opacity(
-            opacity: layerOpacity,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: solidFill,
-              ),
-            ),
-          ),
         ),
       ),
     );

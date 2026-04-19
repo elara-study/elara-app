@@ -4,6 +4,7 @@ import 'package:elara/features/auth/presentation/views/sign_in_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_credentials_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
 import 'package:elara/features/auth/presentation/views/splash_screen.dart';
+import 'package:elara/features/student/presentation/views/student_shell.dart';
 import 'package:elara/features/student/group/presentation/views/student_group_page.dart';
 import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
 import 'package:elara/features/student/quiz/presentation/views/quiz_flow_page.dart';
@@ -11,28 +12,32 @@ import 'package:flutter/material.dart';
 
 class AppRoutes {
   static const String splash = '/';
-  static const String home = '/home';
   static const String login = '/login';
   static const String studentGroup = '/student-group';
   static const String signUpRole = '/register/role';
   static const String signUpCredentials = '/register/credentials';
+
+  static const String studentDashboard = '/student';
 
   /// Full quiz flow (MCQ → written → results) with [QuizCubit].
   static const String quiz = '/quiz';
 
   static const String demoGroupId = 'demo-group';
 
+  static const String home = '/home';
+
+  /// Placeholder until Teacher/Parent dashboards exist.
+  static const String comingSoonDashboard = '/coming-soon-dashboard';
+
   static void navigateAfterAuth(BuildContext context, UserEntity user) {
     switch (user.role) {
       case UserRole.student:
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          studentGroup,
-          (_) => false,
-          arguments: demoGroupId,
-        );
+        Navigator.of(context).pushNamedAndRemoveUntil(home, (_) => false);
       case UserRole.teacher:
       case UserRole.parent:
-        Navigator.of(context).pushNamedAndRemoveUntil(home, (_) => false);
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(comingSoonDashboard, (_) => false);
     }
   }
 
@@ -53,10 +58,15 @@ class AppRoutes {
           builder: (_) => const SignUpCredentialsScreen(),
         );
 
+      case studentDashboard:
       case home:
+        return MaterialPageRoute(builder: (_) => const StudentShell());
+
+      case comingSoonDashboard:
         return MaterialPageRoute(
-          builder: (_) =>
-              const Scaffold(body: Center(child: Text('Home Screen'))),
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Dashboard coming soon')),
+          ),
         );
 
       case studentGroup:

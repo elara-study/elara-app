@@ -1,6 +1,7 @@
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
@@ -61,7 +62,10 @@ class SignUpCredentialsScreen extends StatelessWidget {
 
           return SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.spacing2xl.w,
+                vertical: AppSpacing.spacingLg.h,
+              ),
               child: Form(
                 key: formKey,
                 child: Column(
@@ -76,7 +80,7 @@ class SignUpCredentialsScreen extends StatelessWidget {
                       ),
                     ),
 
-                    SizedBox(height: 36.h),
+                    SizedBox(height: AppSpacing.spacing4xl.h),
 
                     AuthTextField(
                       label: 'Full Name',
@@ -94,7 +98,7 @@ class SignUpCredentialsScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 8.h),
+                    SizedBox(height: AppSpacing.spacingSm.h),
 
                     AuthTextField(
                       label: 'Email',
@@ -113,7 +117,7 @@ class SignUpCredentialsScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 8.h),
+                    SizedBox(height: AppSpacing.spacingSm.h),
 
                     AuthTextField(
                       label: 'Password',
@@ -132,7 +136,7 @@ class SignUpCredentialsScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 8.h),
+                    SizedBox(height: AppSpacing.spacingSm.h),
 
                     AuthTextField(
                       label: 'Confirm Password',
@@ -161,7 +165,7 @@ class SignUpCredentialsScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: AppSpacing.spacingLg.h),
 
                     AuthPrimaryButton(
                       label: 'Sign up',
@@ -179,7 +183,7 @@ class SignUpCredentialsScreen extends StatelessWidget {
                       },
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: AppSpacing.spacingLg.h),
                   ],
                 ),
               ),
