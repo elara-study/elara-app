@@ -5,6 +5,8 @@ import 'package:elara/features/auth/presentation/views/sign_up_credentials_scree
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
 import 'package:elara/features/auth/presentation/views/splash_screen.dart';
 import 'package:elara/features/student/group/presentation/views/student_group_page.dart';
+import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
+import 'package:elara/features/student/quiz/presentation/views/quiz_flow_page.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -14,6 +16,9 @@ class AppRoutes {
   static const String studentGroup = '/student-group';
   static const String signUpRole = '/register/role';
   static const String signUpCredentials = '/register/credentials';
+
+  /// Full quiz flow (MCQ → written → results) with [QuizCubit].
+  static const String quiz = '/quiz';
 
   static const String demoGroupId = 'demo-group';
 
@@ -59,6 +64,16 @@ class AppRoutes {
         final groupId = args is String ? args : demoGroupId;
         return MaterialPageRoute(
           builder: (_) => StudentGroupPage(groupId: groupId),
+        );
+
+      case quiz:
+        final args = settings.arguments;
+        final resolved = args is QuizRouteArgs
+            ? args
+            : const QuizRouteArgs(quizId: 'demo-quiz');
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => QuizFlowPage.fromArgs(resolved),
         );
 
       default:

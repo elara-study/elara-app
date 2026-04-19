@@ -1,7 +1,7 @@
 import 'package:elara/core/theme/app_colors.dart';
-import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/shared/widgets/segmented_progress_bar.dart';
 import 'package:flutter/material.dart';
 
 class ProgressBar extends StatelessWidget {
@@ -29,7 +29,7 @@ class ProgressBar extends StatelessWidget {
           metaLabelColor: metaLabelColor,
         ),
         const SizedBox(height: AppSpacing.spacingXs),
-        _Bar(progress: progress),
+        SegmentedProgressBar(progress: progress, height: AppSpacing.spacingSm),
       ],
     );
   }
@@ -55,33 +55,6 @@ class _MetaRow extends StatelessWidget {
         const Spacer(),
         Text(percentLabel, style: AppTypography.bodyMedium(color: color)),
       ],
-    );
-  }
-}
-
-class _Bar extends StatelessWidget {
-  final double progress;
-
-  const _Bar({required this.progress});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadius.radiusFull),
-      child: SizedBox(
-        height: AppSpacing.spacingSm,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            const ColoredBox(color: AppColors.brandPrimary100),
-            FractionallySizedBox(
-              alignment: Alignment.centerLeft,
-              widthFactor: progress.clamp(0.0, 1.0),
-              child: const ColoredBox(color: AppColors.brandPrimary700),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

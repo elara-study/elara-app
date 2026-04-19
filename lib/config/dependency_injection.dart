@@ -16,6 +16,11 @@ import 'package:elara/features/student/group/domain/usecases/get_group_announcem
 import 'package:elara/features/student/group/domain/usecases/get_group_roadmap_usecase.dart';
 import 'package:elara/features/student/group/domain/usecases/load_student_group_usecase.dart';
 import 'package:elara/features/student/group/presentation/cubits/student_group_cubit.dart';
+import 'package:elara/features/student/quiz/data/repositories/mock_quiz_repository.dart';
+import 'package:elara/features/student/quiz/domain/repositories/quiz_repository.dart';
+import 'package:elara/features/student/quiz/domain/usecases/get_quiz_session_use_case.dart';
+import 'package:elara/features/student/quiz/domain/usecases/submit_quiz_answers_use_case.dart';
+import 'package:elara/features/student/quiz/presentation/cubits/quiz_cubit.dart';
 import 'package:elara/features/student/rewards/data/repositories/remote_student_rewards_repository.dart';
 import 'package:elara/features/student/rewards/domain/repositories/student_rewards_repository.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_student_rewards_leaderboard_usecase.dart';
@@ -100,5 +105,25 @@ Future<void> setupDependencyInjection() async {
 
   getIt.registerFactory<StudentGroupCubit>(
     () => StudentGroupCubit(getIt<LoadStudentGroupUseCase>()),
+  );
+
+  // ── Quiz (Learn) ─────────────────────────────────────────────────────────
+  getIt.registerLazySingleton<QuizRepository>(
+    () => MockQuizRepository(),
+    // Live API: register RemoteQuizRepository(getIt<DioClient>()) here.
+  );
+
+  getIt.registerLazySingleton(
+    () => GetQuizSessionUseCase(getIt<QuizRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => SubmitQuizAnswersUseCase(getIt<QuizRepository>()),
+  );
+
+  getIt.registerFactory<QuizCubit>(
+    () => QuizCubit(
+      getQuizSessionUseCase: getIt<GetQuizSessionUseCase>(),
+      submitQuizAnswersUseCase: getIt<SubmitQuizAnswersUseCase>(),
+    ),
   );
 }
