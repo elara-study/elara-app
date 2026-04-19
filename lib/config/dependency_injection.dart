@@ -10,24 +10,29 @@ import 'package:elara/features/auth/domain/usecases/login_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/register_use_case.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
- import 'package:elara/features/student/presentation/cubits/tab/student_tab_cubit.dart';
+import 'package:elara/features/student/presentation/cubits/tab/student_tab_cubit.dart';
 import 'package:elara/features/student/data/datasources/student_remote_data_source.dart';
 import 'package:elara/features/student/data/datasources/student_remote_data_source_impl.dart';
 import 'package:elara/features/student/data/repositories/student_repository_impl.dart';
 import 'package:elara/features/student/domain/repositories/student_repository.dart';
 import 'package:elara/features/student/presentation/cubits/home/student_home_cubit.dart';
 import 'package:elara/features/student/presentation/cubits/learn/student_learn_cubit.dart';
- import 'package:elara/features/student/group/data/repositories/mock_student_group_repository.dart';
+import 'package:elara/features/student/group/data/repositories/mock_student_group_repository.dart';
 import 'package:elara/features/student/group/domain/repositories/student_group_repository.dart';
 import 'package:elara/features/student/group/domain/usecases/get_group_announcements_usecase.dart';
 import 'package:elara/features/student/group/domain/usecases/get_group_roadmap_usecase.dart';
 import 'package:elara/features/student/group/domain/usecases/load_student_group_usecase.dart';
 import 'package:elara/features/student/group/presentation/cubits/student_group_cubit.dart';
+import 'package:elara/features/student/quiz/data/repositories/mock_quiz_repository.dart';
+import 'package:elara/features/student/quiz/domain/repositories/quiz_repository.dart';
+import 'package:elara/features/student/quiz/domain/usecases/get_quiz_session_use_case.dart';
+import 'package:elara/features/student/quiz/domain/usecases/submit_quiz_answers_use_case.dart';
+import 'package:elara/features/student/quiz/presentation/cubits/quiz_cubit.dart';
 import 'package:elara/features/student/rewards/data/repositories/remote_student_rewards_repository.dart';
 import 'package:elara/features/student/rewards/domain/repositories/student_rewards_repository.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_student_rewards_leaderboard_usecase.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_student_rewards_overview_usecase.dart';
- import 'package:get_it/get_it.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final getIt = GetIt.instance;
@@ -77,7 +82,7 @@ Future<void> setupDependencyInjection() async {
     ),
   );
 
-   // ── Student: Data Source ──────────────────────────────────────────────────
+  // ── Student: Data Source ──────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentRemoteDataSource>(
     () => StudentRemoteDataSourceImpl(),
     // TODO: pass DioClient when backend is ready:
@@ -103,7 +108,8 @@ Future<void> setupDependencyInjection() async {
   // Factory: must not be a singleton — [BlocProvider] closes the cubit when the
   // shell disposes; a reused closed singleton would throw on emit.
   getIt.registerFactory(() => StudentTabCubit());
-   // ── Student group (Learn) ─────────────────────────────────────────────────
+
+  // ── Student group (Learn) ─────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentGroupRepository>(
     () => MockStudentGroupRepository(),
     // Live APIs: register RemoteStudentGroupRepository(getIt<DioClient>())
@@ -134,4 +140,24 @@ Future<void> setupDependencyInjection() async {
   getIt.registerFactory<StudentGroupCubit>(
     () => StudentGroupCubit(getIt<LoadStudentGroupUseCase>()),
   );
- }
+
+  // ── Quiz (Learn) ─────────────────────────────────────────────────────────
+  getIt.registerLazySingleton<QuizRepository>(
+    () => MockQuizRepository(),
+    // Live API: register RemoteQuizRepository(getIt<DioClient>()) here.
+  );
+
+  getIt.registerLazySingleton(
+    () => GetQuizSessionUseCase(getIt<QuizRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => SubmitQuizAnswersUseCase(getIt<QuizRepository>()),
+  );
+
+  getIt.registerFactory<QuizCubit>(
+    () => QuizCubit(
+      getQuizSessionUseCase: getIt<GetQuizSessionUseCase>(),
+      submitQuizAnswersUseCase: getIt<SubmitQuizAnswersUseCase>(),
+    ),
+  );
+}

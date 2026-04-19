@@ -1,5 +1,6 @@
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
@@ -9,7 +10,6 @@ import 'package:elara/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:elara/core/theme/app_spacing.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
@@ -25,7 +25,7 @@ class SignInScreen extends StatelessWidget {
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            Navigator.pushReplacementNamed(context, AppRoutes.studentDashboard);
+            AppRoutes.navigateAfterAuth(context, state.user);
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
