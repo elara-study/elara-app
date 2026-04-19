@@ -17,6 +17,8 @@ class AppRoutes {
   static const String signUpRole = '/register/role';
   static const String signUpCredentials = '/register/credentials';
 
+  /// Student dashboard — the temporary post-auth landing screen.
+  /// TODO: Replace with a role-based router once Teacher/Parent dashboards exist.
   static const String studentDashboard = '/student';
 
   /// Full quiz flow (MCQ → written → results) with [QuizCubit].
@@ -32,7 +34,9 @@ class AppRoutes {
   static void navigateAfterAuth(BuildContext context, UserEntity user) {
     switch (user.role) {
       case UserRole.student:
-        Navigator.of(context).pushNamedAndRemoveUntil(home, (_) => false);
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(studentDashboard, (_) => false);
       case UserRole.teacher:
       case UserRole.parent:
         Navigator.of(
