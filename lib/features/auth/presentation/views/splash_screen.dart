@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -55,8 +56,10 @@ class _SplashScreenState extends State<SplashScreen>
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
-          AppRoutes.navigateAfterAuth(context, state.user);
-        } else if (state is AuthUnauthenticated) {
+           //  Navigate to role-based home when role dashboards exist
+          Navigator.pushReplacementNamed(context, AppRoutes.studentDashboard);
+           AppRoutes.navigateAfterAuth(context, state.user);
+         } else if (state is AuthUnauthenticated) {
           Navigator.pushReplacementNamed(context, AppRoutes.login);
         }
       },
@@ -76,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen>
                     width: 162.w,
                     height: 95.65.w,
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: AppSpacing.spacingSm.h),
                   SvgPicture.asset(
                     'assets/images/elara.svg',
                     width: 162.w,

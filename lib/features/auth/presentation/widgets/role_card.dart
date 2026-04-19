@@ -3,10 +3,6 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/shared/widgets/app_action_card.dart';
 import 'package:flutter/material.dart';
 
-/// Thin role-specific wrapper around [AppActionCard].
-///
-/// Maps each [UserRole] to its icon, primaryColor, and secondaryColor,
-/// then delegates all rendering to [AppActionCard].
 class RoleCard extends StatelessWidget {
   final UserRole role;
   final bool isSelected;

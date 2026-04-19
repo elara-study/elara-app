@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 
 /// A single reusable text field atom for auth screens.
 
@@ -71,8 +72,8 @@ class AuthTextField extends StatelessWidget {
                   color: LightModeColors.textSecondary,
                 ),
                 contentPadding: EdgeInsets.symmetric(
-                  horizontal: 12.w,
-                  vertical: 8.h,
+                  horizontal: AppSpacing.spacingMd.w,
+                  vertical: AppSpacing.spacingSm.h,
                 ),
                 suffixIcon: isPassword
                     ? IconButton(

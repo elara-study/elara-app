@@ -12,10 +12,32 @@ class MockStudentGroupRepository implements StudentGroupRepository {
     required String groupId,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
+
+    if (groupId == 'group-001') {
+      return ApiResult.success(
+        const StudentGroupOverview(
+          courseTitle: 'Mathematics 7A',
+          courseSubtitle: 'MATHEMATICS • Grade 7',
+          completedLessons: 13,
+          totalLessons: 20,
+        ),
+      );
+    } else if (groupId == 'group-003') {
+      return ApiResult.success(
+        const StudentGroupOverview(
+          courseTitle: 'English Literature',
+          courseSubtitle: 'ENGLISH • Grade 7',
+          completedLessons: 16,
+          totalLessons: 20,
+        ),
+      );
+    }
+
+    // Default to Physics for group-002 or unknowns
     return ApiResult.success(
       const StudentGroupOverview(
         courseTitle: 'Physics 101',
-        courseSubtitle: 'Science • Grade 7',
+        courseSubtitle: 'SCIENCE • Grade 7',
         completedLessons: 8,
         totalLessons: 18,
       ),
