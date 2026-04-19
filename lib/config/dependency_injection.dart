@@ -27,7 +27,12 @@ import 'package:elara/features/student/rewards/data/repositories/remote_student_
 import 'package:elara/features/student/rewards/domain/repositories/student_rewards_repository.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_student_rewards_leaderboard_usecase.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_student_rewards_overview_usecase.dart';
- import 'package:get_it/get_it.dart';
+import 'package:elara/features/student/rewards/data/datasources/rewards_remote_data_source.dart';
+import 'package:elara/features/student/rewards/data/datasources/rewards_remote_data_source_impl.dart';
+import 'package:elara/features/student/rewards/data/repositories/rewards_repository_impl.dart';
+import 'package:elara/features/student/rewards/domain/repositories/rewards_repository.dart';
+import 'package:elara/features/student/rewards/domain/usecases/get_rewards_use_case.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final getIt = GetIt.instance;
@@ -133,4 +138,22 @@ Future<void> setupDependencyInjection() async {
   getIt.registerFactory<StudentGroupCubit>(
     () => StudentGroupCubit(getIt<LoadStudentGroupUseCase>()),
   );
- }
+
+  // ── Rewards Gamification: Data Source ────────────────────────────────────
+  getIt.registerLazySingleton<RewardsRemoteDataSource>(
+    () => RewardsRemoteDataSourceImpl(),
+    // TODO: pass DioClient when backend is ready:
+    // () => RewardsRemoteDataSourceImpl(getIt<DioClient>()),
+  );
+
+  // ── Rewards Gamification: Repository ────────────────────────────────────
+  getIt.registerLazySingleton<RewardsRepository>(
+    () => RewardsRepositoryImpl(getIt<RewardsRemoteDataSource>()),
+  );
+
+  // ── Rewards Gamification: Use Case ───────────────────────────────────────
+  getIt.registerLazySingleton(
+    () => GetRewardsUseCase(getIt<RewardsRepository>()),
+  );
+  // NOTE: RewardsCubit registered in Step 3
+}
