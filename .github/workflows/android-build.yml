@@ -1,0 +1,41 @@
+name: elara Ci/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
+
+      - name: Install Flutter
+        uses: britannio/action-install-flutter@v1
+        with:
+          version: 3.41.4
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Apk
+        run: flutter build apk --release
+      - run: ls build/app/outputs/flutter-apk
+
+      - name: Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
+        with:
+          appId: ${{secrets.APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.GOOGLE_APP_CREDS }}
+          groups:  app-tests 
+          file:  build/app/outputs/flutter-apk/app-release.apk
