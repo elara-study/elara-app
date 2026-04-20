@@ -32,6 +32,7 @@ import 'package:elara/features/student/rewards/data/datasources/rewards_remote_d
 import 'package:elara/features/student/rewards/data/repositories/rewards_repository_impl.dart';
 import 'package:elara/features/student/rewards/domain/repositories/rewards_repository.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_rewards_use_case.dart';
+import 'package:elara/features/student/rewards/presentation/cubits/rewards_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -155,5 +156,10 @@ Future<void> setupDependencyInjection() async {
   getIt.registerLazySingleton(
     () => GetRewardsUseCase(getIt<RewardsRepository>()),
   );
-  // NOTE: RewardsCubit registered in Step 3
+
+  // ── Rewards Gamification: Cubit ──────────────────────────────────────────
+  // Factory so each shell entry creates a fresh instance
+  getIt.registerFactory(
+    () => RewardsCubit(getIt<GetRewardsUseCase>()),
+  );
 }
