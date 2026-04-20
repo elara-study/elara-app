@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "89391164771",
+    "project_id": "elara-study",
+    "storage_bucket": "elara-study.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:89391164771:android:240ade2016ab98b18bf756",
+        "android_client_info": {
+          "package_name": "com.example.elara"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDJ1I0Ot_jSKvkqY6fGhCy5_cO6bRuSLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
