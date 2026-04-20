@@ -1,0 +1,57 @@
+name: iOS-ipa-build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: Elara iOS Build
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          architecture: x64
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Clean project
+        run: flutter clean
+
+      - name: Update CocoaPods
+        run: pod repo update
+        working-directory: ios
+
+      - name: Build iOS (no signing)
+        run: flutter build ios --release --no-codesign
+
+      # 🏷️ Extract version (without +build number)
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | cut -d '+' -f1)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      # 🔢 Short commit hash (for uniqueness)
+      - name: Get commit SHA
+        id: sha
+        run: echo "SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      # 📦 Create IPA
+      - name: Package IPA
+        run: |
+          mkdir Payload
+          mv Runner.app Payload
+          zip -qq -r -9 Elara-${{ steps.version.outputs.VERSION }}-${{ steps.sha.outputs.SHA }}.ipa Payload
+        working-directory: build/ios/iphoneos
+
+      # 📥 Upload artifact
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Elara-${{ steps.version.outputs.VERSION }}
+          path: build/ios/iphoneos/Elara-${{ steps.version.outputs.VERSION }}-${{ steps.sha.outputs.SHA }}.ipa
