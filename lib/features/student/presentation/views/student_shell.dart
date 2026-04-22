@@ -49,13 +49,27 @@ class StudentShell extends StatelessWidget {
       child: BlocBuilder<StudentTabCubit, int>(
         builder: (context, currentTab) {
           return Scaffold(
-            extendBody: true,
+             extendBody: true,
             backgroundColor: LightModeColors.surfaceApp,
             body: IndexedStack(index: currentTab, children: _pages),
             bottomNavigationBar: AppBottomNavBar(
               currentIndex: currentTab,
               onTap: (i) => context.read<StudentTabCubit>().goToTab(i),
-            ),
+             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            body: Stack(
+              children: [
+                IndexedStack(index: currentTab, children: _pages),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: AppBottomNavBar(
+                    currentIndex: currentTab,
+                    onTap: (i) => context.read<StudentTabCubit>().goToTab(i),
+                  ),
+                ),
+              ],
+             ),
           );
         },
       ),
@@ -72,8 +86,9 @@ class _ComingSoonPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: LightModeColors.surfaceApp,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       appBar: AppGlassHeader(title: label),
       body: Center(
@@ -88,13 +103,13 @@ class _ComingSoonPage extends StatelessWidget {
             SizedBox(height: AppSpacing.spacingMd.h),
             Text(
               label,
-              style: AppTypography.h5(color: LightModeColors.textPrimary),
+              style: AppTypography.h5(color: cs.onSurface),
             ),
             SizedBox(height: 6.h),
             Text(
               'Coming soon',
               style: AppTypography.bodyMedium(
-                color: LightModeColors.textSecondary,
+                color: cs.onSurfaceVariant,
               ),
             ),
           ],

@@ -64,6 +64,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return BlocListener<StudentLearnCubit, StudentLearnState>(
       listener: (context, state) {
         if (state is StudentLearnJoinSuccess) {
@@ -92,11 +93,11 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
             margin: EdgeInsets.symmetric(horizontal: AppSpacing.spacing2xl.w),
             padding: EdgeInsets.all(AppSpacing.spacingLg.w),
             decoration: BoxDecoration(
-              color: LightModeColors.surfacePrimary,
+              color: cs.surface,
               borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.neutral900.withValues(alpha: 0.15),
+                  color: cs.shadow.withValues(alpha: 0.18),
                   blurRadius: 30,
                   offset: const Offset(0, 8),
                 ),
@@ -115,7 +116,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                       Text(
                         'Join a Group',
                         style: AppTypography.h5(
-                          color: LightModeColors.textPrimary,
+                          color: cs.onSurface,
                         ).copyWith(fontWeight: AppTypography.extraBold),
                       ),
                       GestureDetector(
@@ -124,8 +125,8 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                           'assets/icons/clear_icon.svg',
                           width: 10.w,
                           height: 10.w,
-                          colorFilter: const ColorFilter.mode(
-                            LightModeColors.textPrimary,
+                          colorFilter: ColorFilter.mode(
+                            cs.onSurface,
                             BlendMode.srcIn,
                           ),
                         ),
@@ -136,7 +137,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                   Text(
                     'Enter the group code provided by your teacher',
                     style: AppTypography.bodySmall(
-                      color: LightModeColors.textSecondary,
+                      color: cs.onSurfaceVariant,
                     ),
                   ),
 
@@ -149,18 +150,18 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                     textCapitalization: TextCapitalization.characters,
                     textInputAction: TextInputAction.done,
                     style: AppTypography.bodyMedium(
-                      color: LightModeColors.textPrimary,
+                      color: cs.onSurface,
                     ).copyWith(fontWeight: AppTypography.regular),
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: LightModeColors.surfaceApp,
+                      fillColor: Theme.of(context).scaffoldBackgroundColor,
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: AppSpacing.spacingMd.w,
                         vertical: AppSpacing.spacingSm.h,
                       ),
                       hintText: 'Enter group code (e.g., ABCD1234)',
                       hintStyle: AppTypography.bodySmall(
-                        color: LightModeColors.textSecondary,
+                        color: cs.onSurfaceVariant,
                       ).copyWith(fontWeight: AppTypography.regular),
 
                       border: OutlineInputBorder(

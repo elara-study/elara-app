@@ -56,10 +56,8 @@ class _SplashScreenState extends State<SplashScreen>
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
-           //  Navigate to role-based home when role dashboards exist
-          Navigator.pushReplacementNamed(context, AppRoutes.studentDashboard);
-           AppRoutes.navigateAfterAuth(context, state.user);
-         } else if (state is AuthUnauthenticated) {
+          AppRoutes.navigateAfterAuth(context, state.user);
+        } else if (state is AuthUnauthenticated) {
           Navigator.pushReplacementNamed(context, AppRoutes.login);
         }
       },

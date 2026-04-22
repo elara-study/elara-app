@@ -1,3 +1,5 @@
+import 'package:elara/config/routes.dart';
+import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
@@ -91,7 +93,14 @@ class ModuleSheet extends StatelessWidget {
                   labelStyle: optionLabelStyle?.copyWith(
                     color: ButtonColors.outlineText,
                   ),
-                  onTap: () => _pop(context),
+                  onTap: () {
+                    final nav = Navigator.of(context);
+                    nav.pop();
+                    nav.pushNamed(
+                      AppRoutes.quiz,
+                      arguments: const QuizRouteArgs(quizId: 'demo-quiz'),
+                    );
+                  },
                 ),
               ),
               const SizedBox(width: AppSpacing.spacingMd),
