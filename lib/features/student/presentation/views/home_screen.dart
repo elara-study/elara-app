@@ -337,7 +337,10 @@ class _HeaderChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingMd.w, vertical: AppSpacing.spacingSm.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.spacingMd.w,
+        vertical: AppSpacing.spacingSm.h,
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadius.radiusFull),

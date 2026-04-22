@@ -106,8 +106,9 @@ Future<void> setupDependencyInjection() async {
     () => StudentLearnCubit(repository: getIt<StudentRepository>()),
   );
 
-  // Singleton — the shell keeps one tab index for its lifetime
-  getIt.registerLazySingleton(() => StudentTabCubit());
+  // Factory — BlocProvider closes the cubit on dispose; a fresh instance is
+  // needed each time StudentShell mounts (e.g. after app restart).
+  getIt.registerFactory(() => StudentTabCubit());
    // ── Student group (Learn) ─────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentGroupRepository>(
     () => MockStudentGroupRepository(),

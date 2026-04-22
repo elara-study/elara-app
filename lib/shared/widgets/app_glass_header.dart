@@ -27,14 +27,18 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: AppBar(
-          backgroundColor: LightModeColors.surfacePrimary.withValues(alpha: 0.85),
-          surfaceTintColor: Colors.transparent, // Prevents Material 3 tinting overlay
+          backgroundColor: LightModeColors.surfacePrimary.withValues(
+            alpha: 0.85,
+          ),
+          surfaceTintColor:
+              Colors.transparent, // Prevents Material 3 tinting overlay
           elevation: 0,
           leading: leading,
           automaticallyImplyLeading: automaticallyImplyLeading,
           title: Text(
             title,
             style: AppTypography.h5(
+              font: "comfortaa",
               color: LightModeColors.textPrimary,
             ).copyWith(fontWeight: FontWeight.bold),
           ),

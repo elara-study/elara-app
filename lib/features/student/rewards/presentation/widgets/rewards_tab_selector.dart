@@ -1,4 +1,6 @@
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_radius.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/rewards/presentation/cubits/rewards_cubit.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +16,9 @@ class RewardsTabSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(3.w),
+      padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
-        color: AppColors.neutral100,
+        color: LightModeColors.surfacePrimary,
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
@@ -50,16 +52,23 @@ class _TabItem extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
-          padding: EdgeInsets.symmetric(vertical: 9.h),
+          padding: EdgeInsets.symmetric(
+            vertical: AppSpacing.spacingXs.h,
+            horizontal: AppSpacing.spacing2xs.w,
+          ),
           decoration: BoxDecoration(
-            color: isActive ? AppColors.brandPrimary700 : Colors.transparent,
-            borderRadius: BorderRadius.circular(18.r),
+            color: isActive
+                ? AppColors.brandPrimary500
+                : LightModeColors.surfacePrimary,
+            borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
           ),
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: AppTypography.button(
-              color: isActive ? AppColors.white : LightModeColors.textSecondary,
+              color: isActive
+                  ? AppColors.neutral50
+                  : LightModeColors.textSecondary,
             ),
           ),
         ),

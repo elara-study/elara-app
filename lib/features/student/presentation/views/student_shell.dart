@@ -6,6 +6,8 @@ import 'package:elara/features/student/presentation/cubits/learn/student_learn_c
 import 'package:elara/features/student/presentation/cubits/tab/student_tab_cubit.dart';
 import 'package:elara/features/student/presentation/views/home_screen.dart';
 import 'package:elara/features/student/presentation/views/learn_screen.dart';
+import 'package:elara/features/student/rewards/presentation/cubits/rewards_cubit.dart';
+import 'package:elara/features/student/rewards/presentation/views/rewards_screen.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,7 @@ class StudentShell extends StatelessWidget {
   static const List<Widget> _pages = [
     HomeScreen(),
     LearnScreen(),
-    _ComingSoonPage(label: 'Rewards'),
+    RewardsScreen(),
     _ComingSoonPage(label: 'Alerts'),
     _ComingSoonPage(label: 'Profile'),
   ];
@@ -40,24 +42,19 @@ class StudentShell extends StatelessWidget {
         BlocProvider<StudentLearnCubit>(
           create: (_) => getIt<StudentLearnCubit>()..loadGroups(),
         ),
+        BlocProvider<RewardsCubit>(
+          create: (_) => getIt<RewardsCubit>()..loadRewards(),
+        ),
       ],
       child: BlocBuilder<StudentTabCubit, int>(
         builder: (context, currentTab) {
           return Scaffold(
+            extendBody: true,
             backgroundColor: LightModeColors.surfaceApp,
-            body: Stack(
-              children: [
-                IndexedStack(index: currentTab, children: _pages),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: AppBottomNavBar(
-                    currentIndex: currentTab,
-                    onTap: (i) => context.read<StudentTabCubit>().goToTab(i),
-                  ),
-                ),
-              ],
+            body: IndexedStack(index: currentTab, children: _pages),
+            bottomNavigationBar: AppBottomNavBar(
+              currentIndex: currentTab,
+              onTap: (i) => context.read<StudentTabCubit>().goToTab(i),
             ),
           );
         },
@@ -78,9 +75,7 @@ class _ComingSoonPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: LightModeColors.surfaceApp,
       extendBodyBehindAppBar: true,
-      appBar: AppGlassHeader(
-        title: label,
-      ),
+      appBar: AppGlassHeader(title: label),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

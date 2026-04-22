@@ -1,5 +1,6 @@
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/rewards/domain/entities/badge_entity.dart';
 import 'package:flutter/material.dart';
@@ -8,150 +9,143 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class BadgeCard extends StatelessWidget {
   final BadgeEntity badge;
-
   const BadgeCard({super.key, required this.badge});
 
   @override
   Widget build(BuildContext context) {
-    return badge.isUnlocked ? _UnlockedCard(badge) : _LockedCard(badge);
-  }
-}
+    final isUnlocked = badge.isUnlocked;
 
-//   Unlocked (golden)
+    final cardColor = isUnlocked
+        ? AppColors.brandAccent500
+        : LightModeColors.surfacePrimary;
 
-class _UnlockedCard extends StatelessWidget {
-  final BadgeEntity badge;
-  const _UnlockedCard(this.badge);
+    final circleColor = isUnlocked
+        ? AppColors.brandPrimary50.withValues(alpha: 0.2)
+        : LightModeColors.surfaceInverted.withValues(alpha: 0.1);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
-      decoration: BoxDecoration(
-        color: AppColors.brandAccent500,
-        borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Trophy icon
-          SvgPicture.asset(
-            'assets/icons/rewards_icon.svg',
-            width: 36.w,
-            height: 36.w,
-            colorFilter: const ColorFilter.mode(
-              AppColors.white,
-              BlendMode.srcIn,
-            ),
-          ),
+    final iconAsset = isUnlocked
+        ? 'assets/icons/rewards_icon_filled.svg'
+        : 'assets/icons/lock_icon.svg';
 
-          SizedBox(height: 10.h),
+    final iconColor = isUnlocked
+        ? AppColors.brandAccent50
+        : LightModeColors.textSecondary;
 
-          // Badge name
-          Text(
-            badge.name,
-            textAlign: TextAlign.center,
-            style: AppTypography.labelMedium(
-              color: AppColors.white,
-            ).copyWith(fontWeight: FontWeight.w700),
-          ),
+    final iconSize = isUnlocked ? 24.w : 32.w;
 
-          SizedBox(height: 4.h),
+    final textColor = isUnlocked
+        ? AppColors.brandAccent50
+        : LightModeColors.textSecondary;
 
-          // Short description
-          Text(
-            badge.description,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: AppTypography.labelSmall(
-              color: AppColors.white.withValues(alpha: 0.85),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+    final descColor = isUnlocked
+        ? AppColors.brandAccent50
+        : LightModeColors.textDisabled;
 
-// ── Locked (gray + progress)
-
-class _LockedCard extends StatelessWidget {
-  final BadgeEntity badge;
-  const _LockedCard(this.badge);
-
-  @override
-  Widget build(BuildContext context) {
-    final hasProgress = badge.progressTotal > 0;
+    final hasProgress = !isUnlocked && badge.progressTotal > 0;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
       decoration: BoxDecoration(
-        color: AppColors.neutral100,
-        borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
+        color: cardColor,
+        borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Lock icon
-          Icon(
-            Icons.lock_outline_rounded,
-            size: 30.sp,
-            color: AppColors.neutral400,
-          ),
-
-          SizedBox(height: 10.h),
-
-          // Badge name
-          Text(
-            badge.name,
-            textAlign: TextAlign.center,
-            style: AppTypography.labelMedium(
-              color: LightModeColors.textPrimary,
-            ).copyWith(fontWeight: FontWeight.w700),
-          ),
-
-          SizedBox(height: 4.h),
-
-          // Short description
-          Text(
-            badge.description,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: AppTypography.labelSmall(
-              color: LightModeColors.textSecondary,
-            ),
-          ),
-
-          if (hasProgress) ...[
-            SizedBox(height: 10.h),
-
-            // Thin progress bar
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4.r),
-              child: LinearProgressIndicator(
-                value: badge.progressPercent,
-                minHeight: 4.h,
-                backgroundColor: AppColors.neutral200,
-                valueColor: const AlwaysStoppedAnimation<Color>(
-                  AppColors.brandPrimary700,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Top dome circle with icon ─────────────────────────────────
+            SizedBox(
+              height: 90.h,
+              width: double.infinity,
+              child: CustomPaint(
+                painter: _TopCirclePainter(color: circleColor),
+                child: Center(
+                  child: SvgPicture.asset(
+                    iconAsset,
+                    width: iconSize,
+                    height: iconSize,
+                    colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                  ),
                 ),
               ),
             ),
 
-            SizedBox(height: 4.h),
-
-            // Progress fraction
-            Text(
-              '${badge.progressCurrent}/${badge.progressTotal}',
-              style: AppTypography.labelSmall(
-                color: LightModeColors.textSecondary,
+            // ── Name + description (+ progress bar for locked) ────────────
+            Padding(
+              padding: EdgeInsets.only(
+                left: AppSpacing.spacingLg.w,
+                right: AppSpacing.spacingLg.w,
+                bottom: AppSpacing.spacing3xl.h,
+              ),
+              child: Transform.translate(
+                offset: Offset(0, -8.h),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      badge.name,
+                      textAlign: TextAlign.center,
+                      style: AppTypography.h6(
+                        color: textColor,
+                      ).copyWith(fontWeight: AppTypography.extraBold),
+                    ),
+                    Text(
+                      badge.description,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.bodySmall(color: descColor),
+                    ),
+                    if (hasProgress) ...[
+                      SizedBox(height: AppSpacing.spacingLg.h),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                          AppRadius.radiusFull.r,
+                        ),
+                        child: LinearProgressIndicator(
+                          value: badge.progressPercent,
+                          minHeight: 5.h,
+                          backgroundColor: AppColors.brandPrimary100,
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppColors.brandPrimary700,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        '${badge.progressCurrent}/${badge.progressTotal}',
+                        style: AppTypography.bodySmall(color: textColor),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
           ],
-        ],
+        ),
       ),
     );
   }
+}
+
+// ── Painter: large circle whose center sits above the card top ────────────────
+// Only the lower dome is visible inside the SizedBox, matching the Figma style.
+
+class _TopCirclePainter extends CustomPainter {
+  final Color color;
+  const _TopCirclePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final radius = size.width * 0.68;
+    final centerY = size.height * 0.85 - radius;
+    canvas.drawCircle(
+      Offset(size.width / 2, centerY),
+      radius,
+      Paint()..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_TopCirclePainter old) => old.color != color;
 }

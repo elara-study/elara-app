@@ -1,22 +1,18 @@
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AchievementStatCard extends StatelessWidget {
-  /// Primary display value, e.g. "1,250" or "7 days".
   final String value;
-
-  /// Subtitle label below the value, e.g. "Total XP".
   final String label;
-
-  /// Path to the SVG icon shown on the right.
   final String svgAsset;
-
-  /// Solid background colour for this card.
   final Color cardColor;
+  final Color iconBgColor;
+  final Color textColor;
 
   const AchievementStatCard({
     super.key,
@@ -24,61 +20,84 @@ class AchievementStatCard extends StatelessWidget {
     required this.label,
     required this.svgAsset,
     required this.cardColor,
+    required this.iconBgColor,
+    required this.textColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+      height: 76.h,
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
+        borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
+        clipBehavior: Clip.antiAlias,
         children: [
-          // ── Value + label (left) ────────────────────────────────────────
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  value,
-                  style: AppTypography.h5(
-                    color: AppColors.white,
-                  ).copyWith(fontWeight: FontWeight.w800),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  label,
-                  style: AppTypography.labelSmall(
-                    color: AppColors.white.withValues(alpha: 0.85),
-                  ),
-                ),
-              ],
+          Positioned(
+            right: -14.w,
+            top: -20.w,
+            width: 104.w,
+            height: 104.w,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: AppColors.brandPrimary50.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
             ),
           ),
 
-          // ── Icon in frosted circle (right) ─────────────────────────────
-          Container(
-            width: 36.w,
-            height: 36.w,
-            decoration: BoxDecoration(
-              color: AppColors.white.withValues(alpha: 0.2),
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                svgAsset,
-                width: 18.w,
-                height: 18.w,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.white,
-                  BlendMode.srcIn,
+          // ── Foreground content ──────────────────────────────────────────
+          Padding(
+            padding: EdgeInsets.all(AppSpacing.spacingLg.r),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Value + label (left)
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        value,
+                        style: AppTypography.h5(
+                          color: AppColors.brandPrimary50,
+                        ).copyWith(fontWeight: AppTypography.extraBold),
+                      ),
+                      Text(
+                        label,
+                        style: AppTypography.bodySmall(color: textColor),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+
+                // Icon circle
+                Container(
+                  width: 44.w,
+                  height: 44.w,
+                  decoration: BoxDecoration(
+                    color: iconBgColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(AppSpacing.spacingMd.r),
+                      child: SvgPicture.asset(
+                        svgAsset,
+                        width: 20.w,
+                        height: 20.w,
+                        colorFilter: ColorFilter.mode(
+                          cardColor,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
