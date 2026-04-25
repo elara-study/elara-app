@@ -38,6 +38,12 @@ import 'package:elara/features/student/rewards/data/repositories/rewards_reposit
 import 'package:elara/features/student/rewards/domain/repositories/rewards_repository.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_rewards_use_case.dart';
 import 'package:elara/features/student/rewards/presentation/cubits/rewards_cubit.dart';
+import 'package:elara/features/student/homework/data/datasources/homework_data_source.dart';
+import 'package:elara/features/student/homework/data/datasources/homework_data_source_impl.dart';
+import 'package:elara/features/student/homework/data/repositories/homework_repository_impl.dart';
+import 'package:elara/features/student/homework/domain/repositories/homework_repository.dart';
+import 'package:elara/features/student/homework/domain/usecases/get_homework_use_case.dart';
+import 'package:elara/features/student/homework/presentation/cubits/homework_cubit.dart';
 
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -194,5 +200,25 @@ Future<void> setupDependencyInjection() async {
       getQuizSessionUseCase: getIt<GetQuizSessionUseCase>(),
       submitQuizAnswersUseCase: getIt<SubmitQuizAnswersUseCase>(),
     ),
+  );
+
+  // ── Homework ──────────────────────────────────────────────────────────────
+  getIt.registerLazySingleton<HomeworkDataSource>(
+    () => HomeworkDataSourceImpl(),
+    // TODO: pass DioClient when backend is ready:
+    // () => HomeworkDataSourceImpl(getIt<DioClient>()),
+  );
+
+  getIt.registerLazySingleton<HomeworkRepository>(
+    () => HomeworkRepositoryImpl(getIt<HomeworkDataSource>()),
+  );
+
+  getIt.registerLazySingleton(
+    () => GetHomeworkUseCase(getIt<HomeworkRepository>()),
+  );
+
+  // Factory: BlocProvider closes the cubit on dispose; fresh instance needed.
+  getIt.registerFactory<HomeworkCubit>(
+    () => HomeworkCubit(getIt<GetHomeworkUseCase>()),
   );
 }
