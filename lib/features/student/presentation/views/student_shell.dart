@@ -49,13 +49,13 @@ class StudentShell extends StatelessWidget {
       child: BlocBuilder<StudentTabCubit, int>(
         builder: (context, currentTab) {
           return Scaffold(
-             extendBody: true,
-            backgroundColor: LightModeColors.surfaceApp,
-            body: IndexedStack(index: currentTab, children: _pages),
-            bottomNavigationBar: AppBottomNavBar(
-              currentIndex: currentTab,
-              onTap: (i) => context.read<StudentTabCubit>().goToTab(i),
-             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            extendBody: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            // body: IndexedStack(index: currentTab, children: _pages),
+            // bottomNavigationBar: AppBottomNavBar(
+            //   currentIndex: currentTab,
+            //   onTap: (i) => context.read<StudentTabCubit>().goToTab(i),
+            // ),
             body: Stack(
               children: [
                 IndexedStack(index: currentTab, children: _pages),
@@ -69,7 +69,7 @@ class StudentShell extends StatelessWidget {
                   ),
                 ),
               ],
-             ),
+            ),
           );
         },
       ),
@@ -101,16 +101,11 @@ class _ComingSoonPage extends StatelessWidget {
               color: AppColors.neutral300,
             ),
             SizedBox(height: AppSpacing.spacingMd.h),
-            Text(
-              label,
-              style: AppTypography.h5(color: cs.onSurface),
-            ),
+            Text(label, style: AppTypography.h5(color: cs.onSurface)),
             SizedBox(height: 6.h),
             Text(
               'Coming soon',
-              style: AppTypography.bodyMedium(
-                color: cs.onSurfaceVariant,
-              ),
+              style: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
             ),
           ],
         ),

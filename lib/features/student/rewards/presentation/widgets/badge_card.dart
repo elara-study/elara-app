@@ -17,11 +17,11 @@ class BadgeCard extends StatelessWidget {
 
     final cardColor = isUnlocked
         ? AppColors.brandAccent500
-        : LightModeColors.surfacePrimary;
+        : Theme.of(context).colorScheme.surface;
 
     final circleColor = isUnlocked
         ? AppColors.brandPrimary50.withValues(alpha: 0.2)
-        : LightModeColors.surfaceInverted.withValues(alpha: 0.1);
+        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1);
 
     final iconAsset = isUnlocked
         ? 'assets/icons/rewards_icon_filled.svg'
@@ -29,17 +29,17 @@ class BadgeCard extends StatelessWidget {
 
     final iconColor = isUnlocked
         ? AppColors.brandAccent50
-        : LightModeColors.textSecondary;
+        : Theme.of(context).colorScheme.onSurfaceVariant;
 
     final iconSize = isUnlocked ? 24.w : 32.w;
 
     final textColor = isUnlocked
         ? AppColors.brandAccent50
-        : LightModeColors.textSecondary;
+        : Theme.of(context).colorScheme.onSurfaceVariant;
 
     final descColor = isUnlocked
         ? AppColors.brandAccent50
-        : LightModeColors.textDisabled;
+        : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7);
 
     final hasProgress = !isUnlocked && badge.progressTotal > 0;
 

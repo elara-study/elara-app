@@ -32,13 +32,13 @@ import 'package:elara/features/student/rewards/data/repositories/remote_student_
 import 'package:elara/features/student/rewards/domain/repositories/student_rewards_repository.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_student_rewards_leaderboard_usecase.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_student_rewards_overview_usecase.dart';
- import 'package:elara/features/student/rewards/data/datasources/rewards_remote_data_source.dart';
+import 'package:elara/features/student/rewards/data/datasources/rewards_remote_data_source.dart';
 import 'package:elara/features/student/rewards/data/datasources/rewards_remote_data_source_impl.dart';
 import 'package:elara/features/student/rewards/data/repositories/rewards_repository_impl.dart';
 import 'package:elara/features/student/rewards/domain/repositories/rewards_repository.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_rewards_use_case.dart';
 import 'package:elara/features/student/rewards/presentation/cubits/rewards_cubit.dart';
- 
+
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,8 +46,12 @@ final getIt = GetIt.instance;
 
 Future<void> setupDependencyInjection() async {
   // ── External ──────────────────────────────────────────────────────────────
-  final sharedPreferences = await SharedPreferences.getInstance();
-  getIt.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+  getIt.registerSingletonAsync<SharedPreferences>(
+    () async => await SharedPreferences.getInstance(),
+  );
+
+  // Wait for async dependencies ONLY (important)
+  await getIt.allReady();
 
   // ── Core ──────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<DioClient>(() => DioClient());
@@ -112,16 +116,15 @@ Future<void> setupDependencyInjection() async {
     () => StudentLearnCubit(repository: getIt<StudentRepository>()),
   );
 
-   // Factory — BlocProvider closes the cubit on dispose; a fresh instance is
+  // Factory — BlocProvider closes the cubit on dispose; a fresh instance is
   // needed each time StudentShell mounts (e.g. after app restart).
-  getIt.registerFactory(() => StudentTabCubit());
-   // ── Student group (Learn) ─────────────────────────────────────────────────
-   // Factory: must not be a singleton — [BlocProvider] closes the cubit when the
+  // ── Student group (Learn) ─────────────────────────────────────────────────
+  // Factory: must not be a singleton — [BlocProvider] closes the cubit when the
   // shell disposes; a reused closed singleton would throw on emit.
   getIt.registerFactory(() => StudentTabCubit());
 
   // ── Student group (Learn) ─────────────────────────────────────────────────
-   getIt.registerLazySingleton<StudentGroupRepository>(
+  getIt.registerLazySingleton<StudentGroupRepository>(
     () => MockStudentGroupRepository(),
     // Live APIs: register RemoteStudentGroupRepository(getIt<DioClient>())
     // after auth sets the bearer token; confirm paths in ApiConstants.
@@ -152,7 +155,7 @@ Future<void> setupDependencyInjection() async {
     () => StudentGroupCubit(getIt<LoadStudentGroupUseCase>()),
   );
 
-   // ── Rewards Gamification: Data Source ────────────────────────────────────
+  // ── Rewards Gamification: Data Source ────────────────────────────────────
   getIt.registerLazySingleton<RewardsRemoteDataSource>(
     () => RewardsRemoteDataSourceImpl(),
     // TODO: pass DioClient when backend is ready:
@@ -171,9 +174,9 @@ Future<void> setupDependencyInjection() async {
 
   // ── Rewards Gamification: Cubit ──────────────────────────────────────────
   // Factory so each shell entry creates a fresh instance
-  getIt.registerFactory(
-    () => RewardsCubit(getIt<GetRewardsUseCase>()),
-   // ── Quiz (Learn) ─────────────────────────────────────────────────────────
+  getIt.registerFactory(() => RewardsCubit(getIt<GetRewardsUseCase>()));
+
+  // ── Quiz (Learn) ─────────────────────────────────────────────────────────
   getIt.registerLazySingleton<QuizRepository>(
     () => MockQuizRepository(),
     // Live API: register RemoteQuizRepository(getIt<DioClient>()) here.
@@ -191,5 +194,5 @@ Future<void> setupDependencyInjection() async {
       getQuizSessionUseCase: getIt<GetQuizSessionUseCase>(),
       submitQuizAnswersUseCase: getIt<SubmitQuizAnswersUseCase>(),
     ),
-   );
+  );
 }

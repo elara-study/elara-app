@@ -18,7 +18,7 @@ class RewardsTabSelector extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
-        color: LightModeColors.surfacePrimary,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
@@ -59,7 +59,7 @@ class _TabItem extends StatelessWidget {
           decoration: BoxDecoration(
             color: isActive
                 ? AppColors.brandPrimary500
-                : LightModeColors.surfacePrimary,
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
           ),
           child: Text(
@@ -68,7 +68,7 @@ class _TabItem extends StatelessWidget {
             style: AppTypography.button(
               color: isActive
                   ? AppColors.neutral50
-                  : LightModeColors.textSecondary,
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ),

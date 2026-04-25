@@ -32,7 +32,7 @@ class LeaderboardEntryTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: isYou
             ? AppColors.brandPrimary500.withValues(alpha: 0.15)
-            : LightModeColors.surfacePrimary,
+            : Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppRadius.radiusXl.r),
         border: isYou
             ? Border.all(color: AppColors.brandPrimary500, width: 1.5)
@@ -53,7 +53,7 @@ class LeaderboardEntryTile extends StatelessWidget {
           Text(
             '${entry.rank}',
             style: AppTypography.labelRegular(
-              color: LightModeColors.textSecondary,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
 
@@ -77,7 +77,7 @@ class LeaderboardEntryTile extends StatelessWidget {
             child: Text(
               entry.name,
               style: AppTypography.bodyMedium(
-                color: LightModeColors.textPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
               ).copyWith(fontWeight: AppTypography.regular),
             ),
           ),
@@ -95,8 +95,8 @@ class LeaderboardEntryTile extends StatelessWidget {
                         AppColors.brandPrimary500,
                         BlendMode.srcIn,
                       )
-                    : const ColorFilter.mode(
-                        LightModeColors.textPrimary,
+                    : ColorFilter.mode(
+                        Theme.of(context).colorScheme.onSurface,
                         BlendMode.srcIn,
                       ),
               ),
@@ -106,7 +106,7 @@ class LeaderboardEntryTile extends StatelessWidget {
                 style: AppTypography.labelSmall(
                   color: isYou
                       ? AppColors.brandPrimary500
-                      : LightModeColors.textPrimary,
+                      : Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],

@@ -28,7 +28,7 @@ class RewardsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: LightModeColors.surfaceApp,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       appBar: const AppGlassHeader(title: 'Rewards'),
       body: BlocBuilder<RewardsCubit, RewardsState>(
@@ -53,7 +53,7 @@ class RewardsScreen extends StatelessWidget {
                     Text(
                       state.message,
                       style: AppTypography.bodyMedium(
-                        color: LightModeColors.textSecondary,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -120,12 +120,14 @@ class _AchievementsCard extends StatelessWidget {
         Text(
           'Achievements',
           style: AppTypography.h3(
-            color: LightModeColors.textPrimary,
+            color: Theme.of(context).colorScheme.onSurface,
           ).copyWith(fontWeight: AppTypography.black),
         ),
         Text(
           'Track your progress and rewards',
-          style: AppTypography.bodyLarge(color: LightModeColors.textSecondary),
+          style: AppTypography.bodyLarge(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         SizedBox(height: AppSpacing.spacing2xl.h),
 

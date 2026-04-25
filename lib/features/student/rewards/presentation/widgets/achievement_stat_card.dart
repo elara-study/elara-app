@@ -27,7 +27,7 @@ class AchievementStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 76.h,
+      constraints: BoxConstraints(minHeight: 76.h),
       decoration: BoxDecoration(
         color: cardColor,
         borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
