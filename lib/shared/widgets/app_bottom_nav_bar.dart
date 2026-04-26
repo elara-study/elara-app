@@ -6,26 +6,62 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 
+/// Configuration for a single tab in [AppBottomNavBar].
+class AppNavTab {
+  final String label;
+
+  /// SVG path used when the tab is inactive.
+  final String assetPath;
+
+  /// SVG path used when the tab is active.
+  /// Defaults to [assetPath] with `'.svg'` replaced by `'_filled.svg'`.
+  final String? activeAssetPath;
+
+  const AppNavTab({
+    required this.label,
+    required this.assetPath,
+    this.activeAssetPath,
+  });
+
+  String get resolvedActiveAsset =>
+      activeAssetPath ?? assetPath.replaceAll('.svg', '_filled.svg');
+}
+
 /// Floating pill-shaped bottom navigation bar.
 ///
-/// Renders as a white rounded card floating above the screen background,
-/// with horizontal margins and a soft shadow — matching the design.
+/// Accepts a list of [AppNavTab] configs, making it reusable for both the
+/// Student shell and the Teacher shell without duplicating nav logic.
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
 
-  static const _tabs = [
-    _NavTab(label: 'Home', assetPath: 'assets/icons/home_icon.svg'),
-    _NavTab(label: 'Learn', assetPath: 'assets/icons/learn_icon.svg'),
-    _NavTab(label: 'Rewards', assetPath: 'assets/icons/rewards_icon.svg'),
-    _NavTab(label: 'Alerts', assetPath: 'assets/icons/alerts_icon.svg'),
-    _NavTab(label: 'Profile', assetPath: 'assets/icons/profile_icon.svg'),
+  /// The tabs to render. Order matches the [IndexedStack] page order.
+  final List<AppNavTab> tabs;
+
+  /// Default student tabs — kept as a convenience constant so existing
+  /// [StudentShell] code needs no change.
+  static const List<AppNavTab> studentTabs = [
+    AppNavTab(label: 'Home', assetPath: 'assets/icons/home_icon.svg'),
+    AppNavTab(label: 'Learn', assetPath: 'assets/icons/learn_icon.svg'),
+    AppNavTab(label: 'Rewards', assetPath: 'assets/icons/rewards_icon.svg'),
+    AppNavTab(label: 'Alerts', assetPath: 'assets/icons/alerts_icon.svg'),
+    AppNavTab(label: 'Profile', assetPath: 'assets/icons/profile_icon.svg'),
+  ];
+
+  /// Default teacher tabs.
+  static const List<AppNavTab> teacherTabs = [
+    AppNavTab(label: 'Home', assetPath: 'assets/icons/home_icon.svg'),
+    AppNavTab(label: 'Groups', assetPath: 'assets/icons/people_outline.svg'),
+    AppNavTab(label: 'Roadmaps', assetPath: 'assets/icons/list_icon.svg'),
+    AppNavTab(label: 'Alerts', assetPath: 'assets/icons/alerts_icon.svg'),
+    AppNavTab(label: 'Profile', assetPath: 'assets/icons/profile_icon.svg'),
   ];
 
   const AppBottomNavBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.tabs = studentTabs,
   });
 
   @override
@@ -55,12 +91,10 @@ class AppBottomNavBar extends StatelessWidget {
           boxShadow: AppShadows.elevation(brightness),
         ),
         child: Row(
-          children: List.generate(_tabs.length, (index) {
-            final tab = _tabs[index];
+          children: List.generate(tabs.length, (index) {
+            final tab = tabs[index];
             final isActive = currentIndex == index;
-            final color = isActive
-                ? AppColors.brandPrimary700
-                : inactiveColor;
+            final color = isActive ? AppColors.brandPrimary700 : inactiveColor;
 
             return Expanded(
               child: GestureDetector(
@@ -72,7 +106,7 @@ class AppBottomNavBar extends StatelessWidget {
                   children: [
                     SvgPicture.asset(
                       isActive
-                          ? tab.assetPath.replaceAll('.svg', '_filled.svg')
+                          ? tab.resolvedActiveAsset
                           : tab.assetPath,
                       width: 20.w,
                       height: 17.w,
@@ -93,11 +127,4 @@ class AppBottomNavBar extends StatelessWidget {
       ),
     );
   }
-}
-
-class _NavTab {
-  final String label;
-  final String assetPath;
-
-  const _NavTab({required this.label, required this.assetPath});
 }
