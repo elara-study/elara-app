@@ -1,5 +1,6 @@
 import 'package:elara/config/routes.dart';
 import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
+import 'package:elara/features/student/homework/presentation/homework_route_args.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
@@ -67,12 +68,7 @@ class ModuleSheet extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  'Interaction Options',
-                  style: titleStyle,
-                ),
-              ),
+              Expanded(child: Text('Interaction Options', style: titleStyle)),
               IconButton(
                 icon: const Icon(Icons.close_rounded),
                 tooltip: MaterialLocalizations.of(context).closeButtonLabel,
@@ -111,7 +107,16 @@ class ModuleSheet extends StatelessWidget {
                   labelStyle: optionLabelStyle?.copyWith(
                     color: ButtonColors.outlineText,
                   ),
-                  onTap: () => _pop(context),
+                  onTap: () {
+                    final nav = Navigator.of(context);
+                    nav.pop();
+                    nav.pushNamed(
+                      AppRoutes.homework,
+                      arguments: const HomeworkRouteArgs(
+                        homeworkId: 'demo-homework',
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

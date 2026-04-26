@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final String? subtitle;
   final List<Widget>? actions;
   final Widget? leading;
   final double height;
@@ -14,6 +15,7 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
   const AppGlassHeader({
     super.key,
     required this.title,
+    this.subtitle,
     this.actions,
     this.leading,
     this.height = kToolbarHeight,
@@ -40,16 +42,40 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
           surfaceTintColor:
               Colors.transparent, // Prevents Material 3 tinting overlay
           elevation: 0,
+          // Ensures back arrow and icon buttons use the surface text colour
+          // in both light and dark mode. Without this, Flutter may default to
+          // white (invisible on a light scaffold background).
+          iconTheme: IconThemeData(color: cs.onSurface),
+          actionsIconTheme: IconThemeData(color: cs.onSurface),
           leading: leading,
           automaticallyImplyLeading: automaticallyImplyLeading,
-          title: Text(
-            title,
-            style: AppTypography.h5(
-              font: "Comfortaa",
-              // color: LightModeColors.textPrimary,
-              color: cs.onSurface,
-            ).copyWith(fontWeight: FontWeight.bold),
-          ),
+          title: subtitle != null
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTypography.h5(
+                        font: "Comfortaa",
+                        color: cs.onSurface,
+                      ).copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      subtitle!,
+                      style: AppTypography.bodySmall(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                )
+              : Text(
+                  title,
+                  style: AppTypography.h5(
+                    font: "Comfortaa",
+                    color: cs.onSurface,
+                  ).copyWith(fontWeight: FontWeight.bold),
+                ),
           actions: actions,
           centerTitle: false,
           bottom: showDivider

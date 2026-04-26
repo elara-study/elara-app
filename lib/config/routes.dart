@@ -7,6 +7,8 @@ import 'package:elara/features/auth/presentation/views/splash_screen.dart';
 import 'package:elara/features/student/presentation/views/student_shell.dart';
 import 'package:elara/features/student/group/presentation/views/student_group_page.dart';
 import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
+import 'package:elara/features/student/homework/presentation/homework_route_args.dart';
+import 'package:elara/features/student/homework/presentation/views/homework_screen.dart';
 import 'package:elara/features/student/quiz/presentation/views/quiz_flow_page.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +25,9 @@ class AppRoutes {
 
   /// Full quiz flow (MCQ → written → results) with [QuizCubit].
   static const String quiz = '/quiz';
+
+  /// Homework assignment screen (navigated from module sheet).
+  static const String homework = '/homework';
 
   static const String demoGroupId = 'demo-group';
 
@@ -88,6 +93,16 @@ class AppRoutes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => QuizFlowPage.fromArgs(resolved),
+        );
+
+      case homework:
+        final hwArgs = settings.arguments;
+        final resolvedHw = hwArgs is HomeworkRouteArgs
+            ? hwArgs
+            : const HomeworkRouteArgs(homeworkId: 'demo-homework');
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => HomeworkScreen.fromArgs(resolvedHw),
         );
 
       default:
