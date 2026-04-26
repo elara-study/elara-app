@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:elara/core/theme/app_spacing.dart';
+import 'package:elara/core/utils/ui_helpers.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -75,13 +76,6 @@ class _HomeContent extends StatelessWidget {
 
   const _HomeContent({required this.state});
 
-  String get _greeting {
-    final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
-  }
-
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -99,7 +93,7 @@ class _HomeContent extends StatelessWidget {
         children: [
           //SizedBox(height: AppSpacing.spacingXl.h),
           Text(
-            '$_greeting, ${state.profile.firstName}!',
+            '${UiHelpers.getGreeting()}, ${state.profile.firstName}!',
             style: AppTypography.h3(
               color: cs.onSurface,
             ).copyWith(fontWeight: AppTypography.black, fontSize: 25.sp),
@@ -178,8 +172,8 @@ class _HomeContent extends StatelessWidget {
                 title: group.name,
                 subtitle: '${(group.progressPercent * 100).round()}% complete',
                 icon: _iconForGroup(group),
-                primaryColor: _primaryColor(group),
-                secondaryColor: _secondaryColor(group),
+                primaryColor: UiHelpers.getGroupPrimaryColor(group.colorKey),
+                secondaryColor: UiHelpers.getGroupSecondaryColor(group.colorKey),
                 onTap: () {
                   Navigator.pushNamed(
                     context,
@@ -207,28 +201,6 @@ class _HomeContent extends StatelessWidget {
         return Icons.menu_book_outlined;
       default:
         return Icons.groups_outlined;
-    }
-  }
-
-  Color _primaryColor(StudentGroupEntity group) {
-    switch (group.colorKey) {
-      case 'orange':
-        return AppColors.brandSecondary500;
-      case 'green':
-        return AppColors.success500;
-      default:
-        return AppColors.brandPrimary500;
-    }
-  }
-
-  Color _secondaryColor(StudentGroupEntity group) {
-    switch (group.colorKey) {
-      case 'orange':
-        return AppColors.brandSecondary400;
-      case 'green':
-        return AppColors.success400;
-      default:
-        return AppColors.brandPrimary400;
     }
   }
 

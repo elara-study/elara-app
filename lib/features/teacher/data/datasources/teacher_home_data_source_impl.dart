@@ -7,7 +7,7 @@ import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.da
 /// Mock implementation of [TeacherHomeDataSource].
 ///
 /// Returns hardcoded data so the UI is fully testable without a backend.
-/// TODO: Replace with a real HTTP implementation when the API is ready.
+///  : Replace with a real HTTP implementation when the API is ready.
 class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
   const TeacherHomeDataSourceImpl();
 

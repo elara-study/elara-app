@@ -3,13 +3,13 @@ import 'package:elara/features/auth/domain/entities/user_entity.dart';
 import 'package:elara/features/auth/presentation/views/sign_in_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_credentials_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
-import 'package:elara/features/auth/presentation/views/splash_screen.dart';
 import 'package:elara/features/student/presentation/views/student_shell.dart';
 import 'package:elara/features/student/group/presentation/views/student_group_page.dart';
 import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
 import 'package:elara/features/student/homework/presentation/homework_route_args.dart';
 import 'package:elara/features/student/homework/presentation/views/homework_screen.dart';
 import 'package:elara/features/student/quiz/presentation/views/quiz_flow_page.dart';
+import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -20,7 +20,7 @@ class AppRoutes {
   static const String signUpCredentials = '/register/credentials';
 
   /// Student dashboard — the temporary post-auth landing screen.
-  /// TODO: Replace with a role-based router once Teacher/Parent dashboards exist.
+  ///  : Replace with a role-based router once Teacher/Parent dashboards exist.
   static const String studentDashboard = '/student';
 
   /// Full quiz flow (MCQ → written → results) with [QuizCubit].
@@ -33,7 +33,10 @@ class AppRoutes {
 
   static const String home = '/home';
 
-  /// Placeholder until Teacher/Parent dashboards exist.
+  /// Teacher dashboard shell.
+  static const String teacherDashboard = '/teacher';
+
+  /// Placeholder until Parent dashboard exists.
   static const String comingSoonDashboard = '/coming-soon-dashboard';
 
   static void navigateAfterAuth(BuildContext context, UserEntity user) {
@@ -43,6 +46,9 @@ class AppRoutes {
           context,
         ).pushNamedAndRemoveUntil(studentDashboard, (_) => false);
       case UserRole.teacher:
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(teacherDashboard, (_) => false);
       case UserRole.parent:
         Navigator.of(
           context,
@@ -53,7 +59,9 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        return MaterialPageRoute(builder: (_) => const SplashScreen());
+        // Temporarily bypassing splash/auth for testing
+        return MaterialPageRoute(builder: (_) => const TeacherShell());
+        // return MaterialPageRoute(builder: (_) => const SplashScreen());
 
       case login:
         return MaterialPageRoute(builder: (_) => const SignInScreen());
@@ -70,6 +78,9 @@ class AppRoutes {
       case studentDashboard:
       case home:
         return MaterialPageRoute(builder: (_) => const StudentShell());
+
+      case teacherDashboard:
+        return MaterialPageRoute(builder: (_) => const TeacherShell());
 
       case comingSoonDashboard:
         return MaterialPageRoute(
