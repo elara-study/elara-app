@@ -9,6 +9,7 @@ import 'package:elara/features/student/presentation/widgets/home/continue_learni
 import 'package:elara/features/student/presentation/widgets/home/daily_goal_item.dart';
 import 'package:elara/shared/widgets/app_action_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
+import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -125,22 +126,10 @@ class _HomeContent extends StatelessWidget {
           SizedBox(height: AppSpacing.spacing2xl.h),
 
           // ── Daily Goals ──────────────────────────────────────────────────
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Daily Goals',
-                style: AppTypography.h4(
-                  color: cs.onSurface,
-                ).copyWith(fontWeight: FontWeight.w900),
-              ),
-              Text(
+          AppSectionHeader(
+            title: 'Daily Goals',
+            seeAllLabel:
                 '${state.completedGoalsCount}/${state.dailyGoals.length} completed',
-                style: AppTypography.bodyMedium(
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
-            ],
           ),
 
           SizedBox(height: AppSpacing.spacingLg.h),
@@ -175,38 +164,9 @@ class _HomeContent extends StatelessWidget {
           SizedBox(height: AppSpacing.spacing2xl.h),
 
           // ── My Groups ────────────────────────────────────────────────────
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'My Groups',
-                style: AppTypography.h4(
-                  color: cs.onSurface,
-                ).copyWith(fontWeight: FontWeight.w900),
-              ),
-              GestureDetector(
-                onTap: () => context.read<StudentTabCubit>().goToLearn(),
-                child: Row(
-                  children: [
-                    Text(
-                      'See All',
-                      style: AppTypography.labelSmall(
-                        color: ButtonColors.ghostText,
-                      ),
-                    ),
-                    SvgPicture.asset(
-                      'assets/icons/right_arrow_ios.svg',
-                      width: AppSpacing.spacingLg.w,
-                      height: AppSpacing.spacingLg.w,
-                      colorFilter: const ColorFilter.mode(
-                        ButtonColors.ghostText,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          AppSectionHeader(
+            title: 'My Groups',
+            onSeeAll: () => context.read<StudentTabCubit>().goToLearn(),
           ),
 
           SizedBox(height: AppSpacing.spacingMd.h),
