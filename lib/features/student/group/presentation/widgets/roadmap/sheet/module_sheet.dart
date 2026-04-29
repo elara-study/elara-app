@@ -1,4 +1,5 @@
 import 'package:elara/config/routes.dart';
+import 'package:elara/features/student/chatbot/presentation/chatbot_route_args.dart';
 import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
 import 'package:elara/features/student/homework/presentation/homework_route_args.dart';
 import 'package:elara/core/theme/app_colors.dart';
@@ -127,7 +128,14 @@ class ModuleSheet extends StatelessWidget {
             foreground: cs.onPrimary,
             labelStyle: optionLabelStyle?.copyWith(color: cs.onPrimary),
             background: cs.primary,
-            onTap: () => _pop(context),
+            onTap: () {
+              final nav = Navigator.of(context);
+              nav.pop();
+              nav.pushNamed(
+                AppRoutes.chatbot,
+                arguments: ChatbotRouteArgs(sessionTitle: moduleTitle),
+              );
+            },
           ),
           const SizedBox(height: AppSpacing.spacingMd),
           ModuleOutlineRow(

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String? subtitle;
+  final TextStyle? titleStyle;
+  final TextStyle? subtitleStyle;
   final List<Widget>? actions;
   final Widget? leading;
   final double height;
@@ -16,6 +18,8 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.title,
     this.subtitle,
+    this.titleStyle,
+    this.subtitleStyle,
     this.actions,
     this.leading,
     this.height = kToolbarHeight,
@@ -56,25 +60,29 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
                   children: [
                     Text(
                       title,
-                      style: AppTypography.h5(
-                        font: "Comfortaa",
-                        color: cs.onSurface,
-                      ).copyWith(fontWeight: FontWeight.bold),
+                      style:
+                          titleStyle ??
+                          AppTypography.h5(
+                            font: "Comfortaa",
+                            color: cs.onSurface,
+                          ).copyWith(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       subtitle!,
-                      style: AppTypography.bodySmall(
-                        color: cs.onSurfaceVariant,
-                      ),
+                      style:
+                          subtitleStyle ??
+                          AppTypography.bodySmall(color: cs.onSurfaceVariant),
                     ),
                   ],
                 )
               : Text(
                   title,
-                  style: AppTypography.h5(
-                    font: "Comfortaa",
-                    color: cs.onSurface,
-                  ).copyWith(fontWeight: FontWeight.bold),
+                  style:
+                      titleStyle ??
+                      AppTypography.h5(
+                        font: "Comfortaa",
+                        color: cs.onSurface,
+                      ).copyWith(fontWeight: FontWeight.bold),
                 ),
           actions: actions,
           centerTitle: false,
