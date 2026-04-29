@@ -5,16 +5,23 @@ import 'package:flutter/material.dart';
 
 /// App-wide shadow and blur tokens.
 ///
-/// **Elevation** — theme-aware drop shadow (light: black 8%, dark: white 6%).
+/// **Elevation** — theme-aware drop shadow (light: black ~8%, dark: white 6%).
 /// **Glow** — soft lift using #F8FAFC at 50% (see [glow]).
 /// **Background blur** — use [backgroundBlur] with [BackdropFilter], not
 /// [BoxDecoration.boxShadow].
 class AppShadows {
   AppShadows._();
 
-  /// Light mode: offset (0, 4), blur 20, #000000 at 8%.
+  /// Light mode: offset (0, 4), blur 20, #000000 at ~8%.
+  /// Same blur and offset as many design specs; for **15%** opacity black see
+  /// [dropShadow].
   static const List<BoxShadow> elevationLight = [
     BoxShadow(color: Color(0x14000000), offset: Offset(0, 4), blurRadius: 20),
+  ];
+
+  /// Black drop shadow — offset (0, 4), blur 20, spread 0, **15%** opacity.
+  static const List<BoxShadow> dropShadow = [
+    BoxShadow(color: Color(0x26000000), offset: Offset(0, 4), blurRadius: 20),
   ];
 
   /// Dark mode: offset (0, 4), blur 20, #FFFFFF at 6%.

@@ -11,8 +11,14 @@ import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
 import 'package:elara/features/student/homework/presentation/homework_route_args.dart';
 import 'package:elara/features/student/homework/presentation/views/homework_screen.dart';
 import 'package:elara/features/student/quiz/presentation/views/quiz_flow_page.dart';
-import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
-import 'package:flutter/material.dart';
+ import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
+ import 'package:elara/config/dependency_injection.dart';
+import 'package:elara/features/student/chatbot/presentation/chatbot_route_args.dart';
+import 'package:elara/features/student/chatbot/presentation/cubits/chatbot_cubit.dart';
+import 'package:elara/features/student/chatbot/presentation/cubits/sessions_cubit.dart';
+import 'package:elara/features/student/chatbot/presentation/views/chatbot_screen.dart';
+ import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -30,6 +36,9 @@ class AppRoutes {
 
   /// Homework assignment screen (navigated from module sheet).
   static const String homework = '/homework';
+
+  /// Chatbot — conversation thread.
+  static const String chatbot = '/chatbot';
 
   static const String demoGroupId = 'demo-group';
 
@@ -115,6 +124,24 @@ class AppRoutes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => HomeworkScreen.fromArgs(resolvedHw),
+        );
+
+      case chatbot:
+        final aiArgs = settings.arguments;
+        final resolvedAi = aiArgs is ChatbotRouteArgs
+            ? aiArgs
+            : const ChatbotRouteArgs();
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider<ChatbotCubit>(create: (_) => getIt<ChatbotCubit>()),
+              BlocProvider<SessionsCubit>(
+                create: (_) => getIt<SessionsCubit>(),
+              ),
+            ],
+            child: ChatbotScreen(routeArgs: resolvedAi),
+          ),
         );
 
       default:

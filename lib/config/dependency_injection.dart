@@ -48,6 +48,19 @@ import 'package:elara/features/teacher/data/datasources/teacher_home_data_source
 import 'package:elara/features/teacher/data/datasources/teacher_home_data_source_impl.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
 
+import 'package:elara/core/network/network_info.dart';
+import 'package:elara/features/student/chatbot/core/chatbot_config.dart';
+import 'package:elara/features/student/chatbot/data/repositories/mock_chatbot_repository.dart';
+import 'package:elara/features/student/chatbot/domain/repositories/chatbot_repository.dart';
+import 'package:elara/features/student/chatbot/domain/usecases/create_session_use_case.dart';
+import 'package:elara/features/student/chatbot/domain/usecases/delete_session_use_case.dart';
+import 'package:elara/features/student/chatbot/domain/usecases/list_sessions_use_case.dart';
+import 'package:elara/features/student/chatbot/domain/usecases/load_history_use_case.dart';
+import 'package:elara/features/student/chatbot/domain/usecases/send_image_use_case.dart';
+import 'package:elara/features/student/chatbot/domain/usecases/send_text_use_case.dart';
+import 'package:elara/features/student/chatbot/presentation/cubits/chatbot_cubit.dart';
+import 'package:elara/features/student/chatbot/presentation/cubits/sessions_cubit.dart';
+
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -225,7 +238,7 @@ Future<void> setupDependencyInjection() async {
     () => HomeworkCubit(getIt<GetHomeworkUseCase>()),
   );
 
-  // ── Teacher ──────────────────────────────────────────────────────────────
+   // ── Teacher ──────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<TeacherHomeDataSource>(
     () => const TeacherHomeDataSourceImpl(),
   );
@@ -233,5 +246,55 @@ Future<void> setupDependencyInjection() async {
   // Factory: each TeacherShell gets its own cubit instance.
   getIt.registerFactory<TeacherHomeCubit>(
     () => TeacherHomeCubit(getIt<TeacherHomeDataSource>()),
+ 
+  // ── Chatbot (Student) ────────────────────────────────────────────────────
+  getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfo());
+
+  ///
+  /// Live stack (register below instead):
+  /// `ChatbotRemoteDataSourceImpl(getIt<DioClient>())` +
+  /// `ChatbotRepositoryImpl(getIt<ChatbotRemoteDataSource>())`.
+  getIt.registerLazySingleton<ChatbotRepository>(() => MockChatbotRepository());
+
+  getIt.registerLazySingleton(
+    () => CreateSessionUseCase(getIt<ChatbotRepository>()),
   );
+  getIt.registerLazySingleton(
+    () => ListSessionsUseCase(getIt<ChatbotRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => LoadHistoryUseCase(getIt<ChatbotRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => SendTextUseCase(getIt<ChatbotRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => SendImageUseCase(getIt<ChatbotRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => DeleteSessionUseCase(getIt<ChatbotRepository>()),
+  );
+
+  getIt.registerFactory<ChatbotCubit>(
+    () => ChatbotCubit(
+      createSessionUseCase: getIt<CreateSessionUseCase>(),
+      listSessionsUseCase: getIt<ListSessionsUseCase>(),
+      loadHistoryUseCase: getIt<LoadHistoryUseCase>(),
+      sendTextUseCase: getIt<SendTextUseCase>(),
+      sendImageUseCase: getIt<SendImageUseCase>(),
+      deleteSessionUseCase: getIt<DeleteSessionUseCase>(),
+      networkInfo: getIt<NetworkInfo>(),
+      defaultClusterId: ChatbotConfig.defaultClusterId,
+    ),
+  );
+
+  getIt.registerFactory<SessionsCubit>(
+    () => SessionsCubit(
+      listSessionsUseCase: getIt<ListSessionsUseCase>(),
+      createSessionUseCase: getIt<CreateSessionUseCase>(),
+      deleteSessionUseCase: getIt<DeleteSessionUseCase>(),
+      networkInfo: getIt<NetworkInfo>(),
+      defaultClusterId: ChatbotConfig.defaultClusterId,
+    ),
+   );
 }
