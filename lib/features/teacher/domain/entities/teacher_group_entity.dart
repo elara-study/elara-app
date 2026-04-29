@@ -1,23 +1,32 @@
-/// A group managed by the teacher, as shown in the home screen preview list.
-class TeacherGroupEntity {
+import 'package:elara/shared/domain/entities/group_entity.dart';
+
+class TeacherGroupEntity extends GroupEntity {
+  @override
   final String id;
+  @override
   final String name;
+  @override
   final String subject;
-
-  /// Number of enrolled students.
+  @override
+  final String grade;
+  @override
   final int studentCount;
-
-  /// Overall group progress (0.0 – 1.0).
+  @override
+  final int totalLessons;
+  @override
   final double progressPercent;
-
-  /// Colour key used to pick the gradient: 'purple' | 'orange' | 'green'.
+  @override
   final String colorKey;
+  @override
+  String get lessonProgressLabel => '$totalLessons lessons';
 
-  const TeacherGroupEntity({
+  TeacherGroupEntity({
     required this.id,
     required this.name,
     required this.subject,
+    required this.grade,
     required this.studentCount,
+    required this.totalLessons,
     required this.progressPercent,
     required this.colorKey,
   });

@@ -27,12 +27,14 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
   @override
   Future<List<TeacherGroupEntity>> getGroups() async {
     await Future.delayed(const Duration(milliseconds: 400));
-    return const [
+    return [
       TeacherGroupEntity(
         id: 'g-1',
         name: 'Physics — Grade 10A',
         subject: 'Physics',
+        grade: 'Grade 10',
         studentCount: 28,
+        totalLessons: 32,
         progressPercent: 0.68,
         colorKey: 'purple',
       ),
@@ -40,9 +42,31 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
         id: 'g-2',
         name: 'Chemistry — Grade 11B',
         subject: 'Chemistry',
+        grade: 'Grade 11',
         studentCount: 24,
+        totalLessons: 28,
         progressPercent: 0.45,
         colorKey: 'orange',
+      ),
+      TeacherGroupEntity(
+        id: 'g-3',
+        name: 'Biology — Grade 9C',
+        subject: 'Biology',
+        grade: 'Grade 9',
+        studentCount: 31,
+        totalLessons: 24,
+        progressPercent: 0.82,
+        colorKey: 'green',
+      ),
+      TeacherGroupEntity(
+        id: 'g-4',
+        name: 'Physics — Grade 11A',
+        subject: 'Physics',
+        grade: 'Grade 11',
+        studentCount: 22,
+        totalLessons: 32,
+        progressPercent: 0.33,
+        colorKey: 'purple',
       ),
     ];
   }
@@ -76,5 +100,33 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
         iconColor: AppColors.success500,
       ),
     ];
+  }
+
+  @override
+  Future<void> createGroup({
+    required String title,
+    required String subject,
+    required String grade,
+  }) async {
+    // Mock implementation — replace with real API call when backend is ready
+    await Future.delayed(const Duration(milliseconds: 500));
+    // In a real implementation, this would:
+    // 1. Send a POST request to the backend
+    // 2. Handle validation and error responses
+    // 3. Return the created group data
+  }
+
+  @override
+  Future<void> createRoadmap({
+    required String title,
+    required String subject,
+    required String grade,
+  }) async {
+    // Mock implementation — replace with real API call when backend is ready
+    await Future.delayed(const Duration(milliseconds: 500));
+    // In a real implementation, this would:
+    // 1. Send a POST request to the backend
+    // 2. Handle validation and error responses
+    // 3. Return the created roadmap data
   }
 }

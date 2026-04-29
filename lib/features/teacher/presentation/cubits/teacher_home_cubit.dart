@@ -28,4 +28,38 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
       emit(TeacherHomeError('Failed to load home: ${e.toString()}'));
     }
   }
+
+  Future<void> createGroup({
+    required String title,
+    required String subject,
+    required String grade,
+  }) async {
+    try {
+      await _dataSource.createGroup(
+        title: title,
+        subject: subject,
+        grade: grade,
+      );
+      await loadHome(); // refresh the list
+    } catch (e) {
+      emit(TeacherHomeError('Failed to create group: ${e.toString()}'));
+    }
+  }
+
+  Future<void> createRoadmap({
+    required String title,
+    required String subject,
+    required String grade,
+  }) async {
+    try {
+      await _dataSource.createRoadmap(
+        title: title,
+        subject: subject,
+        grade: grade,
+      );
+      await loadHome();
+    } catch (e) {
+      emit(TeacherHomeError('Failed to create roadmap: ${e.toString()}'));
+    }
+  }
 }

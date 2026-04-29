@@ -52,7 +52,7 @@ class AppBottomNavBar extends StatelessWidget {
   static const List<AppNavTab> teacherTabs = [
     AppNavTab(label: 'Home', assetPath: 'assets/icons/home_icon.svg'),
     AppNavTab(label: 'Groups', assetPath: 'assets/icons/people_outline.svg'),
-    AppNavTab(label: 'Roadmaps', assetPath: 'assets/icons/list_icon.svg'),
+    AppNavTab(label: 'Roadmaps', assetPath: 'assets/icons/roadmap_icon.svg'),
     AppNavTab(label: 'Alerts', assetPath: 'assets/icons/alerts_icon.svg'),
     AppNavTab(label: 'Profile', assetPath: 'assets/icons/profile_icon.svg'),
   ];
@@ -85,9 +85,7 @@ class AppBottomNavBar extends StatelessWidget {
         decoration: BoxDecoration(
           color: cs.surface,
           borderRadius: BorderRadius.circular(28.r),
-          border: Border.all(
-            color: cs.outlineVariant.withValues(alpha: 0.55),
-          ),
+          border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.55)),
           boxShadow: AppShadows.elevation(brightness),
         ),
         child: Row(
@@ -105,9 +103,7 @@ class AppBottomNavBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SvgPicture.asset(
-                      isActive
-                          ? tab.resolvedActiveAsset
-                          : tab.assetPath,
+                      isActive ? tab.resolvedActiveAsset : tab.assetPath,
                       width: 20.w,
                       height: 17.w,
                       fit: BoxFit.contain,

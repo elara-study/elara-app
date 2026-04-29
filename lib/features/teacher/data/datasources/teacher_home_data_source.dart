@@ -10,4 +10,14 @@ abstract class TeacherHomeDataSource {
   Future<TeacherProfileEntity> getProfile();
   Future<List<TeacherGroupEntity>> getGroups();
   Future<List<TeacherActivityEntity>> getRecentActivity();
+  Future<void> createGroup({
+    required String title,
+    required String subject,
+    required String grade,
+  });
+  Future<void> createRoadmap({
+    required String title,
+    required String subject,
+    required String grade,
+  });
 }

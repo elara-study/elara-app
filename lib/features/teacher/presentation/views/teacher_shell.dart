@@ -2,7 +2,9 @@ import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
+import 'package:elara/features/teacher/presentation/views/teacher_groups_screen.dart';
 import 'package:elara/features/teacher/presentation/views/teacher_home_screen.dart';
+import 'package:elara/features/teacher/presentation/views/teacher_roadmaps_screen.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 
-/// Root shell for the Teacher dashboard.
-///
-/// Provides [TeacherHomeCubit] scoped to the shell and renders an
-/// [IndexedStack] with a floating [AppBottomNavBar] using teacher tabs.
-///
-/// [StatefulWidget] is used here — and only here — to manage the active tab
-/// index. No business logic lives in state; all data loading is in the cubit.
 class TeacherShell extends StatefulWidget {
   const TeacherShell({super.key});
 
@@ -29,8 +24,8 @@ class _TeacherShellState extends State<TeacherShell> {
 
   static const List<Widget> _pages = [
     TeacherHomeScreen(),
-    _ComingSoonPage(label: 'Groups'),
-    _ComingSoonPage(label: 'Roadmaps'),
+    TeacherGroupsScreen(),
+    TeacherRoadmapsScreen(),
     _ComingSoonPage(label: 'Alerts'),
     _ComingSoonPage(label: 'Profile'),
   ];
