@@ -1,9 +1,10 @@
+import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/presentation/cubits/learn/student_learn_cubit.dart';
 import 'package:elara/features/student/presentation/cubits/learn/student_learn_state.dart';
 import 'package:elara/features/student/presentation/widgets/learn/join_group_sheet.dart';
-import 'package:elara/features/student/presentation/widgets/learn/subject_group_card.dart';
+import 'package:elara/shared/widgets/subject_group_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,9 +24,7 @@ class LearnScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const AppGlassHeader(
-        title: 'Learn',
-      ),
+      appBar: const AppGlassHeader(title: 'Learn'),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(
           left: AppSpacing.spacingLg.w,
@@ -73,17 +72,23 @@ class LearnScreen extends StatelessWidget {
                     shrinkWrap: true,
                     padding: EdgeInsets.zero,
                     itemCount: state.groups.length,
-                    separatorBuilder: (_, __) => SizedBox(height: AppSpacing.spacingMd.h),
-                    itemBuilder: (_, index) => SubjectGroupCard(
-                      group: state.groups[index],
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/student-group',
-                          arguments: state.groups[index].id,
-                        );
-                      },
-                    ),
+                    separatorBuilder: (_, __) =>
+                        SizedBox(height: AppSpacing.spacingMd.h),
+                    itemBuilder: (_, index) {
+                      final g = state.groups[index];
+                      return SubjectGroupCard(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.studentGroup,
+
+                            arguments: g,
+                          );
+                        },
+                        group: g,
+                        variant: SubjectGroupCardVariant.student,
+                      );
+                    },
                   );
                 }
                 return const SizedBox.shrink();
@@ -170,16 +175,11 @@ class _EmptyGroupsView extends StatelessWidget {
         children: [
           Icon(Icons.groups_outlined, size: 52.sp, color: AppColors.neutral300),
           SizedBox(height: AppSpacing.spacingMd.h),
-          Text(
-            'No groups yet',
-            style: AppTypography.h6(color: cs.onSurface),
-          ),
+          Text('No groups yet', style: AppTypography.h6(color: cs.onSurface)),
           SizedBox(height: 6.h),
           Text(
             'Ask your teacher for a group code\nand tap Join to get started.',
-            style: AppTypography.bodySmall(
-              color: cs.onSurfaceVariant,
-            ),
+            style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: AppSpacing.spacingXl.h),
@@ -235,9 +235,7 @@ class _ErrorView extends StatelessWidget {
           SizedBox(height: AppSpacing.spacingLg.h),
           Text(
             message,
-            style: AppTypography.bodyMedium(
-              color: cs.onSurfaceVariant,
-            ),
+            style: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: AppSpacing.spacingXl.h),

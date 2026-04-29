@@ -9,11 +9,13 @@ import 'package:elara/features/student/presentation/widgets/home/continue_learni
 import 'package:elara/features/student/presentation/widgets/home/daily_goal_item.dart';
 import 'package:elara/shared/widgets/app_action_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
+import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:elara/core/theme/app_spacing.dart';
+import 'package:elara/core/utils/ui_helpers.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -74,13 +76,6 @@ class _HomeContent extends StatelessWidget {
 
   const _HomeContent({required this.state});
 
-  String get _greeting {
-    final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
-  }
-
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -98,7 +93,7 @@ class _HomeContent extends StatelessWidget {
         children: [
           //SizedBox(height: AppSpacing.spacingXl.h),
           Text(
-            '$_greeting, ${state.profile.firstName}!',
+            '${UiHelpers.getGreeting()}, ${state.profile.firstName}!',
             style: AppTypography.h3(
               color: cs.onSurface,
             ).copyWith(fontWeight: AppTypography.black, fontSize: 25.sp),
@@ -125,22 +120,10 @@ class _HomeContent extends StatelessWidget {
           SizedBox(height: AppSpacing.spacing2xl.h),
 
           // ── Daily Goals ──────────────────────────────────────────────────
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Daily Goals',
-                style: AppTypography.h4(
-                  color: cs.onSurface,
-                ).copyWith(fontWeight: FontWeight.w900),
-              ),
-              Text(
+          AppSectionHeader(
+            title: 'Daily Goals',
+            seeAllLabel:
                 '${state.completedGoalsCount}/${state.dailyGoals.length} completed',
-                style: AppTypography.bodyMedium(
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
-            ],
           ),
 
           SizedBox(height: AppSpacing.spacingLg.h),
@@ -175,38 +158,9 @@ class _HomeContent extends StatelessWidget {
           SizedBox(height: AppSpacing.spacing2xl.h),
 
           // ── My Groups ────────────────────────────────────────────────────
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'My Groups',
-                style: AppTypography.h4(
-                  color: cs.onSurface,
-                ).copyWith(fontWeight: FontWeight.w900),
-              ),
-              GestureDetector(
-                onTap: () => context.read<StudentTabCubit>().goToLearn(),
-                child: Row(
-                  children: [
-                    Text(
-                      'See All',
-                      style: AppTypography.labelSmall(
-                        color: ButtonColors.ghostText,
-                      ),
-                    ),
-                    SvgPicture.asset(
-                      'assets/icons/right_arrow_ios.svg',
-                      width: AppSpacing.spacingLg.w,
-                      height: AppSpacing.spacingLg.w,
-                      colorFilter: const ColorFilter.mode(
-                        ButtonColors.ghostText,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          AppSectionHeader(
+            title: 'My Groups',
+            onSeeAll: () => context.read<StudentTabCubit>().goToLearn(),
           ),
 
           SizedBox(height: AppSpacing.spacingMd.h),
@@ -218,8 +172,8 @@ class _HomeContent extends StatelessWidget {
                 title: group.name,
                 subtitle: '${(group.progressPercent * 100).round()}% complete',
                 icon: _iconForGroup(group),
-                primaryColor: _primaryColor(group),
-                secondaryColor: _secondaryColor(group),
+                primaryColor: UiHelpers.getGroupPrimaryColor(group.colorKey),
+                secondaryColor: UiHelpers.getGroupSecondaryColor(group.colorKey),
                 onTap: () {
                   Navigator.pushNamed(
                     context,
@@ -247,28 +201,6 @@ class _HomeContent extends StatelessWidget {
         return Icons.menu_book_outlined;
       default:
         return Icons.groups_outlined;
-    }
-  }
-
-  Color _primaryColor(StudentGroupEntity group) {
-    switch (group.colorKey) {
-      case 'orange':
-        return AppColors.brandSecondary500;
-      case 'green':
-        return AppColors.success500;
-      default:
-        return AppColors.brandPrimary500;
-    }
-  }
-
-  Color _secondaryColor(StudentGroupEntity group) {
-    switch (group.colorKey) {
-      case 'orange':
-        return AppColors.brandSecondary400;
-      case 'green':
-        return AppColors.success400;
-      default:
-        return AppColors.brandPrimary400;
     }
   }
 

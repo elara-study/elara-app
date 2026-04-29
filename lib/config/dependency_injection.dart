@@ -44,6 +44,9 @@ import 'package:elara/features/student/homework/data/repositories/homework_repos
 import 'package:elara/features/student/homework/domain/repositories/homework_repository.dart';
 import 'package:elara/features/student/homework/domain/usecases/get_homework_use_case.dart';
 import 'package:elara/features/student/homework/presentation/cubits/homework_cubit.dart';
+import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
+import 'package:elara/features/teacher/data/datasources/teacher_home_data_source_impl.dart';
+import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
 
 import 'package:elara/core/network/network_info.dart';
 import 'package:elara/features/student/chatbot/core/chatbot_config.dart';
@@ -235,6 +238,15 @@ Future<void> setupDependencyInjection() async {
     () => HomeworkCubit(getIt<GetHomeworkUseCase>()),
   );
 
+   // ── Teacher ──────────────────────────────────────────────────────────────
+  getIt.registerLazySingleton<TeacherHomeDataSource>(
+    () => const TeacherHomeDataSourceImpl(),
+  );
+
+  // Factory: each TeacherShell gets its own cubit instance.
+  getIt.registerFactory<TeacherHomeCubit>(
+    () => TeacherHomeCubit(getIt<TeacherHomeDataSource>()),
+ 
   // ── Chatbot (Student) ────────────────────────────────────────────────────
   getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfo());
 
@@ -284,5 +296,5 @@ Future<void> setupDependencyInjection() async {
       networkInfo: getIt<NetworkInfo>(),
       defaultClusterId: ChatbotConfig.defaultClusterId,
     ),
-  );
+   );
 }

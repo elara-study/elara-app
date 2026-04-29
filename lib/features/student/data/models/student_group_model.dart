@@ -30,15 +30,15 @@ class StudentGroupModel extends StudentGroupEntity {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'subject': subject,
-        'grade': grade,
-        'teacher_name': teacherName,
-        'student_count': studentCount,
-        'total_lessons': totalLessons,
-        'completed_lessons': completedLessons,
-        'progress_percent': progressPercent,
-        'color_key': colorKey,
-      };
+    'id': id,
+    'name': name,
+    'subject': subject,
+    'grade': grade,
+    'teacher_name': teacherName,
+    'student_count': studentCount,
+    'total_lessons': totalLessons,
+    'completed_lessons': completedLessons,
+    'progress_percent': progressPercent,
+    'color_key': colorKey,
+  };
 }

@@ -83,8 +83,8 @@ class StudentRemoteDataSourceImpl implements StudentRemoteDataSource {
   @override
   Future<List<StudentGroupModel>> getGroups() async {
     await Future.delayed(const Duration(milliseconds: 600));
-    return const [
-      StudentGroupModel(
+    return [
+      const StudentGroupModel(
         id: 'group-001',
         name: 'Mathematics 7A',
         subject: 'MATHEMATICS',
@@ -96,7 +96,7 @@ class StudentRemoteDataSourceImpl implements StudentRemoteDataSource {
         progressPercent: 0.65,
         colorKey: 'blue',
       ),
-      StudentGroupModel(
+      const StudentGroupModel(
         id: 'group-002',
         name: 'Physics 101',
         subject: 'SCIENCE',
@@ -108,7 +108,7 @@ class StudentRemoteDataSourceImpl implements StudentRemoteDataSource {
         progressPercent: 0.45,
         colorKey: 'orange',
       ),
-      StudentGroupModel(
+      const StudentGroupModel(
         id: 'group-003',
         name: 'English Literature',
         subject: 'ENGLISH',
