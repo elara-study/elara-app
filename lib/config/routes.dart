@@ -3,6 +3,8 @@ import 'package:elara/features/auth/domain/entities/user_entity.dart';
 import 'package:elara/features/auth/presentation/views/sign_in_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_credentials_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
+// ignore: unused_import — kept so test bypass is a 1-line revert
+import 'package:elara/features/auth/presentation/views/splash_screen.dart';
 import 'package:elara/features/student/presentation/views/student_shell.dart';
 import 'package:elara/features/student/group/presentation/views/student_group_page.dart';
 import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
@@ -59,9 +61,8 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        // Temporarily bypassing splash/auth for testing
+        // TEST BYPASS — revert before p
         return MaterialPageRoute(builder: (_) => const TeacherShell());
-        // return MaterialPageRoute(builder: (_) => const SplashScreen());
 
       case login:
         return MaterialPageRoute(builder: (_) => const SignInScreen());

@@ -234,7 +234,7 @@ class _ActivityCard extends StatelessWidget {
                   width: 44.w,
                   height: 44.w,
                   decoration: BoxDecoration(
-                    color: cs.onSecondary,
+                    color: cs.surfaceContainerHighest,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
@@ -258,12 +258,12 @@ class _ActivityCard extends StatelessWidget {
                       Text(
                         a.title,
                         style: AppTypography.labelRegular(
-                          color: cs.onSecondary,
+                          color: cs.onSurface,
                         ).copyWith(fontWeight: AppTypography.bold),
                       ),
                       Text(
                         a.subtitle,
-                        style: AppTypography.bodySmall(color: cs.onSecondary),
+                        style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
                       ),
                     ],
                   ),
@@ -271,7 +271,7 @@ class _ActivityCard extends StatelessWidget {
                 // Timestamp
                 Text(
                   a.timeAgo,
-                  style: AppTypography.caption(color: cs.onSecondary),
+                  style: AppTypography.caption(color: cs.onSurfaceVariant),
                 ),
               ],
             ),
