@@ -36,7 +36,7 @@ dependencies:
   intl: ^0.18.1
   logger: ^2.0.2+1
   connectivity_plus: ^7.1.1
-  image_picker: ^1.2.2
+  image_picker:  
    
 
 dev_dependencies:
