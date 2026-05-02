@@ -238,7 +238,7 @@ Future<void> setupDependencyInjection() async {
     () => HomeworkCubit(getIt<GetHomeworkUseCase>()),
   );
 
-   // ── Teacher ──────────────────────────────────────────────────────────────
+  // ── Teacher ──────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<TeacherHomeDataSource>(
     () => const TeacherHomeDataSourceImpl(),
   );
@@ -246,7 +246,8 @@ Future<void> setupDependencyInjection() async {
   // Factory: each TeacherShell gets its own cubit instance.
   getIt.registerFactory<TeacherHomeCubit>(
     () => TeacherHomeCubit(getIt<TeacherHomeDataSource>()),
- 
+  );
+
   // ── Chatbot (Student) ────────────────────────────────────────────────────
   getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfo());
 
@@ -296,5 +297,5 @@ Future<void> setupDependencyInjection() async {
       networkInfo: getIt<NetworkInfo>(),
       defaultClusterId: ChatbotConfig.defaultClusterId,
     ),
-   );
+  );
 }
