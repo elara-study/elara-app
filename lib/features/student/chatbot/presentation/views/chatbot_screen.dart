@@ -1,5 +1,4 @@
 import 'package:elara/config/routes.dart';
-import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/features/student/chatbot/presentation/chatbot_route_args.dart';
 import 'package:elara/features/student/chatbot/presentation/cubits/chatbot_cubit.dart';
 import 'package:elara/features/student/chatbot/presentation/cubits/chatbot_state.dart';
@@ -120,7 +119,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: AppColors.neutral50,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: true,
       extendBodyBehindAppBar: true,
       onDrawerChanged: (opened) {
