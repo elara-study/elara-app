@@ -6,8 +6,7 @@ import 'package:injectable/injectable.dart';
 /// Manages the Rewards screen state (badges + leaderboard + profile stats).
 ///
 /// Call [loadRewards] once (triggered eagerly in [BlocProvider.create] inside
-/// [StudentShell]) and [switchTab] to toggle between Badges / Leaderboard
-/// without triggering a second network call.
+/// [StudentShell]).
 @injectable
 class RewardsCubit extends Cubit<RewardsState> {
   final GetRewardsUseCase _getRewards;
@@ -29,15 +28,6 @@ class RewardsCubit extends Cubit<RewardsState> {
       );
     } catch (e) {
       emit(RewardsError(e.toString()));
-    }
-  }
-
-  /// Switches the active tab (0 = Badges, 1 = Leaderboard) without re-fetching.
-  /// No-op if the data is not yet loaded.
-  void switchTab(int tab) {
-    final current = state;
-    if (current is RewardsLoaded) {
-      emit(current.withTab(tab));
     }
   }
 }
