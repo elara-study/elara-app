@@ -5,7 +5,7 @@ import 'package:elara/features/student/group/presentation/widgets/leaderboard_ta
 import 'package:elara/features/student/group/presentation/widgets/roadmap/tab/roadmap_tab.dart';
 import 'package:elara/features/student/group/presentation/widgets/student_group_app_bar_title.dart';
 import 'package:elara/features/student/group/presentation/widgets/student_group_overflow_menu.dart';
-import 'package:elara/features/student/group/presentation/widgets/student_tab_bar.dart';
+import 'package:elara/shared/widgets/pill_tab_bar.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,7 +94,7 @@ class StudentGroupScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.spacingLg),
-                const StudentTabBar(tabs: _tabs),
+                const PillTabBar(tabs: _tabs),
                 const Expanded(
                   child: TabBarView(
                     children: [

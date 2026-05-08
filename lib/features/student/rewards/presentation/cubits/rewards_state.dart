@@ -23,30 +23,14 @@ class RewardsLoaded extends RewardsState {
   final List<BadgeEntity> badges;
   final List<LeaderboardEntryEntity> leaderboard;
 
-  /// 0 = Badges tab, 1 = Leaderboard tab.
-  ///
-  /// Stored inside the state so [RewardsCubit.switchTab] can emit a new
-  /// [RewardsLoaded] with the same data but a different active tab —
-  /// no re-fetch, no [StatefulWidget] required.
-  final int activeTab;
-
   const RewardsLoaded({
     required this.profile,
     required this.badges,
     required this.leaderboard,
-    this.activeTab = 0,
   });
 
-  /// Returns a copy with only [activeTab] changed.
-  RewardsLoaded withTab(int tab) => RewardsLoaded(
-        profile: profile,
-        badges: badges,
-        leaderboard: leaderboard,
-        activeTab: tab,
-      );
-
   @override
-  List<Object?> get props => [profile, badges, leaderboard, activeTab];
+  List<Object?> get props => [profile, badges, leaderboard];
 }
 
 class RewardsError extends RewardsState {

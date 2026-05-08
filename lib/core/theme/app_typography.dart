@@ -55,7 +55,7 @@ class AppTypography {
   static TextStyle h5({Color? color, String? font}) => TextStyle(
     fontFamily: font ?? nunito,
     fontSize: 18.sp,
-    fontWeight: semiBold,
+    fontWeight: extraBold,
     height: 1.4.h,
     color: color,
   );

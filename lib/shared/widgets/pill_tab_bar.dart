@@ -4,10 +4,25 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
-class StudentTabBar extends StatelessWidget {
-  final List<Tab> tabs;
+/// Pill-style segmented [TabBar] for use under [DefaultTabController] or with
+/// an explicit [TabController].
+class PillTabBar extends StatelessWidget {
+  const PillTabBar({
+    super.key,
+    required this.tabs,
+    this.controller,
+    this.onTap,
+    this.padding,
+  });
 
-  const StudentTabBar({super.key, required this.tabs});
+  final List<Tab> tabs;
+  final TabController? controller;
+  final ValueChanged<int>? onTap;
+
+  /// When null, uses horizontal [AppSpacing.spacingLg] and vertical
+  /// [AppSpacing.spacingSm] (student group). Use tighter vertical-only padding
+  /// when the parent already applies horizontal insets (e.g. rewards scroll).
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +30,11 @@ class StudentTabBar extends StatelessWidget {
     const height = 36.0;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.spacingLg,
-        vertical: AppSpacing.spacingSm,
-      ),
+      padding: padding ??
+          const EdgeInsets.symmetric(
+            horizontal: AppSpacing.spacingLg,
+            vertical: AppSpacing.spacingSm,
+          ),
       child: SizedBox(
         height: height,
         child: DecoratedBox(
@@ -29,6 +45,8 @@ class StudentTabBar extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(3),
             child: TabBar(
+              controller: controller,
+              onTap: onTap,
               tabs: tabs,
               dividerColor: Colors.transparent,
               splashFactory: NoSplash.splashFactory,
@@ -47,7 +65,7 @@ class StudentTabBar extends StatelessWidget {
               unselectedLabelColor: cs.onSurfaceVariant,
               labelStyle: AppTypography.labelMedium(),
               unselectedLabelStyle: AppTypography.labelMedium(
-                color: AppColors.neutral50,
+                color: cs.onSurfaceVariant,
               ),
             ),
           ),
