@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
@@ -31,18 +32,16 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final scaffoldBg = theme.scaffoldBackgroundColor;
+    final glassBg = theme.brightness == Brightness.dark
+        ? AppColors.neutral900Alpha70
+        : AppColors.neutral50Alpha70;
     final dividerColor = theme.dividerTheme.color ?? cs.outlineVariant;
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: AppBar(
-          // backgroundColor: LightModeColors.surfacePrimary.withValues(
-          //   alpha: 0.85,
-          // ),
-          // surfaceTintColor:
-          //     Colors.transparent, // Prevents Material 3 tinting overlay
-          backgroundColor: scaffoldBg,
+          // Figma: light rgba(248,250,252,0.7), dark rgba(15,23,42,0.7).
+          backgroundColor: glassBg,
           surfaceTintColor:
               Colors.transparent, // Prevents Material 3 tinting overlay
           elevation: 0,

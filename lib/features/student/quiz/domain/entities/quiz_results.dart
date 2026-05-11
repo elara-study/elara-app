@@ -10,6 +10,7 @@ class QuizResults extends Equatable {
     this.xpEarned = 0,
     this.totalScoreXp = 0,
     this.level = 1,
+
     /// 0–1 progress within current level (level-up bar).
     this.levelProgress = 0,
     this.streakDays = 0,
@@ -48,18 +49,18 @@ class QuizResults extends Equatable {
 
   @override
   List<Object?> get props => [
-        scorePercent,
-        correctCount,
-        totalCount,
-        celebrationSubtitle,
-        xpEarned,
-        totalScoreXp,
-        level,
-        levelProgress,
-        streakDays,
-        unansweredCount,
-        wrongCount,
-        insightMessage,
-        caption,
-      ];
+    scorePercent,
+    correctCount,
+    totalCount,
+    celebrationSubtitle,
+    xpEarned,
+    totalScoreXp,
+    level,
+    levelProgress,
+    streakDays,
+    unansweredCount,
+    wrongCount,
+    insightMessage,
+    caption,
+  ];
 }

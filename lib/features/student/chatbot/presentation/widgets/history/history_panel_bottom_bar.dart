@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +36,7 @@ class HistoryPanelBottomBar extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                     fontSize: 16.sp,
                     height: 24 / 16,
-                    color: LightModeColors.textPrimaryInverse,
+                    color: cs.onPrimary,
                   ),
                 ),
                 style: FilledButton.styleFrom(

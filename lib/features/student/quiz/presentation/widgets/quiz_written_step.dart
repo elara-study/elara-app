@@ -27,7 +27,10 @@ class _QuizWrittenStepState extends State<QuizWrittenStep> {
   @override
   void initState() {
     super.initState();
-    final initial = context.read<QuizCubit>().state
+    final initial =
+        context
+            .read<QuizCubit>()
+            .state
             .writtenTextByQuestionId[widget.question.id] ??
         '';
     _controller = TextEditingController(text: initial);
@@ -38,7 +41,10 @@ class _QuizWrittenStepState extends State<QuizWrittenStep> {
   void didUpdateWidget(covariant QuizWrittenStep oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.question.id != widget.question.id) {
-      final text = context.read<QuizCubit>().state
+      final text =
+          context
+              .read<QuizCubit>()
+              .state
               .writtenTextByQuestionId[widget.question.id] ??
           '';
       _controller.removeListener(_onChanged);

@@ -15,9 +15,9 @@ class QuizCubit extends Cubit<QuizState> {
   QuizCubit({
     required GetQuizSessionUseCase getQuizSessionUseCase,
     required SubmitQuizAnswersUseCase submitQuizAnswersUseCase,
-  })  : _getQuizSessionUseCase = getQuizSessionUseCase,
-        _submitQuizAnswersUseCase = submitQuizAnswersUseCase,
-        super(const QuizState.initial());
+  }) : _getQuizSessionUseCase = getQuizSessionUseCase,
+       _submitQuizAnswersUseCase = submitQuizAnswersUseCase,
+       super(const QuizState.initial());
 
   final GetQuizSessionUseCase _getQuizSessionUseCase;
   final SubmitQuizAnswersUseCase _submitQuizAnswersUseCase;
@@ -112,9 +112,9 @@ class QuizCubit extends Cubit<QuizState> {
   Future<void> advanceOrSubmit() async {
     if (!canAdvanceCurrentQuestion) return;
     if (!isLastQuestion) {
-      emit(state.copyWith(
-        currentQuestionIndex: state.currentQuestionIndex + 1,
-      ));
+      emit(
+        state.copyWith(currentQuestionIndex: state.currentQuestionIndex + 1),
+      );
       return;
     }
     await _submit();
@@ -139,7 +139,9 @@ class QuizCubit extends Cubit<QuizState> {
       } else {
         final text = state.writtenTextByQuestionId[q.id]?.trim();
         if (text != null && text.isNotEmpty) {
-          answers.add(QuizAnswerSubmission(questionId: q.id, writtenText: text));
+          answers.add(
+            QuizAnswerSubmission(questionId: q.id, writtenText: text),
+          );
         }
       }
     }

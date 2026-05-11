@@ -136,9 +136,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
 
                   Text(
                     'Enter the group code provided by your teacher',
-                    style: AppTypography.bodySmall(
-                      color: cs.onSurfaceVariant,
-                    ),
+                    style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
                   ),
 
                   SizedBox(height: AppSpacing.spacingLg.h),

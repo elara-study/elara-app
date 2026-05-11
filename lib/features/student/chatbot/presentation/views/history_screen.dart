@@ -84,8 +84,7 @@ class _HistoryPanelState extends State<HistoryPanel> {
           ),
           Expanded(
             child: BlocConsumer<SessionsCubit, SessionsState>(
-              listenWhen: (p, c) =>
-                  p.message != c.message && c.message != null,
+              listenWhen: (p, c) => p.message != c.message && c.message != null,
               listener: (context, state) {
                 final m = state.message;
                 if (m != null && m.isNotEmpty) {

@@ -24,10 +24,10 @@ class CourseProgressModel extends CourseProgressEntity {
   }
 
   Map<String, dynamic> toJson() => {
-        'course_name': courseName,
-        'current_lesson': currentLesson,
-        'total_lessons': totalLessons,
-        'progress_percent': progressPercent,
-        'lesson_id': lessonId,
-      };
+    'course_name': courseName,
+    'current_lesson': currentLesson,
+    'total_lessons': totalLessons,
+    'progress_percent': progressPercent,
+    'lesson_id': lessonId,
+  };
 }

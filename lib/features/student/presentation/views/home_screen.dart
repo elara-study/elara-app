@@ -103,9 +103,7 @@ class _HomeContent extends StatelessWidget {
 
           Text(
             'Ready to continue your learning journey?',
-            style: AppTypography.bodyLarge(
-              color: cs.onSurfaceVariant,
-            ),
+            style: AppTypography.bodyLarge(color: cs.onSurfaceVariant),
           ),
 
           SizedBox(height: AppSpacing.spacing2xl.h),
@@ -173,7 +171,9 @@ class _HomeContent extends StatelessWidget {
                 subtitle: '${(group.progressPercent * 100).round()}% complete',
                 icon: _iconForGroup(group),
                 primaryColor: UiHelpers.getGroupPrimaryColor(group.colorKey),
-                secondaryColor: UiHelpers.getGroupSecondaryColor(group.colorKey),
+                secondaryColor: UiHelpers.getGroupSecondaryColor(
+                  group.colorKey,
+                ),
                 onTap: () {
                   Navigator.pushNamed(
                     context,
@@ -237,9 +237,7 @@ class _ErrorView extends StatelessWidget {
             SizedBox(height: AppSpacing.spacingLg.h),
             Text(
               message,
-              style: AppTypography.bodyMedium(
-                color: cs.onSurfaceVariant,
-              ),
+              style: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: AppSpacing.spacingXl.h),

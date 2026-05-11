@@ -3,7 +3,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/student/group/presentation/widgets/progress_bar.dart';
+import 'package:elara/shared/widgets/progress_bar.dart';
 import 'package:elara/shared/widgets/gradient_glow_card.dart';
 import 'package:flutter/material.dart';
 

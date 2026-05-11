@@ -263,7 +263,9 @@ class _ActivityCard extends StatelessWidget {
                       ),
                       Text(
                         a.subtitle,
-                        style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
+                        style: AppTypography.bodySmall(
+                          color: cs.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),

@@ -28,17 +28,18 @@ class BadgeEntity extends Equatable {
   });
 
   /// Progress fraction [0.0 – 1.0] — safe to use directly in a LinearProgressIndicator.
-  double get progressPercent =>
-      progressTotal > 0 ? (progressCurrent / progressTotal).clamp(0.0, 1.0) : 0.0;
+  double get progressPercent => progressTotal > 0
+      ? (progressCurrent / progressTotal).clamp(0.0, 1.0)
+      : 0.0;
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        description,
-        iconKey,
-        isUnlocked,
-        progressCurrent,
-        progressTotal,
-      ];
+    id,
+    name,
+    description,
+    iconKey,
+    isUnlocked,
+    progressCurrent,
+    progressTotal,
+  ];
 }

@@ -25,7 +25,9 @@ class QuizMcqOptionTile extends StatelessWidget {
     final onSurface = theme.colorScheme.onSurface;
     final borderColor = selected
         ? AppColors.brandPrimary500
-        : (isDark ? DarkModeColors.borderDefault : LightModeColors.borderDefault);
+        : (isDark
+              ? DarkModeColors.borderDefault
+              : LightModeColors.borderDefault);
 
     return Material(
       color: surface,
@@ -66,7 +68,9 @@ class _RadioDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ring = isDark ? DarkModeColors.borderDefault : LightModeColors.borderDefault;
+    final ring = isDark
+        ? DarkModeColors.borderDefault
+        : LightModeColors.borderDefault;
     return SizedBox(
       width: 20,
       height: 20,

@@ -29,8 +29,9 @@ class HomeworkEntity extends Equatable {
   int get totalProblems => problems.length;
 
   /// Progress fraction [0.0 – 1.0] — safe for LinearProgressIndicator.
-  double get progressPercent =>
-      totalProblems > 0 ? (completedProblems / totalProblems).clamp(0.0, 1.0) : 0.0;
+  double get progressPercent => totalProblems > 0
+      ? (completedProblems / totalProblems).clamp(0.0, 1.0)
+      : 0.0;
 
   /// Returns a copy with one problem replaced by [updatedProblem].
   HomeworkEntity withUpdatedProblem(HomeworkProblemEntity updatedProblem) {

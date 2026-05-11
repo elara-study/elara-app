@@ -9,14 +9,16 @@ import 'package:elara/features/student/rewards/presentation/cubits/rewards_state
 import 'package:elara/features/student/rewards/presentation/widgets/achievement_stat_card.dart';
 import 'package:elara/features/student/rewards/presentation/widgets/badge_card.dart';
 import 'package:elara/features/student/rewards/presentation/widgets/leaderboard_entry_tile.dart';
-import 'package:elara/features/student/rewards/presentation/widgets/rewards_tab_selector.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
+import 'package:elara/shared/widgets/pill_tab_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RewardsScreen extends StatelessWidget {
   const RewardsScreen({super.key});
+
+  static const _tabs = [Tab(text: 'Badges'), Tab(text: 'Leaderboard')];
 
   // Shared XP formatter: 1250 → "1,250"
   static String _fmt(int n) {
@@ -75,25 +77,46 @@ class RewardsScreen extends StatelessWidget {
           }
 
           if (state is RewardsLoaded) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.only(
-                left: AppSpacing.spacingLg.w,
-                right: AppSpacing.spacingLg.w,
-                top: kToolbarHeight + 62.h,
-                bottom: 120.w,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _AchievementsCard(profile: state.profile, fmt: _fmt),
-                  SizedBox(height: AppSpacing.spacing2xl.h),
-                  RewardsTabSelector(activeTab: state.activeTab),
-                  SizedBox(height: AppSpacing.spacingLg.h),
-                  if (state.activeTab == 0)
-                    _BadgesGrid(badges: state.badges)
-                  else
-                    _LeaderboardList(entries: state.leaderboard),
-                ],
+            return DefaultTabController(
+              length: _tabs.length,
+              child: Builder(
+                builder: (context) {
+                  final tabController = DefaultTabController.of(context);
+                  return AnimatedBuilder(
+                    animation: tabController,
+                    builder: (context, _) {
+                      return SingleChildScrollView(
+                        padding: EdgeInsets.only(
+                          left: AppSpacing.spacingLg.w,
+                          right: AppSpacing.spacingLg.w,
+                          top: kToolbarHeight + 62.h,
+                          bottom: 120.w,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _AchievementsCard(
+                              profile: state.profile,
+                              fmt: _fmt,
+                            ),
+                            SizedBox(height: AppSpacing.spacing2xl.h),
+                            const PillTabBar(
+                              tabs: _tabs,
+                              padding: EdgeInsets.symmetric(
+                                vertical: AppSpacing.spacingSm,
+                              ),
+                            ),
+                            SizedBox(height: AppSpacing.spacingLg.h),
+                            if (tabController.index == 0)
+                              _BadgesGrid(badges: state.badges)
+                            else
+                              _LeaderboardList(entries: state.leaderboard),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             );
           }

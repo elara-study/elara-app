@@ -63,15 +63,12 @@ class DailyGoalItem extends StatelessWidget {
               children: [
                 Text(
                   goal.label,
-                  style:
-                      AppTypography.bodyMedium(
-                        color: cs.onSurface,
-                      ).copyWith(
-                        decoration: goal.isCompleted
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
-                        decorationColor: cs.onSurface,
-                      ),
+                  style: AppTypography.bodyMedium(color: cs.onSurface).copyWith(
+                    decoration: goal.isCompleted
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+                    decorationColor: cs.onSurface,
+                  ),
                 ),
 
                 SizedBox(height: AppSpacing.spacingXs.h),

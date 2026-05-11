@@ -1,4 +1,3 @@
-import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,7 +42,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
           SizedBox(width: AppSpacing.spacingSm.w),
           DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColors.neutral200,
+              color: cs.surfaceContainerHigh,
               borderRadius: BorderRadius.circular(20.r),
             ),
             child: Padding(

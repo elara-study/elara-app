@@ -31,7 +31,7 @@ class ChatbotMessageTile extends StatelessWidget {
     final bubbleBg = isBot ? AppColors.brandPrimary500Alpha20 : _userBubble;
     final textColor = isBot ? cs.onSurface : AppColors.neutral50;
     final timeStyle = AppTypography.labelSmall(
-      color: cs.onSecondary,
+      color: cs.onSurfaceVariant,
     ).copyWith(fontSize: 11.sp);
 
     final hasImage = message.imageUrl != null && message.imageUrl!.isNotEmpty;
@@ -99,11 +99,11 @@ class ChatbotMessageTile extends StatelessWidget {
     );
     final avatarUser = CircleAvatar(
       radius: 18.r,
-      backgroundColor: AppColors.neutral300,
+      backgroundColor: cs.surfaceContainerHighest,
       child: Icon(
         Icons.person_rounded,
         size: 20.sp,
-        color: AppColors.neutral600,
+        color: cs.onSurfaceVariant,
       ),
     );
 

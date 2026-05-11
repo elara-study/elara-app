@@ -20,5 +20,12 @@ class QuizQuestion extends Equatable {
   final String? hintMessage;
 
   @override
-  List<Object?> get props => [id, kind, prompt, options, pointsLabel, hintMessage];
+  List<Object?> get props => [
+    id,
+    kind,
+    prompt,
+    options,
+    pointsLabel,
+    hintMessage,
+  ];
 }

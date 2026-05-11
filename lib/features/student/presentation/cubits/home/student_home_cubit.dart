@@ -6,8 +6,8 @@ class StudentHomeCubit extends Cubit<StudentHomeState> {
   final StudentRepository _repository;
 
   StudentHomeCubit({required StudentRepository repository})
-      : _repository = repository,
-        super(const StudentHomeInitial());
+    : _repository = repository,
+      super(const StudentHomeInitial());
 
   /// Loads all Home screen data in a single parallel fetch.
   Future<void> loadHome() async {

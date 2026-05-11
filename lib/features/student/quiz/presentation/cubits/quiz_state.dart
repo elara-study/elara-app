@@ -33,11 +33,7 @@ class QuizState extends Equatable {
   const QuizState.completed({
     required QuizSession session,
     required QuizResults results,
-  }) : this._(
-         status: QuizStatus.completed,
-         session: session,
-         results: results,
-       );
+  }) : this._(status: QuizStatus.completed, session: session, results: results);
 
   const QuizState.failure(String message)
     : this._(status: QuizStatus.failure, message: message);

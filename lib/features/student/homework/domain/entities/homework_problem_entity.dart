@@ -58,14 +58,14 @@ class HomeworkProblemEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        problemNumber,
-        questionText,
-        status,
-        answerText,
-        submittedAnswer,
-        grade,
-        maxGrade,
-        feedback,
-      ];
+    id,
+    problemNumber,
+    questionText,
+    status,
+    answerText,
+    submittedAnswer,
+    grade,
+    maxGrade,
+    feedback,
+  ];
 }

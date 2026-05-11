@@ -29,9 +29,7 @@ class ChatbotComposerBar extends StatelessWidget {
     return SafeArea(
       top: false,
       child: ClipRRect(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(28.r),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -71,8 +69,11 @@ class ChatbotComposerBar extends StatelessWidget {
                       controller: textController,
                       minLines: 1,
                       maxLines: 2,
+                      style: AppTypography.bodyMedium(color: cs.onSurface),
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
+                        filled: true,
+                        fillColor: cs.surfaceContainer,
                         hintText: 'Type a message...',
                         hintStyle: AppTypography.bodyMedium(
                           color: cs.onSurfaceVariant,

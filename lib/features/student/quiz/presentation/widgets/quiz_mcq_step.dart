@@ -9,11 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class QuizMcqStep extends StatelessWidget {
-  const QuizMcqStep({
-    super.key,
-    required this.session,
-    required this.question,
-  });
+  const QuizMcqStep({super.key, required this.session, required this.question});
 
   final QuizSession session;
   final QuizQuestion question;

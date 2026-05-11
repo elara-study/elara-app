@@ -73,8 +73,9 @@ class HistoryPanelHeader extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: cs.surfaceContainer,
-                      borderRadius:
-                          BorderRadius.circular(AppRadius.radiusFull.r),
+                      borderRadius: BorderRadius.circular(
+                        AppRadius.radiusFull.r,
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: cs.shadow.withValues(alpha: 0.08),

@@ -28,12 +28,12 @@ class BadgeModel extends BadgeEntity {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'description': description,
-        'icon_key': iconKey,
-        'is_unlocked': isUnlocked,
-        'progress_current': progressCurrent,
-        'progress_total': progressTotal,
-      };
+    'id': id,
+    'name': name,
+    'description': description,
+    'icon_key': iconKey,
+    'is_unlocked': isUnlocked,
+    'progress_current': progressCurrent,
+    'progress_total': progressTotal,
+  };
 }

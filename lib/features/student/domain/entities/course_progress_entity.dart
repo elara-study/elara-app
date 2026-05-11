@@ -32,11 +32,11 @@ class CourseProgressEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        courseName,
-        lessonLabel,
-        currentLesson,
-        totalLessons,
-        progressPercent,
-        lessonId,
-      ];
+    courseName,
+    lessonLabel,
+    currentLesson,
+    totalLessons,
+    progressPercent,
+    lessonId,
+  ];
 }

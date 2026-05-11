@@ -20,10 +20,10 @@ class DailyGoalModel extends DailyGoalEntity {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'label': label,
-        'icon_key': iconKey,
-        'xp_reward': xpReward,
-        'is_completed': isCompleted,
-      };
+    'id': id,
+    'label': label,
+    'icon_key': iconKey,
+    'xp_reward': xpReward,
+    'is_completed': isCompleted,
+  };
 }

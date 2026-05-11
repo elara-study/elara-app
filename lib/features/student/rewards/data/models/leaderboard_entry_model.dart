@@ -19,9 +19,9 @@ class LeaderboardEntryModel extends LeaderboardEntryEntity {
   }
 
   Map<String, dynamic> toJson() => {
-        'rank': rank,
-        'name': name,
-        'xp': xp,
-        'is_current_user': isCurrentUser,
-      };
+    'rank': rank,
+    'name': name,
+    'xp': xp,
+    'is_current_user': isCurrentUser,
+  };
 }

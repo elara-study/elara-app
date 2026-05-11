@@ -11,6 +11,5 @@ class SubmitQuizAnswersUseCase {
   Future<ApiResult<QuizResults>> call({
     required String quizId,
     required List<QuizAnswerSubmission> answers,
-  }) =>
-      _repository.submitAnswers(quizId: quizId, answers: answers);
+  }) => _repository.submitAnswers(quizId: quizId, answers: answers);
 }

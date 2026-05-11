@@ -76,10 +76,14 @@ class QuizFrostedAppBar extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          style: AppTypography.h4(
-                            color: titleColor,
-                            font: AppTypography.comfortaa,
-                          ).copyWith(fontWeight: AppTypography.bold, height: 1.4),
+                          style:
+                              AppTypography.h4(
+                                color: titleColor,
+                                font: AppTypography.comfortaa,
+                              ).copyWith(
+                                fontWeight: AppTypography.bold,
+                                height: 1.4,
+                              ),
                         ),
                         const SizedBox(height: AppSpacing.spacing2xs),
                         Text(
