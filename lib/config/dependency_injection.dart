@@ -1,4 +1,5 @@
 import 'package:elara/core/network/dio_client.dart';
+import 'package:elara/core/theme/theme_cubit.dart';
 import 'package:elara/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:elara/features/auth/data/datasources/auth_local_data_source_impl.dart';
 import 'package:elara/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -38,6 +39,19 @@ import 'package:elara/features/student/rewards/data/repositories/rewards_reposit
 import 'package:elara/features/student/rewards/domain/repositories/rewards_repository.dart';
 import 'package:elara/features/student/rewards/domain/usecases/get_rewards_use_case.dart';
 import 'package:elara/features/student/rewards/presentation/cubits/rewards_cubit.dart';
+import 'package:elara/features/student/profile/data/datasources/student_profile_remote_data_source.dart';
+import 'package:elara/features/student/profile/data/datasources/student_profile_remote_data_source_impl.dart';
+import 'package:elara/features/student/profile/data/repositories/student_profile_repository_impl.dart';
+import 'package:elara/features/student/profile/domain/repositories/student_profile_repository.dart';
+import 'package:elara/features/student/profile/domain/usecases/get_student_profile_overview_use_case.dart';
+import 'package:elara/features/student/profile/presentation/cubits/student_profile_cubit.dart';
+import 'package:elara/features/settings/data/datasources/settings_remote_data_source.dart';
+import 'package:elara/features/settings/data/datasources/settings_remote_data_source_impl.dart';
+import 'package:elara/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:elara/features/settings/domain/repositories/settings_repository.dart';
+import 'package:elara/features/settings/domain/usecases/get_profile_account_use_case.dart';
+import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
+import 'package:elara/features/settings/presentation/cubits/profile_account_cubit.dart';
 import 'package:elara/features/student/homework/data/datasources/homework_data_source.dart';
 import 'package:elara/features/student/homework/data/datasources/homework_data_source_impl.dart';
 import 'package:elara/features/student/homework/data/repositories/homework_repository_impl.dart';
@@ -77,6 +91,7 @@ Future<void> setupDependencyInjection() async {
 
   // ── Core ──────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<DioClient>(() => DioClient());
+  getIt.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
 
   // ── Auth: Data Sources ────────────────────────────────────────────────────
   getIt.registerLazySingleton<AuthRemoteDataSource>(
@@ -197,6 +212,43 @@ Future<void> setupDependencyInjection() async {
   // ── Rewards Gamification: Cubit ──────────────────────────────────────────
   // Factory so each shell entry creates a fresh instance
   getIt.registerFactory(() => RewardsCubit(getIt<GetRewardsUseCase>()));
+
+  // ── Student Profile tab ─────────────────────────────────────────────────
+  getIt.registerLazySingleton<StudentProfileRemoteDataSource>(
+    () => StudentProfileRemoteDataSourceImpl(),
+    // Pass DioClient when backend is ready:
+    // () => StudentProfileRemoteDataSourceImpl(getIt<DioClient>()),
+  );
+
+  getIt.registerLazySingleton<StudentProfileRepository>(
+    () => StudentProfileRepositoryImpl(
+      remoteDataSource: getIt<StudentProfileRemoteDataSource>(),
+    ),
+  );
+  getIt.registerLazySingleton(
+    () => GetStudentProfileOverviewUseCase(getIt<StudentProfileRepository>()),
+  );
+  getIt.registerFactory<StudentProfileCubit>(
+    () => StudentProfileCubit(getIt<GetStudentProfileOverviewUseCase>()),
+  );
+
+  // ── Settings (shared roles) ─────────────────────────────────────────────
+  getIt.registerLazySingleton<SettingsRemoteDataSource>(
+    () => SettingsRemoteDataSourceImpl(),
+    // () => SettingsRemoteDataSourceImpl(getIt<DioClient>()),
+  );
+  getIt.registerLazySingleton<SettingsRepository>(
+    () => SettingsRepositoryImpl(
+      remoteDataSource: getIt<SettingsRemoteDataSource>(),
+    ),
+  );
+  getIt.registerLazySingleton(
+    () => GetProfileAccountUseCase(getIt<SettingsRepository>()),
+  );
+  getIt.registerFactory<PasswordSecurityCubit>(() => PasswordSecurityCubit());
+  getIt.registerFactory<ProfileAccountCubit>(
+    () => ProfileAccountCubit(getIt<GetProfileAccountUseCase>()),
+  );
 
   // ── Quiz (Learn) ─────────────────────────────────────────────────────────
   getIt.registerLazySingleton<QuizRepository>(

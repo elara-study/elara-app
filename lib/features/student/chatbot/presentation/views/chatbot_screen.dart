@@ -38,9 +38,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<ChatbotCubit>().start(
-            routeSessionId: widget.routeArgs.sessionId,
-            routeSessionTitle: widget.routeArgs.sessionTitle,
-          );
+        routeSessionId: widget.routeArgs.sessionId,
+        routeSessionTitle: widget.routeArgs.sessionTitle,
+      );
     });
   }
 
@@ -91,10 +91,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     _scaffoldKey.currentState?.closeDrawer();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      Navigator.of(context).pushReplacementNamed(
-        AppRoutes.chatbot,
-        arguments: args,
-      );
+      Navigator.of(
+        context,
+      ).pushReplacementNamed(AppRoutes.chatbot, arguments: args);
     });
   }
 
@@ -143,9 +142,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         listener: (context, state) {
           final banner = state.bannerMessage;
           if (banner != null && banner.isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(banner)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(banner)));
             context.read<ChatbotCubit>().clearBanner();
           }
           if (state.messages.isNotEmpty) {
@@ -162,9 +161,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
             return ChatbotLoadErrorView(
               message: state.loadError!,
               onRetry: () => context.read<ChatbotCubit>().start(
-                    routeSessionId: widget.routeArgs.sessionId,
-                    routeSessionTitle: widget.routeArgs.sessionTitle,
-                  ),
+                routeSessionId: widget.routeArgs.sessionId,
+                routeSessionTitle: widget.routeArgs.sessionTitle,
+              ),
             );
           }
 
@@ -194,8 +193,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                   },
                   onSend: () async {
                     await context.read<ChatbotCubit>().sendPendingImage(
-                          caption: _caption.text,
-                        );
+                      caption: _caption.text,
+                    );
                     _caption.clear();
                   },
                   isSending: state.isSending,

@@ -11,6 +11,9 @@ class GetQuizSessionUseCase {
     required String quizId,
     String? groupId,
     String? moduleId,
-  }) =>
-      _repository.getSession(quizId: quizId, groupId: groupId, moduleId: moduleId);
+  }) => _repository.getSession(
+    quizId: quizId,
+    groupId: groupId,
+    moduleId: moduleId,
+  );
 }

@@ -4,9 +4,11 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/presentation/cubits/home/student_home_cubit.dart';
 import 'package:elara/features/student/presentation/cubits/learn/student_learn_cubit.dart';
 import 'package:elara/features/student/presentation/cubits/tab/student_tab_cubit.dart';
+import 'package:elara/features/student/profile/presentation/cubits/student_profile_cubit.dart';
 import 'package:elara/features/student/presentation/views/home_screen.dart';
 import 'package:elara/features/student/presentation/views/learn_screen.dart';
 import 'package:elara/features/student/rewards/presentation/cubits/rewards_cubit.dart';
+import 'package:elara/features/student/profile/presentation/views/student_profile_screen.dart';
 import 'package:elara/features/student/rewards/presentation/views/rewards_screen.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
@@ -28,7 +30,7 @@ class StudentShell extends StatelessWidget {
     LearnScreen(),
     RewardsScreen(),
     _ComingSoonPage(label: 'Alerts'),
-    _ComingSoonPage(label: 'Profile'),
+    StudentProfileScreen(),
   ];
 
   @override
@@ -44,6 +46,9 @@ class StudentShell extends StatelessWidget {
         ),
         BlocProvider<RewardsCubit>(
           create: (_) => getIt<RewardsCubit>()..loadRewards(),
+        ),
+        BlocProvider<StudentProfileCubit>(
+          create: (_) => getIt<StudentProfileCubit>()..loadProfile(),
         ),
       ],
       child: BlocBuilder<StudentTabCubit, int>(

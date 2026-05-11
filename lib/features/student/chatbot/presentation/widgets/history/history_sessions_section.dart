@@ -83,8 +83,7 @@ class HistorySessionsSection extends StatelessWidget {
           AppSpacing.spacing2xl.h,
         ),
         itemCount: filteredSessions.length,
-        separatorBuilder: (_, __) =>
-            SizedBox(height: AppSpacing.spacingSm.h),
+        separatorBuilder: (_, __) => SizedBox(height: AppSpacing.spacingSm.h),
         itemBuilder: (context, index) {
           final s = filteredSessions[index];
           final title = s.title ?? 'New Chat';

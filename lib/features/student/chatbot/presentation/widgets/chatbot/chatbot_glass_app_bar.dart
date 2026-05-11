@@ -4,7 +4,8 @@ import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 
 /// Glass app bar for the chatbot conversation screen.
-class ChatbotGlassAppBar extends StatelessWidget implements PreferredSizeWidget {
+class ChatbotGlassAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   const ChatbotGlassAppBar({
     super.key,
     required this.sessionTitle,

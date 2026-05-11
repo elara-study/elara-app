@@ -17,22 +17,16 @@ class QuizSessionBody extends StatelessWidget {
     final submitting = state.status == QuizStatus.submitting;
 
     final body = switch (question.kind) {
-      QuizQuestionKind.mcq => QuizMcqStep(
-          session: session,
-          question: question,
-        ),
+      QuizQuestionKind.mcq => QuizMcqStep(session: session, question: question),
       QuizQuestionKind.written => QuizWrittenStep(
-          session: session,
-          question: question,
-        ),
+        session: session,
+        question: question,
+      ),
     };
 
     return Stack(
       children: [
-        AbsorbPointer(
-          absorbing: submitting,
-          child: body,
-        ),
+        AbsorbPointer(absorbing: submitting, child: body),
         if (submitting)
           const Positioned.fill(
             child: ColoredBox(

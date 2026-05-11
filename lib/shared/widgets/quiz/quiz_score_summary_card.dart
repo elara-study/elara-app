@@ -41,20 +41,14 @@ class QuizScoreSummaryCard extends StatelessWidget {
             color: AppColors.brandSecondary500,
           ),
           const SizedBox(height: AppSpacing.spacingLg),
-          Text(
-            'Quiz complete',
-            style: AppTypography.h6(color: onSurface),
-          ),
+          Text('Quiz complete', style: AppTypography.h6(color: onSurface)),
           const SizedBox(height: AppSpacing.spacingSm),
           Text(
             scorePercentLabel,
             style: AppTypography.h1(color: AppColors.brandPrimary500),
           ),
           const SizedBox(height: AppSpacing.spacingXs),
-          Text(
-            correctLabel,
-            style: AppTypography.bodyLarge(color: onSurface),
-          ),
+          Text(correctLabel, style: AppTypography.bodyLarge(color: onSurface)),
           const SizedBox(height: AppSpacing.spacingMd),
           Text(
             caption,

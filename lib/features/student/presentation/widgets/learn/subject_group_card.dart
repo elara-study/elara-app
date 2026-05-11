@@ -104,16 +104,17 @@ class SubjectGroupCard extends StatelessWidget {
                 Radius.circular(AppRadius.radiusLg.r),
               ),
             ),
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingLg.w, vertical: AppSpacing.spacing2xl.w),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.spacingLg.w,
+              vertical: AppSpacing.spacing2xl.w,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   group.teacherName,
-                  style:
-                      AppTypography.bodySmall(
-                        color: cs.onSurfaceVariant,
-                      ).copyWith(
+                  style: AppTypography.bodySmall(color: cs.onSurfaceVariant)
+                      .copyWith(
                         fontWeight: AppTypography.regular,
                         fontSize: 12.sp,
                       ),
@@ -123,10 +124,8 @@ class SubjectGroupCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         group.name,
-                        style:
-                            AppTypography.labelLarge(
-                              color: cs.onSurface,
-                            ).copyWith(
+                        style: AppTypography.labelLarge(color: cs.onSurface)
+                            .copyWith(
                               fontWeight: AppTypography.semiBold,
                               fontSize: 20.sp,
                             ),

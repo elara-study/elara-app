@@ -14,10 +14,9 @@ class GetHomeworkUseCase {
     required String homeworkId,
     String? groupId,
     String? moduleId,
-  }) =>
-      _repository.getHomework(
-        homeworkId: homeworkId,
-        groupId: groupId,
-        moduleId: moduleId,
-      );
+  }) => _repository.getHomework(
+    homeworkId: homeworkId,
+    groupId: groupId,
+    moduleId: moduleId,
+  );
 }

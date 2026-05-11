@@ -21,9 +21,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     final jsonString = _prefs.getString(_kCachedUserKey);
     if (jsonString == null) return null;
     try {
-      return UserModel.fromJson(
-        jsonDecode(jsonString) as Map<String, dynamic>,
-      );
+      return UserModel.fromJson(jsonDecode(jsonString) as Map<String, dynamic>);
     } catch (_) {
       throw CacheException('Failed to load cached user');
     }

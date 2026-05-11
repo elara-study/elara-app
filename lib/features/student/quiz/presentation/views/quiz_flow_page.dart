@@ -33,21 +33,22 @@ class QuizFlowPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<QuizCubit>()
-        ..loadSession(quizId: quizId, groupId: groupId, moduleId: moduleId),
+      create: (_) =>
+          getIt<QuizCubit>()
+            ..loadSession(quizId: quizId, groupId: groupId, moduleId: moduleId),
       child: BlocBuilder<QuizCubit, QuizState>(
         builder: (context, state) {
           return switch (state.status) {
             QuizStatus.initial => const Scaffold(
-                body: Center(child: SizedBox.shrink()),
-              ),
+              body: Center(child: SizedBox.shrink()),
+            ),
             QuizStatus.loading => const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              ),
+              body: Center(child: CircularProgressIndicator()),
+            ),
             QuizStatus.failure => QuizLoadErrorView(
-                message: state.message ?? 'Something went wrong',
-                onRetry: () => context.read<QuizCubit>().retry(),
-              ),
+              message: state.message ?? 'Something went wrong',
+              onRetry: () => context.read<QuizCubit>().retry(),
+            ),
             QuizStatus.inProgress => QuizSessionBody(state: state),
             QuizStatus.submitting => QuizSessionBody(state: state),
             QuizStatus.completed => QuizResultsBody(state: state),

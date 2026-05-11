@@ -19,10 +19,7 @@ class RoadmapLearningPathHeader extends StatelessWidget {
           style: textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w800),
         ),
         const Spacer(),
-        Text(
-          '$percent% completed',
-          style: textTheme.bodyMedium,
-        ),
+        Text('$percent% completed', style: textTheme.bodyMedium),
       ],
     );
   }

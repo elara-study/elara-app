@@ -21,10 +21,10 @@ class RewardsProfileModel extends RewardsProfileEntity {
   }
 
   Map<String, dynamic> toJson() => {
-        'total_xp': totalXp,
-        'lessons_completed': lessonsCompleted,
-        'streak_days': streakDays,
-        'badges_unlocked': badgesUnlocked,
-        'total_badges': totalBadges,
-      };
+    'total_xp': totalXp,
+    'lessons_completed': lessonsCompleted,
+    'streak_days': streakDays,
+    'badges_unlocked': badgesUnlocked,
+    'total_badges': totalBadges,
+  };
 }

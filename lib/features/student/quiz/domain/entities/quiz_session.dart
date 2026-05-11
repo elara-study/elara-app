@@ -24,5 +24,12 @@ class QuizSession extends Equatable {
   int get effectiveTotal => progressTotal ?? questions.length;
 
   @override
-  List<Object?> get props => [id, title, subtitle, moduleLabel, questions, progressTotal];
+  List<Object?> get props => [
+    id,
+    title,
+    subtitle,
+    moduleLabel,
+    questions,
+    progressTotal,
+  ];
 }

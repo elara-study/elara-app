@@ -132,9 +132,9 @@ class HomeworkProblemCard extends StatelessWidget {
                 initialText: problem.answerText,
                 answerText: problem.answerText,
                 onChanged: (text) => context.read<HomeworkCubit>().updateAnswer(
-                      problemId: problem.id,
-                      text: text,
-                    ),
+                  problemId: problem.id,
+                  text: text,
+                ),
               ),
 
               SizedBox(height: AppSpacing.spacingMd.h),
@@ -145,9 +145,9 @@ class HomeworkProblemCard extends StatelessWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: isSubmittable
-                          ? () => context
-                              .read<HomeworkCubit>()
-                              .submitProblem(problem.id)
+                          ? () => context.read<HomeworkCubit>().submitProblem(
+                              problem.id,
+                            )
                           : null,
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),

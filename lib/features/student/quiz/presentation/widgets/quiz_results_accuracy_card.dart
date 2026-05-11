@@ -42,10 +42,7 @@ class QuizResultsAccuracyCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'ACCURACY',
-            style: AppTypography.labelRegular(color: secondary),
-          ),
+          Text('ACCURACY', style: AppTypography.labelRegular(color: secondary)),
           const SizedBox(height: AppSpacing.spacingLg),
           Center(
             child: SizedBox(
@@ -58,16 +55,17 @@ class QuizResultsAccuracyCard extends StatelessWidget {
                     child: CircularProgressIndicator(
                       value: t,
                       strokeWidth: 8,
-                      backgroundColor:
-                          AppColors.brandPrimary100.withValues(alpha: 0.5),
+                      backgroundColor: AppColors.brandPrimary100.withValues(
+                        alpha: 0.5,
+                      ),
                       color: AppColors.brandPrimary700,
                     ),
                   ),
                   Text(
                     '$accuracyPercent%',
-                    style: AppTypography.h3(color: onSurface).copyWith(
-                          fontWeight: AppTypography.black,
-                        ),
+                    style: AppTypography.h3(
+                      color: onSurface,
+                    ).copyWith(fontWeight: AppTypography.black),
                   ),
                 ],
               ),
@@ -121,19 +119,18 @@ class _AccuracyStat extends StatelessWidget {
       children: [
         Text(
           value,
-          style: AppTypography.labelRegular(color: valueColor).copyWith(
-                fontSize: 14,
-                fontWeight: AppTypography.semiBold,
-              ),
+          style: AppTypography.labelRegular(
+            color: valueColor,
+          ).copyWith(fontSize: 14, fontWeight: AppTypography.semiBold),
         ),
         const SizedBox(height: AppSpacing.spacing2xs),
         Text(
           label,
           style: AppTypography.labelSmall(color: secondary).copyWith(
-                fontSize: 10,
-                fontWeight: AppTypography.semiBold,
-                letterSpacing: 0.2,
-              ),
+            fontSize: 10,
+            fontWeight: AppTypography.semiBold,
+            letterSpacing: 0.2,
+          ),
         ),
       ],
     );

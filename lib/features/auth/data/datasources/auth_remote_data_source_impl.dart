@@ -30,7 +30,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
     return UserModel(
       id: 'mock-user-001',
-      fullName: 'Mock User',
+      fullName: 'Tyler The Creator',
       email: request.email,
       role: UserRole.student,
       token: 'mock-jwt-token-login-${DateTime.now().millisecondsSinceEpoch}',

@@ -30,7 +30,8 @@ class PillTabBar extends StatelessWidget {
     const height = 36.0;
 
     return Padding(
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.symmetric(
             horizontal: AppSpacing.spacingLg,
             vertical: AppSpacing.spacingSm,

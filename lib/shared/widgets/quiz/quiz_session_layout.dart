@@ -27,6 +27,7 @@ class QuizSessionLayout extends StatelessWidget {
   final String moduleLabel;
   final int currentQuestion;
   final int totalQuestions;
+
   /// See [QuizProgressBlock.progressSegmentTotal].
   final int? progressSegmentTotal;
   final String questionText;

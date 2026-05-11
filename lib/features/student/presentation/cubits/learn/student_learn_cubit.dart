@@ -6,8 +6,8 @@ class StudentLearnCubit extends Cubit<StudentLearnState> {
   final StudentRepository _repository;
 
   StudentLearnCubit({required StudentRepository repository})
-      : _repository = repository,
-        super(const StudentLearnInitial());
+    : _repository = repository,
+      super(const StudentLearnInitial());
 
   /// Fetches the student's enrolled groups for the Learn screen.
   Future<void> loadGroups() async {

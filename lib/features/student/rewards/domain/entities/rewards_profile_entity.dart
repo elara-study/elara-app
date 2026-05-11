@@ -33,10 +33,10 @@ class RewardsProfileEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        totalXp,
-        lessonsCompleted,
-        streakDays,
-        badgesUnlocked,
-        totalBadges,
-      ];
+    totalXp,
+    lessonsCompleted,
+    streakDays,
+    badgesUnlocked,
+    totalBadges,
+  ];
 }

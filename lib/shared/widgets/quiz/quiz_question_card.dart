@@ -38,10 +38,7 @@ class QuizQuestionCard extends StatelessWidget {
         color: surface,
         borderRadius: BorderRadius.circular(AppRadius.radiusLg),
         border: Border(
-          left: BorderSide(
-            color: secondaryOrange,
-            width: _accentWidth,
-          ),
+          left: BorderSide(color: secondaryOrange, width: _accentWidth),
         ),
         boxShadow: AppShadows.elevation(theme.brightness),
       ),
@@ -97,13 +94,14 @@ class QuizQuestionCard extends StatelessWidget {
                         children: [
                           Text(
                             hintLabel,
-                            style: AppTypography.labelMedium(
-                              color: AppColors.white,
-                            ).copyWith(
-                              fontWeight: AppTypography.semiBold,
-                              fontSize: 12,
-                              height: 1.33,
-                            ),
+                            style:
+                                AppTypography.labelMedium(
+                                  color: AppColors.white,
+                                ).copyWith(
+                                  fontWeight: AppTypography.semiBold,
+                                  fontSize: 12,
+                                  height: 1.33,
+                                ),
                           ),
                           const SizedBox(width: AppSpacing.spacingXs),
                           const Icon(

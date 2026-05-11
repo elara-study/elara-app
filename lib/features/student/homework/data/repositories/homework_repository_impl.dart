@@ -16,10 +16,9 @@ class HomeworkRepositoryImpl implements HomeworkRepository {
     required String homeworkId,
     String? groupId,
     String? moduleId,
-  }) =>
-      _dataSource.getHomework(
-        homeworkId: homeworkId,
-        groupId: groupId,
-        moduleId: moduleId,
-      );
+  }) => _dataSource.getHomework(
+    homeworkId: homeworkId,
+    groupId: groupId,
+    moduleId: moduleId,
+  );
 }

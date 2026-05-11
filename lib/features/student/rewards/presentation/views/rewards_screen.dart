@@ -18,10 +18,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class RewardsScreen extends StatelessWidget {
   const RewardsScreen({super.key});
 
-  static const _tabs = [
-    Tab(text: 'Badges'),
-    Tab(text: 'Leaderboard'),
-  ];
+  static const _tabs = [Tab(text: 'Badges'), Tab(text: 'Leaderboard')];
 
   // Shared XP formatter: 1250 → "1,250"
   static String _fmt(int n) {
@@ -113,9 +110,7 @@ class RewardsScreen extends StatelessWidget {
                             if (tabController.index == 0)
                               _BadgesGrid(badges: state.badges)
                             else
-                              _LeaderboardList(
-                                entries: state.leaderboard,
-                              ),
+                              _LeaderboardList(entries: state.leaderboard),
                           ],
                         ),
                       );

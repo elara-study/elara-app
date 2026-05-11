@@ -24,5 +24,11 @@ class StudentProfileEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, fullName, firstName, points, notificationCount];
+  List<Object?> get props => [
+    id,
+    fullName,
+    firstName,
+    points,
+    notificationCount,
+  ];
 }

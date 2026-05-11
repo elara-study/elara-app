@@ -44,7 +44,9 @@ class QuizFooterActions extends StatelessWidget {
               const SizedBox(width: AppSpacing.spacingSm),
               Text(
                 'Leave',
-                style: AppTypography.labelLarge(color: ButtonColors.outlineText),
+                style: AppTypography.labelLarge(
+                  color: ButtonColors.outlineText,
+                ),
               ),
             ],
           ),
@@ -72,7 +74,9 @@ class QuizFooterActions extends StatelessWidget {
               children: [
                 Text(
                   primaryLabel,
-                  style: AppTypography.labelLarge(color: ButtonColors.primaryText),
+                  style: AppTypography.labelLarge(
+                    color: ButtonColors.primaryText,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.spacingSm),
                 const Icon(Icons.arrow_forward_rounded, size: 20),

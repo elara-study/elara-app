@@ -21,10 +21,10 @@ class StudentProfileModel extends StudentProfileEntity {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'full_name': fullName,
-        'first_name': firstName,
-        'points': points,
-        'notification_count': notificationCount,
-      };
+    'id': id,
+    'full_name': fullName,
+    'first_name': firstName,
+    'points': points,
+    'notification_count': notificationCount,
+  };
 }

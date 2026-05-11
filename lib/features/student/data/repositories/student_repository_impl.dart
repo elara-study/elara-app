@@ -11,7 +11,7 @@ class StudentRepositoryImpl implements StudentRepository {
   final StudentRemoteDataSource _remoteDataSource;
 
   StudentRepositoryImpl({required StudentRemoteDataSource remoteDataSource})
-      : _remoteDataSource = remoteDataSource;
+    : _remoteDataSource = remoteDataSource;
 
   @override
   Future<StudentProfileEntity> getStudentProfile() async {

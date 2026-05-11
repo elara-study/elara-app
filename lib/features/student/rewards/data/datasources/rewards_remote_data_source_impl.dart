@@ -115,7 +115,12 @@ class RewardsRemoteDataSourceImpl implements RewardsRemoteDataSource {
       LeaderboardEntryModel(rank: 1, name: 'Emma S.', xp: 3240),
       LeaderboardEntryModel(rank: 2, name: 'Liam K.', xp: 2890),
       LeaderboardEntryModel(rank: 3, name: 'Olivia M.', xp: 2650),
-      LeaderboardEntryModel(rank: 4, name: 'You', xp: 1250, isCurrentUser: true),
+      LeaderboardEntryModel(
+        rank: 4,
+        name: 'You',
+        xp: 1250,
+        isCurrentUser: true,
+      ),
       LeaderboardEntryModel(rank: 5, name: 'Noah J.', xp: 1180),
     ];
     // ── REAL ────────────────────────────────────────────────────────────────
