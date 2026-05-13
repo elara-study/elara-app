@@ -57,6 +57,15 @@ class AppBottomNavBar extends StatelessWidget {
     AppNavTab(label: 'Profile', assetPath: 'assets/icons/profile_icon.svg'),
   ];
 
+  /// Parent app
+  static const List<AppNavTab> parentTabs = [
+    AppNavTab(label: 'Home', assetPath: 'assets/icons/home_icon.svg'),
+    AppNavTab(label: 'Children', assetPath: 'assets/icons/people_outline.svg'),
+    AppNavTab(label: 'Reports', assetPath: 'assets/icons/report_icon.svg'),
+    AppNavTab(label: 'Alerts', assetPath: 'assets/icons/alerts_icon.svg'),
+    AppNavTab(label: 'Profile', assetPath: 'assets/icons/profile_icon.svg'),
+  ];
+
   const AppBottomNavBar({
     super.key,
     required this.currentIndex,
@@ -104,9 +113,8 @@ class AppBottomNavBar extends StatelessWidget {
                   children: [
                     SvgPicture.asset(
                       isActive ? tab.resolvedActiveAsset : tab.assetPath,
-                      width: 20.w,
-                      height: 17.w,
                       fit: BoxFit.contain,
+                      alignment: Alignment.center,
                       colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                     ),
                     SizedBox(height: 3.h),
