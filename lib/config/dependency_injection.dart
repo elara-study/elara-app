@@ -11,13 +11,29 @@ import 'package:elara/features/auth/domain/usecases/login_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/register_use_case.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
-import 'package:elara/features/student/presentation/dashboard/cubits/tab/student_tab_cubit.dart';
+import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source.dart';
+import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source_impl.dart';
+import 'package:elara/features/parent/data/home/repositories/parent_home_repository_impl.dart';
+import 'package:elara/features/parent/data/reports/datasources/parent_reports_remote_data_source.dart';
+import 'package:elara/features/parent/data/reports/datasources/parent_reports_remote_data_source_impl.dart';
+import 'package:elara/features/parent/data/reports/repositories/parent_reports_repository_impl.dart';
+import 'package:elara/features/parent/domain/home/repositories/parent_home_repository.dart';
+import 'package:elara/features/parent/domain/home/usecases/get_parent_children_dashboard_use_case.dart';
+import 'package:elara/features/parent/domain/home/usecases/get_parent_home_use_case.dart';
+import 'package:elara/features/parent/domain/reports/repositories/parent_reports_repository.dart';
+import 'package:elara/features/parent/domain/reports/usecases/get_parent_reports_use_case.dart';
+import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
+import 'package:elara/features/parent/presentation/home/cubits/parent_home_cubit.dart';
+import 'package:elara/features/parent/presentation/home/cubits/parent_tab_cubit.dart';
+import 'package:elara/features/parent/presentation/reports/cubits/parent_reports_cubit.dart';
+
 import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source.dart';
 import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source_impl.dart';
 import 'package:elara/features/student/data/dashboard/repositories/student_repository_impl.dart';
 import 'package:elara/features/student/domain/dashboard/repositories/student_repository.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/home/student_home_cubit.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/learn/student_learn_cubit.dart';
+import 'package:elara/features/student/presentation/dashboard/cubits/tab/student_tab_cubit.dart';
 import 'package:elara/features/student/data/group/repositories/mock_student_group_repository.dart';
 import 'package:elara/features/student/domain/group/repositories/student_group_repository.dart';
 import 'package:elara/features/student/domain/group/usecases/get_group_announcements_usecase.dart';
@@ -159,6 +175,47 @@ Future<void> setupDependencyInjection() async {
   // Factory: must not be a singleton — [BlocProvider] closes the cubit when the
   // shell disposes; a reused closed singleton would throw on emit.
   getIt.registerFactory(() => StudentTabCubit());
+
+  // ── Parent (full stack: remote DS → repo impl → use cases → cubits)
+  getIt.registerLazySingleton<ParentHomeRemoteDataSource>(
+    () => const ParentHomeRemoteDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<ParentHomeRepository>(
+    () => ParentHomeRepositoryImpl(getIt<ParentHomeRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetParentHomeUseCase(getIt<ParentHomeRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetParentChildrenDashboardUseCase(
+      getIt<ParentHomeRepository>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<ParentReportsRemoteDataSource>(
+    () => const ParentReportsRemoteDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<ParentReportsRepository>(
+    () => ParentReportsRepositoryImpl(getIt<ParentReportsRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetParentReportsUseCase(getIt<ParentReportsRepository>()),
+  );
+
+  getIt.registerFactory(() => ParentTabCubit());
+  getIt.registerFactory(
+    () => ParentHomeCubit(getParentHomeUseCase: getIt<GetParentHomeUseCase>()),
+  );
+  getIt.registerFactory(
+    () => ParentChildrenCubit(
+      getChildrenDashboard: getIt<GetParentChildrenDashboardUseCase>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => ParentReportsCubit(
+      getParentReportsUseCase: getIt<GetParentReportsUseCase>(),
+    ),
+  );
 
   // ── Student group (Learn) ─────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentGroupRepository>(

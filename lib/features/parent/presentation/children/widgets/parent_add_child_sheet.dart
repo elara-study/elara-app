@@ -3,21 +3,18 @@ import 'package:elara/shared/widgets/app_form_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Future<void> showProfileLinkParentSheet(BuildContext context) {
-  return showAppFormDialog<void>(
-    context,
-    child: const ProfileLinkParentSheet(),
-  );
+Future<void> showParentAddChildSheet(BuildContext context) {
+  return showAppFormDialog<void>(context, child: const ParentAddChildSheet());
 }
 
-class ProfileLinkParentSheet extends StatefulWidget {
-  const ProfileLinkParentSheet({super.key});
+class ParentAddChildSheet extends StatefulWidget {
+  const ParentAddChildSheet({super.key});
 
   @override
-  State<ProfileLinkParentSheet> createState() => _ProfileLinkParentSheetState();
+  State<ParentAddChildSheet> createState() => _ParentAddChildSheetState();
 }
 
-class _ProfileLinkParentSheetState extends State<ProfileLinkParentSheet> {
+class _ParentAddChildSheetState extends State<ParentAddChildSheet> {
   final _usernameController = TextEditingController();
 
   @override
@@ -27,20 +24,23 @@ class _ProfileLinkParentSheetState extends State<ProfileLinkParentSheet> {
   }
 
   void _submit() {
+    // TODO: wire link-child use case when backend exists
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return AppFormDialogBody(
-      title: 'Link a Parent',
+      title: 'Add a child',
       children: [
         AppFormDialogTextField(
           controller: _usernameController,
-          hintText: "Enter your parent's username",
+          hintText: "Child's username",
+          textInputAction: TextInputAction.done,
+          onSubmitted: (_) => _submit(),
         ),
         SizedBox(height: AppSpacing.spacingLg.h),
-        AppFormDialogPrimaryButton(label: 'Link Parent', onPressed: _submit),
+        AppFormDialogPrimaryButton(label: 'Send request', onPressed: _submit),
         SizedBox(height: AppSpacing.spacingSm.h),
       ],
     );

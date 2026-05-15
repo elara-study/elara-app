@@ -5,6 +5,7 @@ import 'package:elara/features/auth/presentation/views/sign_in_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_credentials_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
 import 'package:elara/features/auth/presentation/views/splash_screen.dart';
+import 'package:elara/features/parent/presentation/home/views/parent_shell.dart';
 import 'package:elara/features/student/presentation/dashboard/views/student_shell.dart';
 import 'package:elara/features/student/presentation/group/views/student_group_page.dart';
 import 'package:elara/features/student/presentation/quiz/quiz_route_args.dart';
@@ -63,7 +64,10 @@ class AppRoutes {
   /// Teacher dashboard shell.
   static const String teacherDashboard = '/teacher';
 
-  /// Placeholder until Parent dashboard exists.
+  /// Parent dashboard shell (Home tab matches Figma parent Home).
+  static const String parentDashboard = '/parent';
+
+  /// Placeholder for roles without a full dashboard yet.
   static const String comingSoonDashboard = '/coming-soon-dashboard';
 
   static void navigateAfterAuth(BuildContext context, UserEntity user) {
@@ -79,15 +83,15 @@ class AppRoutes {
       case UserRole.parent:
         Navigator.of(
           context,
-        ).pushNamedAndRemoveUntil(comingSoonDashboard, (_) => false);
+        ).pushNamedAndRemoveUntil(parentDashboard, (_) => false);
     }
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        // TEST BYPASS — revert before p
-        return MaterialPageRoute(builder: (_) => const SplashScreen());
+        // Developing features revert to splash
+        return MaterialPageRoute(builder: (_) => const ParentShell());
 
       case login:
         return MaterialPageRoute(builder: (_) => const SignInScreen());
@@ -110,6 +114,9 @@ class AppRoutes {
 
       case teacherDashboard:
         return MaterialPageRoute(builder: (_) => const TeacherShell());
+
+      case parentDashboard:
+        return MaterialPageRoute(builder: (_) => const ParentShell());
 
       case comingSoonDashboard:
         return MaterialPageRoute(
