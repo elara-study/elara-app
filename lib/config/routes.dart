@@ -90,7 +90,7 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        // TEST BYPASS — revert before p
+        // Developing features revert to splash
         return MaterialPageRoute(builder: (_) => const ParentShell());
 
       case login:

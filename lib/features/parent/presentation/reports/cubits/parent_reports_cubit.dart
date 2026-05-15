@@ -3,17 +3,17 @@ import 'package:elara/features/parent/presentation/reports/cubits/parent_reports
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ParentReportsCubit extends Cubit<ParentReportsState> {
-  ParentReportsCubit({required GetParentReportsUseCase getParentReports})
-    : _getParentReports = getParentReports,
+  ParentReportsCubit({required GetParentReportsUseCase getParentReportsUseCase})
+    : _getParentReportsUseCase = getParentReportsUseCase,
       super(const ParentReportsInitial());
 
-  final GetParentReportsUseCase _getParentReports;
+  final GetParentReportsUseCase _getParentReportsUseCase;
 
   Future<void> loadReports() async {
     if (isClosed) return;
     emit(const ParentReportsLoading());
     try {
-      final overview = await _getParentReports();
+      final overview = await _getParentReportsUseCase();
       if (isClosed) return;
       emit(ParentReportsLoaded(overview));
     } catch (e) {

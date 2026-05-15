@@ -2,6 +2,8 @@ import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_children_screen.dart';
 import 'package:elara/features/parent/presentation/home/cubits/parent_home_cubit.dart';
 import 'package:elara/features/parent/presentation/home/cubits/parent_tab_cubit.dart';
 import 'package:elara/features/parent/presentation/home/views/parent_home_screen.dart';
@@ -13,14 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Root shell for the parent role — bottom nav per Figma (Home, Children,
-/// Reports, Alerts, Profile).
+/// Root shell for the parent role — bottom nav per Figma (Home, Children, Reports, Alerts, Profile).
 class ParentShell extends StatelessWidget {
   const ParentShell({super.key});
 
   static const List<Widget> _pages = [
     ParentHomeScreen(),
-    _ParentPlaceholderPage(title: 'Children'),
+    ParentChildrenScreen(),
     ParentReportsScreen(),
     _ParentPlaceholderPage(title: 'Alerts'),
     _ParentPlaceholderPage(title: 'Profile'),
@@ -36,6 +37,9 @@ class ParentShell extends StatelessWidget {
         ),
         BlocProvider<ParentReportsCubit>(
           create: (_) => getIt<ParentReportsCubit>()..loadReports(),
+        ),
+        BlocProvider<ParentChildrenCubit>(
+          create: (_) => getIt<ParentChildrenCubit>()..loadChildren(),
         ),
       ],
       child: BlocBuilder<ParentTabCubit, int>(
