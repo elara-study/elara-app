@@ -42,6 +42,33 @@ mobile platforms.
   - `shared/widgets/` — widgets reused across features (e.g. cards) when not
     tied to a single feature module.
 
+## Elara shared widgets (`lib/shared/widgets/`)
+
+**Before building new UI, check this list.** Prefer importing and composing these
+widgets when the screen needs the same behavior or visual pattern.
+
+| File                                  | What to use it for                                                                                                                                                                                                   |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app_buttons.dart`                    | **Buttons:** `AppPrimaryButton`, `AppSecondaryButton`, `AppGhostButton`, `AppOutlineButton`, `AppPrimaryReversedButton`, `AppSecondaryReversedButton` — text, optional `icon`, `isLoading`, themed to design tokens. |
+| `app_glass_header.dart`               | **Top bar:** `AppGlassHeader` — blurred glass `AppBar` (`PreferredSizeWidget`), title/subtitle, `actions`, `leading`, `automaticallyImplyLeading`.                                                                   |
+| `app_section_header.dart`             | **Section row:** `AppSectionHeader` — bold section title; optional “See All”; optional **Create** that opens `GroupDialog` via `onCreateGroup` + `GroupDialogConfig`.                                                |
+| `pill_tab_bar.dart`                   | **Tabs:** `PillTabBar` — pill-shaped `TabBar` (use with `DefaultTabController` or explicit `TabController`); optional custom `padding`.                                                                              |
+| `app_bottom_nav_bar.dart`             | **Shell nav:** `AppBottomNavBar` + `AppNavTab` — floating bottom nav; presets `studentTabs`, `teacherTabs`, `parentTabs`.                                                                                            |
+| `app_action_card.dart`                | **Gradient CTA card:** `AppActionCard` — title, subtitle, icon, gradient colors, `onTap`, `isSelected` (glow when selected).                                                                                         |
+| `subject_group_card.dart`             | **Group cards:** `SubjectGroupCard` + `SubjectGroupCardVariant` (`student`, `teacher`, `roadmap`) — takes `GroupEntity`, optional `isDraft`.                                                                         |
+| `gradient_glow_card.dart`             | **Glow + gradients:** `GradientGlowCard`, `GradientGlowClipStack`, `GlowOrbLayer`, presets `GradientGlowTints` / `GradientGlowOrbs` — match existing hero/group glow layouts.                                        |
+| `progress_bar.dart`                   | **Labeled progress:** `ProgressBar` — two labels (e.g. completed + %) + bar; wraps `SegmentedProgressBar`.                                                                                                           |
+| `segmented_progress_bar.dart`         | **Bar only:** `SegmentedProgressBar` — 0..1 fill, optional `trackColor` / `height`.                                                                                                                                  |
+| `app_activity_item.dart`              | **Activity row:** `AppActivityItem` — SVG icon circle, title, subtitle, `timeAgo` (Teacher home / alerts style).                                                                                                     |
+| `create_group_dialog.dart`            | **Create group UI:** `GroupDialog`, `GroupDialogConfig` — full-screen dialog fields; often opened from `AppSectionHeader`.                                                                                           |
+| `settings/settings_card.dart`         | **Settings surface:** `SettingsCard` — elevated rounded card wrapping arbitrary `child`.                                                                                                                             |
+| `settings/settings_section_list.dart` | **Settings lists:** `SettingsSectionList` (divided rows in a card), `SettingsNavigationTile`, `SettingsToggleTile`, `SettingsDenseChipTile`.                                                                         |
+
+**Rule of thumb:** If a screen repeats patterns already covered above (buttons,
+glass header, section headers, bottom nav, pill tabs, group/action cards,
+progress, activity rows, or settings rows), **extend or reuse** these widgets
+instead of duplicating layout in a feature folder.
+
 ## Flutter style guide
 
 - **SOLID Principles:** Apply SOLID principles throughout the codebase.
@@ -170,74 +197,109 @@ patterns without an explicit decision.
 - **State management:** `flutter_bloc` **Cubits** (and `BlocProvider` /
   `BlocBuilder` / `BlocListener` where appropriate), not ad-hoc `setState` for
   feature state.
-- **Dependency injection:** **GetIt** — register repositories, use cases, and
-  cubits in `lib/config/dependency_injection.dart` (`setupDependencyInjection`).
+- **Dependency injection:** **GetIt** — register **datasources**; for the
+  **full stack**, also **repository implementations** + **use cases**; then
+  **cubits**, in `lib/config/dependency_injection.dart`
+  (`setupDependencyInjection`).
 - **Networking:** **Dio** via `core/network/dio_client.dart` (when calling APIs).
 - **Routing:** **`MaterialApp`** with `onGenerateRoute` and named routes defined
   in `lib/config/routes.dart` (`AppRoutes`). Add new screens there and wire
   navigation with `Navigator` (this app does not use `go_router` in `main.dart`).
 
-**Layer diagram (dependency flow: Presentation → Domain ← Data):**
+**Two wiring styles in this repo** (pick one per feature and stay consistent):
+
+1. **Full stack** — `domain/entities`, `domain/repositories`, `domain/usecases`,
+   `data/models`, `data/datasources`, `data/repositories` (e.g. `student` rewards
+   models under `data/rewards/models/`, **`auth`**, **`settings`**).
+2. **Lean stack (“Teacher pattern”)** — `data/datasources/` + `domain/entities/`
+   only; cubit calls `*DataSource` (`teacher`, `parent` home/children/reports
+   datasources).
+
+**Full feature wiring (repository stack)** — use when you have API payloads,
+caching, or multiple I/O sources. Typical layout:
 
 ```
-Presentation  (views, widgets, cubits, states)
-       ↓ calls
-Domain        (entities, repository interfaces, use cases)
-       ↑ implemented by
-Data          (models, datasources, repository implementations)
+domain/
+├── entities/
+├── repositories/    # Abstract contracts
+└── usecases/
+
+data/
+├── models/          # DTOs / JSON (e.g. rewards_profile_model.dart)
+├── datasources/
+└── repositories/    # *RepositoryImpl: maps Model → Entity
+
+presentation/
+├── cubits/          # Inject use cases
+├── views/
+└── widgets/
 ```
 
-**Per-feature folder layout** (under `lib/features/<area>/<feature_name>/`):
+Flow: **Cubit → Use case → Domain repository → Data repository impl →
+Datasource(s)**. **`data/models`** map to **`domain/entities`** in repository
+implementations (or mappers), not in views/cubits.
 
 ```
-feature_name/
-├── data/
-│   ├── datasources/     # Remote/local API or storage (implements contracts)
-│   ├── models/          # DTOs / JSON models (json_serializable when needed)
-│   └── repositories/    # Repository implementations (use domain interfaces)
-├── domain/
-│   ├── entities/        # Pure business objects (no Flutter imports)
-│   ├── repositories/  # Abstract repository contracts only
-│   └── usecases/      # One class per action (e.g. “load group”)
-└── presentation/
-    ├── cubits/          # Cubit + state classes (UI orchestration, not raw HTTP)
-    ├── views/           # Screens / route targets: one main widget per screen
-    └── widgets/         # Reusable UI pieces for this feature only
+Presentation  (cubits → use cases)
+       ↓
+Domain        entities, repository interfaces, use cases
+       ↑
+Data          repository impls, models, datasources
 ```
+
+**Lean wiring (“Teacher pattern”)** — fewer folders; no DTO/use-case layer until
+the backend needs it.
+
+- **`data/datasources/`** — abstract `*DataSource` + `*DataSourceImpl`.
+- **`domain/entities/`** only (no `repositories/` / `usecases/` for these flows).
+- **Cubits** inject `*DataSource`.
+
+```
+Presentation  (cubits → DataSource)
+                     ↑
+Data            *DataSourceImpl
+                     ↑
+Domain          entities
+```
+
+**Per-feature folder layout**
+
+- **Full stack:** include `models/`, `datasources/`, `repositories/` under
+  `data/` and `repositories/`, `usecases/` under `domain/` when needed (same idea
+  as `lib/features/student/data/rewards/`).
+- **Lean stack:** `data/datasources/`, `domain/entities/`, `presentation/` only.
 
 **How to separate responsibilities:**
 
 | Layer | Responsibility | Do / Don’t |
-|--------|----------------|------------|
-| **Views** (`presentation/views/`) | Screen-level composition: scaffold, tabs, `BlocProvider` scope for the screen, navigation. | **Do** call cubits (`context.read`, `BlocBuilder`). **Don’t** put HTTP, parsing, or repository calls here. |
-| **Widgets** (`presentation/widgets/`) | Presentational building blocks: layout, styling, callbacks. | **Do** take data and `VoidCallback`/`ValueChanged` as parameters. **Don’t** import datasources or call repositories. |
-| **Cubits** (`presentation/cubits/`) | Map user events to use cases; hold UI state; emit states. | **Do** depend on use cases via constructor. **Don’t** embed large UI trees or duplicate domain rules. |
-| **Use cases** (`domain/usecases/`) | Single business operation per class; orchestrate domain + repository calls. | **Do** stay pure Dart. **Don’t** reference `BuildContext` or widgets. |
-| **Repositories (domain)** | Contracts only. | Implementations live under `data/repositories/`. |
+| ----- | -------------- | ---------- |
+| **Views** | Screens, `BlocProvider`, navigation. | **Don’t** call datasources, repos, or use cases from widgets. |
+| **Widgets** | Presentational pieces. | **Don’t** import `data/`. |
+| **Cubits** | UI state and actions. | **Full stack:** use **cases**. **Lean stack:** **`DataSource`**. |
+| **Use cases** | One app operation; domain repo only. | Pure Dart. |
+| **Domain repositories** | Contracts. | Implemented under **`data/repositories/`**. |
+| **Data repositories** | Impls: orchestrate datasource(s), **Model → Entity**. | No domain rules that belong in use cases. |
+| **Models** (`data/models/`) | JSON/DTOs. | Parsed in data layer; entities exposed upward. |
+| **Datasources** | Raw I/O. | Return types suited to impl (models/maps). |
 
 **Adding a new feature (checklist):**
 
-1. **Create** `lib/features/<role_or_area>/<feature_name>/` with `data/`,
-   `domain/`, `presentation/` as in the tree above.
-2. **Domain first:** entities, repository interfaces, use cases for the
-   operations you need.
-3. **Data:** datasources, models, repository implementation(s); map models to
-   entities in the repository.
-4. **Presentation:** `*State` classes, `*Cubit`, then views and widgets.
-5. **DI:** register datasources, repositories, use cases, and
-   `registerFactory` for the cubit in `dependency_injection.dart`.
-6. **Routes:** add a named route in `AppRoutes` and a `case` in
-   `generateRoute`; use `BlocProvider` at the route level or above the subtree
-   that needs the cubit.
-7. **Core:** only put truly shared pieces in `lib/core/` or `lib/shared/`; keep
-   feature-specific code inside the feature folder.
+1. **Pick wiring:** **Full stack** for new API-driven work next to `student` /
+   `auth` shapes. **Lean stack** for thin role tabs like `teacher` / `parent`.
+2. **Domain:** entities; add repositories + use cases for full stack.
+3. **Data:** for full stack — models, datasource(s), repository impl(s). For
+   lean — `*DataSource` + `*DataSourceImpl` only.
+4. **Presentation:** `*State`, `*Cubit`, views, widgets.
+5. **DI:** full stack → datasource, repo impl, use case, cubit factory. Lean →
+   datasource, cubit factory.
+6. **Routes / providers** as in the rest of the app.
+7. **`shared/widgets` / `core`:** only for cross-feature reuse.
 
 **Cross-cutting rules:**
 
-- **Feature-based Organization:** Prefer a new `features/...` subfolder over
+- **Feature-based Organization:** Prefer a new `features/...` folder over
   dumping screens into a flat `lib/` root.
-- **Separation of Concerns:** UI (views/widgets) ≠ orchestration (cubits) ≠
-  business rules (use cases + domain) ≠ I/O (data layer).
+- **Separation of Concerns:** UI ≠ cubits ≠ domain ≠ data I/O.
 - **Reuse:** `core/theme`, `core/responsive`, and `shared/widgets` for design
   system and generic UI; feature widgets stay under that feature’s
   `presentation/widgets/`.
@@ -268,9 +330,10 @@ linter:
 
 - **Elara LMS (this repo):** Use **Cubit** (`flutter_bloc`) for feature and
   screen-level state; register cubits in **GetIt** and expose them with
-  `BlocProvider`. Prefer **constructor injection** of use cases into cubits.
-  The bullets below apply to generic Flutter samples; in this codebase, follow
-  Cubit + clean architecture first.
+  `BlocProvider`. Prefer **constructor injection** of **datasources** (teacher
+  / parent pattern) **or** use cases (repository-based modules). The bullets
+  below apply to generic Flutter samples when Elara rules do not specify a
+  pattern.
 - **Built-in Solutions:** For small greenfield snippets outside this app’s
   patterns, prefer Flutter’s built-in options unless the product standard is
   Cubit/Bloc.
