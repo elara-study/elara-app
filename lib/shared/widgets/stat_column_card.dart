@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class ProfileStatColumnCard extends StatelessWidget {
-  const ProfileStatColumnCard({
+/// Single vertical stat tile (icon, value, label) with gradient fill — used on
+/// the student profile and parent **Children** child cards.
+class StatColumnCard extends StatelessWidget {
+  const StatColumnCard({
     super.key,
     required this.color,
     required this.titleColor,

@@ -7,7 +7,7 @@ import 'package:elara/features/student/domain/profile/entities/student_profile_o
 import 'package:elara/features/student/presentation/profile/widgets/profile_level_progress_card.dart';
 import 'package:elara/features/student/presentation/profile/widgets/profile_parents_section.dart';
 import 'package:elara/features/student/presentation/profile/widgets/profile_recent_achievements_section.dart';
-import 'package:elara/features/student/presentation/profile/widgets/profile_stat_column_card.dart';
+import 'package:elara/shared/widgets/learner_stats_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -99,41 +99,10 @@ class ProfileOverviewBody extends StatelessWidget {
             remainder: overview.xpToNextLevel,
           ),
           SizedBox(height: AppSpacing.spacing2xl.h),
-          Row(
-            children: [
-              Expanded(
-                child: ProfileStatColumnCard(
-                  color: AppColors.brandSecondary500,
-                  titleColor: AppColors.brandSecondary50,
-                  subtitleColor: AppColors.brandSecondary100,
-                  value: '${overview.streakDays}',
-                  label: 'Day Streak',
-                  svgAsset: 'assets/icons/fire_icon.svg',
-                ),
-              ),
-              SizedBox(width: AppSpacing.spacingLg.w),
-              Expanded(
-                child: ProfileStatColumnCard(
-                  color: AppColors.brandPrimary500,
-                  titleColor: AppColors.brandPrimary50,
-                  subtitleColor: AppColors.brandPrimary100,
-                  value: formatThousands(overview.totalXp),
-                  label: 'Total XP',
-                  svgAsset: 'assets/icons/electric_icon.svg',
-                ),
-              ),
-              SizedBox(width: AppSpacing.spacingLg.w),
-              Expanded(
-                child: ProfileStatColumnCard(
-                  color: AppColors.success500,
-                  titleColor: AppColors.success50,
-                  subtitleColor: AppColors.success100,
-                  value: '${overview.lessonsCompleted}',
-                  label: 'Lessons',
-                  svgAsset: 'assets/icons/book_icon.svg',
-                ),
-              ),
-            ],
+          LearnerStatsRow(
+            streakDays: overview.streakDays,
+            totalXpDisplay: formatThousands(overview.totalXp),
+            lessonsCount: overview.lessonsCompleted,
           ),
           SizedBox(height: AppSpacing.spacing2xl.h),
           ProfileParentsSection(parents: overview.linkedParents),
