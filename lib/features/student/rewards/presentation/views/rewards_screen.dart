@@ -9,8 +9,8 @@ import 'package:elara/features/student/rewards/presentation/cubits/rewards_state
 import 'package:elara/features/student/rewards/presentation/widgets/achievement_stat_card.dart';
 import 'package:elara/features/student/rewards/presentation/widgets/badge_card.dart';
 import 'package:elara/features/student/rewards/presentation/widgets/leaderboard_entry_tile.dart';
-import 'package:elara/features/student/rewards/presentation/widgets/rewards_tab_selector.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
+import 'package:elara/shared/widgets/app_tab_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -87,7 +87,12 @@ class RewardsScreen extends StatelessWidget {
                 children: [
                   _AchievementsCard(profile: state.profile, fmt: _fmt),
                   SizedBox(height: AppSpacing.spacing2xl.h),
-                  RewardsTabSelector(activeTab: state.activeTab),
+                  AppTabBar(
+                    tabs: const ['Badges', 'Leaderboard'],
+                    activeTab: state.activeTab,
+                    onTabChanged: (index) =>
+                        context.read<RewardsCubit>().switchTab(index),
+                  ),
                   SizedBox(height: AppSpacing.spacingLg.h),
                   if (state.activeTab == 0)
                     _BadgesGrid(badges: state.badges)

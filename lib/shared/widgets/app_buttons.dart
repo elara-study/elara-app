@@ -10,6 +10,9 @@ class AppPrimaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isLoading;
   final IconData? icon;
+  final Widget? leading;
+  final BorderRadiusGeometry? borderRadius;
+  final EdgeInsetsGeometry? padding;
 
   const AppPrimaryButton({
     super.key,
@@ -17,6 +20,9 @@ class AppPrimaryButton extends StatelessWidget {
     this.onPressed,
     this.isLoading = false,
     this.icon,
+    this.leading,
+    this.borderRadius,
+    this.padding,
   });
 
   @override
@@ -28,12 +34,12 @@ class AppPrimaryButton extends StatelessWidget {
         foregroundColor: ButtonColors.primaryText,
         disabledBackgroundColor: ButtonColors.primaryDisabled,
         disabledForegroundColor: ButtonColors.primaryTextDisabled,
-        padding: const EdgeInsets.symmetric(
+        padding: padding ?? const EdgeInsets.symmetric(
           horizontal: AppSpacing.spacing2xl,
           vertical: AppSpacing.spacingLg,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.radiusSm),
+          borderRadius: borderRadius ?? BorderRadius.circular(AppRadius.radiusSm),
         ),
         elevation: 0,
       ),
@@ -48,11 +54,11 @@ class AppPrimaryButton extends StatelessWidget {
                 ),
               ),
             )
-          : icon != null
+          : (leading != null || icon != null)
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 20),
+                if (leading != null) leading! else Icon(icon, size: 20),
                 const SizedBox(width: AppSpacing.spacingSm),
                 Text(text, style: AppTypography.button()),
               ],
@@ -195,6 +201,9 @@ class AppOutlineButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isLoading;
   final IconData? icon;
+  final Widget? leading;
+  final BorderRadiusGeometry? borderRadius;
+  final EdgeInsetsGeometry? padding;
 
   const AppOutlineButton({
     super.key,
@@ -202,6 +211,9 @@ class AppOutlineButton extends StatelessWidget {
     this.onPressed,
     this.isLoading = false,
     this.icon,
+    this.leading,
+    this.borderRadius,
+    this.padding,
   });
 
   @override
@@ -218,12 +230,12 @@ class AppOutlineButton extends StatelessWidget {
                   : ButtonColors.outlineBorder,
               width: 1,
             ),
-            padding: const EdgeInsets.symmetric(
+            padding: padding ?? const EdgeInsets.symmetric(
               horizontal: AppSpacing.spacing2xl,
               vertical: AppSpacing.spacingLg,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.radiusSm),
+              borderRadius: borderRadius ?? BorderRadius.circular(AppRadius.radiusSm),
             ),
           ).copyWith(
             overlayColor: WidgetStateProperty.resolveWith<Color?>((
@@ -249,11 +261,11 @@ class AppOutlineButton extends StatelessWidget {
                 ),
               ),
             )
-          : icon != null
+          : (leading != null || icon != null)
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 20),
+                if (leading != null) leading! else Icon(icon, size: 20),
                 const SizedBox(width: AppSpacing.spacingSm),
                 Text(text, style: AppTypography.button()),
               ],

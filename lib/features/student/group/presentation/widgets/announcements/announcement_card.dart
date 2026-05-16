@@ -5,7 +5,8 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/features/student/group/domain/entities/group_announcement.dart';
 import 'package:flutter/material.dart';
 
-/// Single announcement row: left accent, title + time, body copy.
+/// Student-facing announcement card — left accent, title + time, body.
+/// No overflow menu.
 class AnnouncementCard extends StatelessWidget {
   final GroupAnnouncement announcement;
 

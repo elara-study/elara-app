@@ -1,7 +1,11 @@
 import 'dart:ui';
 
+import 'package:elara/core/theme/app_icon_sizes.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -24,7 +28,7 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.height = kToolbarHeight,
     this.showDivider = true,
-    this.automaticallyImplyLeading = false,
+    this.automaticallyImplyLeading = true,
   });
 
   @override
@@ -33,6 +37,26 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
     final cs = theme.colorScheme;
     final scaffoldBg = theme.scaffoldBackgroundColor;
     final dividerColor = theme.dividerTheme.color ?? cs.outlineVariant;
+    final ModalRoute<dynamic>? parentRoute = ModalRoute.of(context);
+    final bool canPop = parentRoute?.canPop ?? false;
+
+    Widget? actualLeading = leading;
+    if (actualLeading == null && automaticallyImplyLeading && canPop) {
+      actualLeading = Center(
+        child: GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: SvgPicture.asset(
+            'assets/icons/back_arrow_icon.svg',
+            height: AppIconSizes.iconXs.h,
+            width: AppIconSizes.iconXs.w,
+            color: cs.onSurface,
+          ),
+        ),
+      );
+    } else if (actualLeading != null) {
+      actualLeading = Center(child: actualLeading);
+    }
+
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
@@ -51,7 +75,8 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
           // white (invisible on a light scaffold background).
           iconTheme: IconThemeData(color: cs.onSurface),
           actionsIconTheme: IconThemeData(color: cs.onSurface),
-          leading: leading,
+          leading: actualLeading,
+          leadingWidth: AppSpacing.spacing6xl.w,
           automaticallyImplyLeading: automaticallyImplyLeading,
           title: subtitle != null
               ? Column(

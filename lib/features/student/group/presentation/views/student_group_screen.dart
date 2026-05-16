@@ -5,7 +5,7 @@ import 'package:elara/features/student/group/presentation/widgets/leaderboard_ta
 import 'package:elara/features/student/group/presentation/widgets/roadmap/tab/roadmap_tab.dart';
 import 'package:elara/features/student/group/presentation/widgets/student_group_app_bar_title.dart';
 import 'package:elara/features/student/group/presentation/widgets/student_group_overflow_menu.dart';
-import 'package:elara/features/student/group/presentation/widgets/student_tab_bar.dart';
+import 'package:elara/shared/widgets/app_tab_bar.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,9 +16,9 @@ class StudentGroupScreen extends StatelessWidget {
   const StudentGroupScreen({super.key});
 
   static const _tabs = [
-    Tab(text: 'Leaderboard'),
-    Tab(text: 'Roadmap'),
-    Tab(text: 'Announcements'),
+    'Leaderboard',
+    'Roadmap',
+    'Announcements',
   ];
 
   @override
@@ -94,7 +94,26 @@ class StudentGroupScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.spacingLg),
-                const StudentTabBar(tabs: _tabs),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacingLg,
+                  ),
+                  child: Builder(
+                    builder: (context) {
+                      final controller = DefaultTabController.of(context);
+                      return AnimatedBuilder(
+                        animation: controller,
+                        builder: (context, _) {
+                          return AppTabBar(
+                            tabs: _tabs,
+                            activeTab: controller.index,
+                            onTabChanged: (idx) => controller.animateTo(idx),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
                 const Expanded(
                   child: TabBarView(
                     children: [

@@ -1,4 +1,5 @@
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/shared/widgets/create_group_dialog.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,9 @@ class AppSectionHeader extends StatelessWidget {
   final String title;
   final VoidCallback? onSeeAll;
   final String seeAllLabel;
+
+  /// When provided, shows an outlined pill "+  Add" button.
+  final VoidCallback? onAdd;
 
   /// When provided, shows the Create button and opens the dialog on tap.
   final void Function(String title, String subject, String grade)?
@@ -23,6 +27,7 @@ class AppSectionHeader extends StatelessWidget {
     required this.title,
     this.onSeeAll,
     this.seeAllLabel = 'See All',
+    this.onAdd,
     this.onCreateGroup,
     this.dialogConfig = const GroupDialogConfig(),
   });
@@ -100,8 +105,44 @@ class AppSectionHeader extends StatelessWidget {
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    "Create", // reuse the config label
+                    "Create",
                     style: AppTypography.labelSmall(color: cs.onSurfaceVariant),
+                  ),
+                ],
+              ),
+            ),
+          )
+        else if (onAdd != null)
+          GestureDetector(
+            onTap: onAdd,
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.spacingSm.w,
+                vertical: AppSpacing.spacingXs.h,
+              ),
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.brandPrimary500),
+                borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/plus_icon.svg',
+                    width: AppSpacing.spacingLg.w,
+                    height: AppSpacing.spacingLg.w,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.brandPrimary500,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  SizedBox(width: AppSpacing.spacingXs.w),
+                  Text(
+                    'Add',
+                    style: AppTypography.labelSmall(
+                      color: AppColors.brandPrimary500,
+                    ),
                   ),
                 ],
               ),
