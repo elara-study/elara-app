@@ -5,27 +5,18 @@ import 'package:elara/features/auth/presentation/views/sign_in_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_credentials_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
 import 'package:elara/features/auth/presentation/views/splash_screen.dart';
-import 'package:elara/features/parent/presentation/home/views/parent_shell.dart';
-import 'package:elara/features/student/presentation/dashboard/views/student_shell.dart';
-import 'package:elara/features/student/presentation/group/views/student_group_page.dart';
-import 'package:elara/features/student/presentation/quiz/quiz_route_args.dart';
-import 'package:elara/features/student/presentation/homework/homework_route_args.dart';
-import 'package:elara/features/student/presentation/homework/views/homework_screen.dart';
-import 'package:elara/features/student/presentation/quiz/views/quiz_flow_page.dart';
+import 'package:elara/features/student/presentation/views/student_shell.dart';
+import 'package:elara/features/student/group/presentation/views/student_group_page.dart';
+import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
+import 'package:elara/features/student/homework/presentation/homework_route_args.dart';
+import 'package:elara/features/student/homework/presentation/views/homework_screen.dart';
+import 'package:elara/features/student/quiz/presentation/views/quiz_flow_page.dart';
 import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
 import 'package:elara/config/dependency_injection.dart';
-import 'package:elara/features/student/presentation/chatbot/chatbot_route_args.dart';
-import 'package:elara/features/student/presentation/chatbot/cubits/chatbot_cubit.dart';
-import 'package:elara/features/student/presentation/chatbot/cubits/sessions_cubit.dart';
-import 'package:elara/features/student/presentation/chatbot/views/chatbot_screen.dart';
-import 'package:elara/features/student/presentation/profile/cubits/student_settings_cubit.dart';
-import 'package:elara/features/student/presentation/profile/views/student_settings_screen.dart';
-import 'package:elara/features/settings/presentation/cubits/notifications_settings_cubit.dart';
-import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
-import 'package:elara/features/settings/presentation/cubits/profile_account_cubit.dart';
-import 'package:elara/features/settings/presentation/views/notifications_settings_screen.dart';
-import 'package:elara/features/settings/presentation/views/password_security_screen.dart';
-import 'package:elara/features/settings/presentation/views/profile_account_screen.dart';
+import 'package:elara/features/student/chatbot/presentation/chatbot_route_args.dart';
+import 'package:elara/features/student/chatbot/presentation/cubits/chatbot_cubit.dart';
+import 'package:elara/features/student/chatbot/presentation/cubits/sessions_cubit.dart';
+import 'package:elara/features/student/chatbot/presentation/views/chatbot_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -63,6 +54,9 @@ class AppRoutes {
 
   /// Teacher dashboard shell.
   static const String teacherDashboard = '/teacher';
+
+  /// Teacher group detail screen.
+  static const String teacherGroup = '/teacher-group';
 
   /// Parent dashboard shell (Home tab matches Figma parent Home).
   static const String parentDashboard = '/parent';
@@ -130,6 +124,18 @@ class AppRoutes {
         final groupId = args is String ? args : demoGroupId;
         return MaterialPageRoute(
           builder: (_) => StudentGroupPage(groupId: groupId),
+        );
+
+      case teacherGroup:
+        final teacherGroupArgs = settings.arguments;
+        if (teacherGroupArgs is TeacherGroupEntity) {
+          return MaterialPageRoute(
+            builder: (_) => TeacherGroupPage(group: teacherGroupArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) =>
+              const Scaffold(body: Center(child: Text('Group not found'))),
         );
 
       case quiz:

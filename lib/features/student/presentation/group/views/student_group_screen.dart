@@ -1,3 +1,13 @@
+<<<<<<< HEAD:lib/features/student/group/presentation/views/student_group_screen.dart
+import 'package:elara/features/student/group/presentation/cubits/student_group_cubit.dart';
+import 'package:elara/features/student/group/presentation/widgets/announcements/announcements_tab.dart';
+import 'package:elara/features/student/group/presentation/widgets/group_progress_card.dart';
+import 'package:elara/features/student/group/presentation/widgets/leaderboard_tab.dart';
+import 'package:elara/features/student/group/presentation/widgets/roadmap/tab/roadmap_tab.dart';
+import 'package:elara/features/student/group/presentation/widgets/student_group_app_bar_title.dart';
+import 'package:elara/features/student/group/presentation/widgets/student_group_overflow_menu.dart';
+import 'package:elara/shared/widgets/app_tab_bar.dart';
+=======
 import 'package:elara/features/student/presentation/group/cubits/student_group_cubit.dart';
 import 'package:elara/features/student/presentation/group/widgets/announcements/announcements_tab.dart';
 import 'package:elara/features/student/presentation/group/widgets/group_progress_card.dart';
@@ -6,6 +16,7 @@ import 'package:elara/features/student/presentation/group/widgets/roadmap/tab/ro
 import 'package:elara/features/student/presentation/group/widgets/student_group_app_bar_title.dart';
 import 'package:elara/features/student/presentation/group/widgets/student_group_overflow_menu.dart';
 import 'package:elara/shared/widgets/pill_tab_bar.dart';
+>>>>>>> dev:lib/features/student/presentation/group/views/student_group_screen.dart
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,9 +27,9 @@ class StudentGroupScreen extends StatelessWidget {
   const StudentGroupScreen({super.key});
 
   static const _tabs = [
-    Tab(text: 'Leaderboard'),
-    Tab(text: 'Roadmap'),
-    Tab(text: 'Announcements'),
+    'Leaderboard',
+    'Roadmap',
+    'Announcements',
   ];
 
   @override
@@ -94,7 +105,30 @@ class StudentGroupScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.spacingLg),
+<<<<<<< HEAD:lib/features/student/group/presentation/views/student_group_screen.dart
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacingLg,
+                  ),
+                  child: Builder(
+                    builder: (context) {
+                      final controller = DefaultTabController.of(context);
+                      return AnimatedBuilder(
+                        animation: controller,
+                        builder: (context, _) {
+                          return AppTabBar(
+                            tabs: _tabs,
+                            activeTab: controller.index,
+                            onTabChanged: (idx) => controller.animateTo(idx),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+=======
                 const PillTabBar(tabs: _tabs),
+>>>>>>> dev:lib/features/student/presentation/group/views/student_group_screen.dart
                 const Expanded(
                   child: TabBarView(
                     children: [

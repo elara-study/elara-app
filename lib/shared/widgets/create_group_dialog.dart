@@ -303,7 +303,7 @@ class _StyledDropdown extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: AppColors.brandPrimary500,
                 width: 2,
               ),
