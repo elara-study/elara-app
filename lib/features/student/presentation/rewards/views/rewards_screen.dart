@@ -1,18 +1,6 @@
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-<<<<<<< HEAD:lib/features/student/rewards/presentation/views/rewards_screen.dart
-import 'package:elara/features/student/rewards/domain/entities/badge_entity.dart';
-import 'package:elara/features/student/rewards/domain/entities/leaderboard_entry_entity.dart';
-import 'package:elara/features/student/rewards/domain/entities/rewards_profile_entity.dart';
-import 'package:elara/features/student/rewards/presentation/cubits/rewards_cubit.dart';
-import 'package:elara/features/student/rewards/presentation/cubits/rewards_state.dart';
-import 'package:elara/features/student/rewards/presentation/widgets/achievement_stat_card.dart';
-import 'package:elara/features/student/rewards/presentation/widgets/badge_card.dart';
-import 'package:elara/features/student/rewards/presentation/widgets/leaderboard_entry_tile.dart';
-import 'package:elara/shared/widgets/app_glass_header.dart';
-import 'package:elara/shared/widgets/app_tab_bar.dart';
-=======
 import 'package:elara/features/student/domain/rewards/entities/badge_entity.dart';
 import 'package:elara/features/student/domain/rewards/entities/leaderboard_entry_entity.dart';
 import 'package:elara/features/student/domain/rewards/entities/rewards_profile_entity.dart';
@@ -23,7 +11,6 @@ import 'package:elara/features/student/presentation/rewards/widgets/badge_card.d
 import 'package:elara/features/student/presentation/rewards/widgets/leaderboard_entry_tile.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/pill_tab_bar.dart';
->>>>>>> dev:lib/features/student/presentation/rewards/views/rewards_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -90,32 +77,6 @@ class RewardsScreen extends StatelessWidget {
           }
 
           if (state is RewardsLoaded) {
-<<<<<<< HEAD:lib/features/student/rewards/presentation/views/rewards_screen.dart
-            return SingleChildScrollView(
-              padding: EdgeInsets.only(
-                left: AppSpacing.spacingLg.w,
-                right: AppSpacing.spacingLg.w,
-                top: kToolbarHeight + 62.h,
-                bottom: 120.w,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _AchievementsCard(profile: state.profile, fmt: _fmt),
-                  SizedBox(height: AppSpacing.spacing2xl.h),
-                  AppTabBar(
-                    tabs: const ['Badges', 'Leaderboard'],
-                    activeTab: state.activeTab,
-                    onTabChanged: (index) =>
-                        context.read<RewardsCubit>().switchTab(index),
-                  ),
-                  SizedBox(height: AppSpacing.spacingLg.h),
-                  if (state.activeTab == 0)
-                    _BadgesGrid(badges: state.badges)
-                  else
-                    _LeaderboardList(entries: state.leaderboard),
-                ],
-=======
             return DefaultTabController(
               length: _tabs.length,
               child: Builder(
@@ -156,7 +117,6 @@ class RewardsScreen extends StatelessWidget {
                     },
                   );
                 },
->>>>>>> dev:lib/features/student/presentation/rewards/views/rewards_screen.dart
               ),
             );
           }
@@ -168,8 +128,7 @@ class RewardsScreen extends StatelessWidget {
   }
 }
 
-//  Achievements header card
-
+// Achievements header card
 class _AchievementsCard extends StatelessWidget {
   final RewardsProfileEntity profile;
   final String Function(int) fmt;
@@ -223,7 +182,7 @@ class _AchievementsCard extends StatelessWidget {
 
         SizedBox(height: AppSpacing.spacingLg.h),
 
-        //  Streak + Badges
+        // Streak + Badges
         Row(
           children: [
             Expanded(
@@ -254,8 +213,7 @@ class _AchievementsCard extends StatelessWidget {
   }
 }
 
-// Badges  -column grid
-
+// Badges - 2 column grid
 class _BadgesGrid extends StatelessWidget {
   final List<BadgeEntity> badges;
 
@@ -293,8 +251,7 @@ class _BadgesGrid extends StatelessWidget {
   }
 }
 
-//  Leaderboard list
-
+// Leaderboard list
 class _LeaderboardList extends StatelessWidget {
   final List<LeaderboardEntryEntity> entries;
 

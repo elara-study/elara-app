@@ -2,17 +2,13 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
-import 'package:elara/features/student/group/domain/entities/group_announcement.dart';
+import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
 import 'package:elara/shared/widgets/app_overflow_menu.dart';
 import 'package:flutter/material.dart';
 
 class AnnouncementCard extends StatelessWidget {
   final GroupAnnouncement announcement;
-
-  /// When non-null, an "Edit" item appears in the ⋮ menu.
   final VoidCallback? onEdit;
-
-  /// When non-null, a "Delete" item appears in the ⋮ menu.
   final VoidCallback? onDelete;
 
   const AnnouncementCard({

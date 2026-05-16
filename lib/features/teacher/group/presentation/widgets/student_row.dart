@@ -1,10 +1,9 @@
-
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/student/group/presentation/widgets/progress_bar.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_entity.dart';
+import 'package:elara/shared/widgets/progress_bar.dart';
 import 'package:flutter/material.dart';
 
 /// A single student row showing rank, avatar, name, XP, lesson progress + bar.

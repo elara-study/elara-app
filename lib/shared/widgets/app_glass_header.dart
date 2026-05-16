@@ -1,11 +1,8 @@
 import 'dart:ui';
 
-<<<<<<< HEAD
 import 'package:elara/core/theme/app_icon_sizes.dart';
 import 'package:elara/core/theme/app_spacing.dart';
-=======
 import 'package:elara/core/theme/app_colors.dart';
->>>>>>> dev
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
