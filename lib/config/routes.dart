@@ -11,13 +11,15 @@ import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
 import 'package:elara/features/student/homework/presentation/homework_route_args.dart';
 import 'package:elara/features/student/homework/presentation/views/homework_screen.dart';
 import 'package:elara/features/student/quiz/presentation/views/quiz_flow_page.dart';
- import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
- import 'package:elara/config/dependency_injection.dart';
+import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/group/presentation/views/teacher_group_page.dart';
+import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
+import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/features/student/chatbot/presentation/chatbot_route_args.dart';
 import 'package:elara/features/student/chatbot/presentation/cubits/chatbot_cubit.dart';
 import 'package:elara/features/student/chatbot/presentation/cubits/sessions_cubit.dart';
 import 'package:elara/features/student/chatbot/presentation/views/chatbot_screen.dart';
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppRoutes {
@@ -46,6 +48,9 @@ class AppRoutes {
 
   /// Teacher dashboard shell.
   static const String teacherDashboard = '/teacher';
+
+  /// Teacher group detail screen.
+  static const String teacherGroup = '/teacher-group';
 
   /// Placeholder until Parent dashboard exists.
   static const String comingSoonDashboard = '/coming-soon-dashboard';
@@ -104,6 +109,18 @@ class AppRoutes {
         final groupId = args is String ? args : demoGroupId;
         return MaterialPageRoute(
           builder: (_) => StudentGroupPage(groupId: groupId),
+        );
+
+      case teacherGroup:
+        final teacherGroupArgs = settings.arguments;
+        if (teacherGroupArgs is TeacherGroupEntity) {
+          return MaterialPageRoute(
+            builder: (_) => TeacherGroupPage(group: teacherGroupArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) =>
+              const Scaffold(body: Center(child: Text('Group not found'))),
         );
 
       case quiz:

@@ -46,6 +46,9 @@ import 'package:elara/features/student/homework/domain/usecases/get_homework_use
 import 'package:elara/features/student/homework/presentation/cubits/homework_cubit.dart';
 import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
 import 'package:elara/features/teacher/data/datasources/teacher_home_data_source_impl.dart';
+import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
+import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source_impl.dart';
+import 'package:elara/features/teacher/group/presentation/cubits/teacher_group_cubit.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
 
 import 'package:elara/core/network/network_info.dart';
@@ -246,6 +249,15 @@ Future<void> setupDependencyInjection() async {
   // Factory: each TeacherShell gets its own cubit instance.
   getIt.registerFactory<TeacherHomeCubit>(
     () => TeacherHomeCubit(getIt<TeacherHomeDataSource>()),
+  );
+
+  // ── Teacher Group Detail ──────────────────────────────────────────────────
+  getIt.registerLazySingleton<TeacherGroupDataSource>(
+    () => const TeacherGroupDataSourceImpl(),
+  );
+
+  getIt.registerFactory<TeacherGroupCubit>(
+    () => TeacherGroupCubit(getIt<TeacherGroupDataSource>()),
   );
 
   // ── Chatbot (Student) ────────────────────────────────────────────────────
