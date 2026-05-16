@@ -1,6 +1,7 @@
 import 'package:elara/config/app_theme.dart';
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/theme/theme_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,16 +23,24 @@ class Elara extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return BlocProvider<AuthCubit>(
-          create: (_) => getIt<AuthCubit>(),
-          child: MaterialApp(
-            title: 'Elara',
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: ThemeMode.system,
-            initialRoute: AppRoutes.splash,
-            onGenerateRoute: AppRoutes.generateRoute,
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider<AuthCubit>(create: (_) => getIt<AuthCubit>()),
+            BlocProvider<ThemeCubit>(create: (_) => getIt<ThemeCubit>()),
+          ],
+          child: BlocBuilder<ThemeCubit, ThemeMode>(
+            buildWhen: (previous, current) => previous != current,
+            builder: (context, themeMode) {
+              return MaterialApp(
+                title: 'Elara',
+                debugShowCheckedModeBanner: false,
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                themeMode: themeMode,
+                initialRoute: AppRoutes.splash,
+                onGenerateRoute: AppRoutes.generateRoute,
+              );
+            },
           ),
         );
       },

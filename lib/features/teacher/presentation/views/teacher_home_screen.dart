@@ -2,7 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/student/rewards/presentation/widgets/achievement_stat_card.dart';
+import 'package:elara/features/student/presentation/rewards/widgets/achievement_stat_card.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_state.dart';
 import 'package:elara/features/teacher/presentation/views/widgets/chat_with_elara.dart';
@@ -263,7 +263,9 @@ class _ActivityCard extends StatelessWidget {
                       ),
                       Text(
                         a.subtitle,
-                        style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
+                        style: AppTypography.bodySmall(
+                          color: cs.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),

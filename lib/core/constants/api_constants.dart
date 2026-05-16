@@ -56,6 +56,12 @@ class ApiConstants {
   static const String studentRewardsLeaderboard =
       'v1/student/rewards/leaderboard';
 
+  /// Student > Profile — overview (GET when backend ready).
+  static const String studentProfileOverview = 'v1/student/profile/overview';
+
+  /// Shared settings > Profile & Account (GET when backend ready).
+  static const String settingsProfileAccount = 'v1/settings/profile-account';
+
   // ── Student chatbot (paths relative to [baseUrl] / [API_BASE_URL])
 
   /// GET — query `page`, `limit` (strings per OpenAPI).

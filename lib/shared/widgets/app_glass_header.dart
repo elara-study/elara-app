@@ -1,7 +1,11 @@
 import 'dart:ui';
 
+<<<<<<< HEAD
 import 'package:elara/core/theme/app_icon_sizes.dart';
 import 'package:elara/core/theme/app_spacing.dart';
+=======
+import 'package:elara/core/theme/app_colors.dart';
+>>>>>>> dev
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,7 +39,9 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final scaffoldBg = theme.scaffoldBackgroundColor;
+    final glassBg = theme.brightness == Brightness.dark
+        ? AppColors.neutral900Alpha70
+        : AppColors.neutral50Alpha70;
     final dividerColor = theme.dividerTheme.color ?? cs.outlineVariant;
     final ModalRoute<dynamic>? parentRoute = ModalRoute.of(context);
     final bool canPop = parentRoute?.canPop ?? false;
@@ -61,12 +67,8 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: AppBar(
-          // backgroundColor: LightModeColors.surfacePrimary.withValues(
-          //   alpha: 0.85,
-          // ),
-          // surfaceTintColor:
-          //     Colors.transparent, // Prevents Material 3 tinting overlay
-          backgroundColor: scaffoldBg,
+          // Figma: light rgba(248,250,252,0.7), dark rgba(15,23,42,0.7).
+          backgroundColor: glassBg,
           surfaceTintColor:
               Colors.transparent, // Prevents Material 3 tinting overlay
           elevation: 0,

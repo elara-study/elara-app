@@ -29,6 +29,10 @@ class AppNavTab {
 
 /// Floating pill-shaped bottom navigation bar.
 ///
+/// Frosted glass: [AppShadows.backgroundBlur] (sigma 24) with a tinted
+/// [ColorScheme.surface]. Shadow: [AppShadows.dropShadow] (0, 4, blur 20,
+/// black 15%).
+///
 /// Accepts a list of [AppNavTab] configs, making it reusable for both the
 /// Student shell and the Teacher shell without duplicating nav logic.
 class AppBottomNavBar extends StatelessWidget {
@@ -57,6 +61,15 @@ class AppBottomNavBar extends StatelessWidget {
     AppNavTab(label: 'Profile', assetPath: 'assets/icons/profile_icon.svg'),
   ];
 
+  /// Parent app
+  static const List<AppNavTab> parentTabs = [
+    AppNavTab(label: 'Home', assetPath: 'assets/icons/home_icon.svg'),
+    AppNavTab(label: 'Children', assetPath: 'assets/icons/people_outline.svg'),
+    AppNavTab(label: 'Reports', assetPath: 'assets/icons/report_icon.svg'),
+    AppNavTab(label: 'Alerts', assetPath: 'assets/icons/alerts_icon.svg'),
+    AppNavTab(label: 'Profile', assetPath: 'assets/icons/profile_icon.svg'),
+  ];
+
   const AppBottomNavBar({
     super.key,
     required this.currentIndex,
@@ -66,10 +79,9 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final brightness = theme.brightness;
+    final cs = Theme.of(context).colorScheme;
     final inactiveColor = cs.onSurfaceVariant;
+    final radius = BorderRadius.circular(28.r);
     return SafeArea(
       top: false,
       child: Container(
@@ -78,47 +90,64 @@ class AppBottomNavBar extends StatelessWidget {
           right: AppSpacing.spacingLg.w,
           bottom: AppSpacing.spacing2xl.h,
         ),
-        padding: EdgeInsets.symmetric(
-          horizontal: AppSpacing.spacingLg.w,
-          vertical: AppSpacing.spacingMd.h,
-        ),
         decoration: BoxDecoration(
-          color: cs.surface,
-          borderRadius: BorderRadius.circular(28.r),
-          border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.55)),
-          boxShadow: AppShadows.elevation(brightness),
+          borderRadius: radius,
+          boxShadow: AppShadows.dropShadow,
         ),
-        child: Row(
-          children: List.generate(tabs.length, (index) {
-            final tab = tabs[index];
-            final isActive = currentIndex == index;
-            final color = isActive ? AppColors.brandPrimary700 : inactiveColor;
-
-            return Expanded(
-              child: GestureDetector(
-                onTap: () => onTap(index),
-                behavior: HitTestBehavior.opaque,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      isActive ? tab.resolvedActiveAsset : tab.assetPath,
-                      width: 20.w,
-                      height: 17.w,
-                      fit: BoxFit.contain,
-                      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-                    ),
-                    SizedBox(height: 3.h),
-                    Text(
-                      tab.label,
-                      style: AppTypography.labelMedium(color: color),
-                    ),
-                  ],
+        child: ClipRRect(
+          borderRadius: radius,
+          child: BackdropFilter(
+            filter: AppShadows.backgroundBlur,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.spacingLg.w,
+                vertical: AppSpacing.spacingMd.h,
+              ),
+              decoration: BoxDecoration(
+                color: cs.surface.withValues(alpha: 0.78),
+                borderRadius: radius,
+                border: Border.all(
+                  color: cs.outlineVariant.withValues(alpha: 0.55),
                 ),
               ),
-            );
-          }),
+              child: Row(
+                children: List.generate(tabs.length, (index) {
+                  final tab = tabs[index];
+                  final isActive = currentIndex == index;
+                  final color = isActive
+                      ? AppColors.brandPrimary700
+                      : inactiveColor;
+
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () => onTap(index),
+                      behavior: HitTestBehavior.opaque,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            isActive ? tab.resolvedActiveAsset : tab.assetPath,
+                            fit: BoxFit.contain,
+                            alignment: Alignment.center,
+                            colorFilter: ColorFilter.mode(
+                              color,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          SizedBox(height: 3.h),
+                          Text(
+                            tab.label,
+                            style: AppTypography.labelMedium(color: color),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ),
         ),
       ),
     );

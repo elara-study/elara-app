@@ -1,9 +1,9 @@
 import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/features/auth/domain/entities/user_entity.dart';
+import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/views/sign_in_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_credentials_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
-// ignore: unused_import — kept so test bypass is a 1-line revert
 import 'package:elara/features/auth/presentation/views/splash_screen.dart';
 import 'package:elara/features/student/presentation/views/student_shell.dart';
 import 'package:elara/features/student/group/presentation/views/student_group_page.dart';
@@ -11,8 +11,6 @@ import 'package:elara/features/student/quiz/presentation/quiz_route_args.dart';
 import 'package:elara/features/student/homework/presentation/homework_route_args.dart';
 import 'package:elara/features/student/homework/presentation/views/homework_screen.dart';
 import 'package:elara/features/student/quiz/presentation/views/quiz_flow_page.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/group/presentation/views/teacher_group_page.dart';
 import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/features/student/chatbot/presentation/chatbot_route_args.dart';
@@ -42,6 +40,14 @@ class AppRoutes {
   /// Chatbot — conversation thread.
   static const String chatbot = '/chatbot';
 
+  /// Student — settings (shared UI shell; content varies by role later).
+  static const String studentSettings = '/student/settings';
+
+  /// Shared settings detail screens (student / teacher / parent).
+  static const String profileAccount = '/settings/profile-account';
+  static const String passwordSecurity = '/settings/password-security';
+  static const String notificationsSettings = '/settings/notifications';
+
   static const String demoGroupId = 'demo-group';
 
   static const String home = '/home';
@@ -52,7 +58,10 @@ class AppRoutes {
   /// Teacher group detail screen.
   static const String teacherGroup = '/teacher-group';
 
-  /// Placeholder until Parent dashboard exists.
+  /// Parent dashboard shell (Home tab matches Figma parent Home).
+  static const String parentDashboard = '/parent';
+
+  /// Placeholder for roles without a full dashboard yet.
   static const String comingSoonDashboard = '/coming-soon-dashboard';
 
   static void navigateAfterAuth(BuildContext context, UserEntity user) {
@@ -68,15 +77,15 @@ class AppRoutes {
       case UserRole.parent:
         Navigator.of(
           context,
-        ).pushNamedAndRemoveUntil(comingSoonDashboard, (_) => false);
+        ).pushNamedAndRemoveUntil(parentDashboard, (_) => false);
     }
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        // TEST BYPASS — revert before p
-        return MaterialPageRoute(builder: (_) => const TeacherShell());
+        // Developing features revert to splash
+        return MaterialPageRoute(builder: (_) => const ParentShell());
 
       case login:
         return MaterialPageRoute(builder: (_) => const SignInScreen());
@@ -92,10 +101,16 @@ class AppRoutes {
 
       case studentDashboard:
       case home:
-        return MaterialPageRoute(builder: (_) => const StudentShell());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const StudentShell(),
+        );
 
       case teacherDashboard:
         return MaterialPageRoute(builder: (_) => const TeacherShell());
+
+      case parentDashboard:
+        return MaterialPageRoute(builder: (_) => const ParentShell());
 
       case comingSoonDashboard:
         return MaterialPageRoute(
@@ -141,6 +156,39 @@ class AppRoutes {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => HomeworkScreen.fromArgs(resolvedHw),
+        );
+
+      case studentSettings:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (_) =>
+                StudentSettingsCubit(authCubit: context.read<AuthCubit>()),
+            child: const StudentSettingsScreen(),
+          ),
+        );
+
+      case profileAccount:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<ProfileAccountCubit>()..loadProfile(),
+            child: const ProfileAccountScreen(),
+          ),
+        );
+
+      case passwordSecurity:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => PasswordSecurityCubit(),
+            child: const PasswordSecurityScreen(),
+          ),
+        );
+
+      case notificationsSettings:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => NotificationsSettingsCubit(),
+            child: const NotificationsSettingsScreen(),
+          ),
         );
 
       case chatbot:

@@ -17,11 +17,11 @@ class AuthCubit extends Cubit<AuthState> {
     required RegisterUseCase registerUseCase,
     required LogoutUseCase logoutUseCase,
     required GetCurrentUserUseCase getCurrentUserUseCase,
-  })  : _loginUseCase = loginUseCase,
-        _registerUseCase = registerUseCase,
-        _logoutUseCase = logoutUseCase,
-        _getCurrentUserUseCase = getCurrentUserUseCase,
-        super(const AuthInitial());
+  }) : _loginUseCase = loginUseCase,
+       _registerUseCase = registerUseCase,
+       _logoutUseCase = logoutUseCase,
+       _getCurrentUserUseCase = getCurrentUserUseCase,
+       super(const AuthInitial());
 
   /// Check if a user session already exists (called on Splash)
   Future<void> checkAuthStatus() async {
@@ -39,10 +39,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   /// Sign in with email + password
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> signIn({required String email, required String password}) async {
     emit(const AuthLoading());
     try {
       final user = await _loginUseCase(email: email, password: password);

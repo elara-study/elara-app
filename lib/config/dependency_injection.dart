@@ -1,4 +1,5 @@
 import 'package:elara/core/network/dio_client.dart';
+import 'package:elara/core/theme/theme_cubit.dart';
 import 'package:elara/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:elara/features/auth/data/datasources/auth_local_data_source_impl.dart';
 import 'package:elara/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -10,40 +11,69 @@ import 'package:elara/features/auth/domain/usecases/login_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/register_use_case.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
-import 'package:elara/features/student/presentation/cubits/tab/student_tab_cubit.dart';
-import 'package:elara/features/student/data/datasources/student_remote_data_source.dart';
-import 'package:elara/features/student/data/datasources/student_remote_data_source_impl.dart';
-import 'package:elara/features/student/data/repositories/student_repository_impl.dart';
-import 'package:elara/features/student/domain/repositories/student_repository.dart';
-import 'package:elara/features/student/presentation/cubits/home/student_home_cubit.dart';
-import 'package:elara/features/student/presentation/cubits/learn/student_learn_cubit.dart';
-import 'package:elara/features/student/group/data/repositories/mock_student_group_repository.dart';
-import 'package:elara/features/student/group/domain/repositories/student_group_repository.dart';
-import 'package:elara/features/student/group/domain/usecases/get_group_announcements_usecase.dart';
-import 'package:elara/features/student/group/domain/usecases/get_group_roadmap_usecase.dart';
-import 'package:elara/features/student/group/domain/usecases/load_student_group_usecase.dart';
-import 'package:elara/features/student/group/presentation/cubits/student_group_cubit.dart';
-import 'package:elara/features/student/quiz/data/repositories/mock_quiz_repository.dart';
-import 'package:elara/features/student/quiz/domain/repositories/quiz_repository.dart';
-import 'package:elara/features/student/quiz/domain/usecases/get_quiz_session_use_case.dart';
-import 'package:elara/features/student/quiz/domain/usecases/submit_quiz_answers_use_case.dart';
-import 'package:elara/features/student/quiz/presentation/cubits/quiz_cubit.dart';
-import 'package:elara/features/student/rewards/data/repositories/remote_student_rewards_repository.dart';
-import 'package:elara/features/student/rewards/domain/repositories/student_rewards_repository.dart';
-import 'package:elara/features/student/rewards/domain/usecases/get_student_rewards_leaderboard_usecase.dart';
-import 'package:elara/features/student/rewards/domain/usecases/get_student_rewards_overview_usecase.dart';
-import 'package:elara/features/student/rewards/data/datasources/rewards_remote_data_source.dart';
-import 'package:elara/features/student/rewards/data/datasources/rewards_remote_data_source_impl.dart';
-import 'package:elara/features/student/rewards/data/repositories/rewards_repository_impl.dart';
-import 'package:elara/features/student/rewards/domain/repositories/rewards_repository.dart';
-import 'package:elara/features/student/rewards/domain/usecases/get_rewards_use_case.dart';
-import 'package:elara/features/student/rewards/presentation/cubits/rewards_cubit.dart';
-import 'package:elara/features/student/homework/data/datasources/homework_data_source.dart';
-import 'package:elara/features/student/homework/data/datasources/homework_data_source_impl.dart';
-import 'package:elara/features/student/homework/data/repositories/homework_repository_impl.dart';
-import 'package:elara/features/student/homework/domain/repositories/homework_repository.dart';
-import 'package:elara/features/student/homework/domain/usecases/get_homework_use_case.dart';
-import 'package:elara/features/student/homework/presentation/cubits/homework_cubit.dart';
+import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source.dart';
+import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source_impl.dart';
+import 'package:elara/features/parent/data/home/repositories/parent_home_repository_impl.dart';
+import 'package:elara/features/parent/data/reports/datasources/parent_reports_remote_data_source.dart';
+import 'package:elara/features/parent/data/reports/datasources/parent_reports_remote_data_source_impl.dart';
+import 'package:elara/features/parent/data/reports/repositories/parent_reports_repository_impl.dart';
+import 'package:elara/features/parent/domain/home/repositories/parent_home_repository.dart';
+import 'package:elara/features/parent/domain/home/usecases/get_parent_children_dashboard_use_case.dart';
+import 'package:elara/features/parent/domain/home/usecases/get_parent_home_use_case.dart';
+import 'package:elara/features/parent/domain/reports/repositories/parent_reports_repository.dart';
+import 'package:elara/features/parent/domain/reports/usecases/get_parent_reports_use_case.dart';
+import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
+import 'package:elara/features/parent/presentation/home/cubits/parent_home_cubit.dart';
+import 'package:elara/features/parent/presentation/home/cubits/parent_tab_cubit.dart';
+import 'package:elara/features/parent/presentation/reports/cubits/parent_reports_cubit.dart';
+
+import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source.dart';
+import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source_impl.dart';
+import 'package:elara/features/student/data/dashboard/repositories/student_repository_impl.dart';
+import 'package:elara/features/student/domain/dashboard/repositories/student_repository.dart';
+import 'package:elara/features/student/presentation/dashboard/cubits/home/student_home_cubit.dart';
+import 'package:elara/features/student/presentation/dashboard/cubits/learn/student_learn_cubit.dart';
+import 'package:elara/features/student/presentation/dashboard/cubits/tab/student_tab_cubit.dart';
+import 'package:elara/features/student/data/group/repositories/mock_student_group_repository.dart';
+import 'package:elara/features/student/domain/group/repositories/student_group_repository.dart';
+import 'package:elara/features/student/domain/group/usecases/get_group_announcements_usecase.dart';
+import 'package:elara/features/student/domain/group/usecases/get_group_roadmap_usecase.dart';
+import 'package:elara/features/student/domain/group/usecases/load_student_group_usecase.dart';
+import 'package:elara/features/student/presentation/group/cubits/student_group_cubit.dart';
+import 'package:elara/features/student/data/quiz/repositories/mock_quiz_repository.dart';
+import 'package:elara/features/student/domain/quiz/repositories/quiz_repository.dart';
+import 'package:elara/features/student/domain/quiz/usecases/get_quiz_session_use_case.dart';
+import 'package:elara/features/student/domain/quiz/usecases/submit_quiz_answers_use_case.dart';
+import 'package:elara/features/student/presentation/quiz/cubits/quiz_cubit.dart';
+import 'package:elara/features/student/data/rewards/repositories/remote_student_rewards_repository.dart';
+import 'package:elara/features/student/domain/rewards/repositories/student_rewards_repository.dart';
+import 'package:elara/features/student/domain/rewards/usecases/get_student_rewards_leaderboard_usecase.dart';
+import 'package:elara/features/student/domain/rewards/usecases/get_student_rewards_overview_usecase.dart';
+import 'package:elara/features/student/data/rewards/datasources/rewards_remote_data_source.dart';
+import 'package:elara/features/student/data/rewards/datasources/rewards_remote_data_source_impl.dart';
+import 'package:elara/features/student/data/rewards/repositories/rewards_repository_impl.dart';
+import 'package:elara/features/student/domain/rewards/repositories/rewards_repository.dart';
+import 'package:elara/features/student/domain/rewards/usecases/get_rewards_use_case.dart';
+import 'package:elara/features/student/presentation/rewards/cubits/rewards_cubit.dart';
+import 'package:elara/features/student/data/profile/datasources/student_profile_remote_data_source.dart';
+import 'package:elara/features/student/data/profile/datasources/student_profile_remote_data_source_impl.dart';
+import 'package:elara/features/student/data/profile/repositories/student_profile_repository_impl.dart';
+import 'package:elara/features/student/domain/profile/repositories/student_profile_repository.dart';
+import 'package:elara/features/student/domain/profile/usecases/get_student_profile_overview_use_case.dart';
+import 'package:elara/features/student/presentation/profile/cubits/student_profile_cubit.dart';
+import 'package:elara/features/settings/data/datasources/settings_remote_data_source.dart';
+import 'package:elara/features/settings/data/datasources/settings_remote_data_source_impl.dart';
+import 'package:elara/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:elara/features/settings/domain/repositories/settings_repository.dart';
+import 'package:elara/features/settings/domain/usecases/get_profile_account_use_case.dart';
+import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
+import 'package:elara/features/settings/presentation/cubits/profile_account_cubit.dart';
+import 'package:elara/features/student/data/homework/datasources/homework_data_source.dart';
+import 'package:elara/features/student/data/homework/datasources/homework_data_source_impl.dart';
+import 'package:elara/features/student/data/homework/repositories/homework_repository_impl.dart';
+import 'package:elara/features/student/domain/homework/repositories/homework_repository.dart';
+import 'package:elara/features/student/domain/homework/usecases/get_homework_use_case.dart';
+import 'package:elara/features/student/presentation/homework/cubits/homework_cubit.dart';
 import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
 import 'package:elara/features/teacher/data/datasources/teacher_home_data_source_impl.dart';
 import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
@@ -52,17 +82,17 @@ import 'package:elara/features/teacher/group/presentation/cubits/teacher_group_c
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
 
 import 'package:elara/core/network/network_info.dart';
-import 'package:elara/features/student/chatbot/core/chatbot_config.dart';
-import 'package:elara/features/student/chatbot/data/repositories/mock_chatbot_repository.dart';
-import 'package:elara/features/student/chatbot/domain/repositories/chatbot_repository.dart';
-import 'package:elara/features/student/chatbot/domain/usecases/create_session_use_case.dart';
-import 'package:elara/features/student/chatbot/domain/usecases/delete_session_use_case.dart';
-import 'package:elara/features/student/chatbot/domain/usecases/list_sessions_use_case.dart';
-import 'package:elara/features/student/chatbot/domain/usecases/load_history_use_case.dart';
-import 'package:elara/features/student/chatbot/domain/usecases/send_image_use_case.dart';
-import 'package:elara/features/student/chatbot/domain/usecases/send_text_use_case.dart';
-import 'package:elara/features/student/chatbot/presentation/cubits/chatbot_cubit.dart';
-import 'package:elara/features/student/chatbot/presentation/cubits/sessions_cubit.dart';
+import 'package:elara/features/student/presentation/chatbot/core/chatbot_config.dart';
+import 'package:elara/features/student/data/chatbot/repositories/mock_chatbot_repository.dart';
+import 'package:elara/features/student/domain/chatbot/repositories/chatbot_repository.dart';
+import 'package:elara/features/student/domain/chatbot/usecases/create_session_use_case.dart';
+import 'package:elara/features/student/domain/chatbot/usecases/delete_session_use_case.dart';
+import 'package:elara/features/student/domain/chatbot/usecases/list_sessions_use_case.dart';
+import 'package:elara/features/student/domain/chatbot/usecases/load_history_use_case.dart';
+import 'package:elara/features/student/domain/chatbot/usecases/send_image_use_case.dart';
+import 'package:elara/features/student/domain/chatbot/usecases/send_text_use_case.dart';
+import 'package:elara/features/student/presentation/chatbot/cubits/chatbot_cubit.dart';
+import 'package:elara/features/student/presentation/chatbot/cubits/sessions_cubit.dart';
 
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,6 +110,7 @@ Future<void> setupDependencyInjection() async {
 
   // ── Core ──────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<DioClient>(() => DioClient());
+  getIt.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
 
   // ── Auth: Data Sources ────────────────────────────────────────────────────
   getIt.registerLazySingleton<AuthRemoteDataSource>(
@@ -148,6 +179,47 @@ Future<void> setupDependencyInjection() async {
   // shell disposes; a reused closed singleton would throw on emit.
   getIt.registerFactory(() => StudentTabCubit());
 
+  // ── Parent (full stack: remote DS → repo impl → use cases → cubits)
+  getIt.registerLazySingleton<ParentHomeRemoteDataSource>(
+    () => const ParentHomeRemoteDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<ParentHomeRepository>(
+    () => ParentHomeRepositoryImpl(getIt<ParentHomeRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetParentHomeUseCase(getIt<ParentHomeRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetParentChildrenDashboardUseCase(
+      getIt<ParentHomeRepository>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<ParentReportsRemoteDataSource>(
+    () => const ParentReportsRemoteDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<ParentReportsRepository>(
+    () => ParentReportsRepositoryImpl(getIt<ParentReportsRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetParentReportsUseCase(getIt<ParentReportsRepository>()),
+  );
+
+  getIt.registerFactory(() => ParentTabCubit());
+  getIt.registerFactory(
+    () => ParentHomeCubit(getParentHomeUseCase: getIt<GetParentHomeUseCase>()),
+  );
+  getIt.registerFactory(
+    () => ParentChildrenCubit(
+      getChildrenDashboard: getIt<GetParentChildrenDashboardUseCase>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => ParentReportsCubit(
+      getParentReportsUseCase: getIt<GetParentReportsUseCase>(),
+    ),
+  );
+
   // ── Student group (Learn) ─────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentGroupRepository>(
     () => MockStudentGroupRepository(),
@@ -200,6 +272,43 @@ Future<void> setupDependencyInjection() async {
   // ── Rewards Gamification: Cubit ──────────────────────────────────────────
   // Factory so each shell entry creates a fresh instance
   getIt.registerFactory(() => RewardsCubit(getIt<GetRewardsUseCase>()));
+
+  // ── Student Profile tab ─────────────────────────────────────────────────
+  getIt.registerLazySingleton<StudentProfileRemoteDataSource>(
+    () => StudentProfileRemoteDataSourceImpl(),
+    // Pass DioClient when backend is ready:
+    // () => StudentProfileRemoteDataSourceImpl(getIt<DioClient>()),
+  );
+
+  getIt.registerLazySingleton<StudentProfileRepository>(
+    () => StudentProfileRepositoryImpl(
+      remoteDataSource: getIt<StudentProfileRemoteDataSource>(),
+    ),
+  );
+  getIt.registerLazySingleton(
+    () => GetStudentProfileOverviewUseCase(getIt<StudentProfileRepository>()),
+  );
+  getIt.registerFactory<StudentProfileCubit>(
+    () => StudentProfileCubit(getIt<GetStudentProfileOverviewUseCase>()),
+  );
+
+  // ── Settings (shared roles) ─────────────────────────────────────────────
+  getIt.registerLazySingleton<SettingsRemoteDataSource>(
+    () => SettingsRemoteDataSourceImpl(),
+    // () => SettingsRemoteDataSourceImpl(getIt<DioClient>()),
+  );
+  getIt.registerLazySingleton<SettingsRepository>(
+    () => SettingsRepositoryImpl(
+      remoteDataSource: getIt<SettingsRemoteDataSource>(),
+    ),
+  );
+  getIt.registerLazySingleton(
+    () => GetProfileAccountUseCase(getIt<SettingsRepository>()),
+  );
+  getIt.registerFactory<PasswordSecurityCubit>(() => PasswordSecurityCubit());
+  getIt.registerFactory<ProfileAccountCubit>(
+    () => ProfileAccountCubit(getIt<GetProfileAccountUseCase>()),
+  );
 
   // ── Quiz (Learn) ─────────────────────────────────────────────────────────
   getIt.registerLazySingleton<QuizRepository>(
