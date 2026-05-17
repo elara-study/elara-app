@@ -19,58 +19,62 @@ class PillTabBar extends StatelessWidget {
   final TabController? controller;
   final ValueChanged<int>? onTap;
 
-  /// When null, uses horizontal [AppSpacing.spacingLg] and vertical
-  /// [AppSpacing.spacingSm] (student group). Use tighter vertical-only padding
-  /// when the parent already applies horizontal insets (e.g. rewards scroll).
+  /// When null, only vertical [AppSpacing.spacingSm] is applied — set
+  /// horizontal insets here (e.g. [AppSpacing.spacingLg]) at the call site.
   final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    const height = 36.0;
+    const height = AppSpacing.spacing4xl;
 
     return Padding(
       padding:
-          padding ??
-          const EdgeInsets.symmetric(
-            horizontal: AppSpacing.spacingLg,
-            vertical: AppSpacing.spacingSm,
-          ),
-      child: SizedBox(
-        height: height,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: cs.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(999),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(3),
-            child: TabBar(
-              controller: controller,
-              onTap: onTap,
-              tabs: tabs,
-              dividerColor: Colors.transparent,
-              splashFactory: NoSplash.splashFactory,
-              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorPadding: EdgeInsets.zero,
-              labelPadding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.spacingMd,
-              ),
-              indicator: BoxDecoration(
-                color: AppColors.brandPrimary500,
+          padding ?? const EdgeInsets.symmetric(vertical: AppSpacing.spacingSm),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SizedBox(
+            width: constraints.maxWidth,
+            height: height,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: cs.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(999),
-                boxShadow: AppShadows.brandPrimaryPillGlow(),
               ),
-              labelColor: AppColors.white,
-              unselectedLabelColor: cs.onSurfaceVariant,
-              labelStyle: AppTypography.labelMedium(),
-              unselectedLabelStyle: AppTypography.labelMedium(
-                color: cs.onSurfaceVariant,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: TabBar(
+                  controller: controller,
+                  onTap: onTap,
+                  tabs: tabs,
+                  isScrollable: false,
+                  tabAlignment: TabAlignment.fill,
+                  dividerColor: Colors.transparent,
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: const WidgetStatePropertyAll(
+                    Colors.transparent,
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorPadding: EdgeInsets.zero,
+                  labelPadding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacingSm,
+                  ),
+                  indicator: BoxDecoration(
+                    color: AppColors.brandPrimary500,
+                    borderRadius: BorderRadius.circular(999),
+                    boxShadow: AppShadows.brandPrimaryPillGlow(),
+                  ),
+                  labelColor: AppColors.white,
+                  unselectedLabelColor: cs.onSurfaceVariant,
+                  labelStyle: AppTypography.labelMedium(),
+                  unselectedLabelStyle: AppTypography.labelMedium(
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

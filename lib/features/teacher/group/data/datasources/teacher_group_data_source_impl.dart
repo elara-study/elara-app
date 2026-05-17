@@ -1,6 +1,9 @@
+import 'package:elara/features/student/domain/profile/entities/profile_linked_parent_entity.dart';
 import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_group_detail_entity.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_entity.dart';
+import 'package:elara/features/teacher/group/domain/entities/teacher_student_insight_entity.dart';
+import 'package:elara/features/teacher/group/domain/entities/teacher_student_profile_entity.dart';
 
 /// Mock implementation — replace with HTTP calls when the API is ready.
 class TeacherGroupDataSourceImpl implements TeacherGroupDataSource {
@@ -15,6 +18,61 @@ class TeacherGroupDataSourceImpl implements TeacherGroupDataSource {
       presentToday: 23,
       students: _mockStudents,
     );
+  }
+
+  @override
+  Future<TeacherStudentProfileEntity> getStudentProfile({
+    required String groupId,
+    required int studentRank,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final student = _mockStudents.firstWhere(
+      (s) => s.rank == studentRank,
+      orElse: () => _mockStudents.first,
+    );
+    return _profileForStudent(student);
+  }
+
+  static TeacherStudentProfileEntity _profileForStudent(
+    TeacherStudentEntity student,
+  ) {
+    const insight = TeacherStudentInsightEntity(
+      updatedLabel: 'Last updated 5 min ago',
+      paragraph1:
+          'Tyler has shown exceptional growth in Quantum Mechanics this term. '
+          'His ability to grasp complex theoretical concepts, particularly '
+          'regarding wave-particle duality, is outstanding and frequently '
+          'pushes classroom discussions to higher levels.',
+      paragraph2:
+          'However, we noticed a slight dip in his practical lab applications. '
+          'While his mathematical foundations are strong, a renewed focus on '
+          'consistent experiment documentation and safety protocol adherence '
+          'could bridge the gap between his theoretical brilliance and '
+          'practical execution.',
+    );
+
+    final handle = '@${_handleFromName(student.name)}';
+    return TeacherStudentProfileEntity(
+      student: student,
+      handle: handle,
+      gradeLabel: 'Grade 7 Student',
+      level: 11,
+      nextLevel: 12,
+      xpCurrent: 1250,
+      xpGoal: 1500,
+      streakDays: 7,
+      attendancePercent: 97,
+      parents: const [
+        ProfileLinkedParentEntity(id: 'p1', displayName: 'Kanye West'),
+        ProfileLinkedParentEntity(id: 'p2', displayName: 'Taylor Swift'),
+      ],
+      insight: insight,
+    );
+  }
+
+  static String _handleFromName(String name) {
+    final cleaned = name.replaceAll(RegExp(r'[^a-zA-Z]'), '').toLowerCase();
+    return cleaned.isEmpty ? 'student' : cleaned;
   }
 
   static final List<TeacherStudentEntity> _mockStudents = [

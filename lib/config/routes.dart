@@ -96,7 +96,7 @@ class AppRoutes {
     switch (settings.name) {
       case splash:
         // Developing features revert to splash
-        return MaterialPageRoute(builder: (_) => const ParentShell());
+        return MaterialPageRoute(builder: (_) => const TeacherShell());
 
       case login:
         return MaterialPageRoute(builder: (_) => const SignInScreen());

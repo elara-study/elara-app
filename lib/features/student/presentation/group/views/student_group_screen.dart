@@ -80,6 +80,7 @@ class StudentGroupScreen extends StatelessWidget {
             final progress = loaded ? (completed / total).clamp(0.0, 1.0) : 0.0;
 
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: AppSpacing.spacingLg),
                 Padding(
@@ -94,11 +95,11 @@ class StudentGroupScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.spacingLg),
-                const Padding(
+                const PillTabBar(
+                  tabs: _tabs,
                   padding: EdgeInsets.symmetric(
                     horizontal: AppSpacing.spacingLg,
                   ),
-                  child: PillTabBar(tabs: _tabs),
                 ),
                 const Expanded(
                   child: TabBarView(
