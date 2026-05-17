@@ -8,6 +8,7 @@ import 'package:elara/features/teacher/group/presentation/widgets/attendance_she
 import 'package:elara/features/teacher/group/presentation/widgets/group_stats_header.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/segmented_progress_bar.dart';
+import 'package:elara/features/teacher/group/presentation/views/attendance_history_route_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -43,6 +44,16 @@ class AttendanceHistoryScreen extends StatelessWidget {
     required this.totalStudents,
     required this.students,
   });
+
+  factory AttendanceHistoryScreen.fromArgs(AttendanceHistoryRouteArgs args) {
+    return AttendanceHistoryScreen(
+      key: ValueKey('attendance-history-${args.groupName}'),
+      groupName: args.groupName,
+      presentToday: args.presentToday,
+      totalStudents: args.totalStudents,
+      students: args.students,
+    );
+  }
 
   // Mock history — replace with real data when the API is ready.
   static const List<AttendanceHistoryEntry> _mockHistory = [

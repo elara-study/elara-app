@@ -37,6 +37,14 @@ class ParentChildProgressEntity extends Equatable {
 
   int get progressPercentRounded => (progress * 100).clamp(0, 100).round();
 
+  String get handle {
+    final cleanName = displayName.toLowerCase().replaceAll(
+      RegExp(r'[^a-z0-9_]'),
+      '',
+    );
+    return '@$cleanName';
+  }
+
   @override
   List<Object?> get props => [
     id,

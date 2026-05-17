@@ -10,8 +10,11 @@ import 'package:elara/features/teacher/group/presentation/cubits/teacher_group_c
 import 'package:elara/features/teacher/group/presentation/widgets/add_student_sheet.dart';
 import 'package:elara/features/teacher/group/presentation/widgets/attendance_sheet.dart';
 import 'package:elara/features/teacher/group/presentation/widgets/group_stats_header.dart';
+import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/config/routes.dart';
+import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_route_args.dart';
+import 'package:elara/features/teacher/group/presentation/views/attendance_history_route_args.dart';
 import 'package:elara/features/teacher/group/presentation/widgets/student_row.dart';
-import 'package:elara/features/teacher/group/presentation/views/attendance_history_screen.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:elara/shared/widgets/app_text_field.dart';
 import 'package:elara/shared/widgets/segmented_progress_bar.dart';
@@ -22,7 +25,9 @@ import 'package:flutter_svg/svg.dart';
 
 /// Students tab: stats header, attendance card, action buttons, search, list.
 class StudentsTab extends StatelessWidget {
-  const StudentsTab({super.key});
+  const StudentsTab({super.key, required this.group});
+
+  final TeacherGroupEntity group;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +47,10 @@ class StudentsTab extends StatelessWidget {
               ),
             ),
           ),
-          TeacherGroupLoaded(:final detail) => _StudentsContent(detail: detail),
+          TeacherGroupLoaded(:final detail) => _StudentsContent(
+            detail: detail,
+            group: group,
+          ),
         };
       },
     );
@@ -51,8 +59,9 @@ class StudentsTab extends StatelessWidget {
 
 class _StudentsContent extends StatefulWidget {
   final TeacherGroupDetailEntity detail;
+  final TeacherGroupEntity group;
 
-  const _StudentsContent({required this.detail});
+  const _StudentsContent({required this.detail, required this.group});
 
   @override
   State<_StudentsContent> createState() => _StudentsContentState();
@@ -84,7 +93,7 @@ class _StudentsContentState extends State<_StudentsContent> {
     return ListView(
       padding: EdgeInsets.fromLTRB(
         AppSpacing.spacingLg.w,
-        AppSpacing.spacingMd.h,
+        0,
         AppSpacing.spacingLg.w,
         AppSpacing.spacing5xl.h,
       ),
@@ -96,15 +105,14 @@ class _StudentsContentState extends State<_StudentsContent> {
         // Today's Attendance card
         _AttendanceCard(
           detail: widget.detail,
-          onHistoryTap: () => Navigator.push(
+          onHistoryTap: () => Navigator.pushNamed(
             context,
-            MaterialPageRoute(
-              builder: (_) => AttendanceHistoryScreen(
-                groupName: '',
-                presentToday: widget.detail.presentToday,
-                totalStudents: widget.detail.studentCount,
-                students: widget.detail.students,
-              ),
+            AppRoutes.attendanceHistory,
+            arguments: AttendanceHistoryRouteArgs(
+              groupName: '',
+              presentToday: widget.detail.presentToday,
+              totalStudents: widget.detail.studentCount,
+              students: widget.detail.students,
             ),
           ),
         ),
@@ -193,15 +201,12 @@ class _StudentsContentState extends State<_StudentsContent> {
             itemBuilder: (_, i) {
               final student = filtered[i];
               return GestureDetector(
-                onTap: () => Navigator.push(
+                onTap: () => Navigator.pushNamed(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => AttendanceHistoryScreen(
-                      groupName: student.name,
-                      presentToday: widget.detail.presentToday,
-                      totalStudents: widget.detail.studentCount,
-                      students: widget.detail.students,
-                    ),
+                  AppRoutes.teacherStudentProfile,
+                  arguments: TeacherStudentProfileRouteArgs(
+                    group: widget.group,
+                    student: student,
                   ),
                 ),
                 child: StudentRow(student: student),

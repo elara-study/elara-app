@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_state.dart';
+import 'package:elara/config/routes.dart';
 import 'package:elara/features/parent/presentation/children/widgets/parent_child_dashboard_card.dart';
 import 'package:elara/features/parent/presentation/children/widgets/parent_add_child_sheet.dart';
 import 'package:elara/features/parent/presentation/children/widgets/parent_children_page_header.dart';
@@ -107,7 +108,15 @@ class ParentChildrenScreen extends StatelessWidget {
                     _ChildrenEmptyState(colorScheme: cs)
                   else
                     for (var i = 0; i < d.children.length; i++) ...[
-                      ParentChildDashboardCard(child: d.children[i]),
+                      ParentChildDashboardCard(
+                        child: d.children[i],
+                        onOpenDetail: () {
+                          Navigator.of(context).pushNamed(
+                            AppRoutes.parentChildProfile,
+                            arguments: d.children[i],
+                          );
+                        },
+                      ),
                       if (i < d.children.length - 1)
                         SizedBox(height: AppSpacing.spacingMd.h),
                     ],

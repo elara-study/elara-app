@@ -413,7 +413,7 @@ class _StatsRow extends StatelessWidget {
           ),
           SizedBox(width: 14.w),
         ],
-        if (gradeLabel != null) ...[
+        if (gradeLabel != null && gradeLabel!.isNotEmpty) ...[
           SvgPicture.asset(
             'assets/icons/graduation_cap_icon.svg',
             width: AppSpacing.spacingLg.w,
