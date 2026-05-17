@@ -5,7 +5,9 @@ import 'package:elara/features/teacher/group/data/datasources/teacher_group_data
 import 'package:elara/features/teacher/group/presentation/cubits/teacher_student_profile_cubit.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_entity.dart';
+import 'package:elara/features/teacher/group/presentation/widgets/add_insight_options_sheet.dart';
 import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_screen.dart';
+import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_route_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +18,14 @@ class TeacherStudentProfilePage extends StatelessWidget {
     required this.group,
     required this.student,
   });
+
+  factory TeacherStudentProfilePage.fromArgs(TeacherStudentProfileRouteArgs args) {
+    return TeacherStudentProfilePage(
+      key: ValueKey('student-profile-${args.student.rank}'),
+      group: args.group,
+      student: args.student,
+    );
+  }
 
   final TeacherGroupEntity group;
   final TeacherStudentEntity student;
@@ -43,13 +53,17 @@ class TeacherStudentProfilePage extends StatelessWidget {
         builder: (context, state) {
           return switch (state) {
             TeacherStudentProfileInitial() ||
-            TeacherStudentProfileLoading() => const TeacherStudentProfileScreen(
+            TeacherStudentProfileLoading() => TeacherStudentProfileScreen(
               handle: '@…',
-              body: Center(child: CircularProgressIndicator()),
+              studentName: student.name,
+              groupTitle: group.subject,
+              body: const Center(child: CircularProgressIndicator()),
             ),
             TeacherStudentProfileError(:final message) =>
               TeacherStudentProfileScreen(
                 handle: '@…',
+                studentName: student.name,
+                groupTitle: group.subject,
                 body: Center(
                   child: Padding(
                     padding: EdgeInsets.all(AppSpacing.spacing2xl.w),
@@ -66,9 +80,15 @@ class TeacherStudentProfilePage extends StatelessWidget {
             TeacherStudentProfileLoaded(:final profile) =>
               TeacherStudentProfileScreen(
                 handle: profile.handle,
+                studentName: profile.student.name,
+                groupTitle: group.subject,
                 body: TeacherStudentProfileBody(
                   profile: profile,
                   formatThousands: _formatThousands,
+                  onAddInsight: () => showAddInsightOptionsSheet(
+                    context,
+                    studentName: profile.student.name,
+                  ),
                 ),
               ),
           };

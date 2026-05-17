@@ -219,6 +219,8 @@ class AppFormDialogTextField extends StatelessWidget {
     this.onSubmitted,
     this.keyboardType,
     this.obscureText = false,
+    this.maxLines = 1,
+    this.onChanged,
   });
 
   final TextEditingController controller;
@@ -227,6 +229,8 @@ class AppFormDialogTextField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
   final TextInputType? keyboardType;
   final bool obscureText;
+  final int maxLines;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -239,6 +243,8 @@ class AppFormDialogTextField extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscureText,
       onSubmitted: onSubmitted,
+      maxLines: maxLines,
+      onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: AppTypography.bodySmall(
@@ -248,7 +254,9 @@ class AppFormDialogTextField extends StatelessWidget {
         fillColor: _fieldFill(context),
         contentPadding: EdgeInsets.symmetric(
           horizontal: AppSpacing.spacingMd.w,
-          vertical: AppSpacing.spacingSm.h,
+          vertical: maxLines > 1
+              ? AppSpacing.spacingMd.h
+              : AppSpacing.spacingSm.h,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),

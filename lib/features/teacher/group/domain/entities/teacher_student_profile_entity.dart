@@ -31,6 +31,34 @@ class TeacherStudentProfileEntity extends Equatable {
   final List<ProfileLinkedParentEntity> parents;
   final TeacherStudentInsightEntity? insight;
 
+  TeacherStudentProfileEntity copyWith({
+    TeacherStudentEntity? student,
+    String? handle,
+    String? gradeLabel,
+    int? level,
+    int? nextLevel,
+    int? xpCurrent,
+    int? xpGoal,
+    int? streakDays,
+    int? attendancePercent,
+    List<ProfileLinkedParentEntity>? parents,
+    TeacherStudentInsightEntity? insight,
+  }) {
+    return TeacherStudentProfileEntity(
+      student: student ?? this.student,
+      handle: handle ?? this.handle,
+      gradeLabel: gradeLabel ?? this.gradeLabel,
+      level: level ?? this.level,
+      nextLevel: nextLevel ?? this.nextLevel,
+      xpCurrent: xpCurrent ?? this.xpCurrent,
+      xpGoal: xpGoal ?? this.xpGoal,
+      streakDays: streakDays ?? this.streakDays,
+      attendancePercent: attendancePercent ?? this.attendancePercent,
+      parents: parents ?? this.parents,
+      insight: insight ?? this.insight,
+    );
+  }
+
   int get xpToNextLevel => (xpGoal - xpCurrent).clamp(0, xpGoal);
 
   String get lessonsStatLabel =>

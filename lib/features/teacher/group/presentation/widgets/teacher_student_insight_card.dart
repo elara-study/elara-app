@@ -54,40 +54,49 @@ class TeacherStudentInsightCard extends StatelessWidget {
               insight.paragraph2,
               style: AppTypography.bodyMedium(color: cs.onSurface),
             ),
-            SizedBox(height: AppSpacing.spacingLg.h),
-            Row(
-              children: [
-                Expanded(
-                  child: AppOutlineButton(
-                    text: 'Edit',
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.spacingLg.w,
-                      vertical: AppSpacing.spacingMd.h,
+            if (onEdit != null || onSend != null) ...[
+              SizedBox(height: AppSpacing.spacingLg.h),
+              Row(
+                children: [
+                  if (onEdit != null)
+                    Expanded(
+                      child: AppOutlineButton(
+                        text: 'Edit',
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSpacing.spacingLg.w,
+                          vertical: AppSpacing.spacingMd.h,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          AppRadius.radiusFull.r,
+                        ),
+                        leading: const Icon(
+                          Icons.edit_outlined,
+                          size: 20,
+                          color: ButtonColors.outlineText,
+                        ),
+                        onPressed: onEdit,
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
-                    leading: const Icon(
-                      Icons.edit_outlined,
-                      size: 20,
-                      color: ButtonColors.outlineText,
+                  if (onEdit != null && onSend != null)
+                    SizedBox(width: AppSpacing.spacingMd.w),
+                  if (onSend != null)
+                    Expanded(
+                      child: AppPrimaryButton(
+                        text: 'Send Insight',
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSpacing.spacingLg.w,
+                          vertical: AppSpacing.spacingMd.h,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          AppRadius.radiusFull.r,
+                        ),
+                        icon: Icons.send_rounded,
+                        onPressed: onSend,
+                      ),
                     ),
-                    onPressed: onEdit,
-                  ),
-                ),
-                SizedBox(width: AppSpacing.spacingMd.w),
-                Expanded(
-                  child: AppPrimaryButton(
-                    text: 'Send Insight',
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.spacingLg.w,
-                      vertical: AppSpacing.spacingMd.h,
-                    ),
-                    borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
-                    icon: Icons.send_rounded,
-                    onPressed: onSend,
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ],
         ),
       ),

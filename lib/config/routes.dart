@@ -6,6 +6,8 @@ import 'package:elara/features/auth/presentation/views/sign_up_credentials_scree
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
 import 'package:elara/features/auth/presentation/views/splash_screen.dart';
 import 'package:elara/features/parent/presentation/home/views/parent_shell.dart';
+import 'package:elara/features/parent/domain/home/entities/parent_child_progress_entity.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_profile_page.dart';
 import 'package:elara/features/settings/presentation/cubits/notifications_settings_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/profile_account_cubit.dart';
@@ -26,6 +28,10 @@ import 'package:elara/features/student/presentation/quiz/quiz_route_args.dart';
 import 'package:elara/features/student/presentation/quiz/views/quiz_flow_page.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/group/presentation/views/teacher_group_page.dart';
+import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_page.dart';
+import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_route_args.dart';
+import 'package:elara/features/teacher/group/presentation/views/attendance_history_screen.dart';
+import 'package:elara/features/teacher/group/presentation/views/attendance_history_route_args.dart';
 import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
 import 'package:elara/config/dependency_injection.dart';
 import 'package:flutter/material.dart';
@@ -69,8 +75,17 @@ class AppRoutes {
   /// Teacher group detail screen.
   static const String teacherGroup = '/teacher-group';
 
+  /// Teacher's view of student profile.
+  static const String teacherStudentProfile = '/teacher/student-profile';
+
+  /// Teacher's group attendance history.
+  static const String attendanceHistory = '/teacher/attendance-history';
+
   /// Parent dashboard shell (Home tab matches Figma parent Home).
   static const String parentDashboard = '/parent';
+
+  /// Detailed parent child profile screen.
+  static const String parentChildProfile = '/parent/child-profile';
 
   /// Placeholder for roles without a full dashboard yet.
   static const String comingSoonDashboard = '/coming-soon-dashboard';
@@ -96,7 +111,7 @@ class AppRoutes {
     switch (settings.name) {
       case splash:
         // Developing features revert to splash
-        return MaterialPageRoute(builder: (_) => const TeacherShell());
+        return MaterialPageRoute(builder: (_) => const ParentShell());
 
       case login:
         return MaterialPageRoute(builder: (_) => const SignInScreen());
@@ -123,6 +138,20 @@ class AppRoutes {
       case parentDashboard:
         return MaterialPageRoute(builder: (_) => const ParentShell());
 
+      case parentChildProfile:
+        final childArgs = settings.arguments;
+        if (childArgs is ParentChildProgressEntity) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => ParentChildProfilePage(child: childArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Child profile data not found')),
+          ),
+        );
+
       case comingSoonDashboard:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
@@ -147,6 +176,34 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) =>
               const Scaffold(body: Center(child: Text('Group not found'))),
+        );
+
+      case teacherStudentProfile:
+        final profileArgs = settings.arguments;
+        if (profileArgs is TeacherStudentProfileRouteArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => TeacherStudentProfilePage.fromArgs(profileArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Student profile data not found')),
+          ),
+        );
+
+      case attendanceHistory:
+        final attendanceArgs = settings.arguments;
+        if (attendanceArgs is AttendanceHistoryRouteArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => AttendanceHistoryScreen.fromArgs(attendanceArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Attendance history data not found')),
+          ),
         );
 
       case quiz:

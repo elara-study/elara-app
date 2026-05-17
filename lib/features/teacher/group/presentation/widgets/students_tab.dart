@@ -11,8 +11,9 @@ import 'package:elara/features/teacher/group/presentation/widgets/add_student_sh
 import 'package:elara/features/teacher/group/presentation/widgets/attendance_sheet.dart';
 import 'package:elara/features/teacher/group/presentation/widgets/group_stats_header.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/group/presentation/views/attendance_history_screen.dart';
-import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_page.dart';
+import 'package:elara/config/routes.dart';
+import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_route_args.dart';
+import 'package:elara/features/teacher/group/presentation/views/attendance_history_route_args.dart';
 import 'package:elara/features/teacher/group/presentation/widgets/student_row.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:elara/shared/widgets/app_text_field.dart';
@@ -104,15 +105,14 @@ class _StudentsContentState extends State<_StudentsContent> {
         // Today's Attendance card
         _AttendanceCard(
           detail: widget.detail,
-          onHistoryTap: () => Navigator.push(
+          onHistoryTap: () => Navigator.pushNamed(
             context,
-            MaterialPageRoute(
-              builder: (_) => AttendanceHistoryScreen(
-                groupName: '',
-                presentToday: widget.detail.presentToday,
-                totalStudents: widget.detail.studentCount,
-                students: widget.detail.students,
-              ),
+            AppRoutes.attendanceHistory,
+            arguments: AttendanceHistoryRouteArgs(
+              groupName: '',
+              presentToday: widget.detail.presentToday,
+              totalStudents: widget.detail.studentCount,
+              students: widget.detail.students,
             ),
           ),
         ),
@@ -201,13 +201,12 @@ class _StudentsContentState extends State<_StudentsContent> {
             itemBuilder: (_, i) {
               final student = filtered[i];
               return GestureDetector(
-                onTap: () => Navigator.push(
+                onTap: () => Navigator.pushNamed(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => TeacherStudentProfilePage(
-                      group: widget.group,
-                      student: student,
-                    ),
+                  AppRoutes.teacherStudentProfile,
+                  arguments: TeacherStudentProfileRouteArgs(
+                    group: widget.group,
+                    student: student,
                   ),
                 ),
                 child: StudentRow(student: student),

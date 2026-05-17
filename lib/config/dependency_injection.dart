@@ -26,6 +26,12 @@ import 'package:elara/features/parent/presentation/children/cubits/parent_childr
 import 'package:elara/features/parent/presentation/home/cubits/parent_home_cubit.dart';
 import 'package:elara/features/parent/presentation/home/cubits/parent_tab_cubit.dart';
 import 'package:elara/features/parent/presentation/reports/cubits/parent_reports_cubit.dart';
+import 'package:elara/features/parent/data/children/datasources/parent_children_remote_data_source.dart';
+import 'package:elara/features/parent/data/children/datasources/parent_children_remote_data_source_impl.dart';
+import 'package:elara/features/parent/data/children/repositories/parent_children_repository_impl.dart';
+import 'package:elara/features/parent/domain/children/repositories/parent_children_repository.dart';
+import 'package:elara/features/parent/domain/children/usecases/get_parent_child_profile_use_case.dart';
+import 'package:elara/features/parent/presentation/children/cubits/parent_child_profile_cubit.dart';
 
 import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source.dart';
 import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source_impl.dart';
@@ -190,9 +196,7 @@ Future<void> setupDependencyInjection() async {
     () => GetParentHomeUseCase(getIt<ParentHomeRepository>()),
   );
   getIt.registerLazySingleton(
-    () => GetParentChildrenDashboardUseCase(
-      getIt<ParentHomeRepository>(),
-    ),
+    () => GetParentChildrenDashboardUseCase(getIt<ParentHomeRepository>()),
   );
 
   getIt.registerLazySingleton<ParentReportsRemoteDataSource>(
@@ -217,6 +221,22 @@ Future<void> setupDependencyInjection() async {
   getIt.registerFactory(
     () => ParentReportsCubit(
       getParentReportsUseCase: getIt<GetParentReportsUseCase>(),
+    ),
+  );
+
+  // ── Parent Child Profile
+  getIt.registerLazySingleton<ParentChildrenRemoteDataSource>(
+    () => const ParentChildrenRemoteDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<ParentChildrenRepository>(
+    () => ParentChildrenRepositoryImpl(getIt<ParentChildrenRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetParentChildProfileUseCase(getIt<ParentChildrenRepository>()),
+  );
+  getIt.registerFactory<ParentChildProfileCubit>(
+    () => ParentChildProfileCubit(
+      getProfile: getIt<GetParentChildProfileUseCase>(),
     ),
   );
 
