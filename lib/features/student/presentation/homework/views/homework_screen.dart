@@ -4,7 +4,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/presentation/homework/cubits/homework_cubit.dart';
 import 'package:elara/features/student/presentation/homework/cubits/homework_state.dart';
 import 'package:elara/features/student/presentation/homework/homework_route_args.dart';
-import 'package:elara/features/student/presentation/homework/widgets/homework_overview_card.dart';
+import 'package:elara/shared/widgets/assignment_overview_card.dart';
 import 'package:elara/features/student/presentation/homework/widgets/homework_problem_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +104,7 @@ class HomeworkScreen extends StatelessWidget {
                   bottom: AppSpacing.spacing2xl.h,
                 ),
                 children: [
-                  HomeworkOverviewCard(
+                  AssignmentOverviewCard(
                     totalXp: homework.totalXp,
                     completedProblems: homework.completedProblems,
                     totalProblems: homework.totalProblems,
