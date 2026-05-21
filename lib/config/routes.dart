@@ -28,6 +28,9 @@ import 'package:elara/features/student/presentation/quiz/quiz_route_args.dart';
 import 'package:elara/features/student/presentation/quiz/views/quiz_flow_page.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/group/presentation/views/teacher_group_page.dart';
+import 'package:elara/features/teacher/homework/presentation/route_args/teacher_module_route_args.dart';
+import 'package:elara/features/teacher/homework/presentation/views/teacher_homework_screen.dart';
+import 'package:elara/features/teacher/homework/presentation/views/teacher_resources_screen.dart';
 import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_page.dart';
 import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_route_args.dart';
 import 'package:elara/features/teacher/group/presentation/views/attendance_history_screen.dart';
@@ -81,6 +84,12 @@ class AppRoutes {
   /// Teacher's group attendance history.
   static const String attendanceHistory = '/teacher/attendance-history';
 
+  /// Teacher homework management for a specific module.
+  static const String teacherModuleHomework = '/teacher/module-homework';
+
+  /// Teacher resources management for a specific module.
+  static const String teacherModuleResources = '/teacher/module-resources';
+
   /// Parent dashboard shell (Home tab matches Figma parent Home).
   static const String parentDashboard = '/parent';
 
@@ -111,7 +120,7 @@ class AppRoutes {
     switch (settings.name) {
       case splash:
         // Developing features revert to splash
-        return MaterialPageRoute(builder: (_) => const ParentShell());
+        return MaterialPageRoute(builder: (_) => const TeacherShell());
 
       case login:
         return MaterialPageRoute(builder: (_) => const SignInScreen());
@@ -203,6 +212,34 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
             body: Center(child: Text('Attendance history data not found')),
+          ),
+        );
+
+      case teacherModuleHomework:
+        final hwModuleArgs = settings.arguments;
+        if (hwModuleArgs is TeacherModuleRouteArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => TeacherHomeworkScreen.fromArgs(hwModuleArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Module data not found')),
+          ),
+        );
+
+      case teacherModuleResources:
+        final resModuleArgs = settings.arguments;
+        if (resModuleArgs is TeacherModuleRouteArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => TeacherResourcesScreen.fromArgs(resModuleArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Module data not found')),
           ),
         );
 
