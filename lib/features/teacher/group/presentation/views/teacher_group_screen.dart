@@ -60,7 +60,7 @@ class TeacherGroupScreen extends StatelessWidget {
               child: TabBarView(
                 children: [
                   StudentsTab(group: group),
-                  const TeacherRoadmapTab(),
+                  TeacherRoadmapTab(groupId: group.id, subject: group.subject),
                   const TeacherAnnouncementsTab(),
                 ],
               ),

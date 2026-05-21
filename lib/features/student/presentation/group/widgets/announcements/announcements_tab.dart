@@ -1,6 +1,6 @@
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/features/student/presentation/group/cubits/announcements_cubit.dart';
-import 'package:elara/features/student/presentation/group/widgets/announcements/announcement_card.dart';
+import 'package:elara/shared/widgets/announcement_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

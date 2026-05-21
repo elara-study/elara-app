@@ -1,11 +1,11 @@
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
-import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_entity.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:elara/shared/widgets/app_dialog.dart';
 import 'package:elara/shared/widgets/app_text_field.dart';
+import 'package:elara/shared/widgets/student_row_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -79,11 +79,42 @@ class _AttendanceDialogState extends State<AttendanceDialog> {
                     SizedBox(height: AppSpacing.spacingMd.h),
                 itemBuilder: (_, i) {
                   final student = _filtered[i];
-                  return _AttendanceRow(
-                    name: student.name,
-                    isPresent: _present[student.rank] ?? true,
-                    onChanged: (v) =>
-                        setState(() => _present[student.rank] = v ?? true),
+                  final isDark =
+                      Theme.of(context).brightness == Brightness.dark;
+                  final borderColor = isDark
+                      ? DarkModeColors.borderDefault
+                      : LightModeColors.borderDefault;
+
+                  return StudentRowCard(
+                    studentName: student.name,
+                    // No tap on the row — only the Switch is interactive
+                    onTap: null,
+                    cardColor: Theme.of(context).scaffoldBackgroundColor,
+                    showShadow: false,
+                    avatarSize: 40,
+                    avatarChild: SvgPicture.asset(
+                      'assets/icons/people_outline.svg',
+                      width: 22.w,
+                      height: 22.w,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.onSurfaceVariant,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    trailing: Switch(
+                      value: _present[student.rank] ?? true,
+                      onChanged: (v) =>
+                          setState(() => _present[student.rank] = v),
+                      activeColor: AppColors.brandPrimary500,
+                      trackOutlineColor: WidgetStateProperty.resolveWith((
+                        states,
+                      ) {
+                        if (states.contains(WidgetState.selected)) {
+                          return Colors.transparent;
+                        }
+                        return borderColor;
+                      }),
+                    ),
                   );
                 },
               ),
@@ -154,86 +185,6 @@ class _AttendanceSearchBar extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-// Individual attendance row (bordered card)
-class _AttendanceRow extends StatelessWidget {
-  final String name;
-  final bool isPresent;
-  final ValueChanged<bool?> onChanged;
-
-  const _AttendanceRow({
-    required this.name,
-    required this.isPresent,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark
-        ? DarkModeColors.borderDefault
-        : LightModeColors.borderDefault;
-
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.spacingMd.w,
-        vertical: AppSpacing.spacingMd.h,
-      ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
-      ),
-      child: Row(
-        children: [
-          // Avatar with person outline icon
-          Container(
-            width: 40.w,
-            height: 40.w,
-            decoration: BoxDecoration(
-              color: cs.surfaceContainerHighest,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                'assets/icons/people_outline.svg',
-                width: 22.w,
-                height: 22.w,
-                colorFilter: ColorFilter.mode(
-                  cs.onSurfaceVariant,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: AppSpacing.spacingMd.w),
-
-          // Name
-          Expanded(
-            child: Text(
-              name,
-              style: AppTypography.bodyMedium(color: cs.onSurface),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-
-          // Present/Absent toggle
-          Switch(
-            value: isPresent,
-            onChanged: onChanged,
-            activeColor: AppColors.brandPrimary500,
-            trackOutlineColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.selected)) {
-                return Colors.transparent;
-              }
-              return borderColor;
-            }),
-          ),
-        ],
-      ),
     );
   }
 }

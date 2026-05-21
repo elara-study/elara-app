@@ -85,6 +85,14 @@ import 'package:elara/features/teacher/data/datasources/teacher_home_data_source
 import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
 import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source_impl.dart';
 import 'package:elara/features/teacher/group/presentation/cubits/teacher_group_cubit.dart';
+import 'package:elara/features/teacher/homework/data/datasources/mock_teacher_homework_datasource.dart';
+import 'package:elara/features/teacher/homework/data/datasources/teacher_homework_datasource.dart';
+import 'package:elara/features/teacher/homework/data/repositories/teacher_homework_repository_impl.dart';
+import 'package:elara/features/teacher/homework/domain/repositories/i_teacher_homework_repository.dart';
+import 'package:elara/features/teacher/homework/domain/usecases/get_teacher_module_homework_usecase.dart';
+import 'package:elara/features/teacher/homework/domain/usecases/get_teacher_module_resources_usecase.dart';
+import 'package:elara/features/teacher/homework/presentation/cubits/teacher_homework_cubit.dart';
+import 'package:elara/features/teacher/homework/presentation/cubits/teacher_resources_cubit.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
 
 import 'package:elara/core/network/network_info.dart';
@@ -387,6 +395,33 @@ Future<void> setupDependencyInjection() async {
 
   getIt.registerFactory<TeacherGroupCubit>(
     () => TeacherGroupCubit(getIt<TeacherGroupDataSource>()),
+  );
+
+  // ── Teacher Homework & Resources ──────────────────────────────────────────
+  getIt.registerLazySingleton<TeacherHomeworkDatasource>(
+    () => MockTeacherHomeworkDatasource(),
+    // TODO: swap for RealTeacherHomeworkDatasource(getIt<DioClient>()) when ready
+  );
+
+  getIt.registerLazySingleton<ITeacherHomeworkRepository>(
+    () => TeacherHomeworkRepositoryImpl(getIt<TeacherHomeworkDatasource>()),
+  );
+
+  getIt.registerLazySingleton(
+    () => GetTeacherModuleHomeworkUseCase(getIt<ITeacherHomeworkRepository>()),
+  );
+
+  getIt.registerLazySingleton(
+    () => GetTeacherModuleResourcesUseCase(getIt<ITeacherHomeworkRepository>()),
+  );
+
+  // Factory: BlocProvider closes the cubit on dispose; fresh instance needed.
+  getIt.registerFactory<TeacherHomeworkCubit>(
+    () => TeacherHomeworkCubit(getIt<GetTeacherModuleHomeworkUseCase>()),
+  );
+
+  getIt.registerFactory<TeacherResourcesCubit>(
+    () => TeacherResourcesCubit(getIt<GetTeacherModuleResourcesUseCase>()),
   );
 
   // ── Chatbot (Student) ────────────────────────────────────────────────────

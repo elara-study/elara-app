@@ -3,13 +3,35 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
+import 'package:elara/shared/widgets/app_overflow_menu.dart';
 import 'package:flutter/material.dart';
 
-/// Single announcement row: left accent, title + time, body copy.
+//  AnnouncementCard
+
+/// Shared announcement card used by both teacher and student group screens.
+///
+/// Layout: left orange accent border + card body (title row + body copy).
+///
+/// The overflow menu (⋮) is shown **only** when [onEdit] or [onDelete] are
+/// provided — so the student view (which passes neither) renders without it,
+/// and the teacher view gets full Edit / Delete actions.
 class AnnouncementCard extends StatelessWidget {
   final GroupAnnouncement announcement;
 
-  const AnnouncementCard({super.key, required this.announcement});
+  /// Called when the user selects "Edit" from the overflow menu.
+  /// Pass `null` (default) to hide the Edit option.
+  final VoidCallback? onEdit;
+
+  /// Called when the user selects "Delete" from the overflow menu.
+  /// Pass `null` (default) to hide the Delete option.
+  final VoidCallback? onDelete;
+
+  const AnnouncementCard({
+    super.key,
+    required this.announcement,
+    this.onEdit,
+    this.onDelete,
+  });
 
   static const double _accentWidth = 3;
 
@@ -33,6 +55,24 @@ class AnnouncementCard extends StatelessWidget {
       color: onMuted,
     );
 
+    // Build the menu items list from whichever callbacks are provided.
+    final menuItems = <AppOverflowMenuItem>[
+      if (onEdit != null)
+        AppOverflowMenuItem(
+          label: 'Edit',
+          icon: Icons.mode,
+          backgroundColor: AppColors.brandPrimary500,
+          onTap: onEdit!,
+        ),
+      if (onDelete != null)
+        AppOverflowMenuItem(
+          label: 'Delete',
+          icon: Icons.delete,
+          backgroundColor: AppColors.brandSecondary500,
+          onTap: onDelete!,
+        ),
+    ];
+
     return Semantics(
       container: true,
       label: announcement.title,
@@ -54,11 +94,15 @@ class AnnouncementCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(child: Text(announcement.title, style: titleStyle)),
                   const SizedBox(width: AppSpacing.spacingSm),
                   Text(announcement.relativeTimeLabel, style: metaStyle),
+                  if (menuItems.isNotEmpty) ...[
+                    const SizedBox(width: AppSpacing.spacingXs),
+                    AppOverflowMenu(items: menuItems),
+                  ],
                 ],
               ),
               const SizedBox(height: AppSpacing.spacingSm),

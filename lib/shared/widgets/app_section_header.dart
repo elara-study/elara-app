@@ -22,6 +22,10 @@ class AppSectionHeader extends StatelessWidget {
   /// Controls the dialog's title + button label. Defaults to "Create a group".
   final GroupDialogConfig dialogConfig;
 
+  /// Arbitrary widget rendered on the trailing (right) end.
+  /// Takes precedence over [onCreateGroup], [onAdd], and [onSeeAll].
+  final Widget? trailing;
+
   const AppSectionHeader({
     super.key,
     required this.title,
@@ -30,6 +34,7 @@ class AppSectionHeader extends StatelessWidget {
     this.onAdd,
     this.onCreateGroup,
     this.dialogConfig = const GroupDialogConfig(),
+    this.trailing,
   });
 
   void _openDialog(BuildContext context) {
@@ -78,7 +83,9 @@ class AppSectionHeader extends StatelessWidget {
           ).copyWith(fontWeight: FontWeight.w900),
         ),
 
-        if (onCreateGroup != null)
+        if (trailing != null)
+          trailing!
+        else if (onCreateGroup != null)
           GestureDetector(
             onTap: () => _openDialog(context),
             behavior: HitTestBehavior.opaque,

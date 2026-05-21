@@ -6,23 +6,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// Overview card at the top of the Homework screen.
-///
-/// Shows the total XP reward (with lightning bolt icon) and an overall
-/// progress bar (completed problems / total problems).
-class HomeworkOverviewCard extends StatelessWidget {
-  final int totalXp;
-  final int completedProblems;
-  final int totalProblems;
-  final double progressPercent;
+//   AssignmentOverviewCard
 
-  const HomeworkOverviewCard({
+/// Shared overview card used on both the student homework screen and the
+/// teacher homework management screen.
+class AssignmentOverviewCard extends StatelessWidget {
+  final int totalXp;
+
+  final int? completedProblems;
+
+  final int? totalProblems;
+
+  final double? progressPercent;
+
+  const AssignmentOverviewCard({
     super.key,
     required this.totalXp,
-    required this.completedProblems,
-    required this.totalProblems,
-    required this.progressPercent,
+    this.completedProblems,
+    this.totalProblems,
+    this.progressPercent,
   });
+
+  /// Whether to render the progress section.
+  bool get _showProgress =>
+      completedProblems != null &&
+      totalProblems != null &&
+      progressPercent != null;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +54,7 @@ class HomeworkOverviewCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          //   Heading
           Text(
             'Assignment Overview',
             style: AppTypography.h5(
@@ -54,7 +64,7 @@ class HomeworkOverviewCard extends StatelessWidget {
 
           SizedBox(height: AppSpacing.spacingLg.h),
 
-          // XP reward row
+          //  XP reward row
           Row(
             children: [
               SvgPicture.asset(
@@ -81,38 +91,40 @@ class HomeworkOverviewCard extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: AppSpacing.spacingLg.h),
+          //  Progress section
+          if (_showProgress) ...[
+            SizedBox(height: AppSpacing.spacingLg.h),
 
-          // Progress row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Overall Progress',
-                style: AppTypography.labelRegular(color: cs.onSurface),
-              ),
-              Text(
-                '$completedProblems/$totalProblems problems',
-                style: AppTypography.labelSmall(
-                  color: cs.onSurface,
-                ).copyWith(fontWeight: AppTypography.semiBold),
-              ),
-            ],
-          ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Overall Progress',
+                  style: AppTypography.labelRegular(color: cs.onSurface),
+                ),
+                Text(
+                  '$completedProblems/$totalProblems problems',
+                  style: AppTypography.labelSmall(
+                    color: cs.onSurface,
+                  ).copyWith(fontWeight: AppTypography.semiBold),
+                ),
+              ],
+            ),
 
-          SizedBox(height: AppSpacing.spacingXs.h),
+            SizedBox(height: AppSpacing.spacingXs.h),
 
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
-            child: LinearProgressIndicator(
-              value: progressPercent,
-              minHeight: 8.h,
-              backgroundColor: AppColors.brandPrimary100,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.brandPrimary700,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
+              child: LinearProgressIndicator(
+                value: progressPercent,
+                minHeight: 8.h,
+                backgroundColor: AppColors.brandPrimary100,
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  AppColors.brandPrimary700,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

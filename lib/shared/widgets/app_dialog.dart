@@ -59,7 +59,7 @@ class AppDialog extends StatelessWidget {
           padding: EdgeInsets.all(AppSpacing.spacingLg.w),
           decoration: BoxDecoration(
             color: cs.surface,
-            borderRadius: BorderRadius.circular(AppRadius.radiusXl.r),
+            borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
             boxShadow: [
               BoxShadow(
                 color: cs.shadow.withValues(alpha: 0.18),

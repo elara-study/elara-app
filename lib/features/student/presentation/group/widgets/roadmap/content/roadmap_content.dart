@@ -1,7 +1,7 @@
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/features/student/domain/group/entities/group_roadmap.dart';
-import 'package:elara/features/student/presentation/group/widgets/roadmap/content/roadmap_learning_path_header.dart';
 import 'package:elara/features/student/presentation/group/widgets/roadmap/module/roadmap_module_tile.dart';
+import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:flutter/material.dart';
 
 class RoadmapContent extends StatelessWidget {
@@ -11,6 +11,9 @@ class RoadmapContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final percent = (roadmap.completedFraction * 100).round().clamp(0, 100);
+
     return ListView.builder(
       padding: const EdgeInsets.all(AppSpacing.spacingLg),
       itemCount: 1 + roadmap.modules.length,
@@ -18,8 +21,12 @@ class RoadmapContent extends StatelessWidget {
         if (index == 0) {
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.spacingXl),
-            child: RoadmapLearningPathHeader(
-              completedFraction: roadmap.completedFraction,
+            child: AppSectionHeader(
+              title: 'Learning Path',
+              trailing: Text(
+                '$percent% completed',
+                style: textTheme.bodyMedium,
+              ),
             ),
           );
         }
