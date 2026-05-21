@@ -2,7 +2,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
 import 'package:elara/features/student/presentation/group/cubits/announcements_cubit.dart';
-import 'package:elara/features/teacher/group/presentation/widgets/announcement_card.dart';
+import 'package:elara/shared/widgets/announcement_card.dart';
 import 'package:elara/shared/widgets/announcement_form_content.dart';
 import 'package:elara/shared/widgets/app_dialog.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
