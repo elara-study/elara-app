@@ -1,4 +1,6 @@
+import 'package:elara/features/parent/domain/children/entities/parent_homework_status.dart';
 import 'package:elara/features/student/domain/homework/entities/homework_entity.dart';
+import 'package:elara/features/student/domain/homework/entities/homework_problem_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,7 @@ class ParentHomeworkCardEntity extends Equatable {
   final String className;
   final String? score; // e.g. "100 / 100"
   final Color baseColor;
+  final ParentHomeworkStatus status;
 
   const ParentHomeworkCardEntity({
     required this.id,
@@ -22,6 +25,7 @@ class ParentHomeworkCardEntity extends Equatable {
     required this.className,
     this.score,
     required this.baseColor,
+    this.status = ParentHomeworkStatus.active,
   });
 
   /// Factory constructor to map a standard [HomeworkEntity] into a [ParentHomeworkCardEntity].
@@ -45,6 +49,12 @@ class ParentHomeworkCardEntity extends Equatable {
       classLabel = 'Physics 101';
       subtitle = 'Motion in one and two dimensions.';
       subjectBgColor = const Color(0xFF4C6A8D);
+    } else if (hw.moduleTitle.toLowerCase().contains('waves')) {
+      moduleNumber = 'MODULE 01';
+      category = 'SCIENCE';
+      classLabel = 'Physics 101';
+      subtitle = 'Oscillations, amplitude, and frequency basics.';
+      subjectBgColor = const Color(0xFF4C6A8D);
     } else {
       moduleNumber = 'MODULE 01';
       category = hw.subject.toUpperCase();
@@ -52,7 +62,24 @@ class ParentHomeworkCardEntity extends Equatable {
       subjectBgColor = const Color(0xFF6A85A3);
     }
 
-    // Calculate score if Kinematics
+    // Derive homework-level status from problem statuses
+    final statuses = hw.problems.map((p) => p.status).toList();
+    ParentHomeworkStatus hwStatus;
+    if (statuses.isNotEmpty &&
+        statuses.every((s) => s == HomeworkProblemStatus.graded)) {
+      hwStatus = ParentHomeworkStatus.graded;
+    } else if (statuses.any(
+      (s) =>
+          s == HomeworkProblemStatus.submitted ||
+          s == HomeworkProblemStatus.pending ||
+          s == HomeworkProblemStatus.graded,
+    )) {
+      hwStatus = ParentHomeworkStatus.submitted;
+    } else {
+      hwStatus = ParentHomeworkStatus.active;
+    }
+
+    // Calculate score
     String? scoreText;
     if (hw.moduleTitle.toLowerCase().contains('kinematics')) {
       scoreText = '100 / 100';
@@ -77,6 +104,7 @@ class ParentHomeworkCardEntity extends Equatable {
       className: classLabel,
       score: scoreText,
       baseColor: subjectBgColor,
+      status: hwStatus,
     );
   }
 
@@ -90,5 +118,6 @@ class ParentHomeworkCardEntity extends Equatable {
     className,
     score,
     baseColor,
+    status,
   ];
 }

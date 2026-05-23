@@ -8,6 +8,8 @@ import 'package:elara/features/auth/presentation/views/splash_screen.dart';
 import 'package:elara/features/parent/presentation/home/views/parent_shell.dart';
 import 'package:elara/features/parent/domain/home/entities/parent_child_progress_entity.dart';
 import 'package:elara/features/parent/presentation/children/views/parent_child_profile_page.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_homework_page.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_homework_route_args.dart';
 import 'package:elara/features/settings/presentation/cubits/notifications_settings_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/profile_account_cubit.dart';
@@ -96,6 +98,9 @@ class AppRoutes {
   /// Detailed parent child profile screen.
   static const String parentChildProfile = '/parent/child-profile';
 
+  /// Parent child homework "See All" screen.
+  static const String parentChildHomework = '/parent/child-homework';
+
   /// Placeholder for roles without a full dashboard yet.
   static const String comingSoonDashboard = '/coming-soon-dashboard';
 
@@ -120,7 +125,7 @@ class AppRoutes {
     switch (settings.name) {
       case splash:
         // Developing features revert to splash
-        return MaterialPageRoute(builder: (_) => const TeacherShell());
+        return MaterialPageRoute(builder: (_) => const ParentShell());
 
       case login:
         return MaterialPageRoute(builder: (_) => const SignInScreen());
@@ -158,6 +163,20 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
             body: Center(child: Text('Child profile data not found')),
+          ),
+        );
+
+      case parentChildHomework:
+        final hwArgs = settings.arguments;
+        if (hwArgs is ParentChildHomeworkRouteArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => ParentChildHomeworkPage.fromArgs(hwArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Homework data not found')),
           ),
         );
 

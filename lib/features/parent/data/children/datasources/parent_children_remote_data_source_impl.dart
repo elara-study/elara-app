@@ -13,6 +13,85 @@ class ParentChildrenRemoteDataSourceImpl
     implements ParentChildrenRemoteDataSource {
   const ParentChildrenRemoteDataSourceImpl();
 
+  /// Shared mock homework list builder.
+  List<ParentHomeworkCardEntity> _buildMockHomeworks() {
+    const homeworks = [
+      HomeworkEntity(
+        id: 'hw-1',
+        subject: 'Mathematics 7A',
+        moduleTitle: 'Introduction to Calculus',
+        totalXp: 250,
+        problems: [
+          HomeworkProblemEntity(
+            id: 'p-1',
+            problemNumber: 1,
+            questionText: 'Find the derivative of f(x) = x².',
+            status: HomeworkProblemStatus.active,
+            submittedAnswer: '',
+          ),
+        ],
+      ),
+      HomeworkEntity(
+        id: 'hw-2',
+        subject: 'Physics 101',
+        moduleTitle: 'Kinematics',
+        totalXp: 250,
+        problems: [
+          HomeworkProblemEntity(
+            id: 'p-2',
+            problemNumber: 1,
+            questionText:
+                'A car accelerates from rest at 2 m/s² for 5 seconds. Find its final velocity.',
+            status: HomeworkProblemStatus.graded,
+            submittedAnswer: '10 m/s',
+            grade: 10,
+            maxGrade: 10,
+            feedback: 'Excellent work!',
+          ),
+          HomeworkProblemEntity(
+            id: 'p-3',
+            problemNumber: 2,
+            questionText: 'Describe motion in one and two dimensions.',
+            status: HomeworkProblemStatus.graded,
+            submittedAnswer:
+                'Motion along a straight line vs motion in a plane.',
+            grade: 90,
+            maxGrade: 90,
+            feedback: 'Perfect!',
+          ),
+        ],
+      ),
+      HomeworkEntity(
+        id: 'hw-3',
+        subject: 'Physics 101',
+        moduleTitle: 'Introduction to Waves',
+        totalXp: 200,
+        problems: [
+          HomeworkProblemEntity(
+            id: 'p-4',
+            problemNumber: 1,
+            questionText:
+                'Explain the relationship between frequency and wavelength.',
+            status: HomeworkProblemStatus.submitted,
+            submittedAnswer:
+                'Frequency and wavelength are inversely proportional.',
+          ),
+          HomeworkProblemEntity(
+            id: 'p-5',
+            problemNumber: 2,
+            questionText: 'Define amplitude in the context of wave motion.',
+            status: HomeworkProblemStatus.submitted,
+            submittedAnswer:
+                'Amplitude is the maximum displacement from the equilibrium position.',
+          ),
+        ],
+      ),
+    ];
+    return homeworks
+        .map((hw) => ParentHomeworkCardEntity.fromHomework(hw))
+        .toList();
+  }
+
   @override
   Future<ParentChildProfileEntity> fetchChildProfile(String childId) async {
     await Future<void>.delayed(const Duration(milliseconds: 280));
@@ -51,61 +130,19 @@ class ParentChildrenRemoteDataSourceImpl
       isDraft: false,
     );
 
-    final homeworks = [
-      const HomeworkEntity(
-        id: 'hw-1',
-        subject: 'Mathematics 7A',
-        moduleTitle: 'Introduction to Calculus',
-        totalXp: 250,
-        problems: [
-          HomeworkProblemEntity(
-            id: 'p-1',
-            problemNumber: 1,
-            questionText: 'Find the derivative of f(x) = x².',
-            status: HomeworkProblemStatus.active,
-            submittedAnswer: '',
-          ),
-        ],
-      ),
-      const HomeworkEntity(
-        id: 'hw-2',
-        subject: 'Physics 101',
-        moduleTitle: 'Kinematics',
-        totalXp: 250,
-        problems: [
-          HomeworkProblemEntity(
-            id: 'p-2',
-            problemNumber: 1,
-            questionText:
-                'A car accelerates from rest at 2 m/s² for 5 seconds. Find its final velocity.',
-            status: HomeworkProblemStatus.graded,
-            submittedAnswer: '10 m/s',
-            grade: 10,
-            maxGrade: 10,
-            feedback: 'Excellent work!',
-          ),
-          HomeworkProblemEntity(
-            id: 'p-3',
-            problemNumber: 2,
-            questionText: 'Describe motion in one and two dimensions.',
-            status: HomeworkProblemStatus.graded,
-            submittedAnswer:
-                'Motion along a straight line vs motion in a plane.',
-            grade: 90,
-            maxGrade: 90,
-            feedback: 'Perfect!',
-          ),
-        ],
-      ),
-    ];
-
     return ParentChildProfileEntity(
       child: child,
       attendanceLabel: '96%',
       insight: insight,
-      homeworks: homeworks
-          .map((hw) => ParentHomeworkCardEntity.fromHomework(hw))
-          .toList(),
+      homeworks: _buildMockHomeworks(),
     );
+  }
+
+  @override
+  Future<List<ParentHomeworkCardEntity>> fetchChildHomeworks(
+    String childId,
+  ) async {
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    return _buildMockHomeworks();
   }
 }

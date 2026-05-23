@@ -1,4 +1,5 @@
 import 'package:elara/config/dependency_injection.dart';
+import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
@@ -14,6 +15,7 @@ import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:elara/features/parent/presentation/children/widgets/parent_child_profile_overflow_menu.dart';
 import 'package:elara/features/parent/presentation/children/widgets/parent_homework_card.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_homework_route_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -197,7 +199,18 @@ class ParentChildProfilePage extends StatelessWidget {
 
                     // ── Homework Section ─────────────────────────────────────────────
                     if (profile.homeworks.isNotEmpty) ...[
-                      AppSectionHeader(title: 'Homework', onSeeAll: () {}),
+                      AppSectionHeader(
+                        title: 'Homework',
+                        onSeeAll: () {
+                          Navigator.of(context).pushNamed(
+                            AppRoutes.parentChildHomework,
+                            arguments: ParentChildHomeworkRouteArgs(
+                              childId: child.id,
+                              childHandle: child.handle,
+                            ),
+                          );
+                        },
+                      ),
                       SizedBox(height: AppSpacing.spacingLg.h),
                       for (final hw in profile.homeworks) ...[
                         ParentHomeworkCard(entity: hw),

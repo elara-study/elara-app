@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/parent/domain/children/entities/parent_homework_card_entity.dart';
+import 'package:elara/features/parent/domain/children/entities/parent_homework_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -113,6 +114,29 @@ class ParentHomeworkCard extends StatelessWidget {
                           ),
                         ],
                       ),
+                    ),
+                  ),
+                ] else if (entity.status == ParentHomeworkStatus.submitted) ...[
+                  SizedBox(width: AppSpacing.spacingMd.w),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 6.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.brandPrimary500Alpha20,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Text(
+                      'SUBMITTED',
+                      style:
+                          AppTypography.labelSmall(
+                            color: AppColors.brandPrimary500,
+                          ).copyWith(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 10.sp,
+                            letterSpacing: 0.5,
+                          ),
                     ),
                   ),
                 ],
