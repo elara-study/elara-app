@@ -182,7 +182,7 @@ class _TeacherModuleCard extends StatelessWidget {
       // Teacher leading: always brandPrimary500 circle, tapping opens dialog
       leading: GestureDetector(
         onTap: () => _showInteractionOptions(context),
-        child: ModuleLeadingCircle(
+        child: const ModuleLeadingCircle(
           icon: Icons.menu_book_rounded,
           iconColor: AppColors.white,
           fillColor: AppColors.brandPrimary500,

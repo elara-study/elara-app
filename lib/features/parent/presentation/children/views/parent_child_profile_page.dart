@@ -4,7 +4,6 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/parent/domain/children/entities/parent_child_profile_entity.dart';
 import 'package:elara/features/parent/domain/home/entities/parent_child_progress_entity.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_profile_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_profile_state.dart';
@@ -212,7 +211,7 @@ class ParentChildProfilePage extends StatelessWidget {
                         },
                       ),
                       SizedBox(height: AppSpacing.spacingLg.h),
-                      for (final hw in profile.homeworks) ...[
+                      for (final hw in profile.homeworks.take(2)) ...[
                         ParentHomeworkCard(entity: hw),
                         SizedBox(height: AppSpacing.spacingLg.h),
                       ],

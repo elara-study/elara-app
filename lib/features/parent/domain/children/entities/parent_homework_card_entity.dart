@@ -1,5 +1,6 @@
 import 'package:elara/features/parent/domain/children/entities/parent_homework_status.dart';
 import 'package:elara/features/student/domain/homework/entities/homework_entity.dart';
+import 'package:elara/features/student/domain/homework/entities/homework_problem_entity.dart';
 import 'package:elara/features/student/domain/homework/entities/homework_problem_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class ParentHomeworkCardEntity extends Equatable {
   final String? score; // e.g. "100 / 100"
   final Color baseColor;
   final ParentHomeworkStatus status;
+  final List<HomeworkProblemEntity> problems;
 
   const ParentHomeworkCardEntity({
     required this.id,
@@ -26,6 +28,7 @@ class ParentHomeworkCardEntity extends Equatable {
     this.score,
     required this.baseColor,
     this.status = ParentHomeworkStatus.active,
+    this.problems = const [],
   });
 
   /// Factory constructor to map a standard [HomeworkEntity] into a [ParentHomeworkCardEntity].
@@ -105,6 +108,7 @@ class ParentHomeworkCardEntity extends Equatable {
       score: scoreText,
       baseColor: subjectBgColor,
       status: hwStatus,
+      problems: hw.problems,
     );
   }
 
@@ -119,5 +123,6 @@ class ParentHomeworkCardEntity extends Equatable {
     score,
     baseColor,
     status,
+    problems,
   ];
 }
