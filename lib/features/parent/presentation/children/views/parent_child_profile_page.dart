@@ -1,5 +1,6 @@
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/config/routes.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_insights_page.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
@@ -186,7 +187,18 @@ class ParentChildProfilePage extends StatelessWidget {
 
                     // ── Received Teacher Insights Section ────────────────────────────
                     if (profile.insight != null) ...[
-                      AppSectionHeader(title: 'Insights', onSeeAll: () {}),
+                      AppSectionHeader(
+                        title: 'Insights',
+                        onSeeAll: () {
+                          Navigator.of(context).pushNamed(
+                            AppRoutes.parentChildInsights,
+                            arguments: ParentChildInsightsRouteArgs(
+                              childId: child.id,
+                              childHandle: child.handle,
+                            ),
+                          );
+                        },
+                      ),
                       SizedBox(height: AppSpacing.spacingLg.h),
                       TeacherStudentInsightCard(
                         insight: profile.insight!,

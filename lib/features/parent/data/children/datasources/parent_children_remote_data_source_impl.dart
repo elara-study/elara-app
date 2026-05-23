@@ -143,4 +143,31 @@ class ParentChildrenRemoteDataSourceImpl
     await Future<void>.delayed(const Duration(milliseconds: 200));
     return _buildMockHomeworks();
   }
+
+  @override
+  Future<List<TeacherStudentInsightEntity>> fetchChildInsights(
+    String childId,
+  ) async {
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+
+    // Hardcoded mock insights matching the screenshot
+    return const [
+      TeacherStudentInsightEntity(
+        updatedLabel: '5 min ago',
+        paragraph1:
+            'Tyler has shown exceptional growth in Quantum Mechanics this term. His ability to grasp complex theoretical concepts, particularly regarding wave-particle duality, is outstanding and frequently pushes classroom discussions to higher levels.',
+        paragraph2:
+            'However, we noticed a slight dip in his practical lab applications. While his mathematical foundations are strong, a renewed focus on consistent experiment documentation and safety protocol adherence could bridge the gap between his theoretical brilliance and practical execution.',
+        isDraft: false,
+      ),
+      TeacherStudentInsightEntity(
+        updatedLabel: '1 hour ago',
+        paragraph1:
+            'Tyler has shown exceptional growth in Quantum Mechanics this term. His ability to grasp complex theoretical concepts, particularly regarding wave-particle duality, is outstanding and frequently pushes classroom discussions to higher levels.',
+        paragraph2:
+            'However, we noticed a slight dip in his practical lab applications. While his mathematical foundations are strong, a renewed focus on consistent experiment documentation and safety protocol adherence could bridge the gap between his theoretical brilliance and practical execution.',
+        isDraft: false,
+      ),
+    ];
+  }
 }

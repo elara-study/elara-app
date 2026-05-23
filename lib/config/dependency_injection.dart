@@ -32,8 +32,10 @@ import 'package:elara/features/parent/data/children/repositories/parent_children
 import 'package:elara/features/parent/domain/children/repositories/parent_children_repository.dart';
 import 'package:elara/features/parent/domain/children/usecases/get_parent_child_profile_use_case.dart';
 import 'package:elara/features/parent/domain/children/usecases/get_parent_child_homeworks_use_case.dart';
+import 'package:elara/features/parent/domain/children/usecases/get_parent_child_insights_usecase.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_profile_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_homework_cubit.dart';
+import 'package:elara/features/parent/presentation/children/cubits/parent_child_insights_cubit.dart';
 
 import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source.dart';
 import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source_impl.dart';
@@ -258,6 +260,14 @@ Future<void> setupDependencyInjection() async {
     () => ParentChildHomeworkCubit(
       getHomeworks: getIt<GetParentChildHomeworksUseCase>(),
     ),
+  );
+
+  // ── Parent Child Insights
+  getIt.registerLazySingleton(
+    () => GetParentChildInsightsUseCase(getIt<ParentChildrenRepository>()),
+  );
+  getIt.registerFactory<ParentChildInsightsCubit>(
+    () => ParentChildInsightsCubit(getIt<GetParentChildInsightsUseCase>()),
   );
 
   // ── Student group (Learn) ─────────────────────────────────────────────────

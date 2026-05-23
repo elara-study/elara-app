@@ -9,6 +9,7 @@ import 'package:elara/features/parent/presentation/home/views/parent_shell.dart'
 import 'package:elara/features/parent/domain/home/entities/parent_child_progress_entity.dart';
 import 'package:elara/features/parent/presentation/children/views/parent_child_profile_page.dart';
 import 'package:elara/features/parent/presentation/children/views/parent_child_homework_page.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_insights_page.dart';
 import 'package:elara/features/parent/presentation/children/views/parent_child_homework_route_args.dart';
 import 'package:elara/features/settings/presentation/cubits/notifications_settings_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
@@ -100,6 +101,7 @@ class AppRoutes {
 
   /// Parent child homework "See All" screen.
   static const String parentChildHomework = '/parent/child-homework';
+  static const String parentChildInsights = '/parent/child-insights';
 
   /// Placeholder for roles without a full dashboard yet.
   static const String comingSoonDashboard = '/coming-soon-dashboard';
@@ -177,6 +179,20 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
             body: Center(child: Text('Homework data not found')),
+          ),
+        );
+
+      case parentChildInsights:
+        final insightsArgs = settings.arguments;
+        if (insightsArgs is ParentChildInsightsRouteArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => ParentChildInsightsPage(args: insightsArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Insights data not found')),
           ),
         );
 
