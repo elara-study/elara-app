@@ -40,8 +40,7 @@ class ParentHomeworkDialogContent extends StatelessWidget {
                       padding: EdgeInsets.only(bottom: AppSpacing.spacingLg.h),
                       child: _buildProblemItem(context, p),
                     ),
-                  )
-                  .toList(),
+                  ),
             ],
           ),
         ),

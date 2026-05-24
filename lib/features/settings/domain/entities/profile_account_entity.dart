@@ -6,16 +6,20 @@ class ProfileAccountEntity extends Equatable {
     required this.fullName,
     required this.username,
     required this.email,
-    required this.grade,
-    required this.country,
+    this.grade,
+    this.country,
+    this.phoneNumber,
+    this.subjects,
   });
 
   final String fullName;
   final String username;
   final String email;
-  final String grade;
-  final String country;
+  final String? grade;
+  final String? country;
+  final String? phoneNumber;
+  final List<String>? subjects;
 
   @override
-  List<Object?> get props => [fullName, username, email, grade, country];
+  List<Object?> get props => [fullName, username, email, grade, country, phoneNumber, subjects];
 }

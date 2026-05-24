@@ -17,6 +17,8 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
     'email': 'tylerthecreator@elara.study',
     'grade': '7',
     'country': 'Egypt',
+    'phone_number': '+20 10 12345678',
+    'subjects': ['Math', 'Science', 'English'],
   };
 
   @override

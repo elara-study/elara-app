@@ -14,12 +14,16 @@ import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source.dart';
 import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source_impl.dart';
 import 'package:elara/features/parent/data/home/repositories/parent_home_repository_impl.dart';
+import 'package:elara/features/parent/data/profile/datasources/parent_profile_remote_data_source.dart';
+import 'package:elara/features/parent/data/profile/repositories/parent_profile_repository_impl.dart';
 import 'package:elara/features/parent/data/reports/datasources/parent_reports_remote_data_source.dart';
 import 'package:elara/features/parent/data/reports/datasources/parent_reports_remote_data_source_impl.dart';
 import 'package:elara/features/parent/data/reports/repositories/parent_reports_repository_impl.dart';
 import 'package:elara/features/parent/domain/home/repositories/parent_home_repository.dart';
 import 'package:elara/features/parent/domain/home/usecases/get_parent_children_dashboard_use_case.dart';
 import 'package:elara/features/parent/domain/home/usecases/get_parent_home_use_case.dart';
+import 'package:elara/features/parent/domain/profile/repositories/parent_profile_repository.dart';
+import 'package:elara/features/parent/domain/profile/usecases/get_parent_profile_use_case.dart';
 import 'package:elara/features/parent/domain/reports/repositories/parent_reports_repository.dart';
 import 'package:elara/features/parent/domain/reports/usecases/get_parent_reports_use_case.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
@@ -36,6 +40,7 @@ import 'package:elara/features/parent/domain/children/usecases/get_parent_child_
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_profile_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_homework_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_insights_cubit.dart';
+import 'package:elara/features/parent/presentation/profile/cubits/parent_profile_cubit.dart';
 
 import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source.dart';
 import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source_impl.dart';
@@ -221,6 +226,16 @@ Future<void> setupDependencyInjection() async {
     () => GetParentReportsUseCase(getIt<ParentReportsRepository>()),
   );
 
+  getIt.registerLazySingleton<ParentProfileRemoteDataSource>(
+    () => ParentProfileRemoteDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<ParentProfileRepository>(
+    () => ParentProfileRepositoryImpl(getIt<ParentProfileRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetParentProfileUseCase(getIt<ParentProfileRepository>()),
+  );
+
   getIt.registerFactory(() => ParentTabCubit());
   getIt.registerFactory(
     () => ParentHomeCubit(getParentHomeUseCase: getIt<GetParentHomeUseCase>()),
@@ -268,6 +283,14 @@ Future<void> setupDependencyInjection() async {
   );
   getIt.registerFactory<ParentChildInsightsCubit>(
     () => ParentChildInsightsCubit(getIt<GetParentChildInsightsUseCase>()),
+  );
+
+  // ── Parent Profile
+  getIt.registerFactory<ParentProfileCubit>(
+    () => ParentProfileCubit(
+      authCubit: getIt<AuthCubit>(),
+      getProfileUseCase: getIt<GetParentProfileUseCase>(),
+    ),
   );
 
   // ── Student group (Learn) ─────────────────────────────────────────────────

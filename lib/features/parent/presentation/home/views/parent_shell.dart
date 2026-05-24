@@ -9,6 +9,8 @@ import 'package:elara/features/parent/presentation/home/cubits/parent_tab_cubit.
 import 'package:elara/features/parent/presentation/home/views/parent_home_screen.dart';
 import 'package:elara/features/parent/presentation/reports/cubits/parent_reports_cubit.dart';
 import 'package:elara/features/parent/presentation/reports/views/parent_reports_screen.dart';
+import 'package:elara/features/parent/presentation/profile/views/parent_profile_screen.dart';
+import 'package:elara/features/parent/presentation/profile/cubits/parent_profile_cubit.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,7 @@ class ParentShell extends StatelessWidget {
     ParentChildrenScreen(),
     ParentReportsScreen(),
     _ParentPlaceholderPage(title: 'Alerts'),
-    _ParentPlaceholderPage(title: 'Profile'),
+    ParentProfileScreen(),
   ];
 
   @override
@@ -40,6 +42,9 @@ class ParentShell extends StatelessWidget {
         ),
         BlocProvider<ParentChildrenCubit>(
           create: (_) => getIt<ParentChildrenCubit>()..loadChildren(),
+        ),
+        BlocProvider<ParentProfileCubit>(
+          create: (_) => getIt<ParentProfileCubit>()..loadProfile(),
         ),
       ],
       child: BlocBuilder<ParentTabCubit, int>(

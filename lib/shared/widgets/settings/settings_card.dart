@@ -1,5 +1,4 @@
 import 'package:elara/core/theme/app_radius.dart';
-import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,12 +12,10 @@ class SettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
-        boxShadow: AppShadows.elevation(brightness),
       ),
       child: Padding(
         padding: padding ?? EdgeInsets.all(AppSpacing.spacingLg.r),
