@@ -1,9 +1,10 @@
 import 'package:elara/config/dependency_injection.dart';
+import 'package:elara/config/routes.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_insights_page.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/parent/domain/children/entities/parent_child_profile_entity.dart';
 import 'package:elara/features/parent/domain/home/entities/parent_child_progress_entity.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_profile_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_profile_state.dart';
@@ -14,6 +15,7 @@ import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:elara/features/parent/presentation/children/widgets/parent_child_profile_overflow_menu.dart';
 import 'package:elara/features/parent/presentation/children/widgets/parent_homework_card.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_homework_route_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -185,7 +187,18 @@ class ParentChildProfilePage extends StatelessWidget {
 
                     // ── Received Teacher Insights Section ────────────────────────────
                     if (profile.insight != null) ...[
-                      AppSectionHeader(title: 'Insights', onSeeAll: () {}),
+                      AppSectionHeader(
+                        title: 'Insights',
+                        onSeeAll: () {
+                          Navigator.of(context).pushNamed(
+                            AppRoutes.parentChildInsights,
+                            arguments: ParentChildInsightsRouteArgs(
+                              childId: child.id,
+                              childHandle: child.handle,
+                            ),
+                          );
+                        },
+                      ),
                       SizedBox(height: AppSpacing.spacingLg.h),
                       TeacherStudentInsightCard(
                         insight: profile.insight!,
@@ -197,9 +210,20 @@ class ParentChildProfilePage extends StatelessWidget {
 
                     // ── Homework Section ─────────────────────────────────────────────
                     if (profile.homeworks.isNotEmpty) ...[
-                      AppSectionHeader(title: 'Homework', onSeeAll: () {}),
+                      AppSectionHeader(
+                        title: 'Homework',
+                        onSeeAll: () {
+                          Navigator.of(context).pushNamed(
+                            AppRoutes.parentChildHomework,
+                            arguments: ParentChildHomeworkRouteArgs(
+                              childId: child.id,
+                              childHandle: child.handle,
+                            ),
+                          );
+                        },
+                      ),
                       SizedBox(height: AppSpacing.spacingLg.h),
-                      for (final hw in profile.homeworks) ...[
+                      for (final hw in profile.homeworks.take(2)) ...[
                         ParentHomeworkCard(entity: hw),
                         SizedBox(height: AppSpacing.spacingLg.h),
                       ],

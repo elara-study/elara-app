@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/theme_cubit.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/student/presentation/profile/cubits/student_settings_cubit.dart';
@@ -143,7 +144,7 @@ class StudentSettingsScreen extends StatelessWidget {
                           label: 'Profile & Account',
                           onTap: () => Navigator.of(
                             context,
-                          ).pushNamed(AppRoutes.profileAccount),
+                          ).pushNamed(AppRoutes.profileAccount, arguments: UserRole.student),
                         ),
                         SettingsNavigationTile(
                           icon: Icons.shield,

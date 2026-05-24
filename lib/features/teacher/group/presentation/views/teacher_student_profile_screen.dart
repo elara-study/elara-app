@@ -4,7 +4,6 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_profile_entity.dart';
 import 'package:elara/features/teacher/group/presentation/cubits/teacher_student_profile_cubit.dart';
-import 'package:elara/features/teacher/group/presentation/widgets/add_insight_manual_sheet.dart';
 import 'package:elara/features/teacher/group/presentation/widgets/edit_insight_manual_sheet.dart';
 import 'package:elara/features/teacher/group/presentation/widgets/teacher_student_insight_card.dart';
 import 'package:elara/features/teacher/group/presentation/widgets/teacher_student_parents_section.dart';

@@ -2,6 +2,9 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/enums/user_role.dart';
+import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
+import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/settings/domain/entities/profile_account_entity.dart';
 import 'package:elara/features/settings/presentation/cubits/profile_account_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/profile_account_state.dart';
@@ -149,43 +152,141 @@ class _ProfileAccountForm extends StatelessWidget {
                 ),
               ),
               SizedBox(height: AppSpacing.spacingLg.h),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _LabeledDisplayField(
-                      label: 'Grade',
-                      value: profile.grade,
-                      leading: Icon(
-                        Icons.school_outlined,
-                        size: 16.sp,
-                        color: cs.onSurfaceVariant,
-                      ),
-                      trailing: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        size: 16.sp,
-                        color: cs.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: AppSpacing.spacingLg.w),
-                  Expanded(
-                    child: _LabeledDisplayField(
-                      label: 'Country',
-                      value: profile.country,
-                      leading: Icon(
-                        Icons.public_rounded,
-                        size: 16.sp,
-                        color: cs.onSurfaceVariant,
-                      ),
-                      trailing: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        size: 16.sp,
-                        color: cs.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                ],
+              BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, authState) {
+                  final argRole = ModalRoute.of(context)?.settings.arguments as UserRole?;
+                  final role = argRole ?? (authState is AuthAuthenticated
+                      ? authState.user.role
+                      : UserRole.student);
+
+                  switch (role) {
+                    case UserRole.teacher:
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: _LabeledDisplayField(
+                                  label: 'Phone Number',
+                                  value: profile.phoneNumber ?? '+20 10 12345678',
+                                  leading: Icon(
+                                    Icons.phone_outlined,
+                                    size: 16.sp,
+                                    color: cs.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: AppSpacing.spacingLg.w),
+                              Expanded(
+                                child: _LabeledDisplayField(
+                                  label: 'Subject(s)',
+                                  value: profile.subjects?.join(', ') ?? 'Math',
+                                  leading: Icon(
+                                    Icons.menu_book_rounded,
+                                    size: 16.sp,
+                                    color: cs.onSurfaceVariant,
+                                  ),
+                                  trailing: Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    size: 16.sp,
+                                    color: cs.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: AppSpacing.spacingLg.h),
+                          _LabeledDisplayField(
+                            label: 'Country',
+                            value: profile.country ?? 'Egypt',
+                            leading: Icon(
+                              Icons.public_rounded,
+                              size: 16.sp,
+                              color: cs.onSurfaceVariant,
+                            ),
+                            trailing: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 16.sp,
+                              color: cs.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      );
+
+                    case UserRole.parent:
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _LabeledDisplayField(
+                            label: 'Phone Number',
+                            value: profile.phoneNumber ?? '+20 10 12345678',
+                            leading: Icon(
+                              Icons.phone_outlined,
+                              size: 16.sp,
+                              color: cs.onSurfaceVariant,
+                            ),
+                          ),
+                          SizedBox(height: AppSpacing.spacingLg.h),
+                          _LabeledDisplayField(
+                            label: 'Country',
+                            value: profile.country ?? 'Egypt',
+                            leading: Icon(
+                              Icons.public_rounded,
+                              size: 16.sp,
+                              color: cs.onSurfaceVariant,
+                            ),
+                            trailing: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 16.sp,
+                              color: cs.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      );
+
+                    case UserRole.student:
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: _LabeledDisplayField(
+                              label: 'Grade',
+                              value: profile.grade ?? '7',
+                              leading: Icon(
+                                Icons.school_outlined,
+                                size: 16.sp,
+                                color: cs.onSurfaceVariant,
+                              ),
+                              trailing: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                size: 16.sp,
+                                color: cs.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: AppSpacing.spacingLg.w),
+                          Expanded(
+                            child: _LabeledDisplayField(
+                              label: 'Country',
+                              value: profile.country ?? 'Egypt',
+                              leading: Icon(
+                                Icons.public_rounded,
+                                size: 16.sp,
+                                color: cs.onSurfaceVariant,
+                              ),
+                              trailing: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                size: 16.sp,
+                                color: cs.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                  }
+                },
               ),
               SizedBox(height: AppSpacing.spacingLg.h),
               Align(
@@ -300,15 +401,6 @@ class _LabeledDisplayField extends StatelessWidget {
           decoration: BoxDecoration(
             color: cs.surfaceContainer,
             borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.black.withValues(alpha: 0.06)
-                    : AppColors.black.withValues(alpha: 0.04),
-                offset: const Offset(2, 2),
-                blurRadius: 4,
-              ),
-            ],
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(

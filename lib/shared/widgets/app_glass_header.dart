@@ -52,7 +52,7 @@ class AppGlassHeader extends StatelessWidget implements PreferredSizeWidget {
             'assets/icons/back_arrow_icon.svg',
             height: AppIconSizes.iconXs.h,
             width: AppIconSizes.iconXs.w,
-            color: cs.onSurface,
+            colorFilter: ColorFilter.mode(cs.onSurface, BlendMode.srcIn),
           ),
         ),
       );

@@ -4,10 +4,14 @@ import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/views/sign_in_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_credentials_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
-import 'package:elara/features/auth/presentation/views/splash_screen.dart';
 import 'package:elara/features/parent/presentation/home/views/parent_shell.dart';
 import 'package:elara/features/parent/domain/home/entities/parent_child_progress_entity.dart';
 import 'package:elara/features/parent/presentation/children/views/parent_child_profile_page.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_homework_page.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_insights_page.dart';
+import 'package:elara/features/parent/presentation/children/views/parent_child_homework_route_args.dart';
+import 'package:elara/features/parent/presentation/profile/views/parent_settings_screen.dart';
+import 'package:elara/features/parent/presentation/profile/cubits/parent_profile_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/notifications_settings_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/profile_account_cubit.dart';
@@ -62,6 +66,7 @@ class AppRoutes {
 
   /// Student — settings (shared UI shell; content varies by role later).
   static const String studentSettings = '/student/settings';
+  static const String parentSettings = '/parent/settings';
 
   /// Shared settings detail screens (student / teacher / parent).
   static const String profileAccount = '/settings/profile-account';
@@ -96,6 +101,10 @@ class AppRoutes {
   /// Detailed parent child profile screen.
   static const String parentChildProfile = '/parent/child-profile';
 
+  /// Parent child homework "See All" screen.
+  static const String parentChildHomework = '/parent/child-homework';
+  static const String parentChildInsights = '/parent/child-insights';
+
   /// Placeholder for roles without a full dashboard yet.
   static const String comingSoonDashboard = '/coming-soon-dashboard';
 
@@ -120,7 +129,7 @@ class AppRoutes {
     switch (settings.name) {
       case splash:
         // Developing features revert to splash
-        return MaterialPageRoute(builder: (_) => const TeacherShell());
+        return MaterialPageRoute(builder: (_) => const ParentShell());
 
       case login:
         return MaterialPageRoute(builder: (_) => const SignInScreen());
@@ -158,6 +167,34 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
             body: Center(child: Text('Child profile data not found')),
+          ),
+        );
+
+      case parentChildHomework:
+        final hwArgs = settings.arguments;
+        if (hwArgs is ParentChildHomeworkRouteArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => ParentChildHomeworkPage.fromArgs(hwArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Homework data not found')),
+          ),
+        );
+
+      case parentChildInsights:
+        final insightsArgs = settings.arguments;
+        if (insightsArgs is ParentChildInsightsRouteArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => ParentChildInsightsPage(args: insightsArgs),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Insights data not found')),
           ),
         );
 
@@ -272,8 +309,18 @@ class AppRoutes {
           ),
         );
 
+      case parentSettings:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<ParentProfileCubit>(),
+            child: const ParentSettingsScreen(),
+          ),
+        );
+
       case profileAccount:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => BlocProvider(
             create: (_) => getIt<ProfileAccountCubit>()..loadProfile(),
             child: const ProfileAccountScreen(),
@@ -282,6 +329,7 @@ class AppRoutes {
 
       case passwordSecurity:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => BlocProvider(
             create: (_) => PasswordSecurityCubit(),
             child: const PasswordSecurityScreen(),
@@ -290,6 +338,7 @@ class AppRoutes {
 
       case notificationsSettings:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => BlocProvider(
             create: (_) => NotificationsSettingsCubit(),
             child: const NotificationsSettingsScreen(),
