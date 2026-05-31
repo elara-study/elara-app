@@ -289,7 +289,7 @@ class _StyledDropdown extends StatelessWidget {
         ),
         SizedBox(height: AppSpacing.spacingSm.h),
         DropdownButtonFormField<String>(
-          initialValue: value,
+          // initialValue: value,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: AppTypography.bodySmall(color: cs.onSurfaceVariant),
