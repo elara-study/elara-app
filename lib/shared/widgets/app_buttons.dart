@@ -34,12 +34,15 @@ class AppPrimaryButton extends StatelessWidget {
         foregroundColor: ButtonColors.primaryText,
         disabledBackgroundColor: ButtonColors.primaryDisabled,
         disabledForegroundColor: ButtonColors.primaryTextDisabled,
-        padding: padding ?? const EdgeInsets.symmetric(
-          horizontal: AppSpacing.spacing2xl,
-          vertical: AppSpacing.spacingLg,
-        ),
+        padding:
+            padding ??
+            const EdgeInsets.symmetric(
+              horizontal: AppSpacing.spacing2xl,
+              vertical: AppSpacing.spacingLg,
+            ),
         shape: RoundedRectangleBorder(
-          borderRadius: borderRadius ?? BorderRadius.circular(AppRadius.radiusSm),
+          borderRadius:
+              borderRadius ?? BorderRadius.circular(AppRadius.radiusSm),
         ),
         elevation: 0,
       ),
@@ -58,9 +61,9 @@ class AppPrimaryButton extends StatelessWidget {
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (leading != null) leading! else Icon(icon, size: 20),
-                const SizedBox(width: AppSpacing.spacingSm),
                 Text(text, style: AppTypography.button()),
+                const SizedBox(width: AppSpacing.spacingSm),
+                if (leading != null) leading! else Icon(icon, size: 20),
               ],
             )
           : Text(text, style: AppTypography.button()),
@@ -230,12 +233,15 @@ class AppOutlineButton extends StatelessWidget {
                   : ButtonColors.outlineBorder,
               width: 1,
             ),
-            padding: padding ?? const EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacing2xl,
-              vertical: AppSpacing.spacingLg,
-            ),
+            padding:
+                padding ??
+                const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.spacing2xl,
+                  vertical: AppSpacing.spacingLg,
+                ),
             shape: RoundedRectangleBorder(
-              borderRadius: borderRadius ?? BorderRadius.circular(AppRadius.radiusSm),
+              borderRadius:
+                  borderRadius ?? BorderRadius.circular(AppRadius.radiusSm),
             ),
           ).copyWith(
             overlayColor: WidgetStateProperty.resolveWith<Color?>((

@@ -1,172 +1,180 @@
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
-import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
-import 'package:elara/features/auth/presentation/widgets/auth_header.dart';
-import 'package:elara/features/auth/presentation/widgets/auth_primary_button.dart';
-import 'package:elara/features/auth/presentation/widgets/auth_text_field.dart';
+import 'package:elara/features/auth/auth.dart';
+import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final emailCtrl = TextEditingController();
-    final passwordCtrl = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-
     return Scaffold(
-      backgroundColor: AppColors.brandPrimary100,
       body: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state is AuthAuthenticated) {
-            AppRoutes.navigateAfterAuth(context, state.user);
-          } else if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: AppColors.error500,
-                behavior: SnackBarBehavior.floating,
+        listener: _onAuthStateChange,
+        builder: (context, state) => AuthScreenLayout(
+          builder: (context, m) =>
+              _SignInCardContent(isLoading: state is AuthLoading, metrics: m),
+        ),
+      ),
+    );
+  }
+
+  static void _onAuthStateChange(BuildContext context, AuthState state) {
+    if (state is AuthAuthenticated) {
+      AppRoutes.navigateAfterAuth(context, state.user);
+    } else if (state is AuthError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: AppColors.error500,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+}
+// _SignInCardContent — stateful form inside the auth card.
+
+class _SignInCardContent extends StatefulWidget {
+  final bool isLoading;
+  final AuthScreenMetrics metrics;
+  const _SignInCardContent({required this.isLoading, required this.metrics});
+
+  @override
+  State<_SignInCardContent> createState() => _SignInCardContentState();
+}
+
+class _SignInCardContentState extends State<_SignInCardContent> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _passwordCtrl.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      context.read<AuthCubit>().signIn(
+        email: _emailCtrl.text.trim(),
+        password: _passwordCtrl.text,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final m = widget.metrics;
+    return Form(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Header
+          AuthCardHeader(
+            title: 'Welcome back',
+            subtitle: 'Enter your details to sign in',
+            isCompact: m.isCompact,
+          ),
+          SizedBox(height: m.sectionGap),
+
+          // Email / Username
+          AuthCardField(
+            label: 'Email or Username',
+            hint: 'Enter your email or username',
+            controller: _emailCtrl,
+            keyboardType: TextInputType.emailAddress,
+            validator: (v) => (v == null || v.isEmpty)
+                ? 'Email or username is required'
+                : null,
+          ),
+          SizedBox(height: m.fieldGap),
+
+          // Password
+          AuthCardField(
+            label: 'Password',
+            hint: 'Enter your password',
+            controller: _passwordCtrl,
+            isPassword: true,
+            textInputAction: TextInputAction.done,
+            onFieldSubmitted: (_) => _submit(),
+            validator: (v) =>
+                (v == null || v.isEmpty) ? 'Password is required' : null,
+          ),
+          const SizedBox(height: AppSpacing.spacingXs),
+          // Forgot password
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.forgotPassword),
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-            );
-          }
-        },
-        builder: (context, state) {
-          final isLoading = state is AuthLoading;
-
-          return SafeArea(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingLg.w),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 128.h),
-
-                    const AuthHeader(
-                      title: 'Welcome to elara',
-                      subtitle: 'Sign in to start your study journey',
-                    ),
-
-                    SizedBox(height: AppSpacing.spacing4xl.h),
-
-                    // Email
-                    AuthTextField(
-                      label: 'Email',
-                      hint: 'Enter your email address',
-                      controller: emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      validator: (val) {
-                        if (val == null || val.isEmpty) {
-                          return 'Email is required';
-                        }
-                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(val)) {
-                          return 'Enter a valid email';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    SizedBox(height: AppSpacing.spacingSm.h),
-
-                    // Password
-                    AuthTextField(
-                      label: 'Password',
-                      hint: 'Enter your password',
-                      controller: passwordCtrl,
-                      isPassword: true,
-                      textInputAction: TextInputAction.done,
-                      onFieldSubmitted: (_) {
-                        if (formKey.currentState!.validate()) {
-                          context.read<AuthCubit>().signIn(
-                            email: emailCtrl.text.trim(),
-                            password: passwordCtrl.text,
-                          );
-                        }
-                      },
-                      validator: (val) {
-                        if (val == null || val.isEmpty) {
-                          return 'Password is required';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    SizedBox(height: AppSpacing.spacingXs.h),
-
-                    // Forgot password
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: Text(
-                          'Forgot password?',
-                          style: AppTypography.labelSmall(
-                            color: ButtonColors.ghostText,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: AppSpacing.spacingLg.h),
-
-                    AuthPrimaryButton(
-                      label: 'Sign in',
-                      icon: Icons.login_rounded,
-                      isLoading: isLoading,
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          context.read<AuthCubit>().signIn(
-                            email: emailCtrl.text.trim(),
-                            password: passwordCtrl.text,
-                          );
-                        }
-                      },
-                    ),
-
-                    SizedBox(height: AppSpacing.spacingLg.h),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don't have an account?  ",
-                          style: AppTypography.labelSmall(
-                            color: LightModeColors.textPrimary,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            AppRoutes.signUpRole,
-                          ),
-                          child: Text(
-                            'Sign up',
-                            style: AppTypography.labelSmall(
-                              color: ButtonColors.ghostText,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              child: Text(
+                'Forgot password?',
+                style: AppTypography.labelSmall(color: ButtonColors.ghostText),
               ),
             ),
-          );
-        },
+          ),
+
+          SizedBox(height: m.sectionGap),
+
+          // Login button
+          SizedBox(
+            width: double.infinity,
+            child: AppPrimaryButton(
+              text: 'Login',
+              isLoading: widget.isLoading,
+              onPressed: _submit,
+              leading: SvgPicture.asset(
+                'assets/icons/join_icon.svg',
+                colorFilter: const ColorFilter.mode(
+                  ButtonColors.primaryText,
+                  BlendMode.srcIn,
+                ),
+              ),
+              borderRadius: BorderRadius.circular(AppRadius.radiusFull),
+              padding: const EdgeInsets.symmetric(
+                vertical: AppSpacing.spacingSm,
+              ),
+            ),
+          ),
+
+          SizedBox(height: m.sectionGap),
+
+          // Social auth
+          const AuthDivider(label: 'OR LOGIN WITH'),
+          SizedBox(height: m.sectionGap),
+          AuthSocialRow(
+            gap: m.socialGap,
+            shouldStack: m.shouldStackSocialButtons,
+            onTap: () =>
+                Navigator.pushNamed(context, AppRoutes.signUpSocialRole),
+          ),
+
+          SizedBox(height: m.sectionGap),
+
+          // Footer
+          AuthCardFooter(
+            prompt: "Don't have an account?",
+            actionLabel: 'Sign up',
+            onTap: () => Navigator.pushNamed(context, AppRoutes.signUpRole),
+          ),
+        ],
       ),
     );
   }

@@ -105,7 +105,7 @@ class _AttendanceDialogState extends State<AttendanceDialog> {
                       value: _present[student.rank] ?? true,
                       onChanged: (v) =>
                           setState(() => _present[student.rank] = v),
-                      activeThumbColor: AppColors.brandPrimary500,
+                      activeTrackColor: AppColors.brandPrimary500,
                       trackOutlineColor: WidgetStateProperty.resolveWith((
                         states,
                       ) {

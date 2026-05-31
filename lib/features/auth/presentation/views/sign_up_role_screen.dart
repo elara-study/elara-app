@@ -1,17 +1,24 @@
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/enums/user_role.dart';
-import 'package:elara/core/theme/app_colors.dart';
-import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
-import 'package:elara/features/auth/presentation/widgets/auth_header.dart';
-import 'package:elara/features/auth/presentation/widgets/role_card.dart';
+import 'package:elara/features/auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:elara/core/theme/app_spacing.dart';
 
 class SignUpRoleScreen extends StatefulWidget {
-  const SignUpRoleScreen({super.key});
+  final String title;
+  final bool showSocialAuth;
+
+  const SignUpRoleScreen({
+    super.key,
+    this.title = 'Welcome to elara',
+    this.showSocialAuth = true,
+  });
+
+  /// Named constructor used when reached from a social auth button —
+  /// hides the social row since the user is already in that flow.
+  const SignUpRoleScreen.social({super.key})
+    : title = 'Choose your role',
+      showSocialAuth = false;
 
   @override
   State<SignUpRoleScreen> createState() => _SignUpRoleScreenState();
@@ -36,62 +43,91 @@ class _SignUpRoleScreenState extends State<SignUpRoleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.brandPrimary100,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingLg.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 136.09.h),
-
-              const AuthHeader(
-                title: 'Create your account',
-                subtitle: 'Sign up to start your study journey',
-              ),
-
-              SizedBox(height: AppSpacing.spacing4xl.h),
-
-              ...UserRole.values.map(
-                (role) => Padding(
-                  padding: EdgeInsets.only(bottom: AppSpacing.spacingLg.h),
-                  child: RoleCard(
-                    role: role,
-                    isSelected: _selectedRole == role,
-                    onTap: () => _onRoleTap(role),
-                  ),
-                ),
-              ),
-
-              SizedBox(height: AppSpacing.spacingXl.h),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Already have an account?  ',
-                    style: AppTypography.labelSmall(
-                      color: LightModeColors.textPrimary,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pushReplacementNamed(
-                      context,
-                      AppRoutes.login,
-                    ),
-                    child: Text(
-                      'Sign in',
-                      style: AppTypography.labelSmall(
-                        color: ButtonColors.ghostText,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+      body: AuthScreenLayout(
+        // m comes from the full-page LayoutBuilder — correct dimensions.
+        builder: (context, m) => _RoleCardContent(
+          title: widget.title,
+          showSocialAuth: widget.showSocialAuth,
+          selectedRole: _selectedRole,
+          metrics: m,
+          onRoleTap: _onRoleTap,
+          onSocialTap: () =>
+              Navigator.pushNamed(context, AppRoutes.signUpSocialRole),
         ),
       ),
+    );
+  }
+}
+
+// _RoleCardContent — the column inside the auth card.
+
+class _RoleCardContent extends StatelessWidget {
+  final String title;
+  final bool showSocialAuth;
+  final UserRole? selectedRole;
+  final AuthScreenMetrics metrics;
+  final ValueChanged<UserRole> onRoleTap;
+  final VoidCallback onSocialTap;
+
+  const _RoleCardContent({
+    required this.title,
+    required this.showSocialAuth,
+    required this.selectedRole,
+    required this.metrics,
+    required this.onRoleTap,
+    required this.onSocialTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final m = metrics;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AuthCardHeader(
+          title: title,
+          subtitle: 'Choose your role to start your journey',
+          isCompact: m.isCompact,
+        ),
+        SizedBox(height: m.sectionGap),
+
+        // Role cards
+        ...UserRole.values.map(
+          (role) => Padding(
+            padding: EdgeInsets.only(
+              bottom: role == UserRole.values.last ? 0 : m.roleGap,
+            ),
+            child: RoleCard(
+              role: role,
+              isSelected: selectedRole == role,
+              height: m.roleCardHeight,
+              contentPadding: m.roleCardContentPadding,
+              iconSize: m.roleIconSize,
+              onTap: () => onRoleTap(role),
+            ),
+          ),
+        ),
+
+        // ── Social auth (sign-up flow only) ─────────────────────────
+        if (showSocialAuth) ...[
+          SizedBox(height: m.sectionGap),
+          const AuthDivider(label: 'OR SIGN UP WITH'),
+          SizedBox(height: m.sectionGap),
+          AuthSocialRow(
+            gap: m.socialGap,
+            shouldStack: m.shouldStackSocialButtons,
+            onTap: onSocialTap,
+          ),
+        ],
+
+        SizedBox(height: m.sectionGap),
+        AuthCardFooter(
+          prompt: 'Already have an account?',
+          actionLabel: 'Sign in',
+          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
+        ),
+      ],
     );
   }
 }
