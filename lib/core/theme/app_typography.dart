@@ -18,6 +18,15 @@ class AppTypography {
   static const FontWeight extraBold = FontWeight.w800;
   static const FontWeight black = FontWeight.w900;
 
+  // Display styles (large marketing/onboarding headings)
+  static TextStyle display3({Color? color, String? font}) => TextStyle(
+    fontFamily: font ?? comfortaa,
+    fontSize: 36.sp,
+    fontWeight: bold,
+    height: 1.22,
+    color: color,
+  );
+
   // Text styles for headings
   static TextStyle h1({Color? color, String? font}) => TextStyle(
     fontFamily: font ?? nunito,
