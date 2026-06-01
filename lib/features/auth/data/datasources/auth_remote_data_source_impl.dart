@@ -1,55 +1,71 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:elara/core/constants/api_constants.dart';
 import 'package:elara/core/enums/user_role.dart';
+import 'package:elara/core/error/exceptions.dart';
+import 'package:elara/core/network/dio_client.dart';
 import 'package:elara/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:elara/features/auth/data/models/auth_model.dart';
 import 'package:elara/features/auth/data/models/user_model.dart';
 
-/// MOCKED implementation — replace body of [login] and [register]
-/// with real Dio calls once the backend is ready.
-///
-/// To switch to real API:
-///   1. Inject [DioClient] via constructor.
-///   2. Replace the `await Future.delayed(...)` blocks with Dio calls.
-///   3. Parse the response using [UserModel.fromJson].
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  //   inject DioClient when backend is ready
-  // final DioClient _dioClient;
-  // AuthRemoteDataSourceImpl(this._dioClient);
+  final DioClient _dioClient;
 
-  AuthRemoteDataSourceImpl();
+  AuthRemoteDataSourceImpl(this._dioClient);
 
   @override
   Future<UserModel> login(LoginRequest request) async {
-    // ── MOCK ────────────────────────────────────────────────────────────────
-    await Future.delayed(const Duration(milliseconds: 1200));
+    try {
+      final response = await _dioClient.dio.post(
+        ApiConstants.login,
+        data: request.toJson(),
+      );
 
-    // Simulate a simple validation
-    if (request.email.isEmpty || request.password.isEmpty) {
-      throw Exception('Invalid credentials');
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+
+      final status = body['status'] as String?;
+      if (status != 'Success') {
+        throw ServerException(body['message'] as String? ?? 'Login failed');
+      }
+
+      final data = body['data'] as Map<String, dynamic>?;
+      if (data == null) {
+        throw ServerException('No data returned from server');
+      }
+
+      final token = data['token'] as String?;
+      if (token == null || token.isEmpty) {
+        throw ServerException('Authentication token not received');
+      }
+
+      final payload = _decodeJwt(token);
+
+      return UserModel(
+        id: payload['nameid'] as String? ?? payload['sub'] as String? ?? '',
+        fullName: payload['name'] as String? ?? '',
+        email: payload['email'] as String? ?? request.email,
+        role: _parseRole(payload['role'] as String? ?? ''),
+        token: token,
+      );
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        throw ServerException(data['message'] as String);
+      }
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
     }
-
-    return UserModel(
-      id: 'mock-user-001',
-      fullName: 'Tyler The Creator',
-      email: request.email,
-      role: UserRole.student,
-      token: 'mock-jwt-token-login-${DateTime.now().millisecondsSinceEpoch}',
-    );
-    // ── REAL (uncomment when backend ready) ─────────────────────────────────
-    // try {
-    //   final response = await _dioClient.dio.post(
-    //     ApiConstants.login,
-    //     data: request.toJson(),
-    //   );
-    //   return UserModel.fromJson(response.data as Map<String, dynamic>);
-    // } on DioException catch (e) {
-    //   throw ServerException(e.message ?? 'Login failed');
-    // }
   }
 
   @override
   Future<UserModel> register(RegisterRequest request) async {
-    // ── MOCK ────────────────────────────────────────────────────────────────
+    // ── MOCK (to be updated in step 2) ───────────────────────────────────────
     await Future.delayed(const Duration(milliseconds: 1200));
 
     return UserModel(
@@ -59,15 +75,34 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       role: request.role,
       token: 'mock-jwt-token-register-${DateTime.now().millisecondsSinceEpoch}',
     );
-    // ── REAL (uncomment when backend ready) ─────────────────────────────────
-    // try {
-    //   final response = await _dioClient.dio.post(
-    //     ApiConstants.register,
-    //     data: request.toJson(),
-    //   );
-    //   return UserModel.fromJson(response.data as Map<String, dynamic>);
-    // } on DioException catch (e) {
-    //   throw ServerException(e.message ?? 'Registration failed');
-    // }
+  }
+
+  UserRole _parseRole(String roleStr) {
+    switch (roleStr.toLowerCase()) {
+      case 'student':
+        return UserRole.student;
+      case 'teacher':
+        return UserRole.teacher;
+      case 'parent':
+        return UserRole.parent;
+      default:
+        return UserRole.student;
+    }
+  }
+
+  Map<String, dynamic> _decodeJwt(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length < 2) {
+        throw const FormatException('Invalid JWT structure');
+      }
+      final payload = parts[1];
+      final normalized = base64Url.normalize(payload);
+      final decodedBytes = base64Url.decode(normalized);
+      final decodedStr = utf8.decode(decodedBytes);
+      return jsonDecode(decodedStr) as Map<String, dynamic>;
+    } catch (e) {
+      throw const FormatException('Failed to decode JWT payload');
+    }
   }
 }

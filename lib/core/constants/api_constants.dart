@@ -30,8 +30,8 @@ class ApiConstants {
   static const int receiveTimeout = 30000;
 
   // API Endpoints
-  static const String login = 'auth/login';
-  static const String register = 'auth/register';
+  static const String login = 'api/v1/Auth/login';
+  static const String register = 'api/v1/Auth/register';
 
   /// Student > Learn — Group overview (apidocs: group-overview).
   static String studentLearnGroupOverview(String groupId) =>
