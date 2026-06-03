@@ -187,6 +187,93 @@ class AppTheme {
       elevation: 8,
       type: BottomNavigationBarType.fixed,
     ),
+
+    // Date picker theme
+    datePickerTheme: DatePickerThemeData(
+      backgroundColor: LightModeColors.surfacePrimary,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.radiusLg),
+      ),
+      // Header (month+year strip at the top)
+      headerBackgroundColor: AppColors.brandPrimary500,
+      headerForegroundColor: AppColors.white,
+      headerHeadlineStyle: AppTypography.h5(color: AppColors.white),
+      headerHelpStyle: AppTypography.labelSmall(color: AppColors.white),
+      // Weekday row
+      weekdayStyle: AppTypography.labelSmall(
+        color: LightModeColors.textSecondary,
+      ),
+      // Day cells
+      dayStyle: AppTypography.bodySmall(color: LightModeColors.textPrimary),
+      dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return AppColors.white;
+        if (states.contains(WidgetState.disabled)) {
+          return LightModeColors.textSecondary;
+        }
+        return LightModeColors.textPrimary;
+      }),
+      dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.brandPrimary500;
+        }
+        return Colors.transparent;
+      }),
+      dayOverlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.pressed)) {
+          return AppColors.brandPrimary500Alpha20;
+        }
+        if (states.contains(WidgetState.hovered)) {
+          return AppColors.brandPrimary500Alpha10;
+        }
+        return Colors.transparent;
+      }),
+      dayShape: WidgetStateProperty.all(
+        const CircleBorder(),
+      ),
+      // Today
+      todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return AppColors.white;
+        return AppColors.brandPrimary500;
+      }),
+      todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.brandPrimary500;
+        }
+        return Colors.transparent;
+      }),
+      todayBorder: const BorderSide(
+        color: AppColors.brandPrimary500,
+        width: 1.5,
+      ),
+      // Navigation arrows & year/month selector
+      yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return AppColors.white;
+        return LightModeColors.textPrimary;
+      }),
+      yearBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.brandPrimary500;
+        }
+        return Colors.transparent;
+      }),
+      yearOverlayColor: WidgetStateProperty.all(Colors.transparent),
+      yearStyle: AppTypography.bodySmall(color: LightModeColors.textPrimary),
+      // Divider
+      dividerColor: LightModeColors.borderDivider,
+      // Action buttons (OK / Cancel)
+      cancelButtonStyle: TextButton.styleFrom(
+        foregroundColor: LightModeColors.textSecondary,
+        textStyle: AppTypography.button(),
+      ),
+      confirmButtonStyle: TextButton.styleFrom(
+        foregroundColor: AppColors.brandPrimary500,
+        textStyle: AppTypography.button(),
+      ),
+      // Elevation & shadow
+      elevation: 8,
+      shadowColor: AppColors.neutral900,
+    ),
   );
 
   /// Dark theme
@@ -359,6 +446,92 @@ class AppTheme {
       unselectedItemColor: DarkModeColors.textSecondary,
       elevation: 8,
       type: BottomNavigationBarType.fixed,
+    ),
+
+    // Date picker theme
+    datePickerTheme: DatePickerThemeData(
+      backgroundColor: DarkModeColors.surfacePrimary,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.radiusLg),
+      ),
+      // Header
+      headerBackgroundColor: AppColors.brandPrimary700,
+      headerForegroundColor: AppColors.white,
+      headerHeadlineStyle: AppTypography.h5(color: AppColors.white),
+      headerHelpStyle: AppTypography.labelSmall(color: AppColors.white),
+      // Weekday row
+      weekdayStyle: AppTypography.labelSmall(
+        color: DarkModeColors.textSecondary,
+      ),
+      // Day cells
+      dayStyle: AppTypography.bodySmall(color: DarkModeColors.textPrimary),
+      dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return AppColors.white;
+        if (states.contains(WidgetState.disabled)) {
+          return DarkModeColors.textSecondary;
+        }
+        return DarkModeColors.textPrimary;
+      }),
+      dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.brandPrimary500;
+        }
+        return Colors.transparent;
+      }),
+      dayOverlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.pressed)) {
+          return AppColors.brandPrimary500Alpha20;
+        }
+        if (states.contains(WidgetState.hovered)) {
+          return AppColors.brandPrimary500Alpha10;
+        }
+        return Colors.transparent;
+      }),
+      dayShape: WidgetStateProperty.all(
+        const CircleBorder(),
+      ),
+      // Today
+      todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return AppColors.white;
+        return AppColors.brandPrimary400;
+      }),
+      todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.brandPrimary500;
+        }
+        return Colors.transparent;
+      }),
+      todayBorder: const BorderSide(
+        color: AppColors.brandPrimary400,
+        width: 1.5,
+      ),
+      // Year selector
+      yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return AppColors.white;
+        return DarkModeColors.textPrimary;
+      }),
+      yearBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.brandPrimary500;
+        }
+        return Colors.transparent;
+      }),
+      yearOverlayColor: WidgetStateProperty.all(Colors.transparent),
+      yearStyle: AppTypography.bodySmall(color: DarkModeColors.textPrimary),
+      // Divider
+      dividerColor: DarkModeColors.borderDivider,
+      // Action buttons
+      cancelButtonStyle: TextButton.styleFrom(
+        foregroundColor: DarkModeColors.textSecondary,
+        textStyle: AppTypography.button(),
+      ),
+      confirmButtonStyle: TextButton.styleFrom(
+        foregroundColor: AppColors.brandPrimary400,
+        textStyle: AppTypography.button(),
+      ),
+      elevation: 8,
+      shadowColor: AppColors.black,
     ),
   );
 }
