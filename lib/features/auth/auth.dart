@@ -14,6 +14,7 @@ export 'presentation/views/sign_in_screen.dart';
 export 'presentation/views/sign_up_role_screen.dart';
 export 'presentation/views/sign_up_credentials_screen.dart';
 export 'presentation/views/forgot_password_screen.dart';
+export 'presentation/views/otp_screen.dart';
 
 // PRESENTATION — Reusable Widgets
 

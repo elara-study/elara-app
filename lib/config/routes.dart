@@ -5,6 +5,7 @@ import 'package:elara/features/auth/presentation/views/sign_in_screen.dart';
 import 'package:elara/features/auth/presentation/views/splash_screen.dart';
 import 'package:elara/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:elara/features/auth/presentation/views/forgot_password_screen.dart';
+import 'package:elara/features/auth/presentation/views/otp_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_credentials_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
 import 'package:elara/features/parent/presentation/home/views/parent_shell.dart';
@@ -56,6 +57,7 @@ class AppRoutes {
   static const String signUpSocialRole = '/register/social-role';
   static const String signUpCredentials = '/register/credentials';
   static const String forgotPassword = '/forgot-password';
+  static const String otp = '/otp';
 
   /// Student dashboard — the temporary post-auth landing screen.
   ///  : Replace with a role-based router once Teacher/Parent dashboards exist.
@@ -143,8 +145,20 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SignInScreen());
 
       case forgotPassword:
+        return MaterialPageRoute(builder: (_) => const ForgotPasswordScreen());
+
+      case otp:
+        final otpArgs = settings.arguments;
+        if (otpArgs is OtpRouteArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => OtpScreen(args: otpArgs),
+          );
+        }
         return MaterialPageRoute(
-          builder: (_) => const ForgotPasswordScreen(),
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('OTP arguments not provided')),
+          ),
         );
 
       case signUpRole:
@@ -365,8 +379,9 @@ class AppRoutes {
 
       case chatbot:
         final aiArgs = settings.arguments;
-        final resolvedAi =
-            aiArgs is ChatbotRouteArgs ? aiArgs : const ChatbotRouteArgs();
+        final resolvedAi = aiArgs is ChatbotRouteArgs
+            ? aiArgs
+            : const ChatbotRouteArgs();
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => MultiBlocProvider(
