@@ -1,3 +1,4 @@
+import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/core/theme/app_colors.dart';
@@ -26,12 +27,22 @@ class SignUpCredentialsScreen extends StatelessWidget {
           builder: (_, __) => SignUpForm(
             role: role,
             isLoading: state is AuthLoading,
-            onSubmit: ({required fullName, required email, required password}) {
+            onSubmit: ({
+              required name,
+              required email,
+              required password,
+              required dateOfBirth,
+              String? subjectDisplayName,
+              int? grade,
+            }) {
               context.read<AuthCubit>().signUp(
-                fullName: fullName,
+                name: name,
                 email: email,
                 password: password,
                 role: role,
+                dateOfBirth: dateOfBirth,
+                subjectDisplayName: subjectDisplayName,
+                grade: grade,
               );
             },
           ),
@@ -43,6 +54,37 @@ class SignUpCredentialsScreen extends StatelessWidget {
   static void _onAuthStateChange(BuildContext context, AuthState state) {
     if (state is AuthAuthenticated) {
       AppRoutes.navigateAfterAuth(context, state.user);
+    } else if (state is AuthNeedsVerification) {
+      Navigator.of(context).pushNamed(
+        AppRoutes.otp,
+        arguments: OtpRouteArgs(
+          email: state.email,
+          onVerify: (otp) async {
+            // Access the registered VerifyEmailUseCase from getIt
+            final verifyEmailUseCase = getIt<VerifyEmailUseCase>();
+            await verifyEmailUseCase.call(email: state.email, otp: otp);
+            if (context.mounted) {
+              ScaffoldMessenger.of(context)
+                ..clearSnackBars()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Email verified successfully. Please sign in.'),
+                    backgroundColor: AppColors.brandPrimary500,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                AppRoutes.login,
+                (route) => false,
+              );
+            }
+          },
+          onResend: () async {
+            // Resend is not supported by API yet; stub cooldown delay
+            await Future.delayed(const Duration(seconds: 1));
+          },
+        ),
+      );
     } else if (state is AuthError) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

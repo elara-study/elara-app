@@ -64,17 +64,70 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel> register(RegisterRequest request) async {
-    // ── MOCK (to be updated in step 2) ───────────────────────────────────────
-    await Future.delayed(const Duration(milliseconds: 1200));
+  Future<RegisteredUserData> register(RegisterRequest request) async {
+    try {
+      final response = await _dioClient.dio.post(
+        ApiConstants.register,
+        data: request.toJson(),
+      );
 
-    return UserModel(
-      id: 'mock-user-002',
-      fullName: request.fullName,
-      email: request.email,
-      role: request.role,
-      token: 'mock-jwt-token-register-${DateTime.now().millisecondsSinceEpoch}',
-    );
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+
+      final status = body['status'] as String?;
+      if (status != null && status != 'Success') {
+        throw ServerException(
+          body['message'] as String? ?? 'Registration failed',
+        );
+      }
+
+      final data = body['data'] as Map<String, dynamic>?;
+      if (data == null) {
+        throw ServerException('No data returned from server');
+      }
+
+      return RegisteredUserData.fromJson(data);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        throw ServerException(data['message'] as String);
+      }
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<void> verifyEmail(VerifyEmailRequest request) async {
+    try {
+      final response = await _dioClient.dio.post(
+        ApiConstants.verifyEmail,
+        data: request.toJson(),
+      );
+
+      final body = response.data;
+      if (body is Map<String, dynamic>) {
+        final status = body['status'] as String?;
+        if (status != null && status != 'Success') {
+          throw ServerException(
+            body['message'] as String? ?? 'Email verification failed',
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        throw ServerException(data['message'] as String);
+      }
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
   }
 
   UserRole _parseRole(String roleStr) {

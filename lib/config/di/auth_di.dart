@@ -9,6 +9,7 @@ import 'package:elara/features/auth/domain/usecases/get_current_user_use_case.da
 import 'package:elara/features/auth/domain/usecases/login_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/register_use_case.dart';
+import 'package:elara/features/auth/domain/usecases/verify_email_use_case.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +37,7 @@ void setupAuthDI() {
   // Use Cases
   getIt.registerLazySingleton(() => LoginUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton(() => RegisterUseCase(getIt<AuthRepository>()));
+  getIt.registerLazySingleton(() => VerifyEmailUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton(() => LogoutUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton(
     () => GetCurrentUserUseCase(getIt<AuthRepository>()),
@@ -46,6 +48,7 @@ void setupAuthDI() {
     () => AuthCubit(
       loginUseCase: getIt<LoginUseCase>(),
       registerUseCase: getIt<RegisterUseCase>(),
+      verifyEmailUseCase: getIt<VerifyEmailUseCase>(),
       logoutUseCase: getIt<LogoutUseCase>(),
       getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
     ),

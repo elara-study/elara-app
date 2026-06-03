@@ -48,3 +48,16 @@ class RoleSelected extends AuthState {
   @override
   List<Object?> get props => [role];
 }
+
+class AuthNeedsVerification extends AuthState {
+  final String email;
+
+  const AuthNeedsVerification(this.email);
+
+  @override
+  List<Object?> get props => [email];
+}
+
+class AuthVerificationSuccess extends AuthState {
+  const AuthVerificationSuccess();
+}

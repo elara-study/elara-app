@@ -52,6 +52,7 @@ export 'domain/usecases/login_use_case.dart';
 export 'domain/usecases/register_use_case.dart';
 export 'domain/usecases/logout_use_case.dart';
 export 'domain/usecases/get_current_user_use_case.dart';
+export 'domain/usecases/verify_email_use_case.dart';
 
 // DATA — Models
 
