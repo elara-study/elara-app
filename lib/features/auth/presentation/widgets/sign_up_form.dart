@@ -1,14 +1,16 @@
+import 'package:elara/core/enums/subject_type.dart';
 import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/core/theme/app_colors.dart';
-
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
+import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:elara/shared/widgets/app_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 
 /// The sign-up credentials form card.
 ///
@@ -18,9 +20,12 @@ class SignUpForm extends StatefulWidget {
   final UserRole role;
   final bool isLoading;
   final void Function({
-    required String fullName,
+    required String name,
     required String email,
     required String password,
+    required DateTime dateOfBirth,
+    String? subjectDisplayName,
+    int? grade,
   })
   onSubmit;
 
@@ -42,7 +47,10 @@ class _SignUpFormState extends State<SignUpForm> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _confirmPasswordCtrl = TextEditingController();
-  final _phoneCtrl = TextEditingController();
+
+  DateTime? _birthday;
+  String? _selectedSubject;
+  int? _selectedGrade;
 
   @override
   void dispose() {
@@ -51,22 +59,93 @@ class _SignUpFormState extends State<SignUpForm> {
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
     _confirmPasswordCtrl.dispose();
-    _phoneCtrl.dispose();
     super.dispose();
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      widget.onSubmit(
-        fullName: _fullNameCtrl.text.trim(),
-        email: _emailCtrl.text.trim(),
-        password: _passwordCtrl.text,
-      );
+  Future<void> _pickBirthday() async {
+    FocusScope.of(context).unfocus();
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _birthday ?? DateTime(now.year - 18, now.month, now.day),
+      firstDate: DateTime(1940),
+      lastDate: DateTime(now.year - 5, now.month, now.day),
+      helpText: '',
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+    );
+    if (picked != null) {
+      setState(() => _birthday = picked);
     }
+  }
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) return;
+    if (_birthday == null) {
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(
+            content: const Text('Please select your date of birth'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: AppColors.error500,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.radiusSm),
+            ),
+            margin: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.spacingLg,
+              vertical: AppSpacing.spacingSm,
+            ),
+            duration: const Duration(seconds: 3),
+            animation: CurvedAnimation(
+              parent: const AlwaysStoppedAnimation(1),
+              curve: Curves.easeOutCubic,
+            ),
+          ),
+        );
+      return;
+    }
+    if (widget.role == UserRole.student && _selectedGrade == null) {
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(
+            content: const Text('Please select your grade'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: AppColors.error500,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.radiusSm),
+            ),
+            margin: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.spacingLg,
+              vertical: AppSpacing.spacingSm,
+            ),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      return;
+    }
+    widget.onSubmit(
+      name: _fullNameCtrl.text.trim(),
+      email: _emailCtrl.text.trim(),
+      password: _passwordCtrl.text,
+      dateOfBirth: _birthday!,
+      subjectDisplayName: _selectedSubject,
+      grade: _selectedGrade,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final labelColor =
+        isDark ? DarkModeColors.textPrimary : LightModeColors.textPrimary;
+    final fillColor =
+        isDark ? DarkModeColors.surfaceSecondary : LightModeColors.surfaceApp;
+    final hintColor =
+        isDark ? DarkModeColors.textSecondary : LightModeColors.textSecondary;
+    final borderColor =
+        isDark ? DarkModeColors.borderDefault : LightModeColors.borderDefault;
+
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -168,49 +247,70 @@ class _SignUpFormState extends State<SignUpForm> {
             },
           ),
 
-          //   Phone (teacher + parent only)
-          if (widget.role == UserRole.teacher ||
-              widget.role == UserRole.parent) ...[
-            const SizedBox(height: AppSpacing.spacingSm),
-            AuthCardField(
-              label: 'Phone Number',
-              hint: '+ 20 10 12345678',
-              controller: _phoneCtrl,
-              keyboardType: TextInputType.phone,
-              textInputAction: TextInputAction.next,
-              // prefixIcon: const Icon(Icons.phone_outlined, size: 16),
-              validator: (val) {
-                if (val == null || val.trim().isEmpty) {
-                  return 'Phone number is required';
-                }
-                return null;
-              },
-            ),
-          ],
+          const SizedBox(height: AppSpacing.spacingSm),
 
-          //  Subject (teacher only)
+          //   Date of Birth — all roles
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Date of Birth',
+                style: AppTypography.labelRegular(color: labelColor),
+              ),
+              const SizedBox(height: 6),
+              GestureDetector(
+                onTap: _pickBirthday,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: fillColor,
+                    borderRadius: BorderRadius.circular(AppRadius.radiusMd),
+                    border: Border.all(color: borderColor, width: 1.5),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today_outlined,
+                        size: 16.w,
+                        color: _birthday != null
+                            ? AppColors.brandPrimary500
+                            : hintColor,
+                      ),
+                      const SizedBox(width: AppSpacing.spacingSm),
+                      Expanded(
+                        child: Text(
+                          _birthday != null
+                              ? DateFormat('dd/MM/yyyy').format(_birthday!)
+                              : 'dd/mm/yyyy',
+                          style: AppTypography.bodySmall(
+                            color: _birthday != null ? labelColor : hintColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          //  Subject — teacher only (uses backend SubjectType enum)
           if (widget.role == UserRole.teacher) ...[
             const SizedBox(height: AppSpacing.spacingSm),
             AppDropdownField(
               label: 'Subject',
               hint: 'Select your subject',
               prefixIcon: Icon(Icons.school_outlined, size: 16.w),
-              options: const [
-                'Mathematics',
-                'Science',
-                'Physics',
-                'Chemistry',
-                'Biology',
-                'English',
-                'Arabic',
-                'History',
-                'Geography',
-                'Computer Science',
-                'Art',
-                'Physical Education',
-              ],
+              options: SubjectType.displayNames,
+              onChanged: (v) => setState(() => _selectedSubject = v),
             ),
           ],
+
+          //  Grade — student only
           if (widget.role == UserRole.student) ...[
             const SizedBox(height: AppSpacing.spacingSm),
             AppDropdownField(
@@ -218,39 +318,19 @@ class _SignUpFormState extends State<SignUpForm> {
               hint: 'Select your grade',
               prefixIcon: Icon(Icons.school_outlined, size: 16.w),
               options: const [
-                'Kindergarten',
-                'Grade 1',
-                'Grade 2',
-                'Grade 3',
-                'Grade 4',
-                'Grade 5',
-                'Grade 6',
-                'Grade 7',
-                'Grade 8',
-                'Grade 9',
-                'Grade 10',
                 'Grade 11',
                 'Grade 12',
+                'Grade 13',
               ],
+              onChanged: (v) {
+                // Parse grade number out of selected option name (e.g. 'Grade 12' -> 12)
+                final numberStr = RegExp(r'\d+').stringMatch(v);
+                if (numberStr != null) {
+                  setState(() => _selectedGrade = int.tryParse(numberStr));
+                }
+              },
             ),
           ],
-
-          //  Country (all roles — UI only)
-          const SizedBox(height: AppSpacing.spacingSm),
-          AppDropdownField(
-            label: 'Country',
-            hint: 'Select your country',
-            prefixIcon: SvgPicture.asset(
-              'assets/icons/world_icon.svg',
-              width: 16.w,
-              height: 16.h,
-              colorFilter: const ColorFilter.mode(
-                ButtonColors.primaryText,
-                BlendMode.srcIn,
-              ),
-            ),
-            options: const ['Egypt', 'United States'],
-          ),
 
           const SizedBox(height: AppSpacing.spacingLg),
 

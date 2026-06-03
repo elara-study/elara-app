@@ -1,24 +1,29 @@
+import 'package:elara/core/enums/subject_type.dart';
 import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/features/auth/domain/usecases/get_current_user_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/login_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:elara/features/auth/domain/usecases/register_use_case.dart';
+import 'package:elara/features/auth/domain/usecases/verify_email_use_case.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final LoginUseCase _loginUseCase;
   final RegisterUseCase _registerUseCase;
+  final VerifyEmailUseCase _verifyEmailUseCase;
   final LogoutUseCase _logoutUseCase;
   final GetCurrentUserUseCase _getCurrentUserUseCase;
 
   AuthCubit({
     required LoginUseCase loginUseCase,
     required RegisterUseCase registerUseCase,
+    required VerifyEmailUseCase verifyEmailUseCase,
     required LogoutUseCase logoutUseCase,
     required GetCurrentUserUseCase getCurrentUserUseCase,
   }) : _loginUseCase = loginUseCase,
        _registerUseCase = registerUseCase,
+       _verifyEmailUseCase = verifyEmailUseCase,
        _logoutUseCase = logoutUseCase,
        _getCurrentUserUseCase = getCurrentUserUseCase,
        super(const AuthInitial());
@@ -51,20 +56,48 @@ class AuthCubit extends Cubit<AuthState> {
 
   /// Register with full credentials and a selected role
   Future<void> signUp({
-    required String fullName,
+    required String name,
     required String email,
     required String password,
     required UserRole role,
+    required DateTime dateOfBirth,
+    String? subjectDisplayName,
+    int? grade,
   }) async {
     emit(const AuthLoading());
     try {
+      // Convert the display name (e.g. 'Physics') to its backend integer id.
+      final subjectId = subjectDisplayName != null
+          ? SubjectType.values
+                .cast<SubjectType?>()
+                .firstWhere(
+                  (s) => s!.displayName == subjectDisplayName,
+                  orElse: () => null,
+                )
+                ?.value
+          : null;
+
       final user = await _registerUseCase(
-        fullName: fullName,
+        name: name,
         email: email,
         password: password,
         role: role,
+        dateOfBirth: dateOfBirth,
+        subjectId: subjectId,
+        grade: grade,
       );
-      emit(AuthAuthenticated(user));
+      emit(AuthNeedsVerification(user.email));
+    } catch (e) {
+      emit(AuthError(_extractMessage(e)));
+    }
+  }
+
+  /// Verify email with OTP code
+  Future<void> verifyEmail({required String email, required String otp}) async {
+    emit(const AuthLoading());
+    try {
+      await _verifyEmailUseCase(email: email, otp: otp);
+      emit(const AuthVerificationSuccess());
     } catch (e) {
       emit(AuthError(_extractMessage(e)));
     }
