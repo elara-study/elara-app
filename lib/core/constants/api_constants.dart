@@ -1,28 +1,11 @@
-import 'package:elara/core/utils/logger.dart';
-
 class ApiConstants {
   /// Compile-time value from `--dart-define-from-file=.env` or
   /// `--dart-define=API_BASE_URL=...` (see `.env.example`).
   ///
   /// Trailing slash is added if missing. Never commit your real `.env`.
   ///
-  /// When unset, uses a localhost placeholder so [DioClient] can still be
-  /// constructed (e.g. Rewards remote + shell tabs); network calls may fail
-  /// until you define a real base URL.
-  static bool _warnedMissingApiBaseUrl = false;
-
   static String get baseUrl {
     const raw = String.fromEnvironment('API_BASE_URL', defaultValue: '');
-    if (raw.isEmpty) {
-      if (!_warnedMissingApiBaseUrl) {
-        _warnedMissingApiBaseUrl = true;
-        AppLogger.warning(
-          'API_BASE_URL is not set — using http://127.0.0.1/ for Dio. '
-          'Pass --dart-define-from-file=.env for real backends.',
-        );
-      }
-      return 'http://127.0.0.1/';
-    }
     return raw.endsWith('/') ? raw : '$raw/';
   }
 
@@ -32,6 +15,7 @@ class ApiConstants {
   // API Endpoints
   static const String login = 'api/v1/Auth/login';
   static const String register = 'api/v1/Auth/register';
+  static const String verifyEmail = 'api/v1/Auth/verify-email';
 
   /// Student > Learn — Group overview (apidocs: group-overview).
   static String studentLearnGroupOverview(String groupId) =>
