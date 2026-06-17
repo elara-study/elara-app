@@ -6,6 +6,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
+import 'package:elara/shared/widgets/app_calendar_widget.dart';
 import 'package:elara/shared/widgets/app_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -65,17 +66,14 @@ class _SignUpFormState extends State<SignUpForm> {
   Future<void> _pickBirthday() async {
     FocusScope.of(context).unfocus();
     final now = DateTime.now();
-    final picked = await showDatePicker(
+    final picked = await showAppCalendarDialog(
       context: context,
       initialDate: _birthday ?? DateTime(now.year - 18, now.month, now.day),
+      selectedDate: _birthday,
       firstDate: DateTime(1940),
       lastDate: DateTime(now.year - 5, now.month, now.day),
-      helpText: '',
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
     );
-    if (picked != null) {
-      setState(() => _birthday = picked);
-    }
+    if (picked != null) setState(() => _birthday = picked);
   }
 
   void _submit() {
@@ -260,8 +258,7 @@ class _SignUpFormState extends State<SignUpForm> {
               const SizedBox(height: 6),
               GestureDetector(
                 onTap: _pickBirthday,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
+                child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 10,
@@ -285,7 +282,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         child: Text(
                           _birthday != null
                               ? DateFormat('dd/MM/yyyy').format(_birthday!)
-                              : 'dd/mm/yyyy',
+                              : 'dd / mm / yyyy',
                           style: AppTypography.bodySmall(
                             color: _birthday != null ? labelColor : hintColor,
                           ),

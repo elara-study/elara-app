@@ -1,5 +1,6 @@
 import 'package:elara/config/app_theme.dart';
 import 'package:elara/config/dependency_injection.dart';
+import 'package:elara/config/di/core_di.dart' show navigatorKey;
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/theme_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
@@ -32,6 +33,7 @@ class Elara extends StatelessWidget {
             buildWhen: (previous, current) => previous != current,
             builder: (context, themeMode) {
               return MaterialApp(
+                navigatorKey: navigatorKey,
                 title: 'Elara',
                 debugShowCheckedModeBanner: false,
                 theme: AppTheme.lightTheme,

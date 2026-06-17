@@ -1,11 +1,17 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/api_constants.dart';
 import '../utils/logger.dart';
+import 'auth_interceptor.dart';
 
 class DioClient {
   late Dio _dio;
 
-  DioClient() {
+  DioClient({
+    required SharedPreferences prefs,
+    required GlobalKey<NavigatorState> navigatorKey,
+  }) {
     _dio = Dio(
       BaseOptions(
         baseUrl: ApiConstants.baseUrl,
@@ -22,6 +28,12 @@ class DioClient {
       ),
     );
 
+    // Auth interceptor — Bearer injection + 401 redirect
+    _dio.interceptors.add(
+      AuthInterceptor(prefs: prefs, navigatorKey: navigatorKey),
+    );
+
+    // Logging interceptor (active in all modes; swap to kDebugMode guard if needed)
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
@@ -57,3 +69,4 @@ class DioClient {
     _dio.options.headers.remove('Authorization');
   }
 }
+

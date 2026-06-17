@@ -1,9 +1,4 @@
 class ApiConstants {
-  /// Compile-time value from `--dart-define-from-file=.env` or
-  /// `--dart-define=API_BASE_URL=...` (see `.env.example`).
-  ///
-  /// Trailing slash is added if missing. Never commit your real `.env`.
-  ///
   static String get baseUrl {
     const raw = String.fromEnvironment('API_BASE_URL', defaultValue: '');
     return raw.endsWith('/') ? raw : '$raw/';
@@ -16,6 +11,8 @@ class ApiConstants {
   static const String login = 'api/v1/Auth/login';
   static const String register = 'api/v1/Auth/register';
   static const String verifyEmail = 'api/v1/Auth/verify-email';
+
+  static const String refreshToken = 'api/v1/Auth/refresh';
 
   /// Student > Learn — Group overview (apidocs: group-overview).
   static String studentLearnGroupOverview(String groupId) =>
@@ -45,8 +42,6 @@ class ApiConstants {
 
   /// Shared settings > Profile & Account (GET when backend ready).
   static const String settingsProfileAccount = 'v1/settings/profile-account';
-
-  // ── Student chatbot (paths relative to [baseUrl] / [API_BASE_URL])
 
   /// GET — query `page`, `limit` (strings per OpenAPI).
   static const String chatbotConversations = 'api/v1/conversations';
