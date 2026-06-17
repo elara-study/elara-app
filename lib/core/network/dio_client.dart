@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/api_constants.dart';
@@ -28,33 +29,25 @@ class DioClient {
       ),
     );
 
-    // Auth interceptor — Bearer injection + 401 redirect
+    // 1. Auth interceptor — Bearer injection + 401 redirect
     _dio.interceptors.add(
       AuthInterceptor(prefs: prefs, navigatorKey: navigatorKey),
     );
 
-    // Logging interceptor (active in all modes; swap to kDebugMode guard if needed)
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          AppLogger.log('REQUEST[${options.method}] => PATH: ${options.path}');
-          return handler.next(options);
-        },
-        onResponse: (response, handler) {
-          AppLogger.log(
-            'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
-          );
-          return handler.next(response);
-        },
-        onError: (DioException e, handler) {
-          AppLogger.log(
-            'ERROR[${e.response?.statusCode}] => PATH: ${e.requestOptions.path}',
-          );
-          AppLogger.log('ERROR MESSAGE: ${e.message}');
-          return handler.next(e);
-        },
-      ),
-    );
+    // 2. Full request/response logger — debug builds only
+    if (kDebugMode) {
+      _dio.interceptors.add(
+        LogInterceptor(
+          request: true,
+          requestHeader: true,
+          requestBody: true,   // <-- shows exact JSON sent to server
+          responseHeader: false,
+          responseBody: true,  // <-- shows exact JSON received from server
+          error: true,
+          logPrint: (object) => AppLogger.log(object),
+        ),
+      );
+    }
   }
 
   Dio get dio => _dio;
@@ -69,4 +62,3 @@ class DioClient {
     _dio.options.headers.remove('Authorization');
   }
 }
-
