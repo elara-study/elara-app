@@ -9,16 +9,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
-  const ForgotPasswordScreen({super.key});
+/// Route arguments for [ResetPasswordScreen].
+class ResetPasswordRouteArgs {
+  final String email;
+  final String otp;
+
+  const ResetPasswordRouteArgs({required this.email, required this.otp});
+}
+
+class ResetPasswordScreen extends StatelessWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as ResetPasswordRouteArgs;
+
     return Scaffold(
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: _onAuthStateChange,
         builder: (context, state) => AuthScreenLayout(
-          builder: (context, m) => _ForgotPasswordCardContent(
+          builder: (context, m) => _ResetPasswordCardContent(
+            email: args.email,
+            otp: args.otp,
             isLoading: state is AuthLoading,
             metrics: m,
           ),
@@ -28,29 +41,19 @@ class ForgotPasswordScreen extends StatelessWidget {
   }
 
   static void _onAuthStateChange(BuildContext context, AuthState state) {
-    if (state is ForgotPasswordOtpSent) {
-      // Navigate to OTP screen — reuse the same OtpScreen with reset-flow args.
-      Navigator.of(context).pushNamed(
-        AppRoutes.otp,
-        arguments: OtpRouteArgs(
-          email: state.email,
-          onVerify: (otp) async {
-            // OTP verified — navigate to reset password screen.
-            if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(
-                AppRoutes.resetPassword,
-                arguments: ResetPasswordRouteArgs(
-                  email: state.email,
-                  otp: otp,
-                ),
-              );
-            }
-          },
-          onResend: () async {
-            // Re-send forgot-password OTP.
-            context.read<AuthCubit>().forgotPassword(email: state.email);
-          },
-        ),
+    if (state is PasswordResetSuccess) {
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Password reset successfully. Please sign in.'),
+            backgroundColor: AppColors.brandPrimary500,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        AppRoutes.login,
+        (route) => false,
       );
     } else if (state is AuthError) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,42 +67,53 @@ class ForgotPasswordScreen extends StatelessWidget {
   }
 }
 
-// _ForgotPasswordCardContent — stateful form inside the auth card.
+// _ResetPasswordCardContent — stateful form inside the auth card.
 
-class _ForgotPasswordCardContent extends StatefulWidget {
+class _ResetPasswordCardContent extends StatefulWidget {
+  final String email;
+  final String otp;
   final bool isLoading;
   final AuthScreenMetrics metrics;
-  const _ForgotPasswordCardContent({
+
+  const _ResetPasswordCardContent({
+    required this.email,
+    required this.otp,
     required this.isLoading,
     required this.metrics,
   });
 
   @override
-  State<_ForgotPasswordCardContent> createState() =>
-      _ForgotPasswordCardContentState();
+  State<_ResetPasswordCardContent> createState() =>
+      _ResetPasswordCardContentState();
 }
 
-class _ForgotPasswordCardContentState
-    extends State<_ForgotPasswordCardContent> {
+class _ResetPasswordCardContentState
+    extends State<_ResetPasswordCardContent> {
   final _formKey = GlobalKey<FormState>();
-  final _emailCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
+  final _confirmCtrl = TextEditingController();
 
   @override
   void dispose() {
-    _emailCtrl.dispose();
+    _passwordCtrl.dispose();
+    _confirmCtrl.dispose();
     super.dispose();
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) return;
-    context.read<AuthCubit>().forgotPassword(
-      email: _emailCtrl.text.trim(),
-    );
+    if (_formKey.currentState!.validate()) {
+      context.read<AuthCubit>().resetPassword(
+        email: widget.email,
+        otp: widget.otp,
+        newPassword: _passwordCtrl.text,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final m = widget.metrics;
+    final cs = Theme.of(context).colorScheme;
 
     return Form(
       key: _formKey,
@@ -110,35 +124,48 @@ class _ForgotPasswordCardContentState
         children: [
           // Header
           AuthCardHeader(
-            title: 'Forgot password?',
-            subtitle: "Enter your email and we'll send you a reset code",
+            title: 'Reset password',
+            subtitle: 'Enter your new password below',
             isCompact: m.isCompact,
           ),
           SizedBox(height: m.sectionGap),
 
-          // Email field
+          // New Password
           AuthCardField(
-            label: 'Email',
-            hint: 'Enter your email address',
-            controller: _emailCtrl,
-            keyboardType: TextInputType.emailAddress,
+            label: 'New Password',
+            hint: 'Enter your new password',
+            controller: _passwordCtrl,
+            isPassword: true,
+            validator: (v) {
+              if (v == null || v.isEmpty) return 'Password is required';
+              if (v.length < 6) return 'Minimum 6 characters';
+              return null;
+            },
+          ),
+          SizedBox(height: m.fieldGap),
+
+          // Confirm Password
+          AuthCardField(
+            label: 'Confirm Password',
+            hint: 'Re-enter your password',
+            controller: _confirmCtrl,
+            isPassword: true,
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _submit(),
             validator: (v) {
-              if (v == null || v.isEmpty) return 'Email is required';
-              final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-              if (!emailRegex.hasMatch(v)) return 'Enter a valid email address';
+              if (v == null || v.isEmpty) return 'Please confirm your password';
+              if (v != _passwordCtrl.text) return 'Passwords do not match';
               return null;
             },
           ),
 
           SizedBox(height: m.sectionGap),
 
-          // Send reset code button
+          // Reset button
           SizedBox(
             width: double.infinity,
             child: AppPrimaryButton(
-              text: 'Send reset code',
+              text: 'Reset Password',
               isLoading: widget.isLoading,
               onPressed: _submit,
               leading: SvgPicture.asset(
@@ -161,7 +188,10 @@ class _ForgotPasswordCardContentState
           AuthCardFooter(
             prompt: 'Remember your password?',
             actionLabel: 'Sign in',
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
+              AppRoutes.login,
+              (route) => false,
+            ),
           ),
         ],
       ),

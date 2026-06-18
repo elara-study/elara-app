@@ -6,6 +6,7 @@ import 'package:elara/features/auth/presentation/views/splash_screen.dart';
 import 'package:elara/features/onboarding/presentation/views/onboarding_view.dart';
 import 'package:elara/features/auth/presentation/views/forgot_password_screen.dart';
 import 'package:elara/features/auth/presentation/views/otp_screen.dart';
+import 'package:elara/features/auth/presentation/views/reset_password_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_credentials_screen.dart';
 import 'package:elara/features/auth/presentation/views/sign_up_role_screen.dart';
 import 'package:elara/features/parent/presentation/home/views/parent_shell.dart';
@@ -57,6 +58,7 @@ class AppRoutes {
   static const String signUpSocialRole = '/register/social-role';
   static const String signUpCredentials = '/register/credentials';
   static const String forgotPassword = '/forgot-password';
+  static const String resetPassword = '/reset-password';
   static const String otp = '/otp';
 
   /// Student dashboard — the temporary post-auth landing screen.
@@ -158,6 +160,20 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
             body: Center(child: Text('OTP arguments not provided')),
+          ),
+        );
+
+      case resetPassword:
+        final rpArgs = settings.arguments;
+        if (rpArgs is ResetPasswordRouteArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => const ResetPasswordScreen(),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Reset password arguments not provided')),
           ),
         );
 
