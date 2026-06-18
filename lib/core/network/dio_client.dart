@@ -29,20 +29,20 @@ class DioClient {
       ),
     );
 
-    // 1. Auth interceptor — Bearer injection + 401 redirect
+    // Auth interceptor — Bearer injection + 401 redirect
     _dio.interceptors.add(
       AuthInterceptor(prefs: prefs, navigatorKey: navigatorKey),
     );
 
-    // 2. Full request/response logger — debug builds only
+    // Full request/response logger — debug builds only
     if (kDebugMode) {
       _dio.interceptors.add(
         LogInterceptor(
           request: true,
           requestHeader: true,
-          requestBody: true,   // <-- shows exact JSON sent to server
+          requestBody: true,
           responseHeader: false,
-          responseBody: true,  // <-- shows exact JSON received from server
+          responseBody: true,
           error: true,
           logPrint: (object) => AppLogger.log(object),
         ),

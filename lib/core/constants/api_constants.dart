@@ -1,6 +1,8 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class ApiConstants {
   static String get baseUrl {
-    const raw = String.fromEnvironment('API_BASE_URL', defaultValue: '');
+    final raw = dotenv.env['API_BASE_URL'] ?? '';
     return raw.endsWith('/') ? raw : '$raw/';
   }
 
@@ -13,6 +15,8 @@ class ApiConstants {
   static const String verifyEmail = 'api/v1/Auth/verify-email';
 
   static const String refreshToken = 'api/v1/Auth/refresh';
+  static const String forgotPassword = 'api/v1/Auth/forgot-password';
+  static const String resetPassword = 'api/v1/Auth/reset-password';
 
   /// Student > Learn — Group overview (apidocs: group-overview).
   static String studentLearnGroupOverview(String groupId) =>

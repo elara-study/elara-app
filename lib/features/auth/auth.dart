@@ -14,6 +14,7 @@ export 'presentation/views/sign_in_screen.dart';
 export 'presentation/views/sign_up_role_screen.dart';
 export 'presentation/views/sign_up_credentials_screen.dart';
 export 'presentation/views/forgot_password_screen.dart';
+export 'presentation/views/reset_password_screen.dart';
 export 'presentation/views/otp_screen.dart';
 
 // PRESENTATION — Reusable Widgets
@@ -53,6 +54,8 @@ export 'domain/usecases/register_use_case.dart';
 export 'domain/usecases/logout_use_case.dart';
 export 'domain/usecases/get_current_user_use_case.dart';
 export 'domain/usecases/verify_email_use_case.dart';
+export 'domain/usecases/forgot_password_use_case.dart';
+export 'domain/usecases/reset_password_use_case.dart';
 
 // DATA — Models
 
