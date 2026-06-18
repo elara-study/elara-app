@@ -8,6 +8,7 @@ class UserModel extends UserEntity {
     required super.email,
     required super.role,
     required super.token,
+    super.refreshToken,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +21,7 @@ class UserModel extends UserEntity {
         orElse: () => UserRole.student,
       ),
       token: json['token'] as String,
+      refreshToken: json['refresh_token'] as String?,
     );
   }
 
@@ -30,6 +32,7 @@ class UserModel extends UserEntity {
       'email': email,
       'role': role.value,
       'token': token,
+      if (refreshToken != null) 'refresh_token': refreshToken,
     };
   }
 
@@ -40,6 +43,8 @@ class UserModel extends UserEntity {
       email: entity.email,
       role: entity.role,
       token: entity.token,
+      refreshToken: entity.refreshToken,
     );
   }
 }
+

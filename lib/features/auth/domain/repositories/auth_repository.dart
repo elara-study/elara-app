@@ -15,9 +15,24 @@ abstract class AuthRepository {
     int? grade,
   });
 
-  Future<void> verifyEmail({required String email, required String otp});
+  /// Verifies the OTP. Backend now returns token + refreshToken.
+  /// [pendingUser] carries the partial user from register so the repository
+  /// can reconstruct a full [UserEntity] (with real token + role) and cache it.
+  Future<UserEntity> verifyEmail({
+    required String email,
+    required String otp,
+    required UserEntity pendingUser,
+  });
 
   Future<void> logout();
 
   Future<UserEntity?> getCurrentUser();
+
+  Future<void> forgotPassword({required String email});
+
+  Future<void> resetPassword({
+    required String email,
+    required String otp,
+    required String newPassword,
+  });
 }

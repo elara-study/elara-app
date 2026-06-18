@@ -84,6 +84,24 @@ class VerifyEmailRequest {
   Map<String, dynamic> toJson() => {'email': email, 'otp': otp};
 }
 
+/// POST /api/v1/Auth/verify-email — response body.
+/// Backend shape:
+/// { "status": "Success", "data": { "token": "...", "refreshToken": "..." } }
+class VerifyEmailResponse {
+  final String token;
+  final String refreshToken;
+
+  const VerifyEmailResponse({required this.token, required this.refreshToken});
+
+  factory VerifyEmailResponse.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] as Map<String, dynamic>;
+    return VerifyEmailResponse(
+      token: data['token'] as String,
+      refreshToken: data['refreshToken'] as String,
+    );
+  }
+}
+
 /// Minimal user data returned by the register endpoint
 /// (no token yet — token is issued after email verification + login).
 class RegisteredUserData {
@@ -107,3 +125,64 @@ class RegisteredUserData {
         role: json['role'] as String? ?? '',
       );
 }
+
+/// POST /api/v1/Auth/refresh — request body.
+class RefreshTokenRequest {
+  final String refreshToken;
+
+  const RefreshTokenRequest({required this.refreshToken});
+
+  Map<String, dynamic> toJson() => {'refreshToken': refreshToken};
+}
+
+/// POST /api/v1/Auth/refresh — response body.
+/// Shape: { "status": "Success", "data": { "token": "...", "refreshToken": "..." } }
+class RefreshTokenResponse {
+  final String token;
+  final String refreshToken;
+
+  const RefreshTokenResponse({
+    required this.token,
+    required this.refreshToken,
+  });
+
+  factory RefreshTokenResponse.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] as Map<String, dynamic>;
+    return RefreshTokenResponse(
+      token: data['token'] as String,
+      refreshToken: data['refreshToken'] as String,
+    );
+  }
+}
+
+/// POST /api/v1/Auth/forgot-password — request body.
+class ForgotPasswordRequest {
+  final String email;
+
+  const ForgotPasswordRequest({required this.email});
+
+  Map<String, dynamic> toJson() => {'email': email};
+}
+
+/// POST /api/v1/Auth/reset-password — request body.
+class ResetPasswordRequest {
+  final String email;
+  final String otp;
+  final String newPassword;
+  final String confirmNewPassword;
+
+  const ResetPasswordRequest({
+    required this.email,
+    required this.otp,
+    required this.newPassword,
+    required this.confirmNewPassword,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'email': email,
+    'otp': otp,
+    'newPassword': newPassword,
+    'confirmNewPassword': confirmNewPassword,
+  };
+}
+

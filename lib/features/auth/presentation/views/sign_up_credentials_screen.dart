@@ -1,4 +1,3 @@
-import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/core/theme/app_colors.dart';
@@ -60,24 +59,13 @@ class SignUpCredentialsScreen extends StatelessWidget {
         arguments: OtpRouteArgs(
           email: state.email,
           onVerify: (otp) async {
-            // Access the registered VerifyEmailUseCase from getIt
-            final verifyEmailUseCase = getIt<VerifyEmailUseCase>();
-            await verifyEmailUseCase.call(email: state.email, otp: otp);
-            if (context.mounted) {
-              ScaffoldMessenger.of(context)
-                ..clearSnackBars()
-                ..showSnackBar(
-                  const SnackBar(
-                    content: Text('Email verified successfully. Please sign in.'),
-                    backgroundColor: AppColors.brandPrimary500,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                AppRoutes.login,
-                (route) => false,
-              );
-            }
+            // Pass pendingUser so the cubit can reconstruct the full UserEntity
+            // from the real token the backend returns.
+            context.read<AuthCubit>().verifyEmail(
+              email: state.email,
+              otp: otp,
+              pendingUser: state.pendingUser,
+            );
           },
           onResend: () async {
             // Resend is not supported by API yet; stub cooldown delay

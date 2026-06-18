@@ -102,10 +102,43 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> verifyEmail(VerifyEmailRequest request) async {
+  Future<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request) async {
     try {
       final response = await _dioClient.dio.post(
         ApiConstants.verifyEmail,
+        data: request.toJson(),
+      );
+
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+
+      final status = body['status'] as String?;
+      if (status != null && status != 'Success') {
+        throw ServerException(
+          body['message'] as String? ?? 'Email verification failed',
+        );
+      }
+
+      return VerifyEmailResponse.fromJson(body);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        throw ServerException(data['message'] as String);
+      }
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<void> forgotPassword(ForgotPasswordRequest request) async {
+    try {
+      final response = await _dioClient.dio.post(
+        ApiConstants.forgotPassword,
         data: request.toJson(),
       );
 
@@ -114,7 +147,36 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         final status = body['status'] as String?;
         if (status != null && status != 'Success') {
           throw ServerException(
-            body['message'] as String? ?? 'Email verification failed',
+            body['message'] as String? ?? 'Failed to send OTP',
+          );
+        }
+      }
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        throw ServerException(data['message'] as String);
+      }
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<void> resetPassword(ResetPasswordRequest request) async {
+    try {
+      final response = await _dioClient.dio.post(
+        ApiConstants.resetPassword,
+        data: request.toJson(),
+      );
+
+      final body = response.data;
+      if (body is Map<String, dynamic>) {
+        final status = body['status'] as String?;
+        if (status != null && status != 'Success') {
+          throw ServerException(
+            body['message'] as String? ?? 'Password reset failed',
           );
         }
       }

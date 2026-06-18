@@ -1,3 +1,4 @@
+import 'package:elara/features/auth/domain/entities/user_entity.dart';
 import 'package:elara/features/auth/domain/repositories/auth_repository.dart';
 
 class VerifyEmailUseCase {
@@ -5,7 +6,16 @@ class VerifyEmailUseCase {
 
   VerifyEmailUseCase(this._repository);
 
-  Future<void> call({required String email, required String otp}) {
-    return _repository.verifyEmail(email: email, otp: otp);
+  Future<UserEntity> call({
+    required String email,
+    required String otp,
+    required UserEntity pendingUser,
+  }) {
+    return _repository.verifyEmail(
+      email: email,
+      otp: otp,
+      pendingUser: pendingUser,
+    );
   }
 }
+

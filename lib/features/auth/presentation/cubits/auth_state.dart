@@ -51,13 +51,40 @@ class RoleSelected extends AuthState {
 
 class AuthNeedsVerification extends AuthState {
   final String email;
+  final UserEntity pendingUser;
 
-  const AuthNeedsVerification(this.email);
+  const AuthNeedsVerification({
+    required this.email,
+    required this.pendingUser,
+  });
+
+  @override
+  List<Object?> get props => [email, pendingUser];
+}
+
+/// Emitted after POST /forgot-password succeeds — carries email to OTP screen.
+class ForgotPasswordOtpSent extends AuthState {
+  final String email;
+
+  const ForgotPasswordOtpSent(this.email);
 
   @override
   List<Object?> get props => [email];
 }
 
-class AuthVerificationSuccess extends AuthState {
-  const AuthVerificationSuccess();
+/// Emitted when the OTP is verified in the reset-password flow.
+/// Carries email + otp to the ResetPasswordScreen.
+class ResetPasswordReady extends AuthState {
+  final String email;
+  final String otp;
+
+  const ResetPasswordReady({required this.email, required this.otp});
+
+  @override
+  List<Object?> get props => [email, otp];
+}
+
+/// Emitted after POST /reset-password succeeds — navigate to login.
+class PasswordResetSuccess extends AuthState {
+  const PasswordResetSuccess();
 }
