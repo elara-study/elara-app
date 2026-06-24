@@ -1,9 +1,9 @@
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
-import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -129,7 +129,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
 
     if (!onboardingSeen) {
-      Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+      AppNavigation.goNamed(context, AppRoutes.onboarding);
     } else {
       context.read<AuthCubit>().checkAuthStatus();
     }
@@ -148,16 +148,8 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return BlocListener<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state is AuthAuthenticated) {
-          AppRoutes.navigateAfterAuth(context, state.user);
-        } else if (state is AuthUnauthenticated) {
-          Navigator.pushReplacementNamed(context, AppRoutes.login);
-        }
-      },
-      child: Scaffold(
-        body: AnimatedBuilder(
+    return Scaffold(
+      body: AnimatedBuilder(
           animation: _exitFade,
           builder: (context, child) =>
               Opacity(opacity: _exitFade.value, child: child),
@@ -231,7 +223,6 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
               ],
-            ),
           ),
         ),
       ),

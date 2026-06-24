@@ -1,28 +1,8 @@
-import 'package:elara/core/utils/logger.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiConstants {
-  /// Compile-time value from `--dart-define-from-file=.env` or
-  /// `--dart-define=API_BASE_URL=...` (see `.env.example`).
-  ///
-  /// Trailing slash is added if missing. Never commit your real `.env`.
-  ///
-  /// When unset, uses a localhost placeholder so [DioClient] can still be
-  /// constructed (e.g. Rewards remote + shell tabs); network calls may fail
-  /// until you define a real base URL.
-  static bool _warnedMissingApiBaseUrl = false;
-
   static String get baseUrl {
-    const raw = String.fromEnvironment('API_BASE_URL', defaultValue: '');
-    if (raw.isEmpty) {
-      if (!_warnedMissingApiBaseUrl) {
-        _warnedMissingApiBaseUrl = true;
-        AppLogger.warning(
-          'API_BASE_URL is not set — using http://127.0.0.1/ for Dio. '
-          'Pass --dart-define-from-file=.env for real backends.',
-        );
-      }
-      return 'http://127.0.0.1/';
-    }
+    final raw = dotenv.env['API_BASE_URL'] ?? '';
     return raw.endsWith('/') ? raw : '$raw/';
   }
 
@@ -30,8 +10,18 @@ class ApiConstants {
   static const int receiveTimeout = 30000;
 
   // API Endpoints
-  static const String login = 'auth/login';
-  static const String register = 'auth/register';
+  static const String login = 'api/v1/Auth/login';
+  static const String register = 'api/v1/Auth/register';
+  static const String verifyEmail = 'api/v1/Auth/verify-email';
+  static const String authMe = 'api/v1/Auth/me';
+
+  static const String refreshToken = 'api/v1/Auth/refresh';
+  static const String forgotPassword = 'api/v1/Auth/forgot-password';
+  static const String resetPassword = 'api/v1/Auth/reset-password';
+
+  // OAuth
+  static const String googleSignIn = 'api/v1/oauth/google';
+  static const String completeRegistration = 'api/v1/oauth/complete-registration';
 
   /// Student > Learn — Group overview (apidocs: group-overview).
   static String studentLearnGroupOverview(String groupId) =>
@@ -61,8 +51,6 @@ class ApiConstants {
 
   /// Shared settings > Profile & Account (GET when backend ready).
   static const String settingsProfileAccount = 'v1/settings/profile-account';
-
-  // ── Student chatbot (paths relative to [baseUrl] / [API_BASE_URL])
 
   /// GET — query `page`, `limit` (strings per OpenAPI).
   static const String chatbotConversations = 'api/v1/conversations';

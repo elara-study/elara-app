@@ -1,5 +1,5 @@
 import 'package:elara/core/enums/user_role.dart';
-import 'package:elara/features/auth/domain/entities/user_entity.dart';
+import 'package:elara/features/auth/data/models/auth_model.dart';
 import 'package:elara/features/auth/domain/repositories/auth_repository.dart';
 
 class RegisterUseCase {
@@ -7,17 +7,23 @@ class RegisterUseCase {
 
   RegisterUseCase(this._repository);
 
-  Future<UserEntity> call({
-    required String fullName,
+  Future<RegisteredUserData> call({
+    required String name,
     required String email,
     required String password,
     required UserRole role,
+    required DateTime dateOfBirth,
+    int? subjectId,
+    int? grade,
   }) {
     return _repository.register(
-      fullName: fullName,
+      name: name,
       email: email,
       password: password,
       role: role,
+      dateOfBirth: dateOfBirth,
+      subjectId: subjectId,
+      grade: grade,
     );
   }
 }

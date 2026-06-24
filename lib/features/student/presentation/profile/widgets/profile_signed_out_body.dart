@@ -1,3 +1,5 @@
+import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +20,7 @@ class ProfileSignedOutBody extends StatelessWidget {
           const SizedBox(height: 16.0),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pushNamed('/login');
+              AppNavigation.goNamed(context, AppRoutes.login);
             },
             child: Text(
               'Login',

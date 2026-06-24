@@ -1,3 +1,4 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
@@ -18,9 +19,7 @@ class ParentProfileScreen extends StatelessWidget {
           current.pendingSnackMessage != null || current.shouldNavigateToLogin,
       listener: (context, profileState) {
         if (profileState.shouldNavigateToLogin) {
-          Navigator.of(
-            context,
-          ).pushNamedAndRemoveUntil(AppRoutes.login, (_) => false);
+          AppNavigation.pushNamedAndRemoveUntil(context, AppRoutes.login);
         }
         final snack = profileState.pendingSnackMessage;
         if (snack != null) {
@@ -48,9 +47,10 @@ class ParentProfileScreen extends StatelessWidget {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.settings_rounded),
-                    onPressed: () => Navigator.of(
+                    onPressed: () => AppNavigation.pushNamed(
                       context,
-                    ).pushNamed(AppRoutes.parentSettings),
+                      AppRoutes.parentSettings,
+                    ),
                   ),
                 ],
               ),

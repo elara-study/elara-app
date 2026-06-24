@@ -1,3 +1,5 @@
+import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
@@ -6,7 +8,6 @@ import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.da
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
-import 'package:elara/config/routes.dart';
 import 'package:elara/shared/widgets/subject_group_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,7 +83,7 @@ class TeacherGroupsScreen extends StatelessWidget {
       builder: (context) => SubjectGroupCard(
         group: group,
         variant: SubjectGroupCardVariant.teacher,
-        onTap: () => Navigator.pushNamed(
+        onTap: () => AppNavigation.pushNamed(
           context,
           AppRoutes.teacherGroup,
           arguments: group,

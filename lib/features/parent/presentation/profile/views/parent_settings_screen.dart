@@ -1,3 +1,4 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/theme_cubit.dart';
 import 'package:elara/core/theme/app_spacing.dart';
@@ -25,10 +26,7 @@ class ParentSettingsScreen extends StatelessWidget {
           current.shouldNavigateToLogin,
       listener: (context, profileState) {
         if (profileState.shouldNavigateToLogin) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            AppRoutes.login,
-            (route) => false,
-          );
+          AppNavigation.pushNamedAndRemoveUntil(context, AppRoutes.login);
           return;
         }
 
@@ -158,23 +156,27 @@ class ParentSettingsScreen extends StatelessWidget {
                     SettingsNavigationTile(
                       icon: Icons.person_rounded,
                       label: 'Profile & Account',
-                      onTap: () => Navigator.of(
+                      onTap: () => AppNavigation.pushNamed(
                         context,
-                      ).pushNamed(AppRoutes.profileAccount, arguments: UserRole.parent),
+                        AppRoutes.profileAccount,
+                        arguments: UserRole.parent,
+                      ),
                     ),
                     SettingsNavigationTile(
                       icon: Icons.shield,
                       label: 'Password & Security',
-                      onTap: () => Navigator.of(
+                      onTap: () => AppNavigation.pushNamed(
                         context,
-                      ).pushNamed(AppRoutes.passwordSecurity),
+                        AppRoutes.passwordSecurity,
+                      ),
                     ),
                     SettingsNavigationTile(
                       icon: Icons.notifications,
                       label: 'Notifications',
-                      onTap: () => Navigator.of(
+                      onTap: () => AppNavigation.pushNamed(
                         context,
-                      ).pushNamed(AppRoutes.notificationsSettings),
+                        AppRoutes.notificationsSettings,
+                      ),
                     ),
                   ],
                 ),

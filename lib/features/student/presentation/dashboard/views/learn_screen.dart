@@ -1,4 +1,5 @@
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/learn/student_learn_cubit.dart';
@@ -78,10 +79,9 @@ class LearnScreen extends StatelessWidget {
                       final g = state.groups[index];
                       return SubjectGroupCard(
                         onTap: () {
-                          Navigator.pushNamed(
+                          AppNavigation.pushNamed(
                             context,
                             AppRoutes.studentGroup,
-
                             arguments: g,
                           );
                         },

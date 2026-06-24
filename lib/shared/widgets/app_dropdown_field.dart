@@ -98,6 +98,11 @@ class _AppDropdownFieldState extends State<AppDropdownField>
     final listH =
         math.min(widget.options!.length.toDouble(), maxVisible) * itemH;
 
+    // Screen metrics needed to clamp the overlay inside the safe area.
+    final mq = MediaQuery.of(context);
+    final screenH = mq.size.height;
+    final bottomPadding = mq.padding.bottom; // system nav bar height
+
     setState(() => _isOpen = true);
 
     _overlayEntry = OverlayEntry(
@@ -106,6 +111,8 @@ class _AppDropdownFieldState extends State<AppDropdownField>
         anchorWidth: fieldW,
         anchorHeight: fieldH,
         listHeight: listH,
+        screenHeight: screenH,
+        bottomPadding: bottomPadding,
         options: widget.options!,
         selected: _selected,
         fadeAnim: _fadeAnim,
@@ -249,6 +256,8 @@ class _DropdownOverlay extends StatelessWidget {
   final double anchorWidth;
   final double anchorHeight;
   final double listHeight;
+  final double screenHeight;
+  final double bottomPadding;
   final List<String> options;
   final String? selected;
   final Animation<double> fadeAnim;
@@ -261,6 +270,8 @@ class _DropdownOverlay extends StatelessWidget {
     required this.anchorWidth,
     required this.anchorHeight,
     required this.listHeight,
+    required this.screenHeight,
+    required this.bottomPadding,
     required this.options,
     required this.selected,
     required this.fadeAnim,
@@ -271,6 +282,16 @@ class _DropdownOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const gap = 6.0;
+    final belowTop = anchorTopLeft.dy + anchorHeight + gap;
+    final safeBottom = screenHeight - bottomPadding - 8; // 8 px breathing room
+
+    // Flip the dropdown above the field if it would overflow the safe area.
+    final fitsBelow = belowTop + listHeight <= safeBottom;
+    final panelTop = fitsBelow
+        ? belowTop
+        : math.max(0.0, anchorTopLeft.dy - gap - listHeight);
+
     return Stack(
       children: [
         // Barrier: dismiss on tap outside.
@@ -282,10 +303,10 @@ class _DropdownOverlay extends StatelessWidget {
           ),
         ),
 
-        // Dropdown panel anchored directly below the field.
+        // Dropdown panel — clamped inside the safe area.
         Positioned(
           left: anchorTopLeft.dx,
-          top: anchorTopLeft.dy + anchorHeight + 6,
+          top: panelTop,
           width: anchorWidth,
           child: FadeTransition(
             opacity: fadeAnim,

@@ -5,13 +5,19 @@ import 'package:flutter/material.dart';
 class AuthSocialRow extends StatelessWidget {
   final double gap;
   final bool shouldStack;
-  final VoidCallback onTap;
+  final VoidCallback onGoogleTap;
+  final VoidCallback onFacebookTap;
+  final bool isGoogleLoading;
+  final bool isFacebookLoading;
 
   const AuthSocialRow({
     super.key,
     required this.gap,
     required this.shouldStack,
-    required this.onTap,
+    required this.onGoogleTap,
+    required this.onFacebookTap,
+    this.isGoogleLoading = false,
+    this.isFacebookLoading = false,
   });
 
   @override
@@ -19,12 +25,14 @@ class AuthSocialRow extends StatelessWidget {
     final google = AuthSocialButton(
       label: 'Google',
       svgAsset: 'assets/icons/google.svg',
-      onTap: onTap,
+      onTap: onGoogleTap,
+      isLoading: isGoogleLoading,
     );
     final facebook = AuthSocialButton(
       label: 'Facebook',
       svgAsset: 'assets/icons/facebook_icon.svg',
-      onTap: onTap,
+      onTap: onFacebookTap,
+      isLoading: isFacebookLoading,
     );
 
     if (shouldStack) {

@@ -1,3 +1,4 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/theme_cubit.dart';
@@ -28,9 +29,7 @@ class StudentSettingsScreen extends StatelessWidget {
           current.pendingSnackMessage != null || current.shouldNavigateToLogin,
       listener: (context, settingsState) {
         if (settingsState.shouldNavigateToLogin) {
-          Navigator.of(
-            context,
-          ).pushNamedAndRemoveUntil(AppRoutes.login, (_) => false);
+          AppNavigation.pushNamedAndRemoveUntil(context, AppRoutes.login);
         }
         final snack = settingsState.pendingSnackMessage;
         if (snack != null) {
@@ -142,23 +141,27 @@ class StudentSettingsScreen extends StatelessWidget {
                         SettingsNavigationTile(
                           icon: Icons.person_rounded,
                           label: 'Profile & Account',
-                          onTap: () => Navigator.of(
+                          onTap: () => AppNavigation.pushNamed(
                             context,
-                          ).pushNamed(AppRoutes.profileAccount, arguments: UserRole.student),
+                            AppRoutes.profileAccount,
+                            arguments: UserRole.student,
+                          ),
                         ),
                         SettingsNavigationTile(
                           icon: Icons.shield,
                           label: 'Password & Security',
-                          onTap: () => Navigator.of(
+                          onTap: () => AppNavigation.pushNamed(
                             context,
-                          ).pushNamed(AppRoutes.passwordSecurity),
+                            AppRoutes.passwordSecurity,
+                          ),
                         ),
                         SettingsNavigationTile(
                           icon: Icons.notifications,
                           label: 'Notifications',
-                          onTap: () => Navigator.of(
+                          onTap: () => AppNavigation.pushNamed(
                             context,
-                          ).pushNamed(AppRoutes.notificationsSettings),
+                            AppRoutes.notificationsSettings,
+                          ),
                         ),
                       ],
                     ),
