@@ -1,6 +1,8 @@
 import 'package:elara/core/network/network_info.dart';
 import 'package:elara/features/student/presentation/chatbot/core/chatbot_config.dart';
-import 'package:elara/features/student/data/chatbot/repositories/mock_chatbot_repository.dart';
+import 'package:elara/features/student/data/chatbot/datasources/remote_data_source.dart';
+import 'package:elara/features/student/data/chatbot/datasources/remote_data_source_impl.dart';
+import 'package:elara/features/student/data/chatbot/repositories/chatbot_repository_impl.dart';
 import 'package:elara/features/student/domain/chatbot/repositories/chatbot_repository.dart';
 import 'package:elara/features/student/domain/chatbot/usecases/create_session_use_case.dart';
 import 'package:elara/features/student/domain/chatbot/usecases/delete_session_use_case.dart';
@@ -15,7 +17,13 @@ import 'package:get_it/get_it.dart';
 final getIt = GetIt.instance;
 
 void setupChatbotDI() {
-  getIt.registerLazySingleton<ChatbotRepository>(() => MockChatbotRepository());
+  getIt.registerLazySingleton<ChatbotRemoteDataSource>(
+    () => ChatbotRemoteDataSourceImpl(getIt()),
+  );
+
+  getIt.registerLazySingleton<ChatbotRepository>(
+    () => ChatbotRepositoryImpl(getIt<ChatbotRemoteDataSource>()),
+  );
 
   getIt.registerLazySingleton(
     () => CreateSessionUseCase(getIt<ChatbotRepository>()),
