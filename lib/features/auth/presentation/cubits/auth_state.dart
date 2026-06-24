@@ -17,6 +17,10 @@ class AuthLoading extends AuthState {
   const AuthLoading();
 }
 
+class AuthGoogleLoading extends AuthState {
+  const AuthGoogleLoading();
+}
+
 class AuthAuthenticated extends AuthState {
   final UserEntity user;
 
@@ -87,4 +91,20 @@ class ResetPasswordReady extends AuthState {
 /// Emitted after POST /reset-password succeeds — navigate to login.
 class PasswordResetSuccess extends AuthState {
   const PasswordResetSuccess();
+}
+
+/// Emitted when Google sign-in succeeds but the JWT has no role claim.
+/// Carries the pending tokens so the UI can route to role-selection +
+/// complete-registration.
+class GoogleSignInNeedsRole extends AuthState {
+  final String pendingToken;
+  final String refreshToken;
+
+  const GoogleSignInNeedsRole({
+    required this.pendingToken,
+    required this.refreshToken,
+  });
+
+  @override
+  List<Object?> get props => [pendingToken, refreshToken];
 }

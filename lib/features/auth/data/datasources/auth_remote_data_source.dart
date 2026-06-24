@@ -7,4 +7,7 @@ abstract class AuthRemoteDataSource {
   Future<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request);
   Future<void> forgotPassword(ForgotPasswordRequest request);
   Future<void> resetPassword(ResetPasswordRequest request);
+  Future<OAuthTokenResponse> googleSignIn(GoogleSignInRequest request);
+  Future<OAuthTokenResponse> completeRegistration(CompleteRegistrationRequest request);
+  Future<UserModel> getMe();
 }

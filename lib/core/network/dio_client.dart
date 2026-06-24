@@ -1,18 +1,25 @@
 import 'package:dio/dio.dart';
+import 'package:elara/core/constants/api_constants.dart';
+import 'package:elara/core/network/auth_interceptor.dart';
+import 'package:elara/core/storage/secure_token_storage.dart';
+import 'package:elara/core/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../constants/api_constants.dart';
-import '../utils/logger.dart';
-import 'auth_interceptor.dart';
+import 'package:go_router/go_router.dart';
 
 class DioClient {
   late Dio _dio;
+  late final AuthInterceptor _authInterceptor;
 
   DioClient({
-    required SharedPreferences prefs,
+    required SecureTokenStorage tokenStorage,
     required GlobalKey<NavigatorState> navigatorKey,
   }) {
+    _authInterceptor = AuthInterceptor(
+      tokenStorage: tokenStorage,
+      navigatorKey: navigatorKey,
+    );
+
     _dio = Dio(
       BaseOptions(
         baseUrl: ApiConstants.baseUrl,
@@ -29,12 +36,8 @@ class DioClient {
       ),
     );
 
-    // Auth interceptor — Bearer injection + 401 redirect
-    _dio.interceptors.add(
-      AuthInterceptor(prefs: prefs, navigatorKey: navigatorKey),
-    );
+    _dio.interceptors.add(_authInterceptor);
 
-    // Full request/response logger — debug builds only
     if (kDebugMode) {
       _dio.interceptors.add(
         LogInterceptor(
@@ -52,12 +55,16 @@ class DioClient {
 
   Dio get dio => _dio;
 
-  // Add authorization token
-  void setAuthToken(String token) {
+  AuthInterceptor get authInterceptor => _authInterceptor;
+
+  void bindRouter(GoRouter router) {
+    _authInterceptor.bindRouter(router);
+  }
+
+  Future<void> setAuthToken(String token) async {
     _dio.options.headers['Authorization'] = 'Bearer $token';
   }
 
-  // Remove authorization token
   void removeAuthToken() {
     _dio.options.headers.remove('Authorization');
   }

@@ -5,6 +5,7 @@ import 'package:elara/core/constants/api_constants.dart';
 import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/core/error/exceptions.dart';
 import 'package:elara/core/network/dio_client.dart';
+import 'package:elara/core/utils/logger.dart';
 import 'package:elara/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:elara/features/auth/data/models/auth_model.dart';
 import 'package:elara/features/auth/data/models/user_model.dart';
@@ -50,6 +51,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         email: payload['email'] as String? ?? request.email,
         role: _parseRole(payload['role'] as String? ?? ''),
         token: token,
+        refreshToken: data['refreshToken'] as String?,
       );
     } on DioException catch (e) {
       final data = e.response?.data;
@@ -84,15 +86,41 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
 
       final data = body['data'] as Map<String, dynamic>?;
+
+      // Backend returns data:null on success — build from request fields.
       if (data == null) {
-        throw ServerException('No data returned from server');
+        return RegisteredUserData(
+          userId: '',
+          email: request.email,
+          name: request.name,
+          role: request.role.value,
+        );
       }
 
       return RegisteredUserData.fromJson(data);
     } on DioException catch (e) {
       final data = e.response?.data;
-      if (data is Map<String, dynamic> && data['message'] != null) {
-        throw ServerException(data['message'] as String);
+      AppLogger.log(
+        'Register error — status: ${e.response?.statusCode} | body: $data',
+      );
+      if (data is Map<String, dynamic>) {
+        // Top-level message
+        final msg = data['message'] as String?;
+        if (msg != null && msg.isNotEmpty) throw ServerException(msg);
+
+        // ASP.NET model validation: { "errors": { "FieldName": ["msg"] } }
+        final errors = data['errors'];
+        if (errors is Map<String, dynamic> && errors.isNotEmpty) {
+          final first = errors.values.first;
+          final detail = first is List && first.isNotEmpty
+              ? first.first.toString()
+              : first.toString();
+          throw ServerException(detail);
+        }
+
+        // Standard ProblemDetails title fallback
+        final title = data['title'] as String?;
+        if (title != null && title.isNotEmpty) throw ServerException(title);
       }
       throw ServerException(e.message ?? 'Server connection error');
     } catch (e) {
@@ -181,6 +209,143 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         }
       }
     } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        throw ServerException(data['message'] as String);
+      }
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<OAuthTokenResponse> googleSignIn(GoogleSignInRequest request) async {
+    try {
+      final response = await _dioClient.dio.post(
+        ApiConstants.googleSignIn,
+        data: request.toJson(),
+      );
+
+      final body = response.data;
+      AppLogger.log(
+        'Google sign-in response — status: ${response.statusCode} | body: $body',
+      );
+
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+
+      final status = body['status'] as String?;
+      if (status != null && status != 'Success') {
+        throw ServerException(
+          body['message'] as String? ?? 'Google sign-in failed',
+        );
+      }
+
+      return OAuthTokenResponse.fromJson(body);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      AppLogger.log(
+        'Google sign-in error — status: ${e.response?.statusCode} | body: $data',
+      );
+      if (data is Map<String, dynamic>) {
+        final msg = data['message'] as String?;
+        if (msg != null && msg.isNotEmpty) throw ServerException(msg);
+        final errors = data['errors'];
+        if (errors is Map<String, dynamic> && errors.isNotEmpty) {
+          final first = errors.values.first;
+          final detail = first is List && first.isNotEmpty
+              ? first.first.toString()
+              : first.toString();
+          throw ServerException(detail);
+        }
+      }
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<OAuthTokenResponse> completeRegistration(
+    CompleteRegistrationRequest request,
+  ) async {
+    try {
+      final response = await _dioClient.dio.post(
+        ApiConstants.completeRegistration,
+        data: request.toJson(),
+      );
+
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+
+      final status = body['status'] as String?;
+      if (status != null && status != 'Success') {
+        throw ServerException(
+          body['message'] as String? ?? 'Registration failed',
+        );
+      }
+
+      return OAuthTokenResponse.fromJson(body);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        throw ServerException(data['message'] as String);
+      }
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<UserModel> getMe() async {
+    try {
+      final response = await _dioClient.dio.get(ApiConstants.authMe);
+
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+
+      final status = body['status'] as String?;
+      if (status != null && status != 'Success') {
+        throw ServerException(
+          body['message'] as String? ?? 'Failed to load profile',
+        );
+      }
+
+      final data = body['data'] as Map<String, dynamic>?;
+      if (data == null) {
+        throw ServerException('No profile data returned from server');
+      }
+
+      return UserModel(
+        id: data['id'] as String? ??
+            data['userId'] as String? ??
+            data['nameid'] as String? ??
+            '',
+        fullName: data['name'] as String? ??
+            data['fullName'] as String? ??
+            data['full_name'] as String? ??
+            '',
+        email: data['email'] as String? ?? '',
+        role: _parseRole(
+          data['role'] as String? ?? data['userRole'] as String? ?? '',
+        ),
+        token: '',
+      );
+    } on DioException catch (e) {
+      final statusCode = e.response?.statusCode;
+      if (statusCode == 401 || statusCode == 403) {
+        throw ServerException('Session expired');
+      }
       final data = e.response?.data;
       if (data is Map<String, dynamic> && data['message'] != null) {
         throw ServerException(data['message'] as String);

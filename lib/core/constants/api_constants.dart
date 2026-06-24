@@ -13,10 +13,15 @@ class ApiConstants {
   static const String login = 'api/v1/Auth/login';
   static const String register = 'api/v1/Auth/register';
   static const String verifyEmail = 'api/v1/Auth/verify-email';
+  static const String authMe = 'api/v1/Auth/me';
 
   static const String refreshToken = 'api/v1/Auth/refresh';
   static const String forgotPassword = 'api/v1/Auth/forgot-password';
   static const String resetPassword = 'api/v1/Auth/reset-password';
+
+  // OAuth
+  static const String googleSignIn = 'api/v1/oauth/google';
+  static const String completeRegistration = 'api/v1/oauth/complete-registration';
 
   /// Student > Learn — Group overview (apidocs: group-overview).
   static String studentLearnGroupOverview(String groupId) =>

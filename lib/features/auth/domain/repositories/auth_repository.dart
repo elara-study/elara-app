@@ -35,4 +35,18 @@ abstract class AuthRepository {
     required String otp,
     required String newPassword,
   });
+
+  /// Sends the Google ID token to the backend. Returns the JWT.
+  /// If the JWT has a role → existing user (return UserEntity).
+  /// If no role → new user (throws a specific exception carrying the pending token).
+  Future<UserEntity> googleSignIn({required String idToken});
+
+  /// Completes registration for a Google-authenticated user who has no role yet.
+  Future<UserEntity> completeRegistration({
+    required String pendingToken,
+    required UserRole role,
+    required DateTime dateOfBirth,
+    int? subjectId,
+    int? grade,
+  });
 }

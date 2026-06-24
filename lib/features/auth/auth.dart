@@ -56,6 +56,8 @@ export 'domain/usecases/get_current_user_use_case.dart';
 export 'domain/usecases/verify_email_use_case.dart';
 export 'domain/usecases/forgot_password_use_case.dart';
 export 'domain/usecases/reset_password_use_case.dart';
+export 'domain/usecases/google_sign_in_use_case.dart';
+export 'domain/usecases/complete_registration_use_case.dart';
 
 // DATA — Models
 

@@ -1,37 +1,38 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/constants/api_constants.dart';
+import 'package:elara/core/storage/secure_token_storage.dart';
 import 'package:elara/core/utils/logger.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:go_router/go_router.dart';
 
 class AuthInterceptor extends Interceptor {
-  final SharedPreferences _prefs;
+  final SecureTokenStorage _tokenStorage;
   final GlobalKey<NavigatorState> navigatorKey;
+  GoRouter? _router;
 
-  static const String _kCachedUserKey = 'CACHED_USER';
-
-  // Guards against infinite refresh loops (e.g. refresh endpoint itself 401s).
   bool _isRefreshing = false;
 
-  AuthInterceptor({
-    required SharedPreferences prefs,
-    required this.navigatorKey,
-  }) : _prefs = prefs;
+  VoidCallback? onSessionExpired;
 
-  // ── Request ────────────────────────────────────────────────────────────────
+  AuthInterceptor({
+    required SecureTokenStorage tokenStorage,
+    required this.navigatorKey,
+  }) : _tokenStorage = tokenStorage;
+
+  void bindRouter(GoRouter router) => _router = router;
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final token = _readToken();
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    final token = await _tokenStorage.getAccessToken();
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }
     handler.next(options);
   }
-
-  // ── Error ──────────────────────────────────────────────────────────────────
 
   @override
   Future<void> onError(
@@ -41,7 +42,6 @@ class AuthInterceptor extends Interceptor {
     final statusCode = err.response?.statusCode;
     final path = err.requestOptions.path;
 
-    // Only handle 401 once; ignore refresh endpoint itself to avoid loops.
     if (statusCode == 401 &&
         !_isRefreshing &&
         !path.contains(ApiConstants.refreshToken)) {
@@ -51,18 +51,15 @@ class AuthInterceptor extends Interceptor {
       try {
         final newTokens = await _refresh(err.requestOptions);
         if (newTokens != null) {
-          // Persist the new token pair.
-          _updateCachedTokens(
-            newAccessToken: newTokens.$1,
-            newRefreshToken: newTokens.$2,
+          await _tokenStorage.saveTokens(
+            accessToken: newTokens.$1,
+            refreshToken: newTokens.$2,
           );
           AppLogger.log('AuthInterceptor → token refreshed successfully');
 
-          // Retry the original request with the new access token.
           final retryOptions = err.requestOptions
             ..headers['Authorization'] = 'Bearer ${newTokens.$1}';
 
-          // Build a fresh Dio instance to avoid interceptor re-entry.
           final retryDio = Dio(
             BaseOptions(
               baseUrl: ApiConstants.baseUrl,
@@ -77,21 +74,18 @@ class AuthInterceptor extends Interceptor {
         AppLogger.log('AuthInterceptor → refresh failed: $e');
       }
 
-      // Refresh failed — clear session and go to login.
       _isRefreshing = false;
       AppLogger.log('AuthInterceptor → clearing session and redirecting to login');
-      _clearSession();
+      await _tokenStorage.clearTokens();
+      onSessionExpired?.call();
       _navigateToLogin();
     }
 
     handler.next(err);
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
-
-  /// Calls the refresh endpoint. Returns (accessToken, refreshToken) or null.
   Future<(String, String)?> _refresh(RequestOptions original) async {
-    final storedRefreshToken = _readRefreshToken();
+    final storedRefreshToken = await _tokenStorage.getRefreshToken();
     if (storedRefreshToken == null || storedRefreshToken.isEmpty) {
       AppLogger.log('AuthInterceptor → no refresh token stored');
       return null;
@@ -125,56 +119,11 @@ class AuthInterceptor extends Interceptor {
     return (newToken, newRefreshToken);
   }
 
-  /// Reads `token` from the cached user JSON blob.
-  String? _readToken() {
-    try {
-      final jsonString = _prefs.getString(_kCachedUserKey);
-      if (jsonString == null) return null;
-      final match = RegExp(r'"token"\s*:\s*"([^"]+)"').firstMatch(jsonString);
-      return match?.group(1);
-    } catch (e) {
-      AppLogger.log('AuthInterceptor → failed to read token: $e');
-      return null;
-    }
-  }
-
-  /// Reads `refresh_token` from the cached user JSON blob.
-  String? _readRefreshToken() {
-    try {
-      final jsonString = _prefs.getString(_kCachedUserKey);
-      if (jsonString == null) return null;
-      final match =
-          RegExp(r'"refresh_token"\s*:\s*"([^"]+)"').firstMatch(jsonString);
-      return match?.group(1);
-    } catch (e) {
-      AppLogger.log('AuthInterceptor → failed to read refresh token: $e');
-      return null;
-    }
-  }
-
-  /// Patches the cached user JSON with the new access + refresh tokens.
-  void _updateCachedTokens({
-    required String newAccessToken,
-    required String newRefreshToken,
-  }) {
-    try {
-      final jsonString = _prefs.getString(_kCachedUserKey);
-      if (jsonString == null) return;
-
-      final map = jsonDecode(jsonString) as Map<String, dynamic>;
-      map['token'] = newAccessToken;
-      map['refresh_token'] = newRefreshToken;
-      _prefs.setString(_kCachedUserKey, jsonEncode(map));
-    } catch (e) {
-      AppLogger.log('AuthInterceptor → failed to update cached tokens: $e');
-    }
-  }
-
-  void _clearSession() {
-    _prefs.remove(_kCachedUserKey);
-  }
-
   void _navigateToLogin() {
+    if (_router != null) {
+      _router!.go(AppRoutes.login);
+      return;
+    }
     navigatorKey.currentState?.pushNamedAndRemoveUntil(
       AppRoutes.login,
       (_) => false,
