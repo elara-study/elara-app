@@ -43,19 +43,26 @@ Future<DateTime?> showAppCalendarDialog({
   DateTime? firstDate,
   DateTime? lastDate,
 }) {
+  // Dismiss the keyboard before opening the dialog so the keyboard
+  // animation does not cause a layout overflow inside the dialog.
+  FocusManager.instance.primaryFocus?.unfocus();
+
   final now = DateTime.now();
   return showDialog<DateTime>(
     context: context,
     barrierColor: AppColors.neutral900.withValues(alpha: 0.6),
-    builder: (ctx) => Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
-      child: AppCalendarWidget(
-        initialDate: initialDate ?? now,
-        selectedDate: selectedDate,
-        firstDate: firstDate ?? DateTime(1940),
-        lastDate: lastDate ?? DateTime(now.year + 10),
-        onDateSelected: (date) => Navigator.of(ctx).pop(date),
+    builder: (ctx) => MediaQuery(
+      data: MediaQuery.of(ctx).copyWith(viewInsets: EdgeInsets.zero),
+      child: Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
+        child: AppCalendarWidget(
+          initialDate: initialDate ?? now,
+          selectedDate: selectedDate,
+          firstDate: firstDate ?? DateTime(1940),
+          lastDate: lastDate ?? DateTime(now.year + 10),
+          onDateSelected: (date) => Navigator.of(ctx).pop(date),
+        ),
       ),
     ),
   );
@@ -115,7 +122,10 @@ class _AppCalendarWidgetState extends State<AppCalendarWidget>
   void _applySlideAnimations({required bool forward}) {
     final beginOffset = Offset(forward ? 1.0 : -1.0, 0);
     final endOffset = Offset(forward ? -1.0 : 1.0, 0);
-    final curve = CurvedAnimation(parent: _slideCtrl, curve: Curves.easeInOutCubic);
+    final curve = CurvedAnimation(
+      parent: _slideCtrl,
+      curve: Curves.easeInOutCubic,
+    );
     final halfIn = CurvedAnimation(
       parent: _slideCtrl,
       curve: const Interval(0.3, 1.0, curve: Curves.easeIn),
@@ -125,8 +135,14 @@ class _AppCalendarWidgetState extends State<AppCalendarWidget>
       curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
     );
 
-    _slideIn = Tween<Offset>(begin: beginOffset, end: Offset.zero).animate(curve);
-    _slideOut = Tween<Offset>(begin: Offset.zero, end: endOffset).animate(curve);
+    _slideIn = Tween<Offset>(
+      begin: beginOffset,
+      end: Offset.zero,
+    ).animate(curve);
+    _slideOut = Tween<Offset>(
+      begin: Offset.zero,
+      end: endOffset,
+    ).animate(curve);
     _fadeIn = Tween<double>(begin: 0.0, end: 1.0).animate(halfIn);
     _fadeOut = Tween<double>(begin: 1.0, end: 0.0).animate(halfOut);
   }
@@ -184,7 +200,13 @@ class _AppCalendarWidgetState extends State<AppCalendarWidget>
     final total = cells.length <= 35 ? 35 : 42;
     var trailing = 1;
     while (cells.length < total) {
-      cells.add(_DayCell(trailing, DateTime(month.year, month.month + 1, trailing), false));
+      cells.add(
+        _DayCell(
+          trailing,
+          DateTime(month.year, month.month + 1, trailing),
+          false,
+        ),
+      );
       trailing++;
     }
     return cells;
@@ -195,8 +217,12 @@ class _AppCalendarWidgetState extends State<AppCalendarWidget>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardBg = isDark ? const Color(0xFF151B26) : LightModeColors.surfacePrimary;
-    final borderColor = isDark ? const Color(0xFF232D3F) : LightModeColors.borderDefault;
+    final cardBg = isDark
+        ? const Color(0xFF151B26)
+        : LightModeColors.surfacePrimary;
+    final borderColor = isDark
+        ? const Color(0xFF232D3F)
+        : LightModeColors.borderDefault;
 
     return Container(
       decoration: BoxDecoration(
@@ -221,38 +247,46 @@ class _AppCalendarWidgetState extends State<AppCalendarWidget>
               month: _visibleMonth,
               isDark: isDark,
               isYearView: _view == _CalendarView.year,
-              onPrev: _view == _CalendarView.month ? () => _navigateMonth(false) : null,
-              onNext: _view == _CalendarView.month ? () => _navigateMonth(true) : null,
+              onPrev: _view == _CalendarView.month
+                  ? () => _navigateMonth(false)
+                  : null,
+              onNext: _view == _CalendarView.month
+                  ? () => _navigateMonth(true)
+                  : null,
               onTitleTap: _toggleView,
             ),
-            AnimatedCrossFade(
-              duration: const Duration(milliseconds: 250),
-              sizeCurve: Curves.easeInOutCubic,
-              crossFadeState: _view == _CalendarView.year
-                  ? CrossFadeState.showSecond
-                  : CrossFadeState.showFirst,
-              firstChild: _MonthViewBody(
-                slideCtrl: _slideCtrl,
-                slideIn: _slideIn,
-                slideOut: _slideOut,
-                fadeIn: _fadeIn,
-                fadeOut: _fadeOut,
-                currentCells: _buildCells(_visibleMonth),
-                previousCells: _previousCells,
-                visibleMonth: _visibleMonth,
-                selectedDate: _selectedDate,
-                isDark: isDark,
-                onSelect: (date) {
-                  setState(() => _selectedDate = date);
-                  widget.onDateSelected?.call(date);
-                },
-              ),
-              secondChild: _YearPickerBody(
-                currentYear: _visibleMonth.year,
-                firstYear: (widget.firstDate ?? DateTime(1940)).year,
-                lastYear: (widget.lastDate ?? DateTime(DateTime.now().year + 10)).year,
-                isDark: isDark,
-                onYearSelected: _onYearSelected,
+            ClipRect(
+              child: AnimatedCrossFade(
+                duration: const Duration(milliseconds: 250),
+                sizeCurve: Curves.easeInOutCubic,
+                crossFadeState: _view == _CalendarView.year
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                firstChild: _MonthViewBody(
+                  slideCtrl: _slideCtrl,
+                  slideIn: _slideIn,
+                  slideOut: _slideOut,
+                  fadeIn: _fadeIn,
+                  fadeOut: _fadeOut,
+                  currentCells: _buildCells(_visibleMonth),
+                  previousCells: _previousCells,
+                  visibleMonth: _visibleMonth,
+                  selectedDate: _selectedDate,
+                  isDark: isDark,
+                  onSelect: (date) {
+                    setState(() => _selectedDate = date);
+                    widget.onDateSelected?.call(date);
+                  },
+                ),
+                secondChild: _YearPickerBody(
+                  currentYear: _visibleMonth.year,
+                  firstYear: (widget.firstDate ?? DateTime(1940)).year,
+                  lastYear:
+                      (widget.lastDate ?? DateTime(DateTime.now().year + 10))
+                          .year,
+                  isDark: isDark,
+                  onYearSelected: _onYearSelected,
+                ),
               ),
             ),
           ],
@@ -298,8 +332,18 @@ class _Header extends StatelessWidget {
   final VoidCallback? onNext;
 
   static const _monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
 
   @override
@@ -307,8 +351,12 @@ class _Header extends StatelessWidget {
     final navBg = isDark
         ? const Color(0xFF1E293B)
         : AppColors.brandPrimary500.withValues(alpha: 0.08);
-    final navIcon = isDark ? DarkModeColors.textSecondary : AppColors.brandPrimary500;
-    final titleColor = isDark ? DarkModeColors.textPrimary : LightModeColors.textPrimary;
+    final navIcon = isDark
+        ? DarkModeColors.textSecondary
+        : AppColors.brandPrimary500;
+    final titleColor = isDark
+        ? DarkModeColors.textPrimary
+        : LightModeColors.textPrimary;
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -321,7 +369,9 @@ class _Header extends StatelessWidget {
           _NavBtn(
             icon: Icons.chevron_left_rounded,
             bg: navBg,
-            iconColor: onPrev != null ? navIcon : navIcon.withValues(alpha: 0.3),
+            iconColor: onPrev != null
+                ? navIcon
+                : navIcon.withValues(alpha: 0.3),
             onTap: onPrev ?? () {},
           ),
           // Tappable title — switches to year picker
@@ -351,7 +401,9 @@ class _Header extends StatelessWidget {
           _NavBtn(
             icon: Icons.chevron_right_rounded,
             bg: navBg,
-            iconColor: onNext != null ? navIcon : navIcon.withValues(alpha: 0.3),
+            iconColor: onNext != null
+                ? navIcon
+                : navIcon.withValues(alpha: 0.3),
             onTap: onNext ?? () {},
           ),
         ],
@@ -385,8 +437,10 @@ class _NavBtnState extends State<_NavBtn> with SingleTickerProviderStateMixin {
     duration: const Duration(milliseconds: 90),
     reverseDuration: const Duration(milliseconds: 180),
   );
-  late final Animation<double> _scale = Tween<double>(begin: 1.0, end: 0.85)
-      .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeIn));
+  late final Animation<double> _scale = Tween<double>(
+    begin: 1.0,
+    end: 0.85,
+  ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeIn));
 
   @override
   void dispose() {
@@ -398,7 +452,10 @@ class _NavBtnState extends State<_NavBtn> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (_) => _ctrl.forward(),
-      onTapUp: (_) { _ctrl.reverse(); widget.onTap(); },
+      onTapUp: (_) {
+        _ctrl.reverse();
+        widget.onTap();
+      },
       onTapCancel: () => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
@@ -444,12 +501,16 @@ class _MonthViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weekdayColor = isDark ? DarkModeColors.textSecondary : LightModeColors.textSecondary;
+    final weekdayColor = isDark
+        ? DarkModeColors.textSecondary
+        : LightModeColors.textSecondary;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        AppSpacing.spacingLg.w, 0,
-        AppSpacing.spacingLg.w, AppSpacing.spacingXl.h,
+        AppSpacing.spacingLg.w,
+        0,
+        AppSpacing.spacingLg.w,
+        AppSpacing.spacingXl.h,
       ),
       child: Column(
         children: [
@@ -469,35 +530,41 @@ class _MonthViewBody extends StatelessWidget {
                   onSelect: onSelect,
                 );
               }
-              return Stack(
-                children: [
-                  FadeTransition(
-                    opacity: fadeOut,
-                    child: SlideTransition(
-                      position: slideOut,
-                      child: _DayGrid(
-                        cells: previousCells!,
-                        visibleMonth: DateTime(visibleMonth.year, visibleMonth.month - 1),
-                        selectedDate: selectedDate,
-                        isDark: isDark,
-                        onSelect: onSelect,
+              return ClipRect(
+                child: Stack(
+                  clipBehavior: Clip.hardEdge,
+                  children: [
+                    FadeTransition(
+                      opacity: fadeOut,
+                      child: SlideTransition(
+                        position: slideOut,
+                        child: _DayGrid(
+                          cells: previousCells!,
+                          visibleMonth: DateTime(
+                            visibleMonth.year,
+                            visibleMonth.month - 1,
+                          ),
+                          selectedDate: selectedDate,
+                          isDark: isDark,
+                          onSelect: onSelect,
+                        ),
                       ),
                     ),
-                  ),
-                  FadeTransition(
-                    opacity: fadeIn,
-                    child: SlideTransition(
-                      position: slideIn,
-                      child: _DayGrid(
-                        cells: currentCells,
-                        visibleMonth: visibleMonth,
-                        selectedDate: selectedDate,
-                        isDark: isDark,
-                        onSelect: onSelect,
+                    FadeTransition(
+                      opacity: fadeIn,
+                      child: SlideTransition(
+                        position: slideIn,
+                        child: _DayGrid(
+                          cells: currentCells,
+                          visibleMonth: visibleMonth,
+                          selectedDate: selectedDate,
+                          isDark: isDark,
+                          onSelect: onSelect,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
@@ -518,11 +585,13 @@ class _WeekdayRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: _labels
-          .map((l) => Expanded(
-                child: Center(
-                  child: Text(l, style: AppTypography.overline(color: color)),
-                ),
-              ))
+          .map(
+            (l) => Expanded(
+              child: Center(
+                child: Text(l, style: AppTypography.overline(color: color)),
+              ),
+            ),
+          )
           .toList(),
     );
   }
@@ -591,17 +660,23 @@ class _DayCell2 extends StatefulWidget {
   State<_DayCell2> createState() => _DayCell2State();
 }
 
-class _DayCell2State extends State<_DayCell2> with SingleTickerProviderStateMixin {
+class _DayCell2State extends State<_DayCell2>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 80),
     reverseDuration: const Duration(milliseconds: 160),
   );
-  late final Animation<double> _scale = Tween<double>(begin: 1.0, end: 0.78)
-      .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeIn));
+  late final Animation<double> _scale = Tween<double>(
+    begin: 1.0,
+    end: 0.78,
+  ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeIn));
 
   @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   bool _sameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
@@ -610,7 +685,8 @@ class _DayCell2State extends State<_DayCell2> with SingleTickerProviderStateMixi
   Widget build(BuildContext context) {
     final today = DateTime.now();
     final isToday = _sameDay(widget.cell.date, today);
-    final isSelected = widget.selectedDate != null &&
+    final isSelected =
+        widget.selectedDate != null &&
         _sameDay(widget.cell.date, widget.selectedDate!);
 
     Color bg = Colors.transparent;
@@ -624,16 +700,24 @@ class _DayCell2State extends State<_DayCell2> with SingleTickerProviderStateMixi
       border = Border.all(color: AppColors.brandPrimary400, width: 1.5);
       textColor = AppColors.brandPrimary400;
     } else if (!widget.cell.isCurrentMonth) {
-      textColor = (widget.isDark ? DarkModeColors.textSecondary : LightModeColors.textSecondary)
-          .withValues(alpha: 0.35);
+      textColor =
+          (widget.isDark
+                  ? DarkModeColors.textSecondary
+                  : LightModeColors.textSecondary)
+              .withValues(alpha: 0.35);
     } else {
-      textColor = widget.isDark ? DarkModeColors.textPrimary : LightModeColors.textPrimary;
+      textColor = widget.isDark
+          ? DarkModeColors.textPrimary
+          : LightModeColors.textPrimary;
     }
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: (_) => _ctrl.forward(),
-      onTapUp: (_) { _ctrl.reverse(); widget.onSelect(widget.cell.date); },
+      onTapUp: (_) {
+        _ctrl.reverse();
+        widget.onSelect(widget.cell.date);
+      },
       onTapCancel: () => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
@@ -736,32 +820,43 @@ class _YearTile extends StatefulWidget {
   State<_YearTile> createState() => _YearTileState();
 }
 
-class _YearTileState extends State<_YearTile> with SingleTickerProviderStateMixin {
+class _YearTileState extends State<_YearTile>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 80),
     reverseDuration: const Duration(milliseconds: 160),
   );
-  late final Animation<double> _scale = Tween<double>(begin: 1.0, end: 0.88)
-      .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeIn));
+  late final Animation<double> _scale = Tween<double>(
+    begin: 1.0,
+    end: 0.88,
+  ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeIn));
 
   @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final bg = widget.isSelected
         ? AppColors.brandPrimary500
         : (widget.isDark
-            ? const Color(0xFF1E293B)
-            : AppColors.brandPrimary500.withValues(alpha: 0.06));
+              ? const Color(0xFF1E293B)
+              : AppColors.brandPrimary500.withValues(alpha: 0.06));
     final textColor = widget.isSelected
         ? AppColors.white
-        : (widget.isDark ? DarkModeColors.textPrimary : LightModeColors.textPrimary);
+        : (widget.isDark
+              ? DarkModeColors.textPrimary
+              : LightModeColors.textPrimary);
 
     return GestureDetector(
       onTapDown: (_) => _ctrl.forward(),
-      onTapUp: (_) { _ctrl.reverse(); widget.onTap(); },
+      onTapUp: (_) {
+        _ctrl.reverse();
+        widget.onTap();
+      },
       onTapCancel: () => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
