@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/core/enums/user_role.dart';
+import 'package:go_router/go_router.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/settings/domain/entities/profile_account_entity.dart';
@@ -154,7 +155,8 @@ class _ProfileAccountForm extends StatelessWidget {
               SizedBox(height: AppSpacing.spacingLg.h),
               BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, authState) {
-                  final argRole = ModalRoute.of(context)?.settings.arguments as UserRole?;
+                  final argRole =
+                      GoRouterState.of(context).extra as UserRole?;
                   final role = argRole ?? (authState is AuthAuthenticated
                       ? authState.user.role
                       : UserRole.student);

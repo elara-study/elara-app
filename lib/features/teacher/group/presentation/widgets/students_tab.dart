@@ -12,6 +12,7 @@ import 'package:elara/features/teacher/group/presentation/widgets/attendance_she
 import 'package:elara/features/teacher/group/presentation/widgets/group_stats_header.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_route_args.dart';
 import 'package:elara/features/teacher/group/presentation/views/attendance_history_route_args.dart';
 import 'package:elara/features/teacher/group/presentation/widgets/student_row.dart';
@@ -105,7 +106,7 @@ class _StudentsContentState extends State<_StudentsContent> {
         // Today's Attendance card
         _AttendanceCard(
           detail: widget.detail,
-          onHistoryTap: () => Navigator.pushNamed(
+          onHistoryTap: () => AppNavigation.pushNamed(
             context,
             AppRoutes.attendanceHistory,
             arguments: AttendanceHistoryRouteArgs(
@@ -201,7 +202,7 @@ class _StudentsContentState extends State<_StudentsContent> {
             itemBuilder: (_, i) {
               final student = filtered[i];
               return GestureDetector(
-                onTap: () => Navigator.pushNamed(
+                onTap: () => AppNavigation.pushNamed(
                   context,
                   AppRoutes.teacherStudentProfile,
                   arguments: TeacherStudentProfileRouteArgs(

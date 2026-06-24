@@ -1,8 +1,10 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/features/auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SignUpRoleScreen extends StatefulWidget {
   final String title;
@@ -30,12 +32,19 @@ class _SignUpRoleScreenState extends State<SignUpRoleScreen> {
   void _onRoleTap(UserRole role) {
     setState(() => _selectedRole = role);
     context.read<AuthCubit>().selectRole(role);
+
+    // Check if we're in the Google complete-registration flow.
+    final googleData =
+        GoRouterState.of(context).extra as GooglePendingData?;
+
     Future.delayed(const Duration(milliseconds: 200), () {
       if (!mounted) return;
-      Navigator.pushNamed(
+      AppNavigation.pushNamed(
         context,
         AppRoutes.signUpCredentials,
-        arguments: role,
+        arguments: googleData != null
+            ? (role: role, googleData: googleData)
+            : role,
       );
     });
   }
@@ -52,7 +61,7 @@ class _SignUpRoleScreenState extends State<SignUpRoleScreen> {
           metrics: m,
           onRoleTap: _onRoleTap,
           onSocialTap: () =>
-              Navigator.pushNamed(context, AppRoutes.signUpSocialRole),
+              AppNavigation.pushNamed(context, AppRoutes.signUpSocialRole),
         ),
       ),
     );
@@ -117,7 +126,9 @@ class _RoleCardContent extends StatelessWidget {
           AuthSocialRow(
             gap: m.socialGap,
             shouldStack: m.shouldStackSocialButtons,
-            onTap: onSocialTap,
+            onGoogleTap: () =>
+                context.read<AuthCubit>().signInWithGoogle(),
+            onFacebookTap: onSocialTap,
           ),
         ],
 
@@ -125,7 +136,7 @@ class _RoleCardContent extends StatelessWidget {
         AuthCardFooter(
           prompt: 'Already have an account?',
           actionLabel: 'Sign in',
-          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
+          onTap: () => AppNavigation.goNamed(context, AppRoutes.login),
         ),
       ],
     );

@@ -8,6 +8,7 @@ import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 /// Route arguments for [OtpScreen].
@@ -15,19 +16,30 @@ class OtpRouteArgs {
   /// The email address that the OTP was sent to.
   final String email;
 
-  /// Callback invoked when the user submits a valid code.
-  /// Receives the 6-digit OTP string. Return a Future so the
-  /// screen can show the loading state while the caller verifies.
-  final Future<void> Function(String otp) onVerify;
+  /// When set, [OtpScreen] verifies via [AuthCubit] using its own [BuildContext].
+  final UserEntity? pendingUser;
+
+  /// Callback invoked when the user submits a valid code (e.g. password reset).
+  final Future<void> Function(String otp)? onVerify;
 
   /// Callback invoked when the user taps "Resend code".
-  final Future<void> Function() onResend;
+  final Future<void> Function()? onResend;
 
+  /// Email verification after sign-up or login with an unverified account.
+  const OtpRouteArgs.emailVerification({
+    required this.email,
+    required this.pendingUser,
+  }) : onVerify = null,
+       onResend = null;
+
+  /// Custom OTP flow (e.g. forgot-password) with caller-provided callbacks.
   const OtpRouteArgs({
     required this.email,
     required this.onVerify,
     required this.onResend,
-  });
+  }) : pendingUser = null;
+
+  bool get isEmailVerification => pendingUser != null;
 }
 
 class OtpScreen extends StatelessWidget {
@@ -109,6 +121,10 @@ class _OtpCardContentState extends State<_OtpCardContent> {
     setState(() => _resendCooldown = _resendCooldownSeconds);
     _resendTimer?.cancel();
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
       if (_resendCooldown <= 1) {
         t.cancel();
         setState(() => _resendCooldown = 0);
@@ -127,15 +143,24 @@ class _OtpCardContentState extends State<_OtpCardContent> {
       _hasError = false;
       _errorMessage = '';
     });
+
+    if (widget.args.isEmailVerification) {
+      context.read<AuthCubit>().verifyEmail(
+        email: widget.args.email,
+        otp: _currentCode,
+        pendingUser: widget.args.pendingUser!,
+      );
+      return;
+    }
+
     try {
-      await widget.args.onVerify(_currentCode);
+      await widget.args.onVerify!(_currentCode);
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _hasError = true;
         _errorMessage = e.toString().replaceAll('Exception: ', '');
       });
-      // Shake and clear the boxes on error
       _clearBoxes();
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -148,8 +173,19 @@ class _OtpCardContentState extends State<_OtpCardContent> {
       _isLoading = true;
       _hasError = false;
     });
+
+    if (widget.args.isEmailVerification) {
+      // Resend is not supported by API yet; stub cooldown delay.
+      await Future.delayed(const Duration(seconds: 1));
+      if (!mounted) return;
+      _clearBoxes();
+      _startResendCooldown();
+      setState(() => _isLoading = false);
+      return;
+    }
+
     try {
-      await widget.args.onResend();
+      await widget.args.onResend!();
       if (!mounted) return;
       _clearBoxes();
       _startResendCooldown();
@@ -175,6 +211,27 @@ class _OtpCardContentState extends State<_OtpCardContent> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.args.isEmailVerification) {
+      return BlocListener<AuthCubit, AuthState>(
+        listenWhen: (previous, current) =>
+            current is AuthError && previous is AuthLoading,
+        listener: (context, state) {
+          if (state is AuthError) {
+            setState(() {
+              _isLoading = false;
+              _hasError = true;
+              _errorMessage = state.message;
+            });
+            _clearBoxes();
+          }
+        },
+        child: _buildContent(context),
+      );
+    }
+    return _buildContent(context);
+  }
+
+  Widget _buildContent(BuildContext context) {
     final m = widget.metrics;
     final maskedEmail = _maskEmail(widget.args.email);
 
@@ -277,14 +334,14 @@ class _OtpBoxRow extends StatelessWidget {
           controller: controllers[i],
           focusNode: focusNodes[i],
           hasError: hasError,
-          onInput: (value) => _onInput(context, i, value),
+          onInput: (value) => _onInput(i, value),
           onBackspace: () => _onBackspace(i),
         ),
       ),
     );
   }
 
-  void _onInput(BuildContext context, int index, String value) {
+  void _onInput(int index, String value) {
     onChanged();
     if (value.isNotEmpty) {
       if (index < controllers.length - 1) {
@@ -334,75 +391,72 @@ class _OtpBox extends StatelessWidget {
     return SizedBox(
       width: 44,
       height: 52,
-      child: KeyboardListener(
-        focusNode: FocusNode(),
-        onKeyEvent: (event) {
-          if (event is KeyDownEvent &&
-              event.logicalKey == LogicalKeyboardKey.backspace) {
-            onBackspace();
+      child: TextFormField(
+        controller: controller,
+        focusNode: focusNode,
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(1),
+        ],
+        style: AppTypography.h3(
+          color: isDark
+              ? DarkModeColors.textPrimary
+              : LightModeColors.textPrimary,
+        ),
+        onChanged: (v) {
+          // Handle paste: take only the last char if somehow > 1.
+          if (v.length > 1) {
+            final last = v[v.length - 1];
+            controller.value = controller.value.copyWith(
+              text: last,
+              selection: TextSelection.collapsed(offset: last.length),
+            );
+            onInput(last);
+            return;
           }
+
+          if (v.isEmpty) {
+            onBackspace();
+            return;
+          }
+
+          onInput(v);
         },
-        child: TextFormField(
-          controller: controller,
-          focusNode: focusNode,
-          textAlign: TextAlign.center,
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(1),
-          ],
-          style: AppTypography.h3(
-            color: isDark
-                ? DarkModeColors.textPrimary
-                : LightModeColors.textPrimary,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: fillColor,
+          counterText: '',
+          contentPadding: EdgeInsets.zero,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.radiusMd),
+            borderSide: BorderSide(
+              color: hasError ? AppColors.error500 : defaultBorder,
+              width: 1.5,
+            ),
           ),
-          onChanged: (v) {
-            // Handle paste: take only the last char if somehow > 1
-            if (v.length > 1) {
-              final last = v[v.length - 1];
-              controller.value = controller.value.copyWith(
-                text: last,
-                selection: TextSelection.collapsed(offset: last.length),
-              );
-              onInput(last);
-            } else {
-              onInput(v);
-            }
-          },
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: fillColor,
-            counterText: '',
-            contentPadding: EdgeInsets.zero,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.radiusMd),
-              borderSide: BorderSide(
-                color: hasError ? AppColors.error500 : defaultBorder,
-                width: 1.5,
-              ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.radiusMd),
+            borderSide: BorderSide(
+              color: hasError
+                  ? AppColors.error500
+                  : (isDark
+                        ? DarkModeColors.borderFocused
+                        : LightModeColors.borderFocused),
+              width: 2,
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.radiusMd),
-              borderSide: BorderSide(
-                color: hasError
-                    ? AppColors.error500
-                    : (isDark
-                          ? DarkModeColors.borderFocused
-                          : LightModeColors.borderFocused),
-                width: 2,
-              ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.radiusMd),
+            borderSide: const BorderSide(
+              color: AppColors.error500,
+              width: 1.5,
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.radiusMd),
-              borderSide: const BorderSide(
-                color: AppColors.error500,
-                width: 1.5,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.radiusMd),
-              borderSide: const BorderSide(color: AppColors.error500, width: 2),
-            ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppRadius.radiusMd),
+            borderSide: const BorderSide(color: AppColors.error500, width: 2),
           ),
         ),
       ),

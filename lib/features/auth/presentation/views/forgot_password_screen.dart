@@ -1,8 +1,8 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
-import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
@@ -30,14 +30,15 @@ class ForgotPasswordScreen extends StatelessWidget {
   static void _onAuthStateChange(BuildContext context, AuthState state) {
     if (state is ForgotPasswordOtpSent) {
       // Navigate to OTP screen — reuse the same OtpScreen with reset-flow args.
-      Navigator.of(context).pushNamed(
+      AppNavigation.pushNamed(
+        context,
         AppRoutes.otp,
         arguments: OtpRouteArgs(
           email: state.email,
           onVerify: (otp) async {
-            // OTP verified — navigate to reset password screen.
             if (context.mounted) {
-              Navigator.of(context).pushReplacementNamed(
+              AppNavigation.pushReplacementNamed(
+                context,
                 AppRoutes.resetPassword,
                 arguments: ResetPasswordRouteArgs(
                   email: state.email,

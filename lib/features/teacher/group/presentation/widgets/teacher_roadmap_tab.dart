@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/group/entities/group_roadmap.dart';
 import 'package:elara/features/student/presentation/group/cubits/roadmap_cubit.dart';
@@ -261,7 +262,7 @@ class _InteractionOptionsContent extends StatelessWidget {
                 filled: true,
                 onTap: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed(
+                  AppNavigation.pushNamed(context, 
                     AppRoutes.teacherModuleHomework,
                     arguments: _routeArgs,
                   );
@@ -276,7 +277,7 @@ class _InteractionOptionsContent extends StatelessWidget {
                 filled: false,
                 onTap: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed(
+                  AppNavigation.pushNamed(context, 
                     AppRoutes.teacherModuleResources,
                     arguments: _routeArgs,
                   );

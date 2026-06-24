@@ -1,3 +1,4 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/features/student/presentation/chatbot/chatbot_route_args.dart';
 import 'package:elara/features/student/presentation/quiz/quiz_route_args.dart';
@@ -91,9 +92,9 @@ class ModuleSheet extends StatelessWidget {
                     color: ButtonColors.outlineText,
                   ),
                   onTap: () {
-                    final nav = Navigator.of(context);
-                    nav.pop();
-                    nav.pushNamed(
+                    Navigator.of(context).pop();
+                    AppNavigation.pushNamed(
+                      context,
                       AppRoutes.quiz,
                       arguments: const QuizRouteArgs(quizId: 'demo-quiz'),
                     );
@@ -109,9 +110,9 @@ class ModuleSheet extends StatelessWidget {
                     color: ButtonColors.outlineText,
                   ),
                   onTap: () {
-                    final nav = Navigator.of(context);
-                    nav.pop();
-                    nav.pushNamed(
+                    Navigator.of(context).pop();
+                    AppNavigation.pushNamed(
+                      context,
                       AppRoutes.homework,
                       arguments: const HomeworkRouteArgs(
                         homeworkId: 'demo-homework',
@@ -129,9 +130,9 @@ class ModuleSheet extends StatelessWidget {
             labelStyle: optionLabelStyle?.copyWith(color: cs.onPrimary),
             background: cs.primary,
             onTap: () {
-              final nav = Navigator.of(context);
-              nav.pop();
-              nav.pushNamed(
+              Navigator.of(context).pop();
+              AppNavigation.pushNamed(
+                context,
                 AppRoutes.chatbot,
                 arguments: ChatbotRouteArgs(sessionTitle: moduleTitle),
               );

@@ -10,18 +10,20 @@ class AuthSocialButton extends StatelessWidget {
   final String label;
   final String svgAsset;
   final VoidCallback onTap;
+  final bool isLoading;
 
   const AuthSocialButton({
     super.key,
     required this.label,
     required this.svgAsset,
     required this.onTap,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: onTap,
+      onPressed: isLoading ? null : onTap,
       style: OutlinedButton.styleFrom(
         backgroundColor: Colors.transparent,
         side: const BorderSide(color: ButtonColors.outlineBorder),
@@ -40,17 +42,27 @@ class AuthSocialButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              svgAsset,
-              width: AppIconSizes.iconSm,
-              height: AppIconSizes.iconSm,
-            ),
+            if (isLoading)
+              const SizedBox(
+                width: AppIconSizes.iconSm,
+                height: AppIconSizes.iconSm,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.neutral300),
+                ),
+              )
+            else
+              SvgPicture.asset(
+                svgAsset,
+                width: AppIconSizes.iconSm,
+                height: AppIconSizes.iconSm,
+              ),
             const SizedBox(width: AppSpacing.spacingSm),
             Text(
               label,
               maxLines: 1,
               style: AppTypography.labelRegular(
-                color: ButtonColors.outlineText,
+                color: isLoading ? ButtonColors.outlineText.withAlpha(127) : ButtonColors.outlineText,
               ),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/student/presentation/profile/cubits/student_profile_cubit.dart';
@@ -36,7 +37,7 @@ class StudentProfileScreen extends StatelessWidget {
                 icon: const Icon(Icons.settings_rounded),
                 tooltip: 'Settings',
                 onPressed: () =>
-                    Navigator.of(context).pushNamed(AppRoutes.studentSettings),
+                    AppNavigation.pushNamed(context, AppRoutes.studentSettings),
               ),
             ],
           ),

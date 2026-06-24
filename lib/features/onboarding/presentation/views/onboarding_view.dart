@@ -1,3 +1,4 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
@@ -60,7 +61,7 @@ class _OnboardingViewState extends State<OnboardingView> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kOnboardingSeen, true);
     if (!mounted) return;
-    Navigator.pushReplacementNamed(context, AppRoutes.login);
+    AppNavigation.goNamed(context, AppRoutes.login);
   }
 
   void _nextPage() {

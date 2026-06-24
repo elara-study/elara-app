@@ -1,13 +1,14 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
-import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 /// Route arguments for [ResetPasswordScreen].
 class ResetPasswordRouteArgs {
@@ -22,8 +23,7 @@ class ResetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as ResetPasswordRouteArgs;
+    final args = GoRouterState.of(context).extra! as ResetPasswordRouteArgs;
 
     return Scaffold(
       body: BlocConsumer<AuthCubit, AuthState>(
@@ -51,10 +51,7 @@ class ResetPasswordScreen extends StatelessWidget {
             behavior: SnackBarBehavior.floating,
           ),
         );
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRoutes.login,
-        (route) => false,
-      );
+      AppNavigation.pushNamedAndRemoveUntil(context, AppRoutes.login);
     } else if (state is AuthError) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -113,7 +110,6 @@ class _ResetPasswordCardContentState
   @override
   Widget build(BuildContext context) {
     final m = widget.metrics;
-    final cs = Theme.of(context).colorScheme;
 
     return Form(
       key: _formKey,
@@ -188,10 +184,8 @@ class _ResetPasswordCardContentState
           AuthCardFooter(
             prompt: 'Remember your password?',
             actionLabel: 'Sign in',
-            onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
-              AppRoutes.login,
-              (route) => false,
-            ),
+            onTap: () =>
+                AppNavigation.pushNamedAndRemoveUntil(context, AppRoutes.login),
           ),
         ],
       ),

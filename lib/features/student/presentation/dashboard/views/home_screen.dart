@@ -1,3 +1,5 @@
+import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/tab/student_tab_cubit.dart';
 import 'package:elara/core/theme/app_colors.dart';
@@ -175,9 +177,9 @@ class _HomeContent extends StatelessWidget {
                   group.colorKey,
                 ),
                 onTap: () {
-                  Navigator.pushNamed(
+                  AppNavigation.pushNamed(
                     context,
-                    '/student-group',
+                    AppRoutes.studentGroup,
                     arguments: group.id,
                   );
                 },

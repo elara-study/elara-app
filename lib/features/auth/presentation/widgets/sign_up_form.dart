@@ -20,6 +20,7 @@ import 'package:intl/intl.dart';
 class SignUpForm extends StatefulWidget {
   final UserRole role;
   final bool isLoading;
+  final bool isGoogleFlow;
   final void Function({
     required String name,
     required String email,
@@ -34,6 +35,7 @@ class SignUpForm extends StatefulWidget {
     super.key,
     required this.role,
     required this.isLoading,
+    this.isGoogleFlow = false,
     required this.onSubmit,
   });
 
@@ -150,15 +152,21 @@ class _SignUpFormState extends State<SignUpForm> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const AuthCardHeader(
-            title: "Enter your credentials",
-            subtitle: "Please enter your details to continue",
+          AuthCardHeader(
+            title: widget.isGoogleFlow
+                ? 'Complete your profile'
+                : 'Enter your credentials',
+            subtitle: widget.isGoogleFlow
+                ? 'Just a few more details'
+                : 'Please enter your details to continue',
           ),
 
           const SizedBox(height: AppSpacing.spacingLg),
 
-          //   Full Name
-          AuthCardField(
+          // ── Credential fields (hidden in Google flow) ──────────
+          if (!widget.isGoogleFlow) ...[
+            //   Full Name
+            AuthCardField(
             label: 'Full Name',
             hint: 'Enter your full name',
             controller: _fullNameCtrl,
@@ -244,8 +252,7 @@ class _SignUpFormState extends State<SignUpForm> {
               return null;
             },
           ),
-
-          const SizedBox(height: AppSpacing.spacingSm),
+          ], // end if (!widget.isGoogleFlow)
 
           //   Date of Birth — all roles
           Column(
@@ -315,9 +322,9 @@ class _SignUpFormState extends State<SignUpForm> {
               hint: 'Select your grade',
               prefixIcon: Icon(Icons.school_outlined, size: 16.w),
               options: const [
+                'Grade 10',
                 'Grade 11',
                 'Grade 12',
-                'Grade 13',
               ],
               onChanged: (v) {
                 // Parse grade number out of selected option name (e.g. 'Grade 12' -> 12)
@@ -335,7 +342,7 @@ class _SignUpFormState extends State<SignUpForm> {
           SizedBox(
             width: double.infinity,
             child: AppPrimaryButton(
-              text: 'Sign Up',
+              text: widget.isGoogleFlow ? 'Complete Registration' : 'Sign Up',
               isLoading: widget.isLoading,
               onPressed: _submit,
               leading: SvgPicture.asset(

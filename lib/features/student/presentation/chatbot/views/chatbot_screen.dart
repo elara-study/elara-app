@@ -1,3 +1,4 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/features/student/presentation/chatbot/chatbot_route_args.dart';
 import 'package:elara/features/student/presentation/chatbot/cubits/chatbot_cubit.dart';
@@ -91,9 +92,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     _scaffoldKey.currentState?.closeDrawer();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      Navigator.of(
-        context,
-      ).pushReplacementNamed(AppRoutes.chatbot, arguments: args);
+      AppNavigation.pushReplacementNamed(context, AppRoutes.chatbot, arguments: args);
     });
   }
 

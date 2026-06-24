@@ -1,3 +1,4 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
@@ -16,18 +17,44 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocConsumer<AuthCubit, AuthState>(
+        listenWhen: (previous, current) {
+          if (current is AuthNeedsVerification) {
+            return previous is! AuthNeedsVerification;
+          }
+          return current is GoogleSignInNeedsRole || current is AuthError;
+        },
         listener: _onAuthStateChange,
         builder: (context, state) => AuthScreenLayout(
           builder: (context, m) =>
-              _SignInCardContent(isLoading: state is AuthLoading, metrics: m),
+              _SignInCardContent(
+                isLoading: state is AuthLoading,
+                isGoogleLoading: state is AuthGoogleLoading,
+                metrics: m,
+              ),
         ),
       ),
     );
   }
 
   static void _onAuthStateChange(BuildContext context, AuthState state) {
-    if (state is AuthAuthenticated) {
-      AppRoutes.navigateAfterAuth(context, state.user);
+    if (state is AuthNeedsVerification) {
+      AppNavigation.pushNamed(
+        context,
+        AppRoutes.otp,
+        arguments: OtpRouteArgs.emailVerification(
+          email: state.email,
+          pendingUser: state.pendingUser,
+        ),
+      );
+    } else if (state is GoogleSignInNeedsRole) {
+      AppNavigation.pushNamed(
+        context,
+        AppRoutes.signUpSocialRole,
+        arguments: GooglePendingData(
+          pendingToken: state.pendingToken,
+          refreshToken: state.refreshToken,
+        ),
+      );
     } else if (state is AuthError) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -43,8 +70,13 @@ class SignInScreen extends StatelessWidget {
 
 class _SignInCardContent extends StatefulWidget {
   final bool isLoading;
+  final bool isGoogleLoading;
   final AuthScreenMetrics metrics;
-  const _SignInCardContent({required this.isLoading, required this.metrics});
+  const _SignInCardContent({
+    required this.isLoading,
+    required this.isGoogleLoading,
+    required this.metrics,
+  });
 
   @override
   State<_SignInCardContent> createState() => _SignInCardContentState();
@@ -118,7 +150,7 @@ class _SignInCardContentState extends State<_SignInCardContent> {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () =>
-                  Navigator.pushNamed(context, AppRoutes.forgotPassword),
+                  AppNavigation.pushNamed(context, AppRoutes.forgotPassword),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: Size.zero,
@@ -162,8 +194,11 @@ class _SignInCardContentState extends State<_SignInCardContent> {
           AuthSocialRow(
             gap: m.socialGap,
             shouldStack: m.shouldStackSocialButtons,
-            onTap: () =>
-                Navigator.pushNamed(context, AppRoutes.signUpSocialRole),
+            onGoogleTap: () =>
+                context.read<AuthCubit>().signInWithGoogle(),
+            onFacebookTap: () =>
+                AppNavigation.pushNamed(context, AppRoutes.signUpSocialRole),
+            isGoogleLoading: widget.isGoogleLoading,
           ),
 
           SizedBox(height: m.sectionGap),
@@ -172,7 +207,7 @@ class _SignInCardContentState extends State<_SignInCardContent> {
           AuthCardFooter(
             prompt: "Don't have an account?",
             actionLabel: 'Sign up',
-            onTap: () => Navigator.pushNamed(context, AppRoutes.signUpRole),
+            onTap: () => AppNavigation.pushNamed(context, AppRoutes.signUpRole),
           ),
         ],
       ),

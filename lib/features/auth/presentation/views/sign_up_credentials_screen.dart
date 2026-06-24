@@ -1,3 +1,4 @@
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/core/theme/app_colors.dart';
@@ -5,13 +6,28 @@ import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SignUpCredentialsScreen extends StatelessWidget {
   const SignUpCredentialsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final role = ModalRoute.of(context)!.settings.arguments as UserRole;
+    final args = GoRouterState.of(context).extra;
+
+    // Detect Google complete-registration flow.
+    final UserRole role;
+    final GooglePendingData? googleData;
+
+    if (args is ({UserRole role, GooglePendingData googleData})) {
+      role = args.role;
+      googleData = args.googleData;
+    } else {
+      role = args as UserRole;
+      googleData = null;
+    }
+
+    final isGoogleFlow = googleData != null;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -21,11 +37,18 @@ class SignUpCredentialsScreen extends StatelessWidget {
         automaticallyImplyLeading: true,
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
+        listenWhen: (previous, current) {
+          if (current is AuthNeedsVerification) {
+            return previous is! AuthNeedsVerification;
+          }
+          return current is AuthNeedsVerification || current is AuthError;
+        },
         listener: _onAuthStateChange,
         builder: (context, state) => AuthScreenLayout(
           builder: (_, __) => SignUpForm(
             role: role,
             isLoading: state is AuthLoading,
+            isGoogleFlow: isGoogleFlow,
             onSubmit: ({
               required name,
               required email,
@@ -34,15 +57,25 @@ class SignUpCredentialsScreen extends StatelessWidget {
               String? subjectDisplayName,
               int? grade,
             }) {
-              context.read<AuthCubit>().signUp(
-                name: name,
-                email: email,
-                password: password,
-                role: role,
-                dateOfBirth: dateOfBirth,
-                subjectDisplayName: subjectDisplayName,
-                grade: grade,
-              );
+              if (isGoogleFlow) {
+                context.read<AuthCubit>().completeRegistration(
+                  pendingToken: googleData!.pendingToken,
+                  role: role,
+                  dateOfBirth: dateOfBirth,
+                  subjectDisplayName: subjectDisplayName,
+                  grade: grade,
+                );
+              } else {
+                context.read<AuthCubit>().signUp(
+                  name: name,
+                  email: email,
+                  password: password,
+                  role: role,
+                  dateOfBirth: dateOfBirth,
+                  subjectDisplayName: subjectDisplayName,
+                  grade: grade,
+                );
+              }
             },
           ),
         ),
@@ -51,26 +84,13 @@ class SignUpCredentialsScreen extends StatelessWidget {
   }
 
   static void _onAuthStateChange(BuildContext context, AuthState state) {
-    if (state is AuthAuthenticated) {
-      AppRoutes.navigateAfterAuth(context, state.user);
-    } else if (state is AuthNeedsVerification) {
-      Navigator.of(context).pushNamed(
+    if (state is AuthNeedsVerification) {
+      AppNavigation.pushNamed(
+        context,
         AppRoutes.otp,
-        arguments: OtpRouteArgs(
+        arguments: OtpRouteArgs.emailVerification(
           email: state.email,
-          onVerify: (otp) async {
-            // Pass pendingUser so the cubit can reconstruct the full UserEntity
-            // from the real token the backend returns.
-            context.read<AuthCubit>().verifyEmail(
-              email: state.email,
-              otp: otp,
-              pendingUser: state.pendingUser,
-            );
-          },
-          onResend: () async {
-            // Resend is not supported by API yet; stub cooldown delay
-            await Future.delayed(const Duration(seconds: 1));
-          },
+          pendingUser: state.pendingUser,
         ),
       );
     } else if (state is AuthError) {

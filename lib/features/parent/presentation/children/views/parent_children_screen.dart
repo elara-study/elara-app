@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_state.dart';
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/features/parent/presentation/children/widgets/parent_child_dashboard_card.dart';
 import 'package:elara/features/parent/presentation/children/widgets/parent_add_child_sheet.dart';
 import 'package:elara/features/parent/presentation/children/widgets/parent_children_page_header.dart';
@@ -111,7 +112,7 @@ class ParentChildrenScreen extends StatelessWidget {
                       ParentChildDashboardCard(
                         child: d.children[i],
                         onOpenDetail: () {
-                          Navigator.of(context).pushNamed(
+                          AppNavigation.pushNamed(context, 
                             AppRoutes.parentChildProfile,
                             arguments: d.children[i],
                           );

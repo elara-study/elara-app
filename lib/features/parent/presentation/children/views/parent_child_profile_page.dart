@@ -1,5 +1,6 @@
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/features/parent/presentation/children/views/parent_child_insights_page.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
@@ -190,7 +191,7 @@ class ParentChildProfilePage extends StatelessWidget {
                       AppSectionHeader(
                         title: 'Insights',
                         onSeeAll: () {
-                          Navigator.of(context).pushNamed(
+                          AppNavigation.pushNamed(context, 
                             AppRoutes.parentChildInsights,
                             arguments: ParentChildInsightsRouteArgs(
                               childId: child.id,
@@ -213,7 +214,7 @@ class ParentChildProfilePage extends StatelessWidget {
                       AppSectionHeader(
                         title: 'Homework',
                         onSeeAll: () {
-                          Navigator.of(context).pushNamed(
+                          AppNavigation.pushNamed(context, 
                             AppRoutes.parentChildHomework,
                             arguments: ParentChildHomeworkRouteArgs(
                               childId: child.id,
