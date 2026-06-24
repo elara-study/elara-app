@@ -15,17 +15,24 @@ class StudentGroupModel extends StudentGroupEntity {
   });
 
   factory StudentGroupModel.fromJson(Map<String, dynamic> json) {
+    final stats = json['stats'] as Map<String, dynamic>? ?? {};
+    final lessons = stats['lessons'] as Map<String, dynamic>? ?? {};
+    final completed = (lessons['completed'] as num?)?.toInt() ?? 0;
+    final total = (lessons['total'] as num?)?.toInt() ?? 0;
+    final progress = (json['progressPercentage'] as num?)?.toDouble() ?? 0.0;
+    final gradeInt = (json['grade'] as num?)?.toInt() ?? 0;
+
     return StudentGroupModel(
       id: json['id'] as String,
       name: json['name'] as String,
       subject: json['subject'] as String,
-      grade: json['grade'] as String,
-      teacherName: json['teacher_name'] as String,
-      studentCount: json['student_count'] as int,
-      totalLessons: json['total_lessons'] as int,
-      completedLessons: json['completed_lessons'] as int,
-      progressPercent: (json['progress_percent'] as num).toDouble(),
-      colorKey: json['color_key'] as String? ?? 'blue',
+      grade: 'Grade $gradeInt',
+      teacherName: json['teacher'] as String? ?? '',
+      studentCount: (stats['studentsCount'] as num?)?.toInt() ?? 0,
+      totalLessons: total,
+      completedLessons: completed,
+      progressPercent: progress / 100,
+      colorKey: json['colorKey'] as String? ?? 'blue',
     );
   }
 

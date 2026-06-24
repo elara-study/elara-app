@@ -46,7 +46,7 @@ final getIt = GetIt.instance;
 void setupStudentDI() {
   // ── Student: Data Source ──────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentRemoteDataSource>(
-    () => StudentRemoteDataSourceImpl(),
+    () => StudentRemoteDataSourceImpl(getIt<DioClient>()),
   );
 
   // ── Student: Repository ───────────────────────────────────────────────────

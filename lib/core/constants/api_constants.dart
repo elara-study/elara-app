@@ -23,6 +23,9 @@ class ApiConstants {
   static const String googleSignIn = 'api/v1/oauth/google';
   static const String completeRegistration = 'api/v1/oauth/complete-registration';
 
+  /// Student > Learn — All groups the student is enrolled in.
+  static const String studentGroups = 'api/v1/student/groups';
+
   /// Student > Learn — Group overview (apidocs: group-overview).
   static String studentLearnGroupOverview(String groupId) =>
       'student/learn/groups/$groupId/overview';
