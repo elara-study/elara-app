@@ -93,6 +93,7 @@ class ChatbotRepositoryImpl implements ChatbotRepository {
       isFromAssistant: !m.isFromUser,
       choices: m.choices,
       imageUrl: url,
+      sentAt: m.createdAt,
     );
   }
 
