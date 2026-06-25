@@ -62,7 +62,7 @@ class _HistoryPanelState extends State<HistoryPanel> {
   }
 
   Future<void> _openNewChat() async {
-    widget.onNavigateToChat(const ChatbotRouteArgs());
+    widget.onNavigateToChat(const ChatbotRouteArgs(startNew: true));
   }
 
   @override

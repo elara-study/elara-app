@@ -49,6 +49,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
   Future<void> start({
     String? routeSessionId,
     String? routeSessionTitle,
+    bool startNew = false,
   }) async {
     emit(
       const ChatbotState.initial().copyWith(
@@ -62,6 +63,19 @@ class ChatbotCubit extends Cubit<ChatbotState> {
         state.copyWith(
           phase: ChatbotSessionPhase.ready,
           loadError: 'No internet connection',
+        ),
+      );
+      return;
+    }
+
+    if (startNew) {
+      emit(
+        state.copyWith(
+          phase: ChatbotSessionPhase.ready,
+          sessionId: '',
+          sessionTitle: routeSessionTitle ?? '',
+          messages: const [],
+          clearLoadError: true,
         ),
       );
       return;
