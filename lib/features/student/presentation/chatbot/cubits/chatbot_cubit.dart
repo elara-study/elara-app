@@ -8,6 +8,7 @@ import 'package:elara/features/student/domain/chatbot/usecases/list_sessions_use
 import 'package:elara/features/student/domain/chatbot/usecases/load_history_use_case.dart';
 import 'package:elara/features/student/domain/chatbot/usecases/send_image_use_case.dart';
 import 'package:elara/features/student/domain/chatbot/usecases/send_text_use_case.dart';
+import 'package:elara/features/student/presentation/chatbot/core/chatbot_config.dart';
 import 'package:elara/features/student/presentation/chatbot/cubits/chatbot_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -44,7 +45,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
 
   final ImagePicker _picker = ImagePicker();
 
-  /// Boots the chat shell — optionally opens [routeSessionId] and loads history.
+  /// Boots the chat shell - optionally opens [routeSessionId] and loads history.
   Future<void> start({
     String? routeSessionId,
     String? routeSessionTitle,
@@ -94,28 +95,15 @@ class ChatbotCubit extends Cubit<ChatbotState> {
 
     final sessions = listResult.data!;
     if (sessions.isEmpty) {
-      final created = await _createSessionUseCase(clusterId: _defaultClusterId);
-      if (!created.isSuccess || created.data == null) {
-        emit(
-          state.copyWith(
-            phase: ChatbotSessionPhase.ready,
-            loadError:
-                created.failure?.message ?? 'Could not start a conversation',
-          ),
-        );
-        return;
-      }
       emit(
         state.copyWith(
           phase: ChatbotSessionPhase.ready,
-          sessionId: created.data!.sessionId,
           messages: const [],
           clearLoadError: true,
         ),
       );
       return;
     }
-
     emit(
       state.copyWith(
         phase: ChatbotSessionPhase.ready,
@@ -129,7 +117,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
 
   Future<void> loadHistoryForCurrentSession() async {
     final sid = state.sessionId;
-    if (sid == null) return;
+    if (sid == null || sid.isEmpty) return;
 
     emit(state.copyWith(isLoadingHistory: true, clearLoadError: true));
     final result = await _loadHistoryUseCase(sid);
@@ -147,29 +135,15 @@ class ChatbotCubit extends Cubit<ChatbotState> {
   }
 
   Future<void> createNewChatSession() async {
-    if (!await _networkInfo.isConnected) {
-      emit(state.copyWith(bannerMessage: 'No internet connection'));
-      return;
-    }
-
-    emit(state.copyWith(isSending: true));
-    final result = await _createSessionUseCase(clusterId: _defaultClusterId);
-    if (!result.isSuccess || result.data == null) {
-      emit(
-        state.copyWith(
-          isSending: false,
-          bannerMessage: result.failure?.message ?? 'Could not start chat',
-        ),
-      );
-      return;
-    }
-
     emit(
       state.copyWith(
-        isSending: false,
-        sessionId: result.data!.sessionId,
-        sessionTitle: null,
+        sessionId: '',
+        sessionTitle: '',
         messages: const [],
+        isSending: false,
+        isAssistantTyping: false,
+        clearBanner: true,
+        clearLoadError: true,
       ),
     );
   }
@@ -181,22 +155,6 @@ class ChatbotCubit extends Cubit<ChatbotState> {
     if (!await _networkInfo.isConnected) {
       emit(state.copyWith(bannerMessage: 'No internet connection'));
       return;
-    }
-
-    var sid = state.sessionId;
-    if (sid == null) {
-      final created = await _createSessionUseCase(clusterId: _defaultClusterId);
-      if (!created.isSuccess || created.data == null) {
-        emit(
-          state.copyWith(
-            bannerMessage:
-                created.failure?.message ?? 'Could not create a session',
-          ),
-        );
-        return;
-      }
-      sid = created.data!.sessionId;
-      emit(state.copyWith(sessionId: sid));
     }
 
     final userBubble = ChatbotMessage(
@@ -212,6 +170,55 @@ class ChatbotCubit extends Cubit<ChatbotState> {
         clearBanner: true,
       ),
     );
+
+    final sid = state.sessionId;
+    if (sid == null || sid.isEmpty) {
+      final result = await _createSessionUseCase(
+        clusterId: _defaultClusterId,
+        message: trimmed,
+        subject: ChatbotConfig.defaultSubject,
+      );
+      if (!result.isSuccess || result.data == null) {
+        emit(
+          state.copyWith(
+            isSending: false,
+            isAssistantTyping: false,
+            messages: [
+              ...state.messages,
+              ChatbotMessage(
+                text: result.failure?.message ?? 'Could not start chat',
+                isFromAssistant: true,
+                sentAt: DateTime.now(),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+
+      final started = result.data!;
+      final replyText = started.aiReply?.trim();
+      final messages = [...state.messages];
+      if (replyText != null && replyText.isNotEmpty) {
+        messages.add(
+          ChatbotMessage(
+            text: replyText,
+            isFromAssistant: true,
+            sentAt: DateTime.now(),
+          ),
+        );
+      }
+      emit(
+        state.copyWith(
+          isSending: false,
+          isAssistantTyping: false,
+          sessionId: started.sessionId,
+          sessionTitle: started.subject,
+          messages: messages,
+        ),
+      );
+      return;
+    }
 
     final result = await _sendTextUseCase(sessionId: sid, text: trimmed);
     if (!result.isSuccess || result.data == null) {
@@ -279,8 +286,12 @@ class ChatbotCubit extends Cubit<ChatbotState> {
     }
 
     var sid = state.sessionId;
-    if (sid == null) {
-      final created = await _createSessionUseCase(clusterId: _defaultClusterId);
+    if (sid == null || sid.isEmpty) {
+      final created = await _createSessionUseCase(
+        clusterId: _defaultClusterId,
+        message: caption.trim().isEmpty ? 'Image uploaded' : caption.trim(),
+        subject: ChatbotConfig.defaultSubject,
+      );
       if (!created.isSuccess || created.data == null) {
         emit(
           state.copyWith(
@@ -360,7 +371,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
 
   Future<bool> deleteCurrentSession() async {
     final sid = state.sessionId;
-    if (sid == null) return false;
+    if (sid == null || sid.isEmpty) return false;
 
     if (!await _networkInfo.isConnected) {
       emit(state.copyWith(bannerMessage: 'No internet connection'));

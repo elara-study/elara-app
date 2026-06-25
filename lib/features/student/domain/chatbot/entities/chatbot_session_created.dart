@@ -6,12 +6,16 @@ class ChatbotSessionCreated extends Equatable {
     required this.sessionId,
     this.createdAt,
     this.clusterId,
+    this.aiReply,
+    this.subject,
   });
 
   final String sessionId;
   final String? createdAt;
   final int? clusterId;
+  final String? aiReply;
+  final String? subject;
 
   @override
-  List<Object?> get props => [sessionId, createdAt, clusterId];
+  List<Object?> get props => [sessionId, createdAt, clusterId, aiReply, subject];
 }

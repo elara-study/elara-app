@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:elara/core/constants/api_constants.dart';
-import 'package:elara/features/student/presentation/chatbot/core/chatbot_config.dart';
+import 'package:elara/core/network/dio_client.dart';
 import 'package:elara/features/student/data/chatbot/api_parsers.dart';
 import 'package:elara/features/student/data/chatbot/datasources/remote_data_source.dart';
 import 'package:elara/features/student/data/chatbot/models/history_models.dart';
 import 'package:elara/features/student/data/chatbot/models/send_response_model.dart';
 import 'package:elara/features/student/data/chatbot/models/session_created_model.dart';
 import 'package:elara/features/student/data/chatbot/models/session_summary_model.dart';
-import 'package:elara/core/network/dio_client.dart';
+import 'package:elara/features/student/presentation/chatbot/core/chatbot_config.dart';
 
 class ChatbotRemoteDataSourceImpl implements ChatbotRemoteDataSource {
   ChatbotRemoteDataSourceImpl(this._dioClient);
@@ -25,12 +25,16 @@ class ChatbotRemoteDataSourceImpl implements ChatbotRemoteDataSource {
       ApiConstants.chatUri(relativePath).toString();
 
   @override
-  Future<SessionCreatedModel> createSession({required int clusterId}) async {
+  Future<SessionCreatedModel> createSession({
+    required int clusterId,
+    String? message,
+    String? subject,
+  }) async {
     final response = await _dio.post<Map<String, dynamic>>(
       _u(ApiConstants.chatbotStart),
       data: <String, dynamic>{
-        'message': ChatbotConfig.sessionStarterMessage,
-        'subject': ChatbotConfig.defaultSubject,
+        'message': message ?? ChatbotConfig.sessionStarterMessage,
+        'subject': subject ?? ChatbotConfig.defaultSubject,
       },
     );
     final data = response.data;

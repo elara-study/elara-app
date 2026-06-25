@@ -4,10 +4,12 @@ import 'package:elara/features/student/domain/chatbot/entities/chatbot_message.d
 import 'package:elara/features/student/domain/chatbot/entities/chatbot_session_created.dart';
 import 'package:elara/features/student/domain/chatbot/entities/chatbot_session_summary.dart';
 
-/// AI chat sessions + messages — swap [MockChatbotRepository] for API-backed impl.
+/// AI chat sessions + messages - swap [MockChatbotRepository] for API-backed impl.
 abstract class ChatbotRepository {
   Future<ApiResult<ChatbotSessionCreated>> createSession({
     required int clusterId,
+    String? message,
+    String? subject,
   });
 
   Future<ApiResult<List<ChatbotSessionSummary>>> listSessions();
