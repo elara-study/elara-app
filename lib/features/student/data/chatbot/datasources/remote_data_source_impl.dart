@@ -104,7 +104,7 @@ class ChatbotRemoteDataSourceImpl implements ChatbotRemoteDataSource {
 
   @override
   Future<void> deleteSession(String sessionId) async {
-    await _dio.delete<void>(
+    await _dio.delete<Map<String, dynamic>>(
       _u(ApiConstants.chatbotDeleteConversation(sessionId)),
     );
   }
