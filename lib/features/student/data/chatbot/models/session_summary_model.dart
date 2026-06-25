@@ -26,7 +26,9 @@ class SessionSummaryModel {
             json['lastMessageAt'] ??
             json['last_message_at'] ??
             json['modifiedAt'] ??
-            json['modified_at'],
+            json['modified_at'] ??
+            json['createdAt'] ??
+            json['created_at'],
       ),
       lastMessagePreview: _readPreview(json),
     );
@@ -47,7 +49,11 @@ class SessionSummaryModel {
       return direct.trim();
     }
     final last = json['lastMessage'];
-    if (last is Map<String, dynamic>) {
+    if (last is String) {
+      if (last.trim().isNotEmpty) {
+        return last.trim();
+      }
+    } else if (last is Map<String, dynamic>) {
       final content = last['content'] as String? ?? last['text'] as String?;
       if (content != null && content.trim().isNotEmpty) {
         return content.trim();

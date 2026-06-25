@@ -133,30 +133,27 @@ class AuthRepositoryImpl implements AuthRepository {
         return null;
       }
 
-      final remoteUser = await _remoteDataSource.getMe();
-      final refreshToken = await _localDataSource.getRefreshToken();
+      final cached = await _localDataSource.getCachedUser();
+      if (cached != null) {
+        return cached;
+      }
 
+      final refreshToken = await _localDataSource.getRefreshToken();
+      final payload = _decodeJwt(token);
       final user = UserModel(
-        id: remoteUser.id,
-        fullName: remoteUser.fullName,
-        email: remoteUser.email,
-        role: remoteUser.role,
+        id: payload['nameid'] as String? ?? payload['sub'] as String? ?? '',
+        fullName: payload['name'] as String? ?? '',
+        email: payload['email'] as String? ?? '',
+        role: _parseRole(payload['role'] as String? ?? ''),
         token: token,
         refreshToken: refreshToken,
       );
 
       await _localDataSource.cacheUser(user);
       return user;
-    } on ServerException {
-      await _localDataSource.clearUser();
-      return null;
-    } on NetworkException {
-      final cached = await _localDataSource.getCachedUser();
-      return cached;
     } on CacheException {
       return null;
     } catch (_) {
-      await _localDataSource.clearUser();
       return null;
     }
   }
@@ -210,7 +207,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final payload = _decodeJwt(response.token);
       final roleStr = payload['role'] as String?;
 
-      // No role claim → new user, needs to complete registration.
+      // No role claim - new user, needs to complete registration.
       if (roleStr == null || roleStr.isEmpty) {
         throw NeedsRoleException(
           pendingToken: response.token,
@@ -218,7 +215,7 @@ class AuthRepositoryImpl implements AuthRepository {
         );
       }
 
-      // Existing user → build entity, cache, and return.
+      // Existing user - build entity, cache, and return.
       final user = UserModel(
         id: payload['nameid'] as String? ?? payload['sub'] as String? ?? '',
         fullName: payload['name'] as String? ?? '',
@@ -284,7 +281,7 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────
+  // Helpers
 
   Map<String, dynamic> _decodeJwt(String token) {
     final parts = token.split('.');

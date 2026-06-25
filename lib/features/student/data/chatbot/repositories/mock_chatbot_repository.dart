@@ -6,7 +6,7 @@ import 'package:elara/features/student/domain/chatbot/entities/chatbot_session_c
 import 'package:elara/features/student/domain/chatbot/entities/chatbot_session_summary.dart';
 import 'package:elara/features/student/domain/chatbot/repositories/chatbot_repository.dart';
 
-/// In-memory AI chat — swap for [ChatbotRepositoryImpl] when API matches routes.
+/// In-memory AI chat - swap for [ChatbotRepositoryImpl] when API matches routes.
 class MockChatbotRepository implements ChatbotRepository {
   final Map<String, List<ChatbotMessage>> _messagesBySession = {};
   final List<ChatbotSessionSummary> _sessions = [];
@@ -24,11 +24,11 @@ class MockChatbotRepository implements ChatbotRepository {
     final cur = _sessions[idx];
     String? title = cur.title;
     if (title == null || title.isEmpty) {
-      final t = preview.length > 42 ? '${preview.substring(0, 42)}…' : preview;
+      final t = preview.length > 42 ? '${preview.substring(0, 42)}...' : preview;
       title = t;
     }
     final clipped = preview.length > 80
-        ? '${preview.substring(0, 80)}…'
+        ? '${preview.substring(0, 80)}...'
         : preview;
     _sessions[idx] = ChatbotSessionSummary(
       sessionId: sessionId,
@@ -44,7 +44,7 @@ class MockChatbotRepository implements ChatbotRepository {
       return 'Hi there! How can I help you study today?';
     }
     if (t.contains('thanks')) {
-      return 'You got it — anytime!';
+      return 'You got it - anytime!';
     }
     return 'Thanks for your message. Try asking about a lesson topic or '
         'upload a photo of a problem for hints.';
@@ -53,21 +53,48 @@ class MockChatbotRepository implements ChatbotRepository {
   @override
   Future<ApiResult<ChatbotSessionCreated>> createSession({
     required int clusterId,
+    String? message,
+    String? subject,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 350));
     final id = _nextSessionId();
-    _messagesBySession[id] = [];
+    final initialMessages = <ChatbotMessage>[];
+    String? aiReply;
+    final trimmed = message?.trim();
+    if (trimmed != null && trimmed.isNotEmpty) {
+      initialMessages.add(
+        ChatbotMessage(
+          text: trimmed,
+          isFromAssistant: false,
+          sentAt: DateTime.now(),
+        ),
+      );
+      aiReply = _replyFor(trimmed);
+      initialMessages.add(
+        ChatbotMessage(
+          text: aiReply,
+          isFromAssistant: true,
+          sentAt: DateTime.now(),
+        ),
+      );
+    }
+    _messagesBySession[id] = initialMessages;
     _sessions.insert(
       0,
       ChatbotSessionSummary(
         sessionId: id,
-        title: null,
+        title: subject,
         lastUpdatedAt: DateTime.now(),
-        lastMessagePreview: null,
+        lastMessagePreview: trimmed,
       ),
     );
     return ApiResult.success(
-      ChatbotSessionCreated(sessionId: id, clusterId: clusterId),
+      ChatbotSessionCreated(
+        sessionId: id,
+        clusterId: clusterId,
+        aiReply: aiReply,
+        subject: subject,
+      ),
     );
   }
 

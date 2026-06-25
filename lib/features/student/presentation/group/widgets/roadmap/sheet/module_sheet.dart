@@ -134,7 +134,10 @@ class ModuleSheet extends StatelessWidget {
               AppNavigation.pushNamed(
                 context,
                 AppRoutes.chatbot,
-                arguments: ChatbotRouteArgs(sessionTitle: moduleTitle),
+                arguments: ChatbotRouteArgs(
+                  sessionTitle: moduleTitle,
+                  startNew: true,
+                ),
               );
             },
           ),

@@ -8,7 +8,7 @@ import 'package:elara/features/student/presentation/chatbot/widgets/history/hist
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Past conversations — search, list, new chat. Intended for [Scaffold.drawer].
+/// Past conversations - search, list, new chat. Intended for [Scaffold.drawer].
 class HistoryPanel extends StatefulWidget {
   const HistoryPanel({
     super.key,
@@ -61,12 +61,8 @@ class _HistoryPanelState extends State<HistoryPanel> {
     }
   }
 
-  Future<void> _openNewChat(BuildContext context) async {
-    final cubit = context.read<SessionsCubit>();
-    final id = await cubit.createSessionAndReturnId();
-    if (id != null && context.mounted) {
-      widget.onNavigateToChat(ChatbotRouteArgs(sessionId: id));
-    }
+  Future<void> _openNewChat() async {
+    widget.onNavigateToChat(const ChatbotRouteArgs(startNew: true));
   }
 
   @override
@@ -107,7 +103,7 @@ class _HistoryPanelState extends State<HistoryPanel> {
               },
             ),
           ),
-          HistoryPanelBottomBar(onNewChat: () => _openNewChat(context)),
+          HistoryPanelBottomBar(onNewChat: _openNewChat),
         ],
       ),
     );
