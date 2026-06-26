@@ -23,6 +23,16 @@ class ApiConstants {
   static const String googleSignIn = 'api/v1/oauth/google';
   static const String completeRegistration = 'api/v1/oauth/complete-registration';
 
+  /// Student > Groups — List all groups the student is enrolled in.
+  static const String studentGroups = 'api/v1/student/groups';
+
+  /// Student > Groups — Join a group using a teacher-provided code.
+  static const String studentJoinGroup = 'api/v1/student/groups/join';
+
+  /// Student > Groups — Single group overview (GET /api/v1/student/groups/{id}).
+  static String studentGroupById(String groupId) =>
+      'api/v1/student/groups/$groupId';
+
   /// Student > Learn — Group overview (apidocs: group-overview).
   static String studentLearnGroupOverview(String groupId) =>
       'student/learn/groups/$groupId/overview';
@@ -31,13 +41,15 @@ class ApiConstants {
   static String studentLearnGroupLeaderboard(String groupId) =>
       'student/learn/groups/$groupId/leaderboard';
 
-  /// Student > Learn — Roadmap (apidocs: roadmap).
-  static String studentLearnGroupRoadmap(String groupId) =>
-      'student/learn/groups/$groupId/roadmap';
+  /// Student > Groups — Modules / roadmap.
+  /// GET /api/v1/student/groups/{id}/modules
+  static String studentGroupModules(String groupId) =>
+      'api/v1/student/groups/$groupId/modules';
 
-  /// Student > Learn — Announcements for a group.
-  static String studentLearnGroupAnnouncements(String groupId) =>
-      'student/learn/groups/$groupId/announcements';
+  /// Student > Groups — Announcements for a group.
+  /// GET /api/v1/teacher/groups/{id}/announcements
+  static String studentGroupAnnouncements(String groupId) =>
+      'api/v1/teacher/groups/$groupId/announcements';
 
   /// Student > Rewards — Overview (GET /v1/student/rewards/overview).
   static const String studentRewardsOverview = 'v1/student/rewards/overview';
