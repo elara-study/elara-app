@@ -61,8 +61,13 @@ class LearnScreen extends StatelessWidget {
                 }
                 if (state is StudentLearnLoaded) {
                   if (state.groups.isEmpty) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: AppSpacing.spacing5xl.h),
+                    return SizedBox(
+                      height:
+                          MediaQuery.of(context).size.height -
+                          kToolbarHeight -
+                          62.h -
+                          AppSpacing.spacing2xl.h -
+                          80.h,
                       child: _EmptyGroupsView(
                         onJoin: () => _openJoinSheet(context),
                       ),
@@ -171,40 +176,14 @@ class _EmptyGroupsView extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Center(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.groups_outlined, size: 52.sp, color: AppColors.neutral300),
-          SizedBox(height: AppSpacing.spacingMd.h),
           Text('No groups yet', style: AppTypography.h6(color: cs.onSurface)),
           SizedBox(height: 6.h),
           Text(
             'Ask your teacher for a group code\nand tap Join to get started.',
             style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
             textAlign: TextAlign.center,
-          ),
-          SizedBox(height: AppSpacing.spacingXl.h),
-          ElevatedButton.icon(
-            onPressed: onJoin,
-            icon: SvgPicture.asset(
-              'assets/icons/join_icon.svg',
-              width: 18.w,
-              height: 18.w,
-              colorFilter: const ColorFilter.mode(
-                AppColors.white,
-                BlendMode.srcIn,
-              ),
-            ),
-            label: Text(
-              'Join a Group',
-              style: AppTypography.button(color: AppColors.white),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.brandPrimary500,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-            ),
           ),
         ],
       ),
