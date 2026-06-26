@@ -33,6 +33,7 @@ import 'package:elara/features/student/presentation/chatbot/cubits/sessions_cubi
 import 'package:elara/features/student/presentation/chatbot/views/chatbot_screen.dart';
 import 'package:elara/features/student/presentation/dashboard/views/student_shell.dart';
 import 'package:elara/features/student/presentation/group/views/student_group_page.dart';
+import 'package:elara/features/student/domain/dashboard/entities/student_group_entity.dart';
 import 'package:elara/features/student/presentation/homework/homework_route_args.dart';
 import 'package:elara/features/student/presentation/homework/views/homework_screen.dart';
 import 'package:elara/features/student/presentation/profile/cubits/student_settings_cubit.dart';
@@ -239,7 +240,11 @@ GoRouter createAppRouter(AuthCubit authCubit) {
         path: AppRoutes.studentGroup,
         builder: (context, state) {
           final args = state.extra;
-          final groupId = args is String ? args : AppRoutes.demoGroupId;
+          final groupId = args is String
+              ? args
+              : args is StudentGroupEntity
+                  ? args.id
+                  : AppRoutes.demoGroupId;
           return StudentGroupPage(groupId: groupId);
         },
       ),

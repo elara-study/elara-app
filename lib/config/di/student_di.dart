@@ -6,7 +6,7 @@ import 'package:elara/features/student/domain/dashboard/repositories/student_rep
 import 'package:elara/features/student/presentation/dashboard/cubits/home/student_home_cubit.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/learn/student_learn_cubit.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/tab/student_tab_cubit.dart';
-import 'package:elara/features/student/data/group/repositories/mock_student_group_repository.dart';
+import 'package:elara/features/student/data/group/repositories/student_group_repository_impl.dart';
 import 'package:elara/features/student/domain/group/repositories/student_group_repository.dart';
 import 'package:elara/features/student/domain/group/usecases/get_group_announcements_usecase.dart';
 import 'package:elara/features/student/domain/group/usecases/get_group_roadmap_usecase.dart';
@@ -46,7 +46,7 @@ final getIt = GetIt.instance;
 void setupStudentDI() {
   // ── Student: Data Source ──────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentRemoteDataSource>(
-    () => StudentRemoteDataSourceImpl(),
+    () => StudentRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
 
   // ── Student: Repository ───────────────────────────────────────────────────
@@ -67,7 +67,7 @@ void setupStudentDI() {
 
   // ── Student group (Learn) ─────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentGroupRepository>(
-    () => MockStudentGroupRepository(),
+    () => StudentGroupRepositoryImpl(dioClient: getIt<DioClient>()),
   );
 
   getIt.registerLazySingleton<StudentRewardsRepository>(

@@ -182,30 +182,6 @@ class _EmptyGroupsView extends StatelessWidget {
             style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: AppSpacing.spacingXl.h),
-          ElevatedButton.icon(
-            onPressed: onJoin,
-            icon: SvgPicture.asset(
-              'assets/icons/join_icon.svg',
-              width: 18.w,
-              height: 18.w,
-              colorFilter: const ColorFilter.mode(
-                AppColors.white,
-                BlendMode.srcIn,
-              ),
-            ),
-            label: Text(
-              'Join a Group',
-              style: AppTypography.button(color: AppColors.white),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.brandPrimary500,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-            ),
-          ),
         ],
       ),
     );
