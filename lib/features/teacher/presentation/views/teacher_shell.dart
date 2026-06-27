@@ -5,6 +5,8 @@ import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.da
 import 'package:elara/features/teacher/presentation/views/teacher_groups_screen.dart';
 import 'package:elara/features/teacher/presentation/views/teacher_home_screen.dart';
 import 'package:elara/features/teacher/presentation/views/teacher_roadmaps_screen.dart';
+import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
+import 'package:elara/features/teacher/presentation/profile/views/teacher_profile_screen.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
@@ -27,13 +29,20 @@ class _TeacherShellState extends State<TeacherShell> {
     TeacherGroupsScreen(),
     TeacherRoadmapsScreen(),
     _ComingSoonPage(label: 'Alerts'),
-    _ComingSoonPage(label: 'Profile'),
+    TeacherProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TeacherHomeCubit>(
-      create: (_) => getIt<TeacherHomeCubit>()..loadHome(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<TeacherHomeCubit>(
+          create: (_) => getIt<TeacherHomeCubit>()..loadHome(),
+        ),
+        BlocProvider<TeacherProfileCubit>(
+          create: (_) => getIt<TeacherProfileCubit>()..loadProfile(),
+        ),
+      ],
       child: Scaffold(
         extendBody: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,

@@ -8,6 +8,7 @@ import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.da
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
+import 'package:elara/shared/widgets/create_group_dialog.dart';
 import 'package:elara/shared/widgets/subject_group_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -104,23 +105,38 @@ class _EmptyGroupsView extends StatelessWidget {
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing2xl.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.groups_outlined,
-              size: 52.sp,
-              color: AppColors.neutral300,
-            ),
-            SizedBox(height: AppSpacing.spacingMd.h),
-            Text('No groups yet', style: AppTypography.h6(color: cs.onSurface)),
-            SizedBox(height: 6.h),
-            Text(
-              'Tap Create to add your first class.',
-              style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
-              textAlign: TextAlign.center,
-            ),
-          ],
+        child: GestureDetector(
+          onTap: () {
+            GroupDialog.show(
+              context,
+              onSubmit: (title, subject, grade) {
+                context.read<TeacherHomeCubit>().createGroup(
+                  title: title,
+                  subject: subject,
+                  grade: grade,
+                );
+              },
+            );
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.groups_outlined,
+                size: 52.sp,
+                color: AppColors.neutral300,
+              ),
+              SizedBox(height: AppSpacing.spacingMd.h),
+              Text('No groups yet', style: AppTypography.h6(color: cs.onSurface)),
+              SizedBox(height: 6.h),
+              Text(
+                'Tap Create to add your first class.',
+                style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

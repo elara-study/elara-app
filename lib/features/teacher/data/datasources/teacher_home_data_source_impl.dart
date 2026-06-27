@@ -1,7 +1,10 @@
+import 'package:dio/dio.dart';
+import 'package:elara/core/constants/api_constants.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_activity_entity.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/data/models/teacher_group_model.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.dart';
 
 /// Mock implementation of [TeacherHomeDataSource].
@@ -9,7 +12,9 @@ import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.da
 /// Returns hardcoded data so the UI is fully testable without a backend.
 ///  : Replace with a real HTTP implementation when the API is ready.
 class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
-  const TeacherHomeDataSourceImpl();
+  final Dio _dio;
+
+  const TeacherHomeDataSourceImpl(this._dio);
 
   @override
   Future<TeacherProfileEntity> getProfile() async {
@@ -26,49 +31,24 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
 
   @override
   Future<List<TeacherGroupEntity>> getGroups() async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    return [
-      TeacherGroupEntity(
-        id: 'g-1',
-        name: 'Physics — Grade 10A',
-        subject: 'Physics',
-        grade: 'Grade 10',
-        studentCount: 28,
-        totalLessons: 32,
-        progressPercent: 0.68,
-        colorKey: 'purple',
-      ),
-      TeacherGroupEntity(
-        id: 'g-2',
-        name: 'Chemistry — Grade 11B',
-        subject: 'Chemistry',
-        grade: 'Grade 11',
-        studentCount: 24,
-        totalLessons: 28,
-        progressPercent: 0.45,
-        colorKey: 'orange',
-      ),
-      TeacherGroupEntity(
-        id: 'g-3',
-        name: 'Biology — Grade 9C',
-        subject: 'Biology',
-        grade: 'Grade 9',
-        studentCount: 31,
-        totalLessons: 24,
-        progressPercent: 0.82,
-        colorKey: 'green',
-      ),
-      TeacherGroupEntity(
-        id: 'g-4',
-        name: 'Physics — Grade 11A',
-        subject: 'Physics',
-        grade: 'Grade 11',
-        studentCount: 22,
-        totalLessons: 32,
-        progressPercent: 0.33,
-        colorKey: 'purple',
-      ),
-    ];
+    final response = await _dio.get(ApiConstants.teacherGroups);
+    final data = response.data;
+    
+    List<dynamic> groupsList = [];
+    
+    if (data is List) {
+      groupsList = data;
+    } else if (data != null && data is Map) {
+      if (data['groups'] != null) {
+        groupsList = data['groups'] as List;
+      } else if (data['data'] != null) {
+        groupsList = data['data'] as List;
+      }
+    }
+
+    return groupsList
+        .map((g) => TeacherGroupModel.fromJson(g as Map<String, dynamic>))
+        .toList();
   }
 
   @override
@@ -108,12 +88,17 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
     required String subject,
     required String grade,
   }) async {
-    // Mock implementation — replace with real API call when backend is ready
-    await Future.delayed(const Duration(milliseconds: 500));
-    // In a real implementation, this would:
-    // 1. Send a POST request to the backend
-    // 2. Handle validation and error responses
-    // 3. Return the created group data
+    // Extract integer from "Grade 10" string
+    final gradeInt = int.tryParse(grade.replaceAll(RegExp(r'[^0-9]'), '')) ?? 1;
+
+    await _dio.post(
+      ApiConstants.teacherGroups,
+      data: {
+        'name': title,
+        'grade': gradeInt,
+        'subject': subject,
+      },
+    );
   }
 
   @override
