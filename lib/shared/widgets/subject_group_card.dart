@@ -51,96 +51,97 @@ class _StandardCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          // ── Colored banner (top) ──────────────────────────────
-          Container(
-            height: 86.w,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.brandPrimary400, AppColors.brandPrimary500],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(AppRadius.radiusLg.r),
-                topRight: Radius.circular(AppRadius.radiusLg.r),
-              ),
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
-            padding: EdgeInsets.all(AppSpacing.spacingLg.w),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  group.subject.toUpperCase(),
-                  style: AppTypography.labelLarge(color: AppColors.neutral50)
-                      .copyWith(
-                        fontWeight: AppTypography.semiBold,
-                        fontSize: 16.sp,
-                      ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            // ── Colored banner (top) ──────────────────────────────
+            Container(
+              height: 86.w,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppColors.brandPrimary400, AppColors.brandPrimary500],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                const Spacer(),
-                _GradeBadge(grade: group.grade),
-              ],
-            ),
-          ),
-
-          //     content area (bottom)
-          Container(
-            margin: EdgeInsets.only(top: AppSpacing.spacing7xl.w),
-            decoration: BoxDecoration(
-              color: cs.surface,
-              borderRadius: BorderRadius.all(
-                Radius.circular(AppRadius.radiusLg.r),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(AppRadius.radiusLg.r),
+                  topRight: Radius.circular(AppRadius.radiusLg.r),
+                ),
               ),
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacingLg.w,
-              vertical: AppSpacing.spacing2xl.w,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Teacher name — student variant only
-                if (_isStudent) ...[
+              padding: EdgeInsets.all(AppSpacing.spacingLg.w),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    group.teacherName,
-                    style: AppTypography.bodySmall(color: cs.onSurfaceVariant)
+                    group.subject.toUpperCase(),
+                    style: AppTypography.labelLarge(color: AppColors.neutral50)
                         .copyWith(
-                          fontWeight: AppTypography.regular,
-                          fontSize: 12.sp,
+                          fontWeight: AppTypography.semiBold,
+                          fontSize: 16.sp,
                         ),
                   ),
+                  const Spacer(),
+                  _GradeBadge(grade: group.grade),
                 ],
+              ),
+            ),
 
-                // Group name + arrow
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        group.name,
-                        style: AppTypography.labelLarge(color: cs.onSurface)
-                            .copyWith(
-                              fontWeight: AppTypography.semiBold,
-                              fontSize: 20.sp,
-                            ),
-                      ),
+            //     content area (bottom)
+            Container(
+              margin: EdgeInsets.only(top: AppSpacing.spacing7xl.w),
+              decoration: BoxDecoration(
+                color: cs.surface,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(AppRadius.radiusLg.r),
+                ),
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.spacingLg.w,
+                vertical: AppSpacing.spacing2xl.w,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Teacher name — student variant only
+                  if (_isStudent) ...[
+                    Text(
+                      group.teacherName,
+                      style: AppTypography.bodySmall(color: cs.onSurfaceVariant)
+                          .copyWith(
+                            fontWeight: AppTypography.regular,
+                            fontSize: 12.sp,
+                          ),
                     ),
-                    GestureDetector(
-                      onTap: onTap,
-                      child: SvgPicture.asset(
+                  ],
+
+                  // Group name + arrow
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          group.name,
+                          style: AppTypography.labelLarge(color: cs.onSurface)
+                              .copyWith(
+                                fontWeight: AppTypography.semiBold,
+                                fontSize: 20.sp,
+                              ),
+                        ),
+                      ),
+                      SvgPicture.asset(
                         'assets/icons/right_arrow_ios.svg',
                         width: AppSpacing.spacing2xl.w,
                         height: AppSpacing.spacing2xl.w,
@@ -149,27 +150,27 @@ class _StandardCard extends StatelessWidget {
                           BlendMode.srcIn,
                         ),
                       ),
-                    ),
+                    ],
+                  ),
+
+                  SizedBox(height: AppSpacing.spacing2xl.h),
+
+                  // Stats row
+                  _StatsRow(
+                    studentCount: group.studentCount,
+                    lessonLabel: group.lessonProgressLabel,
+                  ),
+
+                  // Progress — student variant only
+                  if (_isStudent) ...[
+                    SizedBox(height: AppSpacing.spacingMd.h),
+                    _ProgressRow(percent: group.progressPercent),
                   ],
-                ),
-
-                SizedBox(height: AppSpacing.spacing2xl.h),
-
-                // Stats row
-                _StatsRow(
-                  studentCount: group.studentCount,
-                  lessonLabel: group.lessonProgressLabel,
-                ),
-
-                // Progress — student variant only
-                if (_isStudent) ...[
-                  SizedBox(height: AppSpacing.spacingMd.h),
-                  _ProgressRow(percent: group.progressPercent),
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -188,110 +189,111 @@ class _RoadmapCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Stack(
-        clipBehavior: Clip.antiAlias,
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Stack(
+          clipBehavior: Clip.antiAlias,
 
-        children: [
-          // ── Colored banner (bottom) ───────────────────────────
-          Container(
-            margin: EdgeInsets.only(top: AppSpacing.spacing7xl.w),
-            height: 86.w,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: isDraft
-                    ? [AppColors.neutral200, AppColors.neutral300]
-                    : [AppColors.brandPrimary400, AppColors.brandPrimary500],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(AppRadius.radiusLg.r),
-                bottomRight: Radius.circular(AppRadius.radiusLg.r),
-              ),
-            ),
-            alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacingLg.w,
-              vertical: AppSpacing.spacingXl.h,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  group.subject.toUpperCase(),
-                  style: AppTypography.labelLarge(color: AppColors.neutral50)
-                      .copyWith(
-                        fontWeight: AppTypography.semiBold,
-                        fontSize: 16.sp,
-                      ),
+          children: [
+            // ── Colored banner (bottom) ───────────────────────────
+            Container(
+              margin: EdgeInsets.only(top: AppSpacing.spacing7xl.w),
+              height: 86.w,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: isDraft
+                      ? [AppColors.neutral200, AppColors.neutral300]
+                      : [AppColors.brandPrimary400, AppColors.brandPrimary500],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                // ACTIVE / DRAFT badge
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppSpacing.spacingMd.w,
-                    vertical: AppSpacing.spacingXs.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.neutral50.withValues(alpha: 0.25),
-                    borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
-                  ),
-                  child: Text(
-                    isDraft ? 'DRAFT' : 'ACTIVE',
-                    style: AppTypography.labelSmall(color: AppColors.neutral50)
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(AppRadius.radiusLg.r),
+                  bottomRight: Radius.circular(AppRadius.radiusLg.r),
+                ),
+              ),
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.spacingLg.w,
+                vertical: AppSpacing.spacingXl.h,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    group.subject.toUpperCase(),
+                    style: AppTypography.labelLarge(color: AppColors.neutral50)
                         .copyWith(
                           fontWeight: AppTypography.semiBold,
-                          fontSize: 12.sp,
+                          fontSize: 16.sp,
                         ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          // ── White content area (top) ──────────────────────────
-          Container(
-            // margin: EdgeInsets.only(bottom: bannerHeight.h),
-            decoration: BoxDecoration(
-              color: cs.surface,
-              borderRadius: BorderRadius.all(
-                Radius.circular(AppRadius.radiusLg.r),
+                  // ACTIVE / DRAFT badge
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.spacingMd.w,
+                      vertical: AppSpacing.spacingXs.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.neutral50.withValues(alpha: 0.25),
+                      borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
+                    ),
+                    child: Text(
+                      isDraft ? 'DRAFT' : 'ACTIVE',
+                      style: AppTypography.labelSmall(color: AppColors.neutral50)
+                          .copyWith(
+                            fontWeight: AppTypography.semiBold,
+                            fontSize: 12.sp,
+                          ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacingLg.w,
-              vertical: AppSpacing.spacing2xl.h,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Group name + arrow
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        group.name,
-                        style: AppTypography.labelLarge(color: cs.onSurface)
-                            .copyWith(
-                              fontWeight: AppTypography.semiBold,
-                              fontSize: 20.sp,
-                            ),
+            // ── White content area (top) ──────────────────────────
+            Container(
+              // margin: EdgeInsets.only(bottom: bannerHeight.h),
+              decoration: BoxDecoration(
+                color: cs.surface,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(AppRadius.radiusLg.r),
+                ),
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.spacingLg.w,
+                vertical: AppSpacing.spacing2xl.h,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Group name + arrow
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          group.name,
+                          style: AppTypography.labelLarge(color: cs.onSurface)
+                              .copyWith(
+                                fontWeight: AppTypography.semiBold,
+                                fontSize: 20.sp,
+                              ),
+                        ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: onTap,
-                      child: SvgPicture.asset(
+                      SvgPicture.asset(
                         'assets/icons/right_arrow_ios.svg',
                         width: AppSpacing.spacing2xl.w,
                         height: AppSpacing.spacing2xl.w,
@@ -300,21 +302,21 @@ class _RoadmapCard extends StatelessWidget {
                           BlendMode.srcIn,
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
 
-                SizedBox(height: AppSpacing.spacing2xl.h),
+                  SizedBox(height: AppSpacing.spacing2xl.h),
 
-                // Stats: lessons + grade
-                _StatsRow(
-                  lessonLabel: group.lessonProgressLabel,
-                  gradeLabel: group.grade,
-                ),
-              ],
+                  // Stats: lessons + grade
+                  _StatsRow(
+                    lessonLabel: group.lessonProgressLabel,
+                    gradeLabel: group.grade,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

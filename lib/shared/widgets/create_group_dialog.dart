@@ -21,18 +21,7 @@ class GroupDialogConfig {
       'English',
       'History',
     ],
-    this.grades = const [
-      'Grade 1',
-      'Grade 2',
-      'Grade 3',
-      'Grade 4',
-      'Grade 5',
-      'Grade 6',
-      'Grade 7',
-      'Grade 8',
-      'Grade 9',
-      'Grade 10',
-    ],
+    this.grades = const ['Grade 10', 'Grade 11', 'Grade 12'],
   });
 }
 
@@ -45,6 +34,41 @@ class GroupDialog extends StatelessWidget {
   final ValueChanged<String?> onSubjectChanged;
   final ValueChanged<String?> onGradeChanged;
   final VoidCallback onSubmit;
+
+  static void show(
+    BuildContext context, {
+    GroupDialogConfig config = const GroupDialogConfig(),
+    required void Function(String title, String subject, String grade) onSubmit,
+  }) {
+    String titleValue = '';
+    String? subject;
+    String? grade;
+
+    showDialog(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setDialogState) => GroupDialog(
+          config: config,
+          titleValue: titleValue,
+          selectedSubject: subject,
+          selectedGrade: grade,
+          onTitleChanged: (v) => setDialogState(() => titleValue = v),
+          onSubjectChanged: (v) => setDialogState(() => subject = v),
+          onGradeChanged: (v) => setDialogState(() => grade = v),
+          onSubmit: () {
+            if (titleValue.isEmpty || subject == null || grade == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Please fill all fields')),
+              );
+              return;
+            }
+            onSubmit(titleValue, subject!, grade!);
+            Navigator.of(ctx).pop();
+          },
+        ),
+      ),
+    );
+  }
 
   const GroupDialog({
     super.key,

@@ -38,33 +38,11 @@ class AppSectionHeader extends StatelessWidget {
   });
 
   void _openDialog(BuildContext context) {
-    String titleValue = '';
-    String? subject;
-    String? grade;
-
-    showDialog(
-      context: context,
-      builder: (_) => StatefulBuilder(
-        builder: (ctx, setDialogState) => GroupDialog(
-          config: dialogConfig,
-          titleValue: titleValue,
-          selectedSubject: subject,
-          selectedGrade: grade,
-          onTitleChanged: (v) => setDialogState(() => titleValue = v),
-          onSubjectChanged: (v) => setDialogState(() => subject = v),
-          onGradeChanged: (v) => setDialogState(() => grade = v),
-          onSubmit: () {
-            if (titleValue.isEmpty || subject == null || grade == null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Please fill all fields')),
-              );
-              return;
-            }
-            onCreateGroup?.call(titleValue, subject!, grade!);
-            Navigator.of(ctx).pop();
-          },
-        ),
-      ),
+    if (onCreateGroup == null) return;
+    GroupDialog.show(
+      context,
+      config: dialogConfig,
+      onSubmit: onCreateGroup!,
     );
   }
 
