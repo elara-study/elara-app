@@ -1,7 +1,9 @@
 import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
 import 'package:elara/features/teacher/data/datasources/teacher_home_data_source_impl.dart';
+import 'package:elara/features/teacher/domain/repositories/teacher_home_repository.dart';
+import 'package:elara/features/teacher/data/repositories/teacher_home_repository_impl.dart';
 import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
-import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source_impl.dart';
+import 'package:elara/features/teacher/group/data/datasources/teacher_group_remote_data_source.dart';
 import 'package:elara/features/teacher/group/presentation/cubits/teacher_group_cubit.dart';
 import 'package:elara/features/teacher/homework/data/datasources/mock_teacher_homework_datasource.dart';
 import 'package:elara/features/teacher/homework/data/datasources/teacher_homework_datasource.dart';
@@ -12,6 +14,8 @@ import 'package:elara/features/teacher/homework/domain/usecases/get_teacher_modu
 import 'package:elara/features/teacher/homework/presentation/cubits/teacher_homework_cubit.dart';
 import 'package:elara/features/teacher/homework/presentation/cubits/teacher_resources_cubit.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
+import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
+import 'package:elara/core/network/dio_client.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -19,16 +23,26 @@ final getIt = GetIt.instance;
 void setupTeacherDI() {
   // Data Sources & Cubits
   getIt.registerLazySingleton<TeacherHomeDataSource>(
-    () => const TeacherHomeDataSourceImpl(),
+    () => TeacherHomeDataSourceImpl(getIt<DioClient>().dio),
+  );
+
+  getIt.registerLazySingleton<TeacherHomeRepository>(
+    () => TeacherHomeRepositoryImpl(getIt<TeacherHomeDataSource>()),
   );
 
   getIt.registerFactory<TeacherHomeCubit>(
-    () => TeacherHomeCubit(getIt<TeacherHomeDataSource>()),
+    () => TeacherHomeCubit(getIt<TeacherHomeRepository>()),
+  );
+
+  getIt.registerFactory<TeacherProfileCubit>(
+    () => TeacherProfileCubit(
+      repository: getIt<TeacherHomeRepository>(),
+    ),
   );
 
   // Group Detail
   getIt.registerLazySingleton<TeacherGroupDataSource>(
-    () => const TeacherGroupDataSourceImpl(),
+    () => TeacherGroupRemoteDataSourceImpl(getIt<DioClient>().dio),
   );
 
   getIt.registerFactory<TeacherGroupCubit>(
