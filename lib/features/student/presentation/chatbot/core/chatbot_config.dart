@@ -1,11 +1,11 @@
 /// Defaults for Elara chat HTTP API ([OpenAPI](https://elara-chatbot-retrievel-api.onrender.com)).
 abstract final class ChatbotConfig {
-  /// Legacy hook — remote API uses [defaultSubject] instead of cluster ids.
+  /// Legacy hook - remote API uses [defaultSubject] instead of cluster ids.
   static const int defaultClusterId = 1;
 
-  /// Sent with POST `/api/v1/chat` when the app creates an empty thread first.
-  static const String defaultSubject = 'General';
+  /// Sent with POST `/api/v1/chat` when a route does not provide a subject.
+  static const String defaultSubject = 'physics';
 
-  /// First hidden exchange when [createSession] maps to “start conversation”.
+  /// Fallback text if a legacy caller asks the backend to allocate a thread.
   static const String sessionStarterMessage = 'Hello';
 }

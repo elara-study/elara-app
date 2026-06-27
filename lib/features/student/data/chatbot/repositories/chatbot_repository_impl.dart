@@ -19,9 +19,15 @@ class ChatbotRepositoryImpl implements ChatbotRepository {
   @override
   Future<ApiResult<ChatbotSessionCreated>> createSession({
     required int clusterId,
+    String? message,
+    String? subject,
   }) async {
     try {
-      final m = await _remote.createSession(clusterId: clusterId);
+      final m = await _remote.createSession(
+        clusterId: clusterId,
+        message: message,
+        subject: subject,
+      );
       if (m.sessionId.isEmpty) {
         return ApiResult.failure(const ServerFailure('Invalid session id'));
       }
@@ -30,6 +36,8 @@ class ChatbotRepositoryImpl implements ChatbotRepository {
           sessionId: m.sessionId,
           createdAt: m.createdAt,
           clusterId: m.clusterId,
+          aiReply: m.aiReply,
+          subject: m.subject,
         ),
       );
     } on DioException catch (e) {
@@ -85,6 +93,7 @@ class ChatbotRepositoryImpl implements ChatbotRepository {
       isFromAssistant: !m.isFromUser,
       choices: m.choices,
       imageUrl: url,
+      sentAt: m.createdAt,
     );
   }
 

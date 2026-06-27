@@ -7,6 +7,13 @@ class CreateSessionUseCase {
 
   final ChatbotRepository _repository;
 
-  Future<ApiResult<ChatbotSessionCreated>> call({required int clusterId}) =>
-      _repository.createSession(clusterId: clusterId);
+  Future<ApiResult<ChatbotSessionCreated>> call({
+    required int clusterId,
+    String? message,
+    String? subject,
+  }) => _repository.createSession(
+    clusterId: clusterId,
+    message: message,
+    subject: subject,
+  );
 }

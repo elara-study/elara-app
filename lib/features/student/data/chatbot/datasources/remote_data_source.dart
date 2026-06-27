@@ -3,9 +3,13 @@ import 'package:elara/features/student/data/chatbot/models/send_response_model.d
 import 'package:elara/features/student/data/chatbot/models/session_created_model.dart';
 import 'package:elara/features/student/data/chatbot/models/session_summary_model.dart';
 
-/// Remote AI chat API — paths live in [ApiConstants].
+/// Remote AI chat API أ¢â‚¬â€‌ paths live in [ApiConstants].
 abstract class ChatbotRemoteDataSource {
-  Future<SessionCreatedModel> createSession({required int clusterId});
+  Future<SessionCreatedModel> createSession({
+    required int clusterId,
+    String? message,
+    String? subject,
+  });
 
   Future<List<SessionSummaryModel>> listSessions();
 

@@ -1,22 +1,18 @@
+import 'package:elara/core/constants/api_constants.dart';
+import 'package:elara/core/network/dio_client.dart';
+import 'package:elara/core/utils/logger.dart';
 import 'package:elara/features/student/data/dashboard/datasources/student_remote_data_source.dart';
 import 'package:elara/features/student/data/dashboard/models/course_progress_model.dart';
 import 'package:elara/features/student/data/dashboard/models/daily_goal_model.dart';
 import 'package:elara/features/student/data/dashboard/models/student_group_model.dart';
 import 'package:elara/features/student/data/dashboard/models/student_profile_model.dart';
 
-/// MOCKED implementation — realistic data matching the design screenshots.
-///
-/// To switch to real API when backend is ready:
-///   1. Inject [DioClient] via constructor.
-///   2. Replace each [Future.delayed] block with the corresponding Dio call.
-///   3. Parse responses using the model [fromJson] factories.
-///   4. Update [dependency_injection.dart] to pass [getIt<DioClient>()].
+/// Remote implementation — [getGroups] is wired to the real API.
+/// Other methods remain mocked until their endpoints are available.
 class StudentRemoteDataSourceImpl implements StudentRemoteDataSource {
-  // TODO: inject DioClient when backend is ready
-  // final DioClient _dioClient;
-  // StudentRemoteDataSourceImpl(this._dioClient);
+  final DioClient _dioClient;
 
-  StudentRemoteDataSourceImpl();
+  StudentRemoteDataSourceImpl(this._dioClient);
 
   @override
   Future<StudentProfileModel> getStudentProfile() async {
@@ -82,48 +78,13 @@ class StudentRemoteDataSourceImpl implements StudentRemoteDataSource {
 
   @override
   Future<List<StudentGroupModel>> getGroups() async {
-    await Future.delayed(const Duration(milliseconds: 600));
-    return [
-      const StudentGroupModel(
-        id: 'group-001',
-        name: 'Mathematics 7A',
-        subject: 'MATHEMATICS',
-        grade: 'Grade 7',
-        teacherName: 'Ms. Dalia',
-        studentCount: 28,
-        totalLessons: 20,
-        completedLessons: 13,
-        progressPercent: 0.65,
-        colorKey: 'blue',
-      ),
-      const StudentGroupModel(
-        id: 'group-002',
-        name: 'Physics 101',
-        subject: 'SCIENCE',
-        grade: 'Grade 7',
-        teacherName: 'Ms. Dalia',
-        studentCount: 25,
-        totalLessons: 18,
-        completedLessons: 8,
-        progressPercent: 0.45,
-        colorKey: 'orange',
-      ),
-      const StudentGroupModel(
-        id: 'group-003',
-        name: 'English Literature',
-        subject: 'ENGLISH',
-        grade: 'Grade 7',
-        teacherName: 'Ms. Dalia',
-        studentCount: 30,
-        totalLessons: 20,
-        completedLessons: 16,
-        progressPercent: 0.80,
-        colorKey: 'green',
-      ),
-    ];
-    // ── REAL ────────────────────────────────────────────────────────────────
-    // final response = await _dioClient.dio.get('student/groups');
-    // return (response.data as List).map(StudentGroupModel.fromJson).toList();
+    AppLogger.log('StudentRemoteDataSourceImpl: fetching groups');
+    final response = await _dioClient.dio.get(ApiConstants.studentGroups);
+    final data = response.data as Map<String, dynamic>;
+    final groupsJson = data['data']['groups'] as List<dynamic>;
+    return groupsJson
+        .map((e) => StudentGroupModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   @override

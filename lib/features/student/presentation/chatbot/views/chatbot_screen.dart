@@ -41,6 +41,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       context.read<ChatbotCubit>().start(
         routeSessionId: widget.routeArgs.sessionId,
         routeSessionTitle: widget.routeArgs.sessionTitle,
+        startNew: widget.routeArgs.startNew,
       );
     });
   }
@@ -162,6 +163,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
               onRetry: () => context.read<ChatbotCubit>().start(
                 routeSessionId: widget.routeArgs.sessionId,
                 routeSessionTitle: widget.routeArgs.sessionTitle,
+                startNew: widget.routeArgs.startNew,
               ),
             );
           }
