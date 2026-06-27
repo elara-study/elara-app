@@ -21,7 +21,15 @@ class ApiConstants {
 
   // OAuth
   static const String googleSignIn = 'api/v1/oauth/google';
-  static const String completeRegistration = 'api/v1/oauth/complete-registration';
+  static const String completeRegistration =
+      'api/v1/oauth/complete-registration';
+
+  // Teacher
+
+  static const String teacherGroups = 'api/v1/teacher/groups';
+  
+  static String teacherGroupInfo(String id) => 'api/v1/teacher/groups/$id';
+  static String teacherGroupOverview(String id) => 'api/v1/teacher/groups/$id/overview';
 
   /// Student > Learn — Group overview (apidocs: group-overview).
   static String studentLearnGroupOverview(String groupId) =>
