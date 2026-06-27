@@ -21,6 +21,8 @@ import 'package:elara/features/parent/presentation/children/views/parent_child_p
 import 'package:elara/features/parent/presentation/home/views/parent_shell.dart';
 import 'package:elara/features/parent/presentation/profile/cubits/parent_profile_cubit.dart';
 import 'package:elara/features/parent/presentation/profile/views/parent_settings_screen.dart';
+import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
+import 'package:elara/features/teacher/presentation/profile/views/teacher_settings_screen.dart';
 import 'package:elara/features/settings/presentation/cubits/notifications_settings_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/profile_account_cubit.dart';
@@ -70,6 +72,7 @@ abstract final class AppRoutes {
   static const String homework = '/homework';
   static const String chatbot = '/chatbot';
   static const String studentSettings = '/student/settings';
+  static const String teacherSettings = '/teacher/settings';
   static const String parentSettings = '/parent/settings';
   static const String profileAccount = '/settings/profile-account';
   static const String passwordSecurity = '/settings/password-security';
@@ -333,6 +336,13 @@ GoRouter createAppRouter(AuthCubit authCubit) {
         builder: (_, _) => BlocProvider(
           create: (_) => getIt<ParentProfileCubit>(),
           child: const ParentSettingsScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.teacherSettings,
+        builder: (_, _) => BlocProvider(
+          create: (_) => getIt<TeacherProfileCubit>(),
+          child: const TeacherSettingsScreen(),
         ),
       ),
       GoRoute(
