@@ -139,7 +139,10 @@ class _StudentsContentState extends State<_StudentsContent> {
                     BlendMode.srcIn,
                   ),
                 ),
-                onPressed: () => AddStudentDialog.show(context),
+                onPressed: () => AddStudentDialog.show(
+                  context,
+                  joinCode: widget.detail.joinCode,
+                ),
               ),
             ),
             SizedBox(width: AppSpacing.spacingMd.w),
