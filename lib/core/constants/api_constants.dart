@@ -29,7 +29,8 @@ class ApiConstants {
   static const String teacherGroups = 'api/v1/teacher/groups';
   
   static String teacherGroupInfo(String id) => 'api/v1/teacher/groups/$id';
-  static String teacherGroupOverview(String id) => 'api/v1/teacher/groups/$id/overview';
+  static String teacherGroupStudents(String id) => 'api/v1/teacher/groups/$id/students';
+  static String teacherGroupAnnouncements(String id) => 'api/v1/teacher/groups/$id/announcements';
 
   /// Student > Learn — All groups the student is enrolled in.
   static const String studentGroups = 'api/v1/student/groups';

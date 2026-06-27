@@ -1,9 +1,8 @@
 import 'package:elara/config/dependency_injection.dart';
-import 'package:elara/features/student/domain/group/usecases/get_group_announcements_usecase.dart';
 import 'package:elara/features/student/domain/group/usecases/get_group_roadmap_usecase.dart';
-import 'package:elara/features/student/presentation/group/cubits/announcements_cubit.dart';
 import 'package:elara/features/student/presentation/group/cubits/roadmap_cubit.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/group/presentation/cubits/teacher_announcements_cubit.dart';
 import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
 import 'package:elara/features/teacher/group/presentation/cubits/teacher_group_cubit.dart';
 import 'package:elara/features/teacher/group/presentation/views/teacher_group_screen.dart';
@@ -38,8 +37,8 @@ class TeacherGroupPage extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) {
-            final cubit = AnnouncementsCubit(
-              getIt<GetGroupAnnouncementsUseCase>(),
+            final cubit = TeacherAnnouncementsCubit(
+              getIt<TeacherGroupDataSource>(),
               group.id,
             );
             cubit.loadAnnouncements();

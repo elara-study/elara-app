@@ -49,6 +49,9 @@ class StudentRow extends StatelessWidget {
                 ),
                 // XP
                 _XpBadge(xp: student.xp),
+                const SizedBox(width: AppSpacing.spacingSm),
+                // Streak
+                _StreakBadge(streak: student.streak),
               ],
             ),
             const SizedBox(height: AppSpacing.spacingLg),
@@ -106,6 +109,30 @@ class _XpBadge extends StatelessWidget {
         const SizedBox(width: 2),
         Text(
           xp.toString(),
+          style: AppTypography.labelLarge(color: cs.onSurface),
+        ),
+      ],
+    );
+  }
+}
+
+class _StreakBadge extends StatelessWidget {
+  final int streak;
+
+  const _StreakBadge({required this.streak});
+
+  @override
+  Widget build(BuildContext context) {
+    if (streak == 0) return const SizedBox.shrink();
+    
+    final cs = Theme.of(context).colorScheme;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.local_fire_department_rounded, size: 20, color: Colors.orange),
+        const SizedBox(width: 2),
+        Text(
+          streak.toString(),
           style: AppTypography.labelLarge(color: cs.onSurface),
         ),
       ],

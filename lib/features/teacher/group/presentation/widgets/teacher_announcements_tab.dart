@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
 import 'package:elara/features/student/presentation/group/cubits/announcements_cubit.dart';
+import 'package:elara/features/teacher/group/presentation/cubits/teacher_announcements_cubit.dart';
 import 'package:elara/shared/widgets/announcement_card.dart';
 import 'package:elara/shared/widgets/announcement_form_content.dart';
 import 'package:elara/shared/widgets/app_dialog.dart';
@@ -18,7 +19,7 @@ class TeacherAnnouncementsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AnnouncementsCubit, AnnouncementsState>(
+    return BlocBuilder<TeacherAnnouncementsCubit, AnnouncementsState>(
       builder: (context, state) {
         return switch (state.status) {
           AnnouncementsLoadStatus.initial || AnnouncementsLoadStatus.loading =>
