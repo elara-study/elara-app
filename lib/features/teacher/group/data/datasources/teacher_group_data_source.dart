@@ -19,4 +19,5 @@ abstract class TeacherGroupDataSource {
   });
 
   Future<List<GroupAnnouncement>> getAnnouncements(String groupId);
+  Future<void> addAnnouncement(String groupId, String title, String content);
 }

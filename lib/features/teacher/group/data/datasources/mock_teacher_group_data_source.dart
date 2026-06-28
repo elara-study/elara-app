@@ -111,6 +111,11 @@ class MockTeacherGroupDataSource implements TeacherGroupDataSource {
     ];
   }
 
+  @override
+  Future<void> addAnnouncement(String groupId, String title, String content) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+  }
+
   static final List<TeacherStudentEntity> _mockStudents = [
     const TeacherStudentEntity(
       id: 'student_1',

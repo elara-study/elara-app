@@ -44,15 +44,6 @@ class TeacherGroupRemoteDataSourceImpl implements TeacherGroupDataSource {
       infoResponse = responses[0];
       studentsResponse = responses[1];
     } catch (e) {
-      if (e is DioException) {
-        final req = e.requestOptions;
-        print('=== INVESTIGATION LOG ===');
-        print('Request URI: ${req.uri}');
-        print('Request Method: ${req.method}');
-        print('Response Status Code: ${e.response?.statusCode}');
-        print('Response Data: ${e.response?.data}');
-        print('=============================');
-      }
       rethrow;
     }
 
@@ -119,5 +110,16 @@ class TeacherGroupRemoteDataSourceImpl implements TeacherGroupDataSource {
         relativeTimeLabel: a['date']?.toString() ?? 'Unknown Date',
       );
     }).toList();
+  }
+
+  @override
+  Future<void> addAnnouncement(String groupId, String title, String content) async {
+    await _dio.post(
+      ApiConstants.teacherGroupAnnouncements(groupId),
+      data: {
+        'title': title,
+        'content': content,
+      },
+    );
   }
 }

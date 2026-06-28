@@ -58,7 +58,7 @@ class _TeacherAnnouncementsContent extends StatelessWidget {
           submitLabel: 'Add Announcement',
           onSubmit: (title, body) {
             Navigator.of(context).pop();
-            // TODO: dispatch add announcement cubit event
+            context.read<TeacherAnnouncementsCubit>().addAnnouncement(title, body);
           },
         ),
       ),

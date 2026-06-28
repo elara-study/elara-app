@@ -18,4 +18,16 @@ class TeacherAnnouncementsCubit extends Cubit<AnnouncementsState> {
       emit(AnnouncementsState.failure(e.toString()));
     }
   }
+
+  Future<void> addAnnouncement(String title, String body) async {
+    // Optionally emit a loading state here if the UI is designed to handle it,
+    // but the simplest is just to call the data source and reload.
+    try {
+      await _dataSource.addAnnouncement(_groupId, title, body);
+      // Reload announcements after adding
+      await loadAnnouncements();
+    } catch (e) {
+      emit(AnnouncementsState.failure(e.toString()));
+    }
+  }
 }
