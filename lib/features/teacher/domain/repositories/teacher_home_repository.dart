@@ -7,6 +7,7 @@ import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.da
 abstract class TeacherHomeRepository {
   Future<Either<Failure, TeacherProfileEntity>> getProfile();
   Future<Either<Failure, List<TeacherGroupEntity>>> getGroups();
+  Future<Either<Failure, List<TeacherGroupEntity>>> getRoadmaps();
   Future<Either<Failure, List<TeacherActivityEntity>>> getRecentActivity();
   
   Future<Either<Failure, void>> createGroup({

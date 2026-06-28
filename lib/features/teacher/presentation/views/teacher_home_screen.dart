@@ -38,6 +38,7 @@ class TeacherHomeScreen extends StatelessWidget {
           TeacherHomeLoaded(
             :final profile,
             :final groups,
+            :final roadmaps,
             :final recentActivity,
           ) =>
             Scaffold(
@@ -124,7 +125,7 @@ class TeacherHomeScreen extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: AppSpacing.spacingMd.h),
-                    ...groups
+                    ...roadmaps
                         .take(2)
                         .map(
                           (group) => Padding(

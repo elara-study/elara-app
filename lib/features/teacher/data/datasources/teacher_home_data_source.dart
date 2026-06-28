@@ -9,6 +9,7 @@ import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.da
 abstract class TeacherHomeDataSource {
   Future<TeacherProfileEntity> getProfile();
   Future<List<TeacherGroupEntity>> getGroups();
+  Future<List<TeacherGroupEntity>> getRoadmaps();
   Future<List<TeacherActivityEntity>> getRecentActivity();
   Future<void> createGroup({
     required String title,

@@ -30,8 +30,8 @@ class TeacherRoadmapsScreen extends StatelessWidget {
               message: message,
               onRetry: () => context.read<TeacherHomeCubit>().loadHome(),
             ),
-            TeacherHomeLoaded(:final groups) =>
-              groups.isEmpty
+            TeacherHomeLoaded(:final roadmaps) =>
+              roadmaps.isEmpty
                   ? const _EmptyGroupsView()
                   : SingleChildScrollView(
                       padding: EdgeInsets.only(
@@ -61,11 +61,11 @@ class TeacherRoadmapsScreen extends StatelessWidget {
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             padding: EdgeInsets.zero,
-                            itemCount: groups.length,
+                            itemCount: roadmaps.length,
                             separatorBuilder: (_, __) =>
                                 SizedBox(height: AppSpacing.spacingLg.h),
                             itemBuilder: (_, index) =>
-                                _buildRoadmapCard(groups[index]),
+                                _buildRoadmapCard(roadmaps[index]),
                           ),
                         ],
                       ),

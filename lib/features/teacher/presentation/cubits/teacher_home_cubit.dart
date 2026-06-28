@@ -10,19 +10,21 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
   Future<void> loadHome() async {
     emit(const TeacherHomeLoading());
     try {
-      // All three calls run in parallel for faster load.
+      // All four calls run in parallel for faster load.
       final results = await Future.wait([
         _repository.getProfile(),
         _repository.getGroups(),
+        _repository.getRoadmaps(),
         _repository.getRecentActivity(),
       ]);
 
       // Simple extraction, assuming success. In a real app, handle Left (failures) appropriately.
       final profileResult = results[0] as dynamic;
       final groupsResult = results[1] as dynamic;
-      final activityResult = results[2] as dynamic;
+      final roadmapsResult = results[2] as dynamic;
+      final activityResult = results[3] as dynamic;
 
-      if (profileResult.isLeft() || groupsResult.isLeft() || activityResult.isLeft()) {
+      if (profileResult.isLeft() || groupsResult.isLeft() || roadmapsResult.isLeft() || activityResult.isLeft()) {
         emit(const TeacherHomeError('Failed to load some dashboard data.'));
         return;
       }
@@ -31,6 +33,7 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
         TeacherHomeLoaded(
           profile: profileResult.fold((l) => throw Exception(), (r) => r),
           groups: groupsResult.fold((l) => throw Exception(), (r) => r),
+          roadmaps: roadmapsResult.fold((l) => throw Exception(), (r) => r),
           recentActivity: activityResult.fold((l) => throw Exception(), (r) => r),
         ),
       );

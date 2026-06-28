@@ -25,7 +25,7 @@ class ApiConstants {
       'api/v1/oauth/complete-registration';
 
   // Teacher
-
+  static const String teacherHome = 'api/v1/teacher/home';
   static const String teacherGroups = 'api/v1/teacher/groups';
   
   static String teacherGroupInfo(String id) => 'api/v1/teacher/groups/$id';
