@@ -27,7 +27,7 @@ class TeacherGroupScreen extends StatelessWidget {
       length: _tabs.length,
       child: Scaffold(
         appBar: AppGlassHeader(
-          title: group.subject,
+          title: group.name,
           subtitle: '${group.subject} • ${group.grade}',
           actions: [
             Padding(

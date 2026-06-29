@@ -142,6 +142,12 @@ class _StudentsContentState extends State<_StudentsContent> {
                 onPressed: () => AddStudentDialog.show(
                   context,
                   joinCode: widget.detail.joinCode,
+                  onSubmit: (username) {
+                    context.read<TeacherGroupCubit>().addStudent(
+                          groupId: widget.group.id,
+                          username: username,
+                        );
+                  },
                 ),
               ),
             ),

@@ -10,16 +10,38 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 /// Modal dialog shown when teacher taps "+ Add Student".
-class AddStudentDialog extends StatelessWidget {
+class AddStudentDialog extends StatefulWidget {
   final String joinCode;
+  final Function(String username) onSubmit;
 
-  const AddStudentDialog({super.key, required this.joinCode});
+  const AddStudentDialog({
+    super.key,
+    required this.joinCode,
+    required this.onSubmit,
+  });
 
-  static Future<void> show(BuildContext context, {required String joinCode}) {
+  static Future<void> show(
+    BuildContext context, {
+    required String joinCode,
+    required Function(String username) onSubmit,
+  }) {
     return AppDialog.show(
       context: context,
-      builder: (ctx) => AddStudentDialog(joinCode: joinCode),
+      builder: (ctx) => AddStudentDialog(joinCode: joinCode, onSubmit: onSubmit),
     );
+  }
+
+  @override
+  State<AddStudentDialog> createState() => _AddStudentDialogState();
+}
+
+class _AddStudentDialogState extends State<AddStudentDialog> {
+  final TextEditingController _usernameController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -53,7 +75,7 @@ class AddStudentDialog extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Text(
-              joinCode,
+              widget.joinCode,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w900,
                     letterSpacing: 8,
@@ -66,8 +88,11 @@ class AddStudentDialog extends StatelessWidget {
           // Input field & QR code button
           Row(
             children: [
-              const Expanded(
-                child: AppTextField(hintText: "Enter student's username"),
+              Expanded(
+                child: AppTextField(
+                  hintText: "Enter student's username",
+                  controller: _usernameController,
+                ),
               ),
               SizedBox(width: AppSpacing.spacingMd.w),
               GestureDetector(
@@ -106,8 +131,11 @@ class AddStudentDialog extends StatelessWidget {
               text: 'Add Student',
               borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
               onPressed: () {
-                Navigator.pop(context);
-                //   Add student logic
+                final username = _usernameController.text.trim();
+                if (username.isNotEmpty) {
+                  widget.onSubmit(username);
+                  Navigator.pop(context);
+                }
               },
             ),
           ),
