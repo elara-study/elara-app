@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:elara/features/teacher/domain/entities/teacher_dashboard_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:elara/core/constants/api_constants.dart';
 import 'package:elara/core/theme/app_colors.dart';
@@ -18,107 +19,127 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
 
   Map<String, dynamic>? _homeCache;
   DateTime? _lastFetch;
-  Future<Response>? _fetchFuture;
+  Future<Map<String, dynamic>>? _fetchFuture;
 
-  Future<Map<String, dynamic>> _fetchHome() async {
+  Future<Map<String, dynamic>> _fetchHome() {
     final now = DateTime.now();
     if (_homeCache != null &&
         _lastFetch != null &&
         now.difference(_lastFetch!) < const Duration(seconds: 2)) {
-      return _homeCache!;
+      return Future.value(_homeCache!);
     }
 
     if (_fetchFuture != null) {
-      final res = await _fetchFuture!;
-      return res.data;
+      return _fetchFuture!;
     }
 
-    _fetchFuture = _dio.get(ApiConstants.teacherHome);
-    final response = await _fetchFuture!;
-    final responseData = response.data;
-    
-    // Check if the backend wraps the response in a 'data' object
-    if (responseData is Map<String, dynamic> && responseData.containsKey('data')) {
-      _homeCache = responseData['data'] as Map<String, dynamic>;
-    } else {
-      _homeCache = responseData;
-    }
-    
-    _lastFetch = DateTime.now();
-    _fetchFuture = null;
-    return _homeCache!;
+    _fetchFuture = _dio
+        .get(ApiConstants.teacherHome)
+        .then((response) {
+          final responseData = response.data;
+          if (responseData is Map<String, dynamic> &&
+              responseData.containsKey('data')) {
+            _homeCache = responseData['data'] as Map<String, dynamic>;
+          } else {
+            _homeCache = responseData;
+          }
+          _lastFetch = DateTime.now();
+          _fetchFuture = null;
+          return _homeCache!;
+        })
+        .catchError((error) {
+          _fetchFuture = null;
+          throw error;
+        });
+
+    return _fetchFuture!;
   }
 
   @override
-  Future<TeacherProfileEntity> getProfile() async {
+  Future<TeacherDashboardEntity> getDashboard() async {
     final data = await _fetchHome();
 
-    final firstName = data['firstName']?.toString() ?? data['FirstName']?.toString() ?? 'Teacher';
-    final stats = (data['stats'] ?? data['Stats']) as Map<String, dynamic>? ?? {};
-    final activeStudents = (stats['activeStudents'] ?? stats['ActiveStudents']) as Map<String, dynamic>? ?? {};
-    final avgCompletion = (stats['avgCompletion'] ?? stats['AvgCompletion']) as Map<String, dynamic>? ?? {};
-    final groups = (data['groups'] ?? data['Groups']) as List? ?? [];
-
-    return TeacherProfileEntity(
+    // 1. Parse Profile
+    final firstName =
+        data['firstName']?.toString() ??
+        data['FirstName']?.toString() ??
+        'Teacher';
+    final stats =
+        (data['stats'] ?? data['Stats']) as Map<String, dynamic>? ?? {};
+    final activeStudents =
+        (stats['activeStudents'] ?? stats['ActiveStudents'])
+            as Map<String, dynamic>? ??
+        {};
+    final avgCompletion =
+        (stats['avgCompletion'] ?? stats['AvgCompletion'])
+            as Map<String, dynamic>? ??
+        {};
+    final groupsRaw = (data['groups'] ?? data['Groups']) as List? ?? [];
+    final profile = TeacherProfileEntity(
       id: 'teacher-1',
       firstName: firstName,
       lastName: '',
-      groupCount: groups.length,
-      activeStudentCount: (activeStudents['count'] ?? activeStudents['Count'] as num?)?.toInt() ?? 0,
-      avgCompletion: (avgCompletion['percentage'] ?? avgCompletion['Percentage'] as num?)?.toDouble() ?? 0.0,
+      groupCount: groupsRaw.length,
+      activeStudentCount:
+          (activeStudents['count'] ?? activeStudents['Count'] as num?)
+              ?.toInt() ??
+          0,
+      avgCompletion:
+          (avgCompletion['percentage'] ?? avgCompletion['Percentage'] as num?)
+              ?.toDouble() ??
+          0.0,
     );
-  }
 
-  @override
-  Future<List<TeacherGroupEntity>> getGroups() async {
-    final data = await _fetchHome();
+    // 2. Parse Groups
     final groupsList = (data['groups'] ?? data['Groups']) as List? ?? [];
-
-    return groupsList.map((g) {
+    final groups = groupsList.map((g) {
       final map = g as Map<String, dynamic>;
       return TeacherGroupEntity(
         id: map['id']?.toString() ?? map['Id']?.toString() ?? '',
-        name: map['name']?.toString() ?? map['Name']?.toString() ?? 'Unnamed Group',
-        subject: '',
-        grade: '1',
-        studentCount: (map['studentsCount'] ?? map['StudentsCount'] as num?)?.toInt() ?? 0,
+        name:
+            map['name']?.toString() ??
+            map['Name']?.toString() ??
+            'Unnamed Group',
+        subject: map['subject']?.toString() ?? map['Subject']?.toString() ?? '',
+        grade: map['grade']?.toString() ?? map['Grade']?.toString() ?? '1',
+        studentCount:
+            (map['studentsCount'] ?? map['StudentsCount'] as num?)?.toInt() ??
+            0,
         totalLessons: 0,
         progressPercent: 0.0,
         colorKey: 'primary',
       );
     }).toList();
-  }
 
-  @override
-  Future<List<TeacherGroupEntity>> getRoadmaps() async {
-    final data = await _fetchHome();
+    // 3. Parse Roadmaps
     final roadmapsList = (data['roadmaps'] ?? data['Roadmaps']) as List? ?? [];
-
-    return roadmapsList.map((r) {
+    final roadmaps = roadmapsList.map((r) {
       final map = r as Map<String, dynamic>;
       return TeacherGroupEntity(
         id: map['id']?.toString() ?? map['Id']?.toString() ?? '',
-        name: map['title']?.toString() ?? map['Title']?.toString() ?? 'Unnamed Roadmap',
+        name:
+            map['title']?.toString() ??
+            map['Title']?.toString() ??
+            'Unnamed Roadmap',
         subject: map['subject']?.toString() ?? map['Subject']?.toString() ?? '',
         grade: map['grade']?.toString() ?? map['Grade']?.toString() ?? '1',
         studentCount: 0,
-        totalLessons: (map['lessonsCount'] ?? map['LessonsCount'] as num?)?.toInt() ?? 0,
+        totalLessons:
+            (map['lessonsCount'] ?? map['LessonsCount'] as num?)?.toInt() ?? 0,
         progressPercent: 0.0,
         colorKey: 'secondary',
       );
     }).toList();
-  }
 
-  @override
-  Future<List<TeacherActivityEntity>> getRecentActivity() async {
-    final data = await _fetchHome();
-    final activityList = (data['recentActivity'] ?? data['RecentActivity']) as List? ?? [];
-
-    return activityList.asMap().entries.map((entry) {
+    // 4. Parse Activity
+    final activityList =
+        (data['recentActivity'] ?? data['RecentActivity']) as List? ?? [];
+    final recentActivity = activityList.asMap().entries.map((entry) {
       final index = entry.key;
       final map = entry.value as Map<String, dynamic>;
       final type = map['type']?.toString() ?? map['Type']?.toString() ?? '';
-      final student = (map['student'] ?? map['Student']) as Map<String, dynamic>? ?? {};
+      final student =
+          (map['student'] ?? map['Student']) as Map<String, dynamic>? ?? {};
       final studentName =
           student['name']?.toString() ??
           student['Name']?.toString() ??
@@ -127,11 +148,15 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
           'Student';
 
       String title = '$studentName did something';
-      String subtitle = map['targetId']?.toString() ?? map['TargetId']?.toString() ?? '';
+      String subtitle =
+          map['targetId']?.toString() ?? map['TargetId']?.toString() ?? '';
       String iconAsset = 'assets/icons/alerts_icon_filled.svg';
       Color iconColor = AppColors.brandPrimary500;
 
-      if (type.contains('submit') || type.contains('homework') || type.contains('Submit') || type.contains('Homework')) {
+      if (type.contains('submit') ||
+          type.contains('homework') ||
+          type.contains('Submit') ||
+          type.contains('Homework')) {
         title = '$studentName submitted homework';
         iconAsset = 'assets/icons/book_icon.svg';
       } else if (type.contains('quiz') || type.contains('Quiz')) {
@@ -148,9 +173,44 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
         id: 'activity_$index',
         title: title,
         subtitle: subtitle,
-        timeAgo: map['date']?.toString() ?? map['Date']?.toString() ?? 'Just now',
+        timeAgo:
+            map['date']?.toString() ?? map['Date']?.toString() ?? 'Just now',
         iconAsset: iconAsset,
         iconColor: iconColor,
+      );
+    }).toList();
+
+    return TeacherDashboardEntity(
+      profile: profile,
+      groups: groups,
+      roadmaps: roadmaps,
+      recentActivity: recentActivity,
+    );
+  }
+
+  @override
+  Future<List<TeacherGroupEntity>> getGroups() async {
+    final response = await _dio.get(ApiConstants.teacherGroups);
+    final responseData = response.data;
+    
+    final groupsList = (responseData is Map<String, dynamic> && responseData.containsKey('data')) 
+        ? responseData['data'] as List<dynamic>? ?? []
+        : (responseData is List ? responseData : []);
+        
+    return groupsList.map((g) {
+      final map = g as Map<String, dynamic>;
+      return TeacherGroupEntity(
+        id: map['id']?.toString() ?? map['Id']?.toString() ?? '',
+        name:
+            map['name']?.toString() ??
+            map['Name']?.toString() ??
+            'Unnamed Group',
+        subject: map['subject']?.toString() ?? map['Subject']?.toString() ?? '',
+        grade: map['grade']?.toString() ?? map['Grade']?.toString() ?? '1',
+        studentCount: (map['studentsCount'] ?? map['StudentsCount'] as num?)?.toInt() ?? 0,
+        totalLessons: (map['totalLessons'] ?? map['TotalLessons'] as num?)?.toInt() ?? 0,
+        progressPercent: (map['progressPercent'] ?? map['ProgressPercent'] as num?)?.toDouble() ?? 0.0,
+        colorKey: 'primary',
       );
     }).toList();
   }

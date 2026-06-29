@@ -4,8 +4,8 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_home_state.dart';
+import 'package:elara/features/teacher/presentation/cubits/teacher_groups_cubit.dart';
+import 'package:elara/features/teacher/presentation/cubits/teacher_groups_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:elara/shared/widgets/create_group_dialog.dart';
@@ -23,17 +23,17 @@ class TeacherGroupsScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       appBar: const AppGlassHeader(title: 'Groups'),
-      body: BlocBuilder<TeacherHomeCubit, TeacherHomeState>(
+      body: BlocBuilder<TeacherGroupsCubit, TeacherGroupsState>(
         builder: (context, state) {
           return switch (state) {
-            TeacherHomeInitial() || TeacherHomeLoading() => const Center(
+            TeacherGroupsInitial() || TeacherGroupsLoading() => const Center(
               child: CircularProgressIndicator(),
             ),
-            TeacherHomeError(:final message) => _ErrorView(
+            TeacherGroupsError(:final message) => _ErrorView(
               message: message,
-              onRetry: () => context.read<TeacherHomeCubit>().loadHome(),
+              onRetry: () => context.read<TeacherGroupsCubit>().loadGroups(),
             ),
-            TeacherHomeLoaded(:final groups) =>
+            TeacherGroupsLoaded(:final groups) =>
               groups.isEmpty
                   ? const _EmptyGroupsView()
                   : SingleChildScrollView(
@@ -50,7 +50,7 @@ class TeacherGroupsScreen extends StatelessWidget {
                           AppSectionHeader(
                             title: 'My Groups',
                             onCreateGroup: (title, subject, grade) {
-                              context.read<TeacherHomeCubit>().createGroup(
+                              context.read<TeacherGroupsCubit>().createGroup(
                                 title: title,
                                 subject: subject,
                                 grade: grade,
@@ -110,7 +110,7 @@ class _EmptyGroupsView extends StatelessWidget {
             GroupDialog.show(
               context,
               onSubmit: (title, subject, grade) {
-                context.read<TeacherHomeCubit>().createGroup(
+                context.read<TeacherGroupsCubit>().createGroup(
                   title: title,
                   subject: subject,
                   grade: grade,

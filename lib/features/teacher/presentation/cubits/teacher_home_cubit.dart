@@ -1,40 +1,37 @@
-import 'package:elara/features/teacher/domain/repositories/teacher_home_repository.dart';
+import 'package:elara/features/teacher/domain/usecases/get_teacher_dashboard_usecase.dart';
+import 'package:elara/features/teacher/domain/usecases/create_teacher_group_usecase.dart';
+import 'package:elara/features/teacher/domain/usecases/create_teacher_roadmap_usecase.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TeacherHomeCubit extends Cubit<TeacherHomeState> {
-  final TeacherHomeRepository _repository;
+  final GetTeacherDashboardUseCase _getTeacherDashboard;
+  final CreateTeacherGroupUseCase _createTeacherGroup;
+  final CreateTeacherRoadmapUseCase _createTeacherRoadmap;
 
-  TeacherHomeCubit(this._repository) : super(const TeacherHomeInitial());
+  TeacherHomeCubit({
+    required GetTeacherDashboardUseCase getTeacherDashboard,
+    required CreateTeacherGroupUseCase createTeacherGroup,
+    required CreateTeacherRoadmapUseCase createTeacherRoadmap,
+  })  : _getTeacherDashboard = getTeacherDashboard,
+        _createTeacherGroup = createTeacherGroup,
+        _createTeacherRoadmap = createTeacherRoadmap,
+        super(const TeacherHomeInitial());
 
   Future<void> loadHome() async {
     emit(const TeacherHomeLoading());
     try {
-      // All four calls run in parallel for faster load.
-      final results = await Future.wait([
-        _repository.getProfile(),
-        _repository.getGroups(),
-        _repository.getRoadmaps(),
-        _repository.getRecentActivity(),
-      ]);
+      final result = await _getTeacherDashboard();
 
-      // Simple extraction, assuming success. In a real app, handle Left (failures) appropriately.
-      final profileResult = results[0] as dynamic;
-      final groupsResult = results[1] as dynamic;
-      final roadmapsResult = results[2] as dynamic;
-      final activityResult = results[3] as dynamic;
-
-      if (profileResult.isLeft() || groupsResult.isLeft() || roadmapsResult.isLeft() || activityResult.isLeft()) {
-        emit(const TeacherHomeError('Failed to load some dashboard data.'));
-        return;
-      }
-
-      emit(
-        TeacherHomeLoaded(
-          profile: profileResult.fold((l) => throw Exception(), (r) => r),
-          groups: groupsResult.fold((l) => throw Exception(), (r) => r),
-          roadmaps: roadmapsResult.fold((l) => throw Exception(), (r) => r),
-          recentActivity: activityResult.fold((l) => throw Exception(), (r) => r),
+      result.fold(
+        (failure) => emit(TeacherHomeError('Failed to load home: ${failure.message}')),
+        (dashboard) => emit(
+          TeacherHomeLoaded(
+            profile: dashboard.profile,
+            groups: dashboard.groups,
+            roadmaps: dashboard.roadmaps,
+            recentActivity: dashboard.recentActivity,
+          ),
         ),
       );
     } catch (e) {
@@ -48,7 +45,7 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
     required String grade,
   }) async {
     try {
-      final result = await _repository.createGroup(
+      final result = await _createTeacherGroup(
         title: title,
         subject: subject,
         grade: grade,
@@ -69,7 +66,7 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
     required String grade,
   }) async {
     try {
-      final result = await _repository.createRoadmap(
+      final result = await _createTeacherRoadmap(
         title: title,
         subject: subject,
         grade: grade,

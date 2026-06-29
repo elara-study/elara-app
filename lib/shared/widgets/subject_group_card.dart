@@ -73,7 +73,10 @@ class _StandardCard extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [AppColors.brandPrimary400, AppColors.brandPrimary500],
+                  colors: [
+                    AppColors.brandPrimary400,
+                    AppColors.brandPrimary500,
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -86,15 +89,19 @@ class _StandardCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    group.subject.toUpperCase(),
-                    style: AppTypography.labelLarge(color: AppColors.neutral50)
-                        .copyWith(
-                          fontWeight: AppTypography.semiBold,
-                          fontSize: 16.sp,
-                        ),
+                  Expanded(
+                    child: Text(
+                      group.subject,
+                      style: AppTypography.labelLarge(color: AppColors.neutral50)
+                          .copyWith(
+                            fontWeight: AppTypography.semiBold,
+                            fontSize: 16.sp,
+                          ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  const Spacer(),
+                  SizedBox(width: AppSpacing.spacingMd.w),
                   _GradeBadge(grade: group.grade),
                 ],
               ),
@@ -234,14 +241,19 @@ class _RoadmapCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    group.subject.toUpperCase(),
-                    style: AppTypography.labelLarge(color: AppColors.neutral50)
-                        .copyWith(
-                          fontWeight: AppTypography.semiBold,
-                          fontSize: 16.sp,
-                        ),
+                  Expanded(
+                    child: Text(
+                      group.subject.toUpperCase(),
+                      style: AppTypography.labelLarge(color: AppColors.neutral50)
+                          .copyWith(
+                            fontWeight: AppTypography.semiBold,
+                            fontSize: 16.sp,
+                          ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
+                  SizedBox(width: AppSpacing.spacingMd.w),
                   // ACTIVE / DRAFT badge
                   Container(
                     padding: EdgeInsets.symmetric(
@@ -250,12 +262,16 @@ class _RoadmapCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.neutral50.withValues(alpha: 0.25),
-                      borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
+                      borderRadius: BorderRadius.circular(
+                        AppRadius.radiusFull.r,
+                      ),
                     ),
                     child: Text(
                       isDraft ? 'DRAFT' : 'ACTIVE',
-                      style: AppTypography.labelSmall(color: AppColors.neutral50)
-                          .copyWith(
+                      style:
+                          AppTypography.labelSmall(
+                            color: AppColors.neutral50,
+                          ).copyWith(
                             fontWeight: AppTypography.semiBold,
                             fontSize: 12.sp,
                           ),

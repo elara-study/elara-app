@@ -1,26 +1,26 @@
-import 'package:elara/features/teacher/domain/repositories/teacher_home_repository.dart';
+import 'package:elara/features/teacher/domain/usecases/get_teacher_dashboard_usecase.dart';
 import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TeacherProfileCubit extends Cubit<TeacherProfileState> {
-  final TeacherHomeRepository _repository;
+  final GetTeacherDashboardUseCase _getTeacherDashboard;
 
-  TeacherProfileCubit({required TeacherHomeRepository repository})
-    : _repository = repository,
+  TeacherProfileCubit({required GetTeacherDashboardUseCase getTeacherDashboard})
+    : _getTeacherDashboard = getTeacherDashboard,
       super(const TeacherProfileState());
 
   Future<void> loadProfile() async {
     if (isClosed) return;
     emit(state.copyWith(isLoading: true, errorMessage: null));
     try {
-      final result = await _repository.getProfile();
+      final result = await _getTeacherDashboard();
       if (isClosed) return;
       result.fold(
         (failure) => emit(
           state.copyWith(isLoading: false, errorMessage: failure.message),
         ),
-        (profileData) =>
-            emit(state.copyWith(isLoading: false, profileData: profileData)),
+        (dashboard) =>
+            emit(state.copyWith(isLoading: false, profileData: dashboard.profile)),
       );
     } catch (e) {
       if (isClosed) return;
