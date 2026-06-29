@@ -39,11 +39,7 @@ class AppSectionHeader extends StatelessWidget {
 
   void _openDialog(BuildContext context) {
     if (onCreateGroup == null) return;
-    GroupDialog.show(
-      context,
-      config: dialogConfig,
-      onSubmit: onCreateGroup!,
-    );
+    GroupDialog.show(context, config: dialogConfig, onSubmit: onCreateGroup!);
   }
 
   @override
@@ -75,6 +71,7 @@ class AppSectionHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 color: cs.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(color: ButtonColors.outlineBorder),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -84,7 +81,7 @@ class AppSectionHeader extends StatelessWidget {
                     width: AppSpacing.spacingLg.w,
                     height: AppSpacing.spacingLg.w,
                     colorFilter: const ColorFilter.mode(
-                      AppColors.white,
+                      ButtonColors.outlineText,
                       BlendMode.srcIn,
                     ),
                   ),
