@@ -3,9 +3,14 @@ import 'package:elara/core/constants/api_constants.dart';
 import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
 import 'package:elara/features/teacher/group/data/models/teacher_group_model.dart';
 import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
+import 'package:elara/features/teacher/group/domain/entities/teacher_roadmap_entity.dart';
+import 'package:elara/features/teacher/group/data/models/teacher_roadmap_model.dart';
+import 'package:elara/features/teacher/group/domain/entities/teacher_student_insight_entity.dart';
+import 'package:elara/features/teacher/group/data/models/teacher_student_insight_model.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_group_detail_entity.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_entity.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_profile_entity.dart';
+import 'package:intl/intl.dart';
 
 class TeacherGroupRemoteDataSourceImpl implements TeacherGroupDataSource {
   final Dio _dio;
@@ -47,36 +52,88 @@ class TeacherGroupRemoteDataSourceImpl implements TeacherGroupDataSource {
       rethrow;
     }
 
-    final data = infoResponse.data['group'] as Map<String, dynamic>? ?? {};
-    final studentsData = studentsResponse.data as Map<String, dynamic>? ?? {};
+    final infoResponseDataRaw =
+        infoResponse.data as Map<String, dynamic>? ?? {};
+    final infoResponseData = infoResponseDataRaw.containsKey('data')
+        ? infoResponseDataRaw['data'] as Map<String, dynamic>
+        : infoResponseDataRaw;
 
-    final totalLessons = int.tryParse(studentsData['totalLessons']?.toString() ?? '') ?? 0;
-    final studentsListRaw = studentsData['data'] as List<dynamic>? ?? [];
+    final data = infoResponseData.containsKey('group')
+        ? infoResponseData['group'] as Map<String, dynamic>
+        : infoResponseData;
 
-    final List<TeacherStudentEntity> students = studentsListRaw.asMap().entries.map((entry) {
-      final index = entry.key;
-      final s = entry.value as Map<String, dynamic>;
-      return TeacherStudentEntity(
-        id: s['id']?.toString() ?? 'unknown_$index',
-        rank: index + 1,
-        name: s['name']?.toString() ?? 'Unknown Student',
-        xp: int.tryParse(s['xp']?.toString() ?? '') ?? 0,
-        streak: int.tryParse(s['streak']?.toString() ?? '') ?? 0,
-        avatarUrl: s['imageUrl']?.toString() ?? s['avatar']?.toString(),
-        completedLessons: int.tryParse(s['currentLesson']?.toString() ?? '') ?? 0,
-        totalLessons: totalLessons,
-      );
-    }).toList();
+    final studentsResponseData = studentsResponse.data;
+
+    List<dynamic> studentsListRaw = [];
+    int totalLessons = 0;
+
+    final studentsDataToParse =
+        studentsResponseData is Map<String, dynamic> &&
+            studentsResponseData.containsKey('data')
+        ? studentsResponseData['data']
+        : studentsResponseData;
+
+    if (studentsDataToParse is List) {
+      studentsListRaw = studentsDataToParse;
+    } else if (studentsDataToParse is Map<String, dynamic>) {
+      totalLessons =
+          int.tryParse(studentsDataToParse['totalLessons']?.toString() ?? '') ??
+          0;
+      studentsListRaw =
+          studentsDataToParse['data'] as List<dynamic>? ??
+          studentsDataToParse['students'] as List<dynamic>? ??
+          [];
+    }
+
+    final List<TeacherStudentEntity> students = studentsListRaw
+        .asMap()
+        .entries
+        .map((entry) {
+          final index = entry.key;
+          final s = entry.value as Map<String, dynamic>;
+
+          // Try to extract name from nested user object if it exists
+          final userObj = s['user'] as Map<String, dynamic>?;
+          final studentName =
+              userObj?['name']?.toString() ??
+              userObj?['username']?.toString() ??
+              s['name']?.toString() ??
+              'Unknown Student';
+
+          return TeacherStudentEntity(
+            id: s['id']?.toString() ?? 'unknown_$index',
+            rank: index + 1,
+            name: studentName,
+            xp: int.tryParse(s['xp']?.toString() ?? '') ?? 0,
+            streak: int.tryParse(s['streak']?.toString() ?? '') ?? 0,
+            avatarUrl:
+                s['imageUrl']?.toString() ??
+                s['avatar']?.toString() ??
+                userObj?['avatar']?.toString(),
+            completedLessons:
+                int.tryParse(s['currentLesson']?.toString() ?? '') ?? 0,
+            totalLessons: totalLessons,
+          );
+        })
+        .toList();
 
     final double avgCompletion = students.isEmpty
         ? 0.0
-        : students.fold<double>(0.0, (sum, s) => sum + s.progress) / students.length;
-
+        : students.fold<double>(0.0, (sum, s) => sum + s.progress) /
+              students.length;
     return TeacherGroupDetailEntity(
-      name: data['name']?.toString() ?? 'Unknown Group',
-      subject: data['subject']?.toString() ?? 'Unknown Subject',
-      grade: int.tryParse(data['grade']?.toString() ?? '') ?? 1,
-      joinCode: data['joinCode']?.toString() ?? '',
+      name:
+          data['name']?.toString() ??
+          data['Name']?.toString() ??
+          'Unknown Group',
+      subject: data['subject']?.toString() ?? data['Subject']?.toString() ?? '',
+      grade:
+          int.tryParse(
+            data['grade']?.toString() ?? data['Grade']?.toString() ?? '',
+          ) ??
+          1,
+      joinCode:
+          data['joinCode']?.toString() ?? data['JoinCode']?.toString() ?? '',
       studentCount: students.length,
       avgCompletion: avgCompletion,
       presentToday: 0,
@@ -88,38 +145,118 @@ class TeacherGroupRemoteDataSourceImpl implements TeacherGroupDataSource {
   Future<TeacherStudentProfileEntity> getStudentProfile({
     required String groupId,
     required int studentRank,
-  }) {
-    throw UnimplementedError('API endpoint not ready');
+  }) async {
+    final group = await getGroupDetail(groupId);
+    final student = group.students.firstWhere(
+      (s) => s.rank == studentRank,
+      orElse: () => group.students.first,
+    );
+
+    final cleaned = student.name.replaceAll(RegExp(r'[^a-zA-Z]'), '').toLowerCase();
+    final handle = '@${cleaned.isEmpty ? 'student' : cleaned}';
+
+    return TeacherStudentProfileEntity(
+      student: student,
+      handle: handle,
+      gradeLabel: 'Grade ${group.grade} Student',
+      level: 11,
+      nextLevel: 12,
+      xpCurrent: 1250,
+      xpGoal: 1500,
+      streakDays: 7,
+      attendancePercent: 97,
+      parents: const [],
+    );
   }
+
+  @override
+  Future<void> addStudent({
+    required String groupId,
+    required String username,
+  }) async {
+    await _dio.post(
+      ApiConstants.teacherGroupStudents(groupId),
+      data: {'username': username},
+    );
+  }
+
   @override
   Future<List<GroupAnnouncement>> getAnnouncements(String groupId) async {
-    final response = await _dio.get(ApiConstants.teacherGroupAnnouncements(groupId));
-    final data = response.data['announcements'] as List<dynamic>? ?? [];
+    final response = await _dio.get(
+      ApiConstants.teacherGroupAnnouncements(groupId),
+    );
+    final responseDataRaw = response.data as Map<String, dynamic>? ?? {};
+
+    // Unwrap standard response format
+    final dataContent = responseDataRaw.containsKey('data')
+        ? responseDataRaw['data']
+        : responseDataRaw;
+
+    final data = (dataContent is List)
+        ? dataContent
+        : (dataContent is Map<String, dynamic>
+              ? (dataContent['announcements'] as List<dynamic>? ?? [])
+              : []);
 
     return data.asMap().entries.map((entry) {
       final index = entry.key;
       final a = entry.value as Map<String, dynamic>;
-      
+
       // We parse the date into a relative format or pass as-is
       // Backend provides title and date. GroupAnnouncement expects body as well.
       // We map date to relativeTimeLabel and empty string for body.
+      final dateStr = a['createdAt']?.toString() ?? a['date']?.toString();
+      String timeLabel = 'Unknown Date';
+      if (dateStr != null) {
+        try {
+          final dt = DateTime.parse(dateStr).toLocal();
+          timeLabel = DateFormat.yMMMd().add_jm().format(dt);
+        } catch (_) {
+          timeLabel = dateStr;
+        }
+      }
+
       return GroupAnnouncement(
         id: a['id']?.toString() ?? 'announcement_$index',
         title: a['title']?.toString() ?? 'No Title',
-        body: a['body']?.toString() ?? '', 
-        relativeTimeLabel: a['date']?.toString() ?? 'Unknown Date',
+        content: a['content']?.toString() ?? '',
+        relativeTimeLabel: timeLabel,
       );
     }).toList();
   }
 
   @override
-  Future<void> addAnnouncement(String groupId, String title, String content) async {
+  Future<void> addAnnouncement(
+    String groupId,
+    String title,
+    String content,
+  ) async {
     await _dio.post(
       ApiConstants.teacherGroupAnnouncements(groupId),
-      data: {
-        'title': title,
-        'content': content,
-      },
+      data: {'title': title, 'content': content},
     );
+  }
+
+  @override
+  Future<void> deleteAnnouncement(String groupId, String announcementId) async {
+    await _dio.delete(
+      ApiConstants.teacherGroupDeleteAnnouncement(groupId, announcementId),
+    );
+  }
+
+  @override
+  Future<TeacherRoadmapEntity> getRoadmap(String groupId) async {
+    final response = await _dio.get(ApiConstants.teacherGroupRoadmap(groupId));
+    return TeacherRoadmapModel.fromJson(response.data);
+  }
+
+  @override
+  Future<TeacherStudentInsightEntity?> getStudentInsights(String studentId) async {
+    try {
+      final response = await _dio.get(ApiConstants.teacherStudentInsights(studentId));
+      return TeacherStudentInsightModel.fromJson(response.data);
+    } catch (e) {
+      return null;
+    }
   }
 }

@@ -1,4 +1,5 @@
-import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
+import 'package:elara/features/teacher/group/domain/usecases/get_teacher_group_detail_usecase.dart';
+import 'package:elara/features/teacher/group/domain/usecases/add_teacher_group_student_usecase.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_group_detail_entity.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,17 +37,32 @@ class TeacherGroupError extends TeacherGroupState {
 // ── Cubit ────────────────────────────────────────────────────────────────────
 
 class TeacherGroupCubit extends Cubit<TeacherGroupState> {
-  final TeacherGroupDataSource _dataSource;
+  final GetTeacherGroupDetailUseCase _getGroupDetail;
+  final AddTeacherGroupStudentUseCase _addStudent;
 
-  TeacherGroupCubit(this._dataSource) : super(const TeacherGroupInitial());
+  TeacherGroupCubit({
+    required GetTeacherGroupDetailUseCase getGroupDetail,
+    required AddTeacherGroupStudentUseCase addStudent,
+  })  : _getGroupDetail = getGroupDetail,
+        _addStudent = addStudent,
+        super(const TeacherGroupInitial());
 
   Future<void> loadGroup(String groupId) async {
     emit(const TeacherGroupLoading());
-    try {
-      final detail = await _dataSource.getGroupDetail(groupId);
-      emit(TeacherGroupLoaded(detail));
-    } catch (e) {
-      emit(TeacherGroupError(e.toString()));
-    }
+    final result = await _getGroupDetail(groupId);
+    result.fold(
+      (failure) => emit(TeacherGroupError(failure.message)),
+      (detail) => emit(TeacherGroupLoaded(detail)),
+    );
+  }
+
+  Future<void> addStudent({required String groupId, required String username}) async {
+    final result = await _addStudent(groupId, username);
+    result.fold(
+      (failure) {
+        // Ignored for now
+      },
+      (_) => loadGroup(groupId),
+    );
   }
 }

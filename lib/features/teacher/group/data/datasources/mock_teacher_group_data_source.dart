@@ -6,6 +6,7 @@ import 'package:elara/features/teacher/group/domain/entities/teacher_student_ent
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_insight_entity.dart';
 import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_profile_entity.dart';
+import 'package:elara/features/teacher/group/domain/entities/teacher_roadmap_entity.dart';
 
 class MockTeacherGroupDataSource implements TeacherGroupDataSource {
   const MockTeacherGroupDataSource();
@@ -41,6 +42,14 @@ class MockTeacherGroupDataSource implements TeacherGroupDataSource {
       presentToday: 23,
       students: _mockStudents,
     );
+  }
+
+  @override
+  Future<void> addStudent({
+    required String groupId,
+    required String username,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 300));
   }
 
   @override
@@ -105,7 +114,7 @@ class MockTeacherGroupDataSource implements TeacherGroupDataSource {
       GroupAnnouncement(
         id: '1',
         title: 'Welcome to Science!',
-        body: 'Welcome everyone to the new term. Please check the syllabus.',
+        content: 'Welcome everyone to the new term. Please check the syllabus.',
         relativeTimeLabel: '2 days ago',
       ),
     ];
@@ -114,6 +123,39 @@ class MockTeacherGroupDataSource implements TeacherGroupDataSource {
   @override
   Future<void> addAnnouncement(String groupId, String title, String content) async {
     await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  @override
+  Future<void> deleteAnnouncement(String groupId, String announcementId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  @override
+  Future<TeacherRoadmapEntity> getRoadmap(String groupId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return const TeacherRoadmapEntity(
+      id: 'mock_roadmap_1',
+      name: 'Science Grade 10',
+      lessonsCount: 15,
+      materials: [
+        TeacherRoadmapMaterial(
+          title: 'Syllabus',
+          type: 'PDF',
+          url: 'https://example.com/syllabus.pdf',
+        ),
+      ],
+    );
+  }
+
+  @override
+  Future<TeacherStudentInsightEntity?> getStudentInsights(String studentId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return const TeacherStudentInsightEntity(
+      updatedLabel: 'Analyzed • Just now',
+      paragraph1: 'This is a mocked insight report for the student. They are doing very well.',
+      paragraph2: 'Keep up the good work!',
+      isDraft: false,
+    );
   }
 
   static final List<TeacherStudentEntity> _mockStudents = [

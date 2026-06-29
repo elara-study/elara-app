@@ -1,33 +1,81 @@
-import 'package:elara/features/student/presentation/group/cubits/announcements_cubit.dart';
-import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
+import 'package:elara/features/teacher/group/domain/usecases/get_teacher_announcements_usecase.dart';
+import 'package:elara/features/teacher/group/domain/usecases/add_teacher_announcement_usecase.dart';
+import 'package:elara/features/teacher/group/domain/usecases/delete_teacher_announcement_usecase.dart';
+import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TeacherAnnouncementsCubit extends Cubit<AnnouncementsState> {
-  final TeacherGroupDataSource _dataSource;
-  final String _groupId;
+sealed class TeacherAnnouncementsState extends Equatable {
+  const TeacherAnnouncementsState();
 
-  TeacherAnnouncementsCubit(this._dataSource, this._groupId)
-      : super(const AnnouncementsState.initial());
+  @override
+  List<Object?> get props => [];
+}
+
+class TeacherAnnouncementsInitial extends TeacherAnnouncementsState {
+  const TeacherAnnouncementsInitial();
+}
+
+class TeacherAnnouncementsLoading extends TeacherAnnouncementsState {
+  const TeacherAnnouncementsLoading();
+}
+
+class TeacherAnnouncementsLoaded extends TeacherAnnouncementsState {
+  const TeacherAnnouncementsLoaded(this.announcements);
+
+  final List<GroupAnnouncement> announcements;
+
+  @override
+  List<Object?> get props => [announcements];
+}
+
+class TeacherAnnouncementsError extends TeacherAnnouncementsState {
+  const TeacherAnnouncementsError(this.message);
+
+  final String message;
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class TeacherAnnouncementsCubit extends Cubit<TeacherAnnouncementsState> {
+  final GetTeacherAnnouncementsUseCase _getAnnouncements;
+  final AddTeacherAnnouncementUseCase _addAnnouncement;
+  final DeleteTeacherAnnouncementUseCase _deleteAnnouncement;
+  final String groupId;
+
+  TeacherAnnouncementsCubit({
+    required GetTeacherAnnouncementsUseCase getAnnouncements,
+    required AddTeacherAnnouncementUseCase addAnnouncement,
+    required DeleteTeacherAnnouncementUseCase deleteAnnouncement,
+    required this.groupId,
+  })  : _getAnnouncements = getAnnouncements,
+        _addAnnouncement = addAnnouncement,
+        _deleteAnnouncement = deleteAnnouncement,
+        super(const TeacherAnnouncementsInitial());
 
   Future<void> loadAnnouncements() async {
-    emit(const AnnouncementsState.loading());
-    try {
-      final items = await _dataSource.getAnnouncements(_groupId);
-      emit(AnnouncementsState.loaded(items));
-    } catch (e) {
-      emit(AnnouncementsState.failure(e.toString()));
-    }
+    emit(const TeacherAnnouncementsLoading());
+    final result = await _getAnnouncements(groupId);
+    result.fold(
+      (failure) => emit(TeacherAnnouncementsError(failure.message)),
+      (announcements) => emit(TeacherAnnouncementsLoaded(announcements)),
+    );
   }
 
-  Future<void> addAnnouncement(String title, String body) async {
-    // Optionally emit a loading state here if the UI is designed to handle it,
-    // but the simplest is just to call the data source and reload.
-    try {
-      await _dataSource.addAnnouncement(_groupId, title, body);
-      // Reload announcements after adding
-      await loadAnnouncements();
-    } catch (e) {
-      emit(AnnouncementsState.failure(e.toString()));
-    }
+  Future<void> addAnnouncement(String title, String content) async {
+    final result = await _addAnnouncement(groupId, title, content);
+    result.fold(
+      (failure) {}, // Handle silently or via listener
+      (_) => loadAnnouncements(), // Refresh the list
+    );
+  }
+
+  Future<void> deleteAnnouncement(String announcementId) async {
+    final result = await _deleteAnnouncement(groupId, announcementId);
+    result.fold(
+      (failure) {}, // Handle silently
+      (_) => loadAnnouncements(), // Refresh the list
+    );
   }
 }
