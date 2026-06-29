@@ -106,7 +106,7 @@ class AnnouncementCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.spacingSm),
-              Text(announcement.body, style: bodyStyle),
+              Text(announcement.content, style: bodyStyle),
             ],
           ),
         ),
