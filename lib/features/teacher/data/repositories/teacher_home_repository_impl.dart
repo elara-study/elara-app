@@ -2,9 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:elara/core/error/failures.dart';
 import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_activity_entity.dart';
+import 'package:elara/features/teacher/domain/entities/teacher_dashboard_entity.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.dart';
 import 'package:elara/features/teacher/domain/repositories/teacher_home_repository.dart';
 
 class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
@@ -13,10 +12,10 @@ class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
   TeacherHomeRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Either<Failure, TeacherProfileEntity>> getProfile() async {
+  Future<Either<Failure, TeacherDashboardEntity>> getDashboard() async {
     try {
-      final profile = await _remoteDataSource.getProfile();
-      return Right(profile);
+      final dashboard = await _remoteDataSource.getDashboard();
+      return Right(dashboard);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message ?? e.toString()));
     } catch (e) {
@@ -37,31 +36,6 @@ class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
   }
 
   @override
-  Future<Either<Failure, List<TeacherGroupEntity>>> getRoadmaps() async {
-    try {
-      final roadmaps = await _remoteDataSource.getRoadmaps();
-      return Right(roadmaps);
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? e.toString()));
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<TeacherActivityEntity>>>
-  getRecentActivity() async {
-    try {
-      final activity = await _remoteDataSource.getRecentActivity();
-      return Right(activity);
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? e.toString()));
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
-  }
-
-  @override
   Future<Either<Failure, void>> createGroup({
     required String title,
     required String subject,
@@ -73,7 +47,7 @@ class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
         subject: subject,
         grade: grade,
       );
-      return Right(null);
+      return const Right(null);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message ?? e.toString()));
     } catch (e) {
@@ -93,7 +67,7 @@ class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
         subject: subject,
         grade: grade,
       );
-      return Right(null);
+      return const Right(null);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message ?? e.toString()));
     } catch (e) {

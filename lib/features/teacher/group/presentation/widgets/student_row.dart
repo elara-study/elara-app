@@ -129,7 +129,7 @@ class _StreakBadge extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.local_fire_department_rounded, size: 20, color: Colors.orange),
+        const Icon(Icons.local_fire_department_rounded, size: 20, color: Colors.orange),
         const SizedBox(width: 2),
         Text(
           streak.toString(),
