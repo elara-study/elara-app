@@ -27,10 +27,18 @@ class ApiConstants {
   // Teacher
   static const String teacherHome = 'api/v1/teacher/home';
   static const String teacherGroups = 'api/v1/teacher/groups';
-  
+
   static String teacherGroupInfo(String id) => 'api/v1/teacher/groups/$id';
-  static String teacherGroupStudents(String id) => 'api/v1/teacher/groups/$id/students';
-  static String teacherGroupAnnouncements(String id) => 'api/v1/teacher/groups/$id/announcements';
+  static String teacherGroupStudents(String id) =>
+      'api/v1/teacher/groups/$id/students';
+  static String teacherGroupAnnouncements(String id) =>
+      'api/v1/teacher/groups/$id/announcements';
+  static String teacherGroupDeleteAnnouncement(String groupId, String announcementId) =>
+      'api/v1/teacher/groups/$groupId/announcements/$announcementId';
+  static String teacherGroupRoadmap(String groupId) =>
+      'v1/teacher/groups/$groupId/roadmap';
+  static String teacherStudentInsights(String studentId) =>
+      'api/v1/teacher/students/$studentId/insights';
 
   /// Student > Learn — All groups the student is enrolled in.
   static const String studentGroups = 'api/v1/student/groups';
