@@ -49,11 +49,12 @@ class TeacherGroupsScreen extends StatelessWidget {
                           // Page subtitle
                           AppSectionHeader(
                             title: 'My Groups',
-                            onCreateGroup: (title, subject, grade) {
+                            onCreateGroup: (title, subject, grade, roadmapName) {
                               context.read<TeacherGroupsCubit>().createGroup(
                                 title: title,
                                 subject: subject,
                                 grade: grade,
+                                roadmapName: roadmapName,
                               );
                             },
                           ),
@@ -114,11 +115,12 @@ class _EmptyGroupsView extends StatelessWidget {
           onTap: () {
             GroupDialog.show(
               context,
-              onSubmit: (title, subject, grade) {
+              onSubmit: (title, subject, grade, roadmapName) {
                 context.read<TeacherGroupsCubit>().createGroup(
                   title: title,
                   subject: subject,
                   grade: grade,
+                  roadmapName: roadmapName,
                 );
               },
             );

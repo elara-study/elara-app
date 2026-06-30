@@ -16,7 +16,7 @@ class AppSectionHeader extends StatelessWidget {
   final VoidCallback? onAdd;
 
   /// When provided, shows the Create button and opens the dialog on tap.
-  final void Function(String title, String subject, String grade)?
+  final void Function(String title, String subject, String grade, String roadmapName)?
   onCreateGroup;
 
   /// Controls the dialog's title + button label. Defaults to "Create a group".

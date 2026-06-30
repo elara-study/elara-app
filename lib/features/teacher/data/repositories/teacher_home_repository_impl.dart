@@ -40,12 +40,14 @@ class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
     required String title,
     required String subject,
     required String grade,
+    required String roadmapName,
   }) async {
     try {
       await _remoteDataSource.createGroup(
         title: title,
         subject: subject,
         grade: grade,
+        roadmapName: roadmapName,
       );
       return const Right(null);
     } on DioException catch (e) {

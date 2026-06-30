@@ -11,11 +11,13 @@ class CreateTeacherGroupUseCase {
     required String title,
     required String subject,
     required String grade,
+    required String roadmapName,
   }) async {
     return await _repository.createGroup(
       title: title,
       subject: subject,
       grade: grade,
+      roadmapName: roadmapName,
     );
   }
 }

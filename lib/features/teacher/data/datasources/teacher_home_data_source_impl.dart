@@ -220,13 +220,21 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
     required String title,
     required String subject,
     required String grade,
+    required String roadmapName,
   }) async {
     // Extract integer from "Grade 10" string
     final gradeInt = int.tryParse(grade.replaceAll(RegExp(r'[^0-9]'), '')) ?? 1;
 
+    final requestData = {
+      'name': title, 
+      'grade': gradeInt, 
+      'subject': subject,
+      'roadmapName': roadmapName,
+    };
+
     await _dio.post(
       ApiConstants.teacherGroups,
-      data: {'name': title, 'grade': gradeInt, 'subject': subject},
+      data: requestData,
     );
   }
 

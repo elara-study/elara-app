@@ -46,7 +46,7 @@ class TeacherRoadmapsScreen extends StatelessWidget {
                           // Page subtitle
                           AppSectionHeader(
                             title: 'Learning Paths',
-                            onCreateGroup: (title, subject, grade) {
+                            onCreateGroup: (title, subject, grade, roadmapName) {
                               context.read<TeacherHomeCubit>().createRoadmap(
                                 title: title,
                                 subject: subject,

@@ -43,12 +43,14 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
     required String title,
     required String subject,
     required String grade,
+    required String roadmapName,
   }) async {
     try {
       final result = await _createTeacherGroup(
         title: title,
         subject: subject,
         grade: grade,
+        roadmapName: roadmapName,
       );
       
       result.fold(

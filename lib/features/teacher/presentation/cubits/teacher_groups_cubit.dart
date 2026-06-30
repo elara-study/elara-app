@@ -25,12 +25,14 @@ class TeacherGroupsCubit extends Cubit<TeacherGroupsState> {
     required String title,
     required String subject,
     required String grade,
+    required String roadmapName,
   }) async {
     emit(const TeacherGroupsLoading());
     final result = await _createTeacherGroupUseCase(
       title: title,
       subject: subject,
       grade: grade,
+      roadmapName: roadmapName,
     );
 
     result.fold(
