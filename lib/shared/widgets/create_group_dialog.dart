@@ -5,6 +5,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/shared/widgets/app_dropdown_field.dart';
 
 class GroupDialogConfig {
   final String title;
@@ -130,13 +131,13 @@ class GroupDialog extends StatelessWidget {
               ),
               SizedBox(height: AppSpacing.spacing2xl.h),
               if (config.showRoadmapName) ...[
-                _StyledDropdown(
+                AppDropdownField(
                   label: 'Roadmap',
                   hint: 'Select roadmap',
-                  value: roadmapNameValue.isEmpty ? null : roadmapNameValue,
-                  items: config.roadmaps.isEmpty ? ['No roadmaps available'] : config.roadmaps,
-                  onChanged: (v) => onRoadmapNameChanged(v ?? ''),
-                  cs: cs,
+                  prefixIcon: Icon(Icons.map_outlined, size: 16.w),
+                  options: config.roadmaps.isEmpty ? ['No roadmaps available'] : config.roadmaps,
+                  onChanged: onRoadmapNameChanged,
+                  initialValue: roadmapNameValue.isEmpty ? null : roadmapNameValue,
                 ),
                 SizedBox(height: AppSpacing.spacing2xl.h),
               ],
@@ -291,24 +292,24 @@ class _SubjectGradeRow extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _StyledDropdown(
+          child: AppDropdownField(
             label: 'Subject',
             hint: 'Select subject',
-            value: selectedSubject,
-            items: config.subjects,
+            prefixIcon: Icon(Icons.book_outlined, size: 16.w),
+            options: config.subjects,
             onChanged: onSubjectChanged,
-            cs: cs,
+            initialValue: selectedSubject,
           ),
         ),
         SizedBox(width: AppSpacing.spacingLg.w),
         Expanded(
-          child: _StyledDropdown(
+          child: AppDropdownField(
             label: 'Grade',
             hint: 'Select grade',
-            value: selectedGrade,
-            items: config.grades,
+            prefixIcon: Icon(Icons.school_outlined, size: 16.w),
+            options: config.grades,
             onChanged: onGradeChanged,
-            cs: cs,
+            initialValue: selectedGrade,
           ),
         ),
       ],
@@ -316,78 +317,6 @@ class _SubjectGradeRow extends StatelessWidget {
   }
 }
 
-class _StyledDropdown extends StatelessWidget {
-  final String label;
-  final String hint;
-  final String? value;
-  final List<String> items;
-  final ValueChanged<String?> onChanged;
-  final ColorScheme cs;
-
-  const _StyledDropdown({
-    required this.label,
-    required this.hint,
-    required this.value,
-    required this.items,
-    required this.onChanged,
-    required this.cs,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTypography.bodyMedium(
-            color: cs.onSurface,
-          ).copyWith(fontWeight: AppTypography.semiBold),
-        ),
-        SizedBox(height: AppSpacing.spacingSm.h),
-        DropdownButtonFormField<String>(
-          // initialValue: value,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: AppTypography.bodySmall(color: cs.onSurfaceVariant),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
-              borderSide: BorderSide(color: cs.outline),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
-              borderSide: BorderSide(color: cs.outline),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
-              borderSide: const BorderSide(
-                color: AppColors.brandPrimary500,
-                width: 2,
-              ),
-            ),
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacingMd.w,
-              vertical: AppSpacing.spacingSm.h,
-            ),
-          ),
-          items: items
-              .map(
-                (item) => DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(
-                    item,
-                    style: AppTypography.bodySmall(color: cs.onSurface),
-                  ),
-                ),
-              )
-              .toList(),
-          onChanged: onChanged,
-          isExpanded: true,
-        ),
-      ],
-    );
-  }
-}
 
 class _SubmitButton extends StatelessWidget {
   final String label;
