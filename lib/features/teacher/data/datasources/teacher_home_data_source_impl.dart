@@ -272,15 +272,10 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
     required String grade,
   }) async {
     final gradeInt = int.tryParse(grade.replaceAll(RegExp(r'[^0-9]'), '')) ?? 1;
-    // For subject, if it's a string like 'Chemistry', the API spec says integer but example shows string. 
-    // Wait, the API spec says `subject: type: integer` but example `subject: Chemistry`. Let's try int parsing, fallback to 1, or just send the string.
-    // Actually, I will send integer if possible, otherwise just send the string or 1.
-    final subjectInt = int.tryParse(subject) ?? 1;
-
     final requestData = {
       'name': title,
       'grade': gradeInt,
-      'subject': subjectInt,
+      'subject': subject,
     };
 
     await _dio.post(
