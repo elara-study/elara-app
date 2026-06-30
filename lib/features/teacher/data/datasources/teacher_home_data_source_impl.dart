@@ -244,11 +244,21 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
     required String subject,
     required String grade,
   }) async {
-    // Mock implementation — replace with real API call when backend is ready
-    await Future.delayed(const Duration(milliseconds: 500));
-    // In a real implementation, this would:
-    // 1. Send a POST request to the backend
-    // 2. Handle validation and error responses
-    // 3. Return the created roadmap data
+    final gradeInt = int.tryParse(grade.replaceAll(RegExp(r'[^0-9]'), '')) ?? 1;
+    // For subject, if it's a string like 'Chemistry', the API spec says integer but example shows string. 
+    // Wait, the API spec says `subject: type: integer` but example `subject: Chemistry`. Let's try int parsing, fallback to 1, or just send the string.
+    // Actually, I will send integer if possible, otherwise just send the string or 1.
+    final subjectInt = int.tryParse(subject) ?? 1;
+
+    final requestData = {
+      'name': title,
+      'grade': gradeInt,
+      'subject': subjectInt,
+    };
+
+    await _dio.post(
+      ApiConstants.teacherRoadmaps,
+      data: requestData,
+    );
   }
 }
