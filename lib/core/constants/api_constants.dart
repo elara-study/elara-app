@@ -21,7 +21,24 @@ class ApiConstants {
 
   // OAuth
   static const String googleSignIn = 'api/v1/oauth/google';
-  static const String completeRegistration = 'api/v1/oauth/complete-registration';
+  static const String completeRegistration =
+      'api/v1/oauth/complete-registration';
+
+  // Teacher
+  static const String teacherHome = 'api/v1/teacher/home';
+  static const String teacherGroups = 'api/v1/teacher/groups';
+
+  static String teacherGroupInfo(String id) => 'api/v1/teacher/groups/$id';
+  static String teacherGroupStudents(String id) =>
+      'api/v1/teacher/groups/$id/students';
+  static String teacherGroupAnnouncements(String id) =>
+      'api/v1/teacher/groups/$id/announcements';
+  static String teacherGroupDeleteAnnouncement(String groupId, String announcementId) =>
+      'api/v1/teacher/groups/$groupId/announcements/$announcementId';
+  static String teacherGroupRoadmap(String groupId) =>
+      'api/v1/teacher/groups/$groupId/roadmap';
+  static String teacherStudentInfo(String studentId) =>
+      'api/v1/teacher/students/$studentId';
 
   /// Student > Learn — All groups the student is enrolled in.
   static const String studentGroups = 'api/v1/student/groups';

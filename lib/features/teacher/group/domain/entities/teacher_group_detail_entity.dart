@@ -3,6 +3,11 @@ import 'package:equatable/equatable.dart';
 
 /// Overview stats shown in the Students tab header.
 class TeacherGroupDetailEntity extends Equatable {
+  final String name;
+  final String subject;
+  final int grade;
+  final String joinCode;
+
   final int studentCount;
 
   /// 0..1 — average completion percentage across all students.
@@ -14,6 +19,10 @@ class TeacherGroupDetailEntity extends Equatable {
   final List<TeacherStudentEntity> students;
 
   const TeacherGroupDetailEntity({
+    required this.name,
+    required this.subject,
+    required this.grade,
+    required this.joinCode,
     required this.studentCount,
     required this.avgCompletion,
     required this.presentToday,
@@ -27,5 +36,14 @@ class TeacherGroupDetailEntity extends Equatable {
   String get avgCompletionLabel => '${(avgCompletion * 100).round()}%';
 
   @override
-  List<Object?> get props => [studentCount, avgCompletion, presentToday, students];
+  List<Object?> get props => [
+        name,
+        subject,
+        grade,
+        joinCode,
+        studentCount,
+        avgCompletion,
+        presentToday,
+        students,
+      ];
 }

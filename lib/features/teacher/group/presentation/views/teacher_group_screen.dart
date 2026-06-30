@@ -7,6 +7,8 @@ import 'package:elara/features/teacher/group/presentation/widgets/teacher_roadma
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/pill_tab_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elara/features/teacher/group/presentation/cubits/teacher_group_cubit.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -23,26 +25,52 @@ class TeacherGroupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: _tabs.length,
-      child: Scaffold(
-        appBar: AppGlassHeader(
-          title: group.subject,
-          subtitle: '${group.subject} • ${group.grade}',
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: AppSpacing.spacing2xl.w),
-              child: SvgPicture.asset(
-                'assets/icons/settings_icon.svg',
-                height: AppIconSizes.iconSm.h,
-                width: AppIconSizes.iconSm.w,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.onSurface,
-                  BlendMode.srcIn,
+    return BlocListener<TeacherGroupCubit, TeacherGroupState>(
+      listener: (context, state) {
+        if (state is TeacherGroupDeleted) {
+          Navigator.of(context).pop();
+        } else if (state is TeacherGroupError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
+      },
+      child: DefaultTabController(
+        length: _tabs.length,
+        child: Scaffold(
+          appBar: AppGlassHeader(
+            title: group.name,
+            subtitle: '${group.subject} • ${group.grade}',
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: AppSpacing.spacingLg.w),
+                child: PopupMenuButton<String>(
+                  icon: SvgPicture.asset(
+                    'assets/icons/settings_icon.svg',
+                    height: AppIconSizes.iconSm.h,
+                    width: AppIconSizes.iconSm.w,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.onSurface,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  onSelected: (value) {
+                    if (value == 'delete') {
+                      _showDeleteConfirmation(context);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Text(
+                        'Delete Group',
+                        style: TextStyle(color: Theme.of(context).colorScheme.error),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+            ],
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -67,6 +95,35 @@ class TeacherGroupScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    ),
+  );
+}
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Group'),
+        content: const Text(
+          'Are you sure you want to delete this group? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              context.read<TeacherGroupCubit>().deleteGroup(group.id);
+            },
+            child: Text(
+              'Delete',
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
+        ],
       ),
     );
   }

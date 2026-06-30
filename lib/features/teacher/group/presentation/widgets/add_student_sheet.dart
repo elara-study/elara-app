@@ -10,14 +10,38 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 /// Modal dialog shown when teacher taps "+ Add Student".
-class AddStudentDialog extends StatelessWidget {
-  const AddStudentDialog({super.key});
+class AddStudentDialog extends StatefulWidget {
+  final String joinCode;
+  final Function(String username) onSubmit;
 
-  static Future<void> show(BuildContext context) {
+  const AddStudentDialog({
+    super.key,
+    required this.joinCode,
+    required this.onSubmit,
+  });
+
+  static Future<void> show(
+    BuildContext context, {
+    required String joinCode,
+    required Function(String username) onSubmit,
+  }) {
     return AppDialog.show(
       context: context,
-      builder: (ctx) => const AddStudentDialog(),
+      builder: (ctx) => AddStudentDialog(joinCode: joinCode, onSubmit: onSubmit),
     );
+  }
+
+  @override
+  State<AddStudentDialog> createState() => _AddStudentDialogState();
+}
+
+class _AddStudentDialogState extends State<AddStudentDialog> {
+  final TextEditingController _usernameController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -28,12 +52,47 @@ class AddStudentDialog extends StatelessWidget {
       title: 'Add a Student',
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Join Code Display
+          Text(
+            'Group Join Code',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: cs.onSurface,
+                ),
+          ),
+          SizedBox(height: AppSpacing.spacingXs.h),
+          Container(
+            padding: EdgeInsets.symmetric(
+              vertical: AppSpacing.spacingLg.h,
+              horizontal: AppSpacing.spacingMd.w,
+            ),
+            decoration: BoxDecoration(
+              color: cs.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
+              border: Border.all(color: cs.outlineVariant),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              widget.joinCode,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 8,
+                    color: AppColors.brandPrimary500,
+                  ),
+            ),
+          ),
+          SizedBox(height: AppSpacing.spacing2xl.h),
+
           // Input field & QR code button
           Row(
             children: [
-              const Expanded(
-                child: AppTextField(hintText: "Enter student's username"),
+              Expanded(
+                child: AppTextField(
+                  hintText: "Enter student's username",
+                  controller: _usernameController,
+                ),
               ),
               SizedBox(width: AppSpacing.spacingMd.w),
               GestureDetector(
@@ -72,8 +131,11 @@ class AddStudentDialog extends StatelessWidget {
               text: 'Add Student',
               borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
               onPressed: () {
-                Navigator.pop(context);
-                //   Add student logic
+                final username = _usernameController.text.trim();
+                if (username.isNotEmpty) {
+                  widget.onSubmit(username);
+                  Navigator.pop(context);
+                }
               },
             ),
           ),

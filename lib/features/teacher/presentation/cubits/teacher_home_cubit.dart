@@ -1,27 +1,37 @@
-import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
+import 'package:elara/features/teacher/domain/usecases/get_teacher_dashboard_usecase.dart';
+import 'package:elara/features/teacher/domain/usecases/create_teacher_group_usecase.dart';
+import 'package:elara/features/teacher/domain/usecases/create_teacher_roadmap_usecase.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TeacherHomeCubit extends Cubit<TeacherHomeState> {
-  final TeacherHomeDataSource _dataSource;
+  final GetTeacherDashboardUseCase _getTeacherDashboard;
+  final CreateTeacherGroupUseCase _createTeacherGroup;
+  final CreateTeacherRoadmapUseCase _createTeacherRoadmap;
 
-  TeacherHomeCubit(this._dataSource) : super(const TeacherHomeInitial());
+  TeacherHomeCubit({
+    required GetTeacherDashboardUseCase getTeacherDashboard,
+    required CreateTeacherGroupUseCase createTeacherGroup,
+    required CreateTeacherRoadmapUseCase createTeacherRoadmap,
+  })  : _getTeacherDashboard = getTeacherDashboard,
+        _createTeacherGroup = createTeacherGroup,
+        _createTeacherRoadmap = createTeacherRoadmap,
+        super(const TeacherHomeInitial());
 
   Future<void> loadHome() async {
     emit(const TeacherHomeLoading());
     try {
-      // All three calls run in parallel for faster load.
-      final results = await Future.wait([
-        _dataSource.getProfile(),
-        _dataSource.getGroups(),
-        _dataSource.getRecentActivity(),
-      ]);
+      final result = await _getTeacherDashboard();
 
-      emit(
-        TeacherHomeLoaded(
-          profile: results[0] as dynamic,
-          groups: results[1] as dynamic,
-          recentActivity: results[2] as dynamic,
+      result.fold(
+        (failure) => emit(TeacherHomeError('Failed to load home: ${failure.message}')),
+        (dashboard) => emit(
+          TeacherHomeLoaded(
+            profile: dashboard.profile,
+            groups: dashboard.groups,
+            roadmaps: dashboard.roadmaps,
+            recentActivity: dashboard.recentActivity,
+          ),
         ),
       );
     } catch (e) {
@@ -33,14 +43,20 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
     required String title,
     required String subject,
     required String grade,
+    required String roadmapName,
   }) async {
     try {
-      await _dataSource.createGroup(
+      final result = await _createTeacherGroup(
         title: title,
         subject: subject,
         grade: grade,
+        roadmapName: roadmapName,
       );
-      await loadHome(); // refresh the list
+      
+      result.fold(
+        (failure) => emit(TeacherHomeError('Failed to create group: ${failure.message}')),
+        (_) => loadHome(), // refresh the list
+      );
     } catch (e) {
       emit(TeacherHomeError('Failed to create group: ${e.toString()}'));
     }
@@ -52,12 +68,16 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
     required String grade,
   }) async {
     try {
-      await _dataSource.createRoadmap(
+      final result = await _createTeacherRoadmap(
         title: title,
         subject: subject,
         grade: grade,
       );
-      await loadHome();
+      
+      result.fold(
+        (failure) => emit(TeacherHomeError('Failed to create roadmap: ${failure.message}')),
+        (_) => loadHome(), // refresh the list
+      );
     } catch (e) {
       emit(TeacherHomeError('Failed to create roadmap: ${e.toString()}'));
     }

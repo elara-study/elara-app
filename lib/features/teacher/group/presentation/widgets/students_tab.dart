@@ -35,9 +35,10 @@ class StudentsTab extends StatelessWidget {
     return BlocBuilder<TeacherGroupCubit, TeacherGroupState>(
       builder: (context, state) {
         return switch (state) {
-          TeacherGroupInitial() || TeacherGroupLoading() => const Center(
-            child: CircularProgressIndicator(),
-          ),
+          TeacherGroupInitial() ||
+          TeacherGroupLoading() ||
+          TeacherGroupDeleted() =>
+            const Center(child: CircularProgressIndicator()),
           TeacherGroupError(:final message) => Center(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.spacing2xl),
@@ -139,7 +140,16 @@ class _StudentsContentState extends State<_StudentsContent> {
                     BlendMode.srcIn,
                   ),
                 ),
-                onPressed: () => AddStudentDialog.show(context),
+                onPressed: () => AddStudentDialog.show(
+                  context,
+                  joinCode: widget.detail.joinCode,
+                  onSubmit: (username) {
+                    context.read<TeacherGroupCubit>().addStudent(
+                          groupId: widget.group.id,
+                          username: username,
+                        );
+                  },
+                ),
               ),
             ),
             SizedBox(width: AppSpacing.spacingMd.w),

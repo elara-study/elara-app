@@ -17,11 +17,13 @@ final class TeacherHomeLoading extends TeacherHomeState {
 final class TeacherHomeLoaded extends TeacherHomeState {
   final TeacherProfileEntity profile;
   final List<TeacherGroupEntity> groups;
+  final List<TeacherGroupEntity> roadmaps;
   final List<TeacherActivityEntity> recentActivity;
 
   const TeacherHomeLoaded({
     required this.profile,
     required this.groups,
+    required this.roadmaps,
     required this.recentActivity,
   });
 }

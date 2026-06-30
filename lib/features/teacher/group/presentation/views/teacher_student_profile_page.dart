@@ -1,13 +1,14 @@
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
-import 'package:elara/features/teacher/group/presentation/cubits/teacher_student_profile_cubit.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_entity.dart';
-import 'package:elara/features/teacher/group/presentation/widgets/add_insight_options_sheet.dart';
-import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_screen.dart';
+import 'package:elara/features/teacher/group/domain/usecases/get_teacher_student_insights_usecase.dart';
+import 'package:elara/features/teacher/group/domain/usecases/get_teacher_student_profile_usecase.dart';
+import 'package:elara/features/teacher/group/presentation/cubits/teacher_student_profile_cubit.dart';
 import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_route_args.dart';
+import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_screen.dart';
+import 'package:elara/features/teacher/group/presentation/widgets/add_insight_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,7 +42,8 @@ class TeacherStudentProfilePage extends StatelessWidget {
     return BlocProvider(
       create: (_) {
         final cubit = TeacherStudentProfileCubit(
-          getIt<TeacherGroupDataSource>(),
+          getProfile: getIt<GetTeacherStudentProfileUseCase>(),
+          getInsights: getIt<GetTeacherStudentInsightsUseCase>(),
         );
         cubit.loadProfile(
           groupId: group.id,

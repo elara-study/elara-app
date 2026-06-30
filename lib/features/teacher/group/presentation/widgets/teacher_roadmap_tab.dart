@@ -5,7 +5,8 @@ import 'package:elara/config/routes.dart';
 import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/group/entities/group_roadmap.dart';
-import 'package:elara/features/student/presentation/group/cubits/roadmap_cubit.dart';
+import 'package:elara/features/teacher/group/presentation/cubits/teacher_roadmap_cubit.dart';
+import 'package:elara/features/teacher/group/domain/entities/teacher_roadmap_entity.dart';
 import 'package:elara/features/teacher/homework/presentation/route_args/teacher_module_route_args.dart';
 import 'package:elara/shared/widgets/announcement_form_content.dart';
 import 'package:elara/shared/widgets/app_dialog.dart';
@@ -28,12 +29,14 @@ class TeacherRoadmapTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RoadmapCubit, RoadmapState>(
+    return BlocBuilder<TeacherRoadmapCubit, TeacherRoadmapState>(
       builder: (context, state) {
         return switch (state.status) {
-          RoadmapLoadStatus.initial || RoadmapLoadStatus.loading =>
-            const Center(child: CircularProgressIndicator()),
-          RoadmapLoadStatus.failure => Center(
+          TeacherRoadmapLoadStatus.initial ||
+          TeacherRoadmapLoadStatus.loading => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          TeacherRoadmapLoadStatus.failure => Center(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.spacing2xl),
               child: Text(
@@ -43,7 +46,7 @@ class TeacherRoadmapTab extends StatelessWidget {
               ),
             ),
           ),
-          RoadmapLoadStatus.loaded => _TeacherRoadmapContent(
+          TeacherRoadmapLoadStatus.loaded => _TeacherRoadmapContent(
             roadmap: state.roadmap!,
             groupId: groupId,
             subject: subject,
@@ -55,7 +58,7 @@ class TeacherRoadmapTab extends StatelessWidget {
 }
 
 class _TeacherRoadmapContent extends StatelessWidget {
-  final GroupRoadmap roadmap;
+  final TeacherRoadmapEntity roadmap;
   final String groupId;
   final String subject;
 
@@ -94,28 +97,36 @@ class _TeacherRoadmapContent extends StatelessWidget {
         AppSpacing.spacingLg.w,
         AppSpacing.spacing5xl.h,
       ),
-      itemCount: 1 + roadmap.modules.length,
+      itemCount: 1 + roadmap.materials.length,
       itemBuilder: (context, index) {
         if (index == 0) {
           return Padding(
             padding: EdgeInsets.only(bottom: AppSpacing.spacingXl.h),
             child: AppSectionHeader(
-              title: 'Learning Path',
+              title: roadmap.name, // using name from TeacherRoadmapEntity
               onAdd: () => _showAddModuleDialog(context),
             ),
           );
         }
 
-        final module = roadmap.modules[index - 1];
+        final material = roadmap.materials[index - 1];
+        // Shim TeacherRoadmapMaterial to GroupRoadmapModule for the UI component
+        final moduleShim = GroupRoadmapModule(
+          moduleLabel: material.type,
+          title: material.title,
+          description: material.url,
+          status: RoadmapModuleStatus.completed,
+        );
+
         return Padding(
           padding: EdgeInsets.only(
-            bottom: index == roadmap.modules.length
+            bottom: index == roadmap.materials.length
                 ? 0
                 : AppSpacing.spacingXl.h,
             top: index == 0 ? 0 : AppSpacing.spacing2xl.h,
           ),
           child: _TeacherModuleCard(
-            module: module,
+            module: moduleShim,
             groupId: groupId,
             subject: subject,
           ),
@@ -262,7 +273,8 @@ class _InteractionOptionsContent extends StatelessWidget {
                 filled: true,
                 onTap: () {
                   Navigator.of(context).pop();
-                  AppNavigation.pushNamed(context, 
+                  AppNavigation.pushNamed(
+                    context,
                     AppRoutes.teacherModuleHomework,
                     arguments: _routeArgs,
                   );
@@ -277,7 +289,8 @@ class _InteractionOptionsContent extends StatelessWidget {
                 filled: false,
                 onTap: () {
                   Navigator.of(context).pop();
-                  AppNavigation.pushNamed(context, 
+                  AppNavigation.pushNamed(
+                    context,
                     AppRoutes.teacherModuleResources,
                     arguments: _routeArgs,
                   );

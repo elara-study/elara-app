@@ -1,7 +1,7 @@
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
-import 'package:elara/features/student/presentation/group/cubits/announcements_cubit.dart';
+import 'package:elara/features/teacher/group/presentation/cubits/teacher_announcements_cubit.dart';
 import 'package:elara/shared/widgets/announcement_card.dart';
 import 'package:elara/shared/widgets/announcement_form_content.dart';
 import 'package:elara/shared/widgets/app_dialog.dart';
@@ -18,25 +18,27 @@ class TeacherAnnouncementsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AnnouncementsCubit, AnnouncementsState>(
+    return BlocBuilder<TeacherAnnouncementsCubit, TeacherAnnouncementsState>(
       builder: (context, state) {
-        return switch (state.status) {
-          AnnouncementsLoadStatus.initial || AnnouncementsLoadStatus.loading =>
-            const Center(child: CircularProgressIndicator()),
-          AnnouncementsLoadStatus.failure => Center(
+        if (state is TeacherAnnouncementsInitial || state is TeacherAnnouncementsLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is TeacherAnnouncementsError) {
+          return Center(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.spacing2xl),
               child: Text(
-                state.message ?? 'Something went wrong',
+                state.message,
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
             ),
-          ),
-          AnnouncementsLoadStatus.loaded => _TeacherAnnouncementsContent(
-            items: state.items,
-          ),
-        };
+          );
+        } else if (state is TeacherAnnouncementsLoaded) {
+          return _TeacherAnnouncementsContent(
+            items: state.announcements,
+          );
+        }
+        return const SizedBox.shrink();
       },
     );
   }
@@ -57,7 +59,7 @@ class _TeacherAnnouncementsContent extends StatelessWidget {
           submitLabel: 'Add Announcement',
           onSubmit: (title, body) {
             Navigator.of(context).pop();
-            // TODO: dispatch add announcement cubit event
+            context.read<TeacherAnnouncementsCubit>().addAnnouncement(title, body);
           },
         ),
       ),
@@ -71,7 +73,7 @@ class _TeacherAnnouncementsContent extends StatelessWidget {
         title: 'Edit Announcement',
         content: AnnouncementFormContent(
           initialTitle: item.title,
-          initialBody: item.body,
+          initialBody: item.content,
           submitLabel: 'Save Changes',
           onSubmit: (title, body) {
             Navigator.of(context).pop();
@@ -121,7 +123,7 @@ class _TeacherAnnouncementsContent extends StatelessWidget {
               announcement: items[i],
               onEdit: () => _showEditDialog(ctx, items[i]),
               onDelete: () {
-                // TODO: dispatch delete announcement cubit event
+                context.read<TeacherAnnouncementsCubit>().deleteAnnouncement(items[i].id);
               },
             ),
           ),

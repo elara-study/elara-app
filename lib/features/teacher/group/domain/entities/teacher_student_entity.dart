@@ -2,20 +2,24 @@ import 'package:equatable/equatable.dart';
 
 /// A student entry in the Teacher Group's student list.
 class TeacherStudentEntity extends Equatable {
+  final String id;
   final int rank;
   final String name;
   final String? avatarUrl;
   final int xp;
+  final int streak;
 
   /// e.g. "Lesson 15 of 20"
   final int completedLessons;
   final int totalLessons;
 
   const TeacherStudentEntity({
+    required this.id,
     required this.rank,
     required this.name,
     this.avatarUrl,
     required this.xp,
+    required this.streak,
     required this.completedLessons,
     required this.totalLessons,
   });
@@ -27,5 +31,5 @@ class TeacherStudentEntity extends Equatable {
   String get lessonProgressLabel => 'Lesson $completedLessons of $totalLessons';
 
   @override
-  List<Object?> get props => [rank, name, avatarUrl, xp, completedLessons, totalLessons];
+  List<Object?> get props => [id, rank, name, avatarUrl, xp, streak, completedLessons, totalLessons];
 }

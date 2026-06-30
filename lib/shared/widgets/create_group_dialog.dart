@@ -21,27 +21,57 @@ class GroupDialogConfig {
       'English',
       'History',
     ],
-    this.grades = const [
-      'Grade 1',
-      'Grade 2',
-      'Grade 3',
-      'Grade 4',
-      'Grade 5',
-      'Grade 6',
-      'Grade 7',
-      'Grade 8',
-      'Grade 9',
-      'Grade 10',
-    ],
+    this.grades = const ['Grade 10', 'Grade 11', 'Grade 12'],
   });
 }
 
 class GroupDialog extends StatelessWidget {
   final GroupDialogConfig config;
+
+  static void show(
+    BuildContext context, {
+    GroupDialogConfig config = const GroupDialogConfig(),
+    required void Function(String title, String subject, String grade, String roadmapName) onSubmit,
+  }) {
+    String titleValue = '';
+    String roadmapNameValue = '';
+    String? subject;
+    String? grade;
+
+    showDialog(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setDialogState) => GroupDialog(
+          config: config,
+          titleValue: titleValue,
+          roadmapNameValue: roadmapNameValue,
+          selectedSubject: subject,
+          selectedGrade: grade,
+          onTitleChanged: (v) => setDialogState(() => titleValue = v),
+          onRoadmapNameChanged: (v) => setDialogState(() => roadmapNameValue = v),
+          onSubjectChanged: (v) => setDialogState(() => subject = v),
+          onGradeChanged: (v) => setDialogState(() => grade = v),
+          onSubmit: () {
+            if (titleValue.isEmpty || roadmapNameValue.isEmpty || subject == null || grade == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Please fill all required fields')),
+              );
+              return;
+            }
+            onSubmit(titleValue, subject!, grade!, roadmapNameValue);
+            Navigator.of(ctx).pop();
+          },
+        ),
+      ),
+    );
+  }
+
   final String titleValue;
+  final String roadmapNameValue;
   final String? selectedSubject;
   final String? selectedGrade;
   final ValueChanged<String> onTitleChanged;
+  final ValueChanged<String> onRoadmapNameChanged;
   final ValueChanged<String?> onSubjectChanged;
   final ValueChanged<String?> onGradeChanged;
   final VoidCallback onSubmit;
@@ -50,9 +80,11 @@ class GroupDialog extends StatelessWidget {
     super.key,
     required this.config,
     required this.titleValue,
+    required this.roadmapNameValue,
     required this.selectedSubject,
     required this.selectedGrade,
     required this.onTitleChanged,
+    required this.onRoadmapNameChanged,
     required this.onSubjectChanged,
     required this.onGradeChanged,
     required this.onSubmit,
@@ -76,7 +108,13 @@ class GroupDialog extends StatelessWidget {
             children: [
               _Header(title: config.title, cs: cs),
               SizedBox(height: AppSpacing.spacing2xl.h),
-              _TitleField(value: titleValue, onChanged: onTitleChanged, cs: cs),
+              _InputField(
+                label: 'Title',
+                hint: 'Enter group title (e.g., Physics 101)',
+                value: titleValue,
+                onChanged: onTitleChanged,
+                cs: cs,
+              ),
               SizedBox(height: AppSpacing.spacing2xl.h),
               _SubjectGradeRow(
                 config: config,
@@ -84,6 +122,14 @@ class GroupDialog extends StatelessWidget {
                 selectedGrade: selectedGrade,
                 onSubjectChanged: onSubjectChanged,
                 onGradeChanged: onGradeChanged,
+                cs: cs,
+              ),
+              SizedBox(height: AppSpacing.spacing2xl.h),
+              _InputField(
+                label: 'Roadmap Name',
+                hint: 'Enter roadmap name',
+                value: roadmapNameValue,
+                onChanged: onRoadmapNameChanged,
                 cs: cs,
               ),
               SizedBox(height: AppSpacing.spacing2xl.h),
@@ -130,22 +176,26 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _TitleField extends StatefulWidget {
+class _InputField extends StatefulWidget {
+  final String label;
+  final String hint;
   final String value;
   final ValueChanged<String> onChanged;
   final ColorScheme cs;
 
-  const _TitleField({
+  const _InputField({
+    required this.label,
+    required this.hint,
     required this.value,
     required this.onChanged,
     required this.cs,
   });
 
   @override
-  State<_TitleField> createState() => _TitleFieldState();
+  State<_InputField> createState() => _InputFieldState();
 }
 
-class _TitleFieldState extends State<_TitleField> {
+class _InputFieldState extends State<_InputField> {
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
   bool _isFocused = false;
@@ -173,7 +223,7 @@ class _TitleFieldState extends State<_TitleField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Title',
+          widget.label,
           style: AppTypography.bodyMedium(
             color: widget.cs.onSurface,
           ).copyWith(fontWeight: AppTypography.semiBold),
@@ -194,7 +244,7 @@ class _TitleFieldState extends State<_TitleField> {
             focusNode: _focusNode,
             onChanged: widget.onChanged,
             decoration: InputDecoration(
-              hintText: 'Enter group title (e.g., Physics 101)',
+              hintText: widget.hint,
               hintStyle: AppTypography.bodySmall(
                 color: widget.cs.onSurfaceVariant,
               ),

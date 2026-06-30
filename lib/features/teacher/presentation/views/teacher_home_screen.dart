@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:elara/core/utils/ui_helpers.dart';
+import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:flutter_svg/svg.dart';
 
 class TeacherHomeScreen extends StatelessWidget {
@@ -38,6 +40,7 @@ class TeacherHomeScreen extends StatelessWidget {
           TeacherHomeLoaded(
             :final profile,
             :final groups,
+            :final roadmaps,
             :final recentActivity,
           ) =>
             Scaffold(
@@ -110,8 +113,15 @@ class TeacherHomeScreen extends StatelessWidget {
                               secondaryColor: UiHelpers.getGroupSecondaryColor(
                                 group.colorKey,
                               ),
-                              onTap: () {
-                                //  navigate to group detail
+                              onTap: () async {
+                                await AppNavigation.pushNamed(
+                                  context,
+                                  AppRoutes.teacherGroup,
+                                  arguments: group,
+                                );
+                                if (context.mounted) {
+                                  context.read<TeacherHomeCubit>().loadHome();
+                                }
                               },
                             ),
                           ),
@@ -124,7 +134,7 @@ class TeacherHomeScreen extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: AppSpacing.spacingMd.h),
-                    ...groups
+                    ...roadmaps
                         .take(2)
                         .map(
                           (group) => Padding(
@@ -142,8 +152,15 @@ class TeacherHomeScreen extends StatelessWidget {
                               secondaryColor: UiHelpers.getGroupSecondaryColor(
                                 group.colorKey,
                               ),
-                              onTap: () {
-                                // navigate to group detail
+                              onTap: () async {
+                                await AppNavigation.pushNamed(
+                                  context,
+                                  AppRoutes.teacherGroup,
+                                  arguments: group,
+                                );
+                                if (context.mounted) {
+                                  context.read<TeacherHomeCubit>().loadHome();
+                                }
                               },
                             ),
                           ),

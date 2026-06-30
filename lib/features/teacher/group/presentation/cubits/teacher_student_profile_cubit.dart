@@ -1,4 +1,5 @@
-import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
+import 'package:elara/features/teacher/group/domain/usecases/get_teacher_student_profile_usecase.dart';
+import 'package:elara/features/teacher/group/domain/usecases/get_teacher_student_insights_usecase.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_insight_entity.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_profile_entity.dart';
 import 'package:equatable/equatable.dart';
@@ -38,25 +39,41 @@ class TeacherStudentProfileError extends TeacherStudentProfileState {
 }
 
 class TeacherStudentProfileCubit extends Cubit<TeacherStudentProfileState> {
-  TeacherStudentProfileCubit(this._dataSource)
-    : super(const TeacherStudentProfileInitial());
+  TeacherStudentProfileCubit({
+    required GetTeacherStudentProfileUseCase getProfile,
+    required GetTeacherStudentInsightsUseCase getInsights,
+  })  : _getProfile = getProfile,
+        _getInsights = getInsights,
+        super(const TeacherStudentProfileInitial());
 
-  final TeacherGroupDataSource _dataSource;
+  final GetTeacherStudentProfileUseCase _getProfile;
+  final GetTeacherStudentInsightsUseCase _getInsights;
 
   Future<void> loadProfile({
     required String groupId,
     required int studentRank,
   }) async {
     emit(const TeacherStudentProfileLoading());
-    try {
-      final profile = await _dataSource.getStudentProfile(
-        groupId: groupId,
-        studentRank: studentRank,
-      );
-      emit(TeacherStudentProfileLoaded(profile));
-    } catch (e) {
-      emit(TeacherStudentProfileError(e.toString()));
-    }
+    final profileResult = await _getProfile(groupId: groupId, studentRank: studentRank);
+    
+    await profileResult.fold(
+      (failure) async => emit(TeacherStudentProfileError(failure.message)),
+      (profile) async {
+        final insightResult = await _getInsights(profile.student.id);
+        TeacherStudentProfileEntity currentProfile = profile;
+        
+        insightResult.fold(
+          (_) {}, // Failed to get insight, just leave profile without it
+          (insight) {
+            if (insight != null) {
+              currentProfile = profile.copyWith(insight: insight);
+            }
+          },
+        );
+        
+        emit(TeacherStudentProfileLoaded(currentProfile));
+      },
+    );
   }
 
   void saveInsight(List<String> paragraphs) {

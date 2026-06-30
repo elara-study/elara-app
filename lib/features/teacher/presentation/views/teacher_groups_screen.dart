@@ -4,10 +4,11 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_home_state.dart';
+import 'package:elara/features/teacher/presentation/cubits/teacher_groups_cubit.dart';
+import 'package:elara/features/teacher/presentation/cubits/teacher_groups_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
+import 'package:elara/shared/widgets/create_group_dialog.dart';
 import 'package:elara/shared/widgets/subject_group_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,17 +23,17 @@ class TeacherGroupsScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       appBar: const AppGlassHeader(title: 'Groups'),
-      body: BlocBuilder<TeacherHomeCubit, TeacherHomeState>(
+      body: BlocBuilder<TeacherGroupsCubit, TeacherGroupsState>(
         builder: (context, state) {
           return switch (state) {
-            TeacherHomeInitial() || TeacherHomeLoading() => const Center(
+            TeacherGroupsInitial() || TeacherGroupsLoading() => const Center(
               child: CircularProgressIndicator(),
             ),
-            TeacherHomeError(:final message) => _ErrorView(
+            TeacherGroupsError(:final message) => _ErrorView(
               message: message,
-              onRetry: () => context.read<TeacherHomeCubit>().loadHome(),
+              onRetry: () => context.read<TeacherGroupsCubit>().loadGroups(),
             ),
-            TeacherHomeLoaded(:final groups) =>
+            TeacherGroupsLoaded(:final groups) =>
               groups.isEmpty
                   ? const _EmptyGroupsView()
                   : SingleChildScrollView(
@@ -48,11 +49,12 @@ class TeacherGroupsScreen extends StatelessWidget {
                           // Page subtitle
                           AppSectionHeader(
                             title: 'My Groups',
-                            onCreateGroup: (title, subject, grade) {
-                              context.read<TeacherHomeCubit>().createGroup(
+                            onCreateGroup: (title, subject, grade, roadmapName) {
+                              context.read<TeacherGroupsCubit>().createGroup(
                                 title: title,
                                 subject: subject,
                                 grade: grade,
+                                roadmapName: roadmapName,
                               );
                             },
                           ),
@@ -83,11 +85,16 @@ class TeacherGroupsScreen extends StatelessWidget {
       builder: (context) => SubjectGroupCard(
         group: group,
         variant: SubjectGroupCardVariant.teacher,
-        onTap: () => AppNavigation.pushNamed(
-          context,
-          AppRoutes.teacherGroup,
-          arguments: group,
-        ),
+        onTap: () async {
+          await AppNavigation.pushNamed(
+            context,
+            AppRoutes.teacherGroup,
+            arguments: group,
+          );
+          if (context.mounted) {
+            context.read<TeacherGroupsCubit>().loadGroups();
+          }
+        },
       ),
     );
   }
@@ -104,23 +111,39 @@ class _EmptyGroupsView extends StatelessWidget {
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing2xl.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.groups_outlined,
-              size: 52.sp,
-              color: AppColors.neutral300,
-            ),
-            SizedBox(height: AppSpacing.spacingMd.h),
-            Text('No groups yet', style: AppTypography.h6(color: cs.onSurface)),
-            SizedBox(height: 6.h),
-            Text(
-              'Tap Create to add your first class.',
-              style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
-              textAlign: TextAlign.center,
-            ),
-          ],
+        child: GestureDetector(
+          onTap: () {
+            GroupDialog.show(
+              context,
+              onSubmit: (title, subject, grade, roadmapName) {
+                context.read<TeacherGroupsCubit>().createGroup(
+                  title: title,
+                  subject: subject,
+                  grade: grade,
+                  roadmapName: roadmapName,
+                );
+              },
+            );
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.groups_outlined,
+                size: 52.sp,
+                color: AppColors.neutral300,
+              ),
+              SizedBox(height: AppSpacing.spacingMd.h),
+              Text('No groups yet', style: AppTypography.h6(color: cs.onSurface)),
+              SizedBox(height: 6.h),
+              Text(
+                'Tap Create to add your first class.',
+                style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

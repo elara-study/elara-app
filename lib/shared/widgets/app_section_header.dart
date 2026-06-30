@@ -16,7 +16,7 @@ class AppSectionHeader extends StatelessWidget {
   final VoidCallback? onAdd;
 
   /// When provided, shows the Create button and opens the dialog on tap.
-  final void Function(String title, String subject, String grade)?
+  final void Function(String title, String subject, String grade, String roadmapName)?
   onCreateGroup;
 
   /// Controls the dialog's title + button label. Defaults to "Create a group".
@@ -38,34 +38,8 @@ class AppSectionHeader extends StatelessWidget {
   });
 
   void _openDialog(BuildContext context) {
-    String titleValue = '';
-    String? subject;
-    String? grade;
-
-    showDialog(
-      context: context,
-      builder: (_) => StatefulBuilder(
-        builder: (ctx, setDialogState) => GroupDialog(
-          config: dialogConfig,
-          titleValue: titleValue,
-          selectedSubject: subject,
-          selectedGrade: grade,
-          onTitleChanged: (v) => setDialogState(() => titleValue = v),
-          onSubjectChanged: (v) => setDialogState(() => subject = v),
-          onGradeChanged: (v) => setDialogState(() => grade = v),
-          onSubmit: () {
-            if (titleValue.isEmpty || subject == null || grade == null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Please fill all fields')),
-              );
-              return;
-            }
-            onCreateGroup?.call(titleValue, subject!, grade!);
-            Navigator.of(ctx).pop();
-          },
-        ),
-      ),
-    );
+    if (onCreateGroup == null) return;
+    GroupDialog.show(context, config: dialogConfig, onSubmit: onCreateGroup!);
   }
 
   @override
@@ -97,6 +71,7 @@ class AppSectionHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 color: cs.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(color: ButtonColors.outlineBorder),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -106,7 +81,7 @@ class AppSectionHeader extends StatelessWidget {
                     width: AppSpacing.spacingLg.w,
                     height: AppSpacing.spacingLg.w,
                     colorFilter: const ColorFilter.mode(
-                      AppColors.white,
+                      ButtonColors.outlineText,
                       BlendMode.srcIn,
                     ),
                   ),
