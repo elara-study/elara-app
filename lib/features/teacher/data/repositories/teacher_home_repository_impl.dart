@@ -36,6 +36,18 @@ class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
   }
 
   @override
+  Future<Either<Failure, List<TeacherGroupEntity>>> getRoadmaps() async {
+    try {
+      final roadmaps = await _remoteDataSource.getRoadmaps();
+      return Right(roadmaps);
+    } on DioException catch (e) {
+      return Left(ServerFailure(e.message ?? e.toString()));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> createGroup({
     required String title,
     required String subject,

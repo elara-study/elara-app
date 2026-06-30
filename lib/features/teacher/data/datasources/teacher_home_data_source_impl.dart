@@ -216,6 +216,33 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
   }
 
   @override
+  Future<List<TeacherGroupEntity>> getRoadmaps() async {
+    final response = await _dio.get(ApiConstants.teacherRoadmaps);
+    final responseData = response.data;
+    
+    final roadmapsList = (responseData is Map<String, dynamic> && responseData.containsKey('data')) 
+        ? responseData['data'] as List<dynamic>? ?? []
+        : (responseData is List ? responseData : []);
+        
+    return roadmapsList.map((r) {
+      final map = r as Map<String, dynamic>;
+      return TeacherGroupEntity(
+        id: map['id']?.toString() ?? map['Id']?.toString() ?? '',
+        name:
+            map['name']?.toString() ??
+            map['Name']?.toString() ??
+            'Unnamed Roadmap',
+        subject: map['subject']?.toString() ?? map['Subject']?.toString() ?? '',
+        grade: map['grade']?.toString() ?? map['Grade']?.toString() ?? '1',
+        studentCount: 0,
+        totalLessons: (map['modulesCount'] ?? map['ModulesCount'] as num?)?.toInt() ?? 0,
+        progressPercent: 0.0,
+        colorKey: 'secondary',
+      );
+    }).toList();
+  }
+
+  @override
   Future<void> createGroup({
     required String title,
     required String subject,

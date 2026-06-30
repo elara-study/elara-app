@@ -8,6 +8,7 @@ import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart
 abstract class TeacherHomeDataSource {
   Future<TeacherDashboardEntity> getDashboard();
   Future<List<TeacherGroupEntity>> getGroups();
+  Future<List<TeacherGroupEntity>> getRoadmaps();
 
   Future<void> createGroup({
     required String title,

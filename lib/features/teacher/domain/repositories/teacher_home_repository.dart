@@ -6,6 +6,7 @@ import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart
 abstract class TeacherHomeRepository {
   Future<Either<Failure, TeacherDashboardEntity>> getDashboard();
   Future<Either<Failure, List<TeacherGroupEntity>>> getGroups();
+  Future<Either<Failure, List<TeacherGroupEntity>>> getRoadmaps();
   
   Future<Either<Failure, void>> createGroup({
     required String title,
