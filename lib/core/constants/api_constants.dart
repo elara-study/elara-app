@@ -36,7 +36,7 @@ class ApiConstants {
   static String teacherGroupDeleteAnnouncement(String groupId, String announcementId) =>
       'api/v1/teacher/groups/$groupId/announcements/$announcementId';
   static String teacherGroupRoadmap(String groupId) =>
-      'v1/teacher/groups/$groupId/roadmap';
+      'api/v1/teacher/groups/$groupId/roadmap';
   static String teacherStudentInsights(String studentId) =>
       'api/v1/teacher/students/$studentId/insights';
 

@@ -9,19 +9,28 @@ class TeacherRoadmapModel extends TeacherRoadmapEntity {
   });
 
   factory TeacherRoadmapModel.fromJson(Map<String, dynamic> json) {
-    final roadmapObj = json['roadmap'] as Map<String, dynamic>? ?? {};
-    final materialsArr = json['materials'] as List<dynamic>? ?? [];
+    final data = json['data'] as Map<String, dynamic>? ?? json;
+    
+    // Support both OpenAPI format (nested roadmap/materials) and actual backend format
+    final roadmapObj = data['roadmap'] as Map<String, dynamic>? ?? data;
+    
+    final materialsArr = data['materials'] as List<dynamic>? 
+        ?? data['modules'] as List<dynamic>? 
+        ?? roadmapObj['materials'] as List<dynamic>? 
+        ?? roadmapObj['modules'] as List<dynamic>? 
+        ?? [];
 
     return TeacherRoadmapModel(
       id: roadmapObj['id']?.toString() ?? '',
       name: roadmapObj['name']?.toString() ?? '',
-      lessonsCount: roadmapObj['lessonsCount'] as int? ?? 0,
-      materials: materialsArr.map((m) {
-        final mObj = m as Map<String, dynamic>;
+      lessonsCount: roadmapObj['lessonsCount'] as int? ?? materialsArr.length,
+      materials: materialsArr.asMap().entries.map((entry) {
+        final index = entry.key;
+        final mObj = entry.value as Map<String, dynamic>;
         return TeacherRoadmapMaterial(
           title: mObj['title']?.toString() ?? '',
-          type: mObj['type']?.toString() ?? '',
-          url: mObj['url']?.toString() ?? '',
+          type: mObj['type']?.toString() ?? 'Module ${index + 1}',
+          url: mObj['url']?.toString() ?? mObj['description']?.toString() ?? '',
         );
       }).toList(),
     );
