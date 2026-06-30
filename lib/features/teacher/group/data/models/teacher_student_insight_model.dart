@@ -11,9 +11,9 @@ class TeacherStudentInsightModel extends TeacherStudentInsightEntity {
 
   factory TeacherStudentInsightModel.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>? ?? {};
-    final reports = data['reports'] as List<dynamic>? ?? [];
+    final insights = data['insights'] as List<dynamic>? ?? data['reports'] as List<dynamic>? ?? [];
 
-    if (reports.isEmpty) {
+    if (insights.isEmpty) {
       return const TeacherStudentInsightModel(
         updatedLabel: 'No Insights Yet',
         paragraph1: 'No AI insights have been generated for this student yet.',
@@ -22,9 +22,17 @@ class TeacherStudentInsightModel extends TeacherStudentInsightEntity {
       );
     }
 
-    final firstReport = reports[0] as Map<String, dynamic>;
-    final reportText = firstReport['reportText']?.toString() ?? '';
-    final analyzedAtStr = firstReport['analyzedAt']?.toString() ?? '';
+    Map<String, dynamic> firstInsight = insights[0] as Map<String, dynamic>;
+    for (var i in insights) {
+      final map = i as Map<String, dynamic>;
+      if (map['source'] == 'ai') {
+        firstInsight = map;
+        break;
+      }
+    }
+
+    final reportText = firstInsight['content']?.toString() ?? firstInsight['reportText']?.toString() ?? '';
+    final analyzedAtStr = firstInsight['lastUpdated']?.toString() ?? firstInsight['analyzedAt']?.toString() ?? '';
 
     String updatedLabel = 'Recently analyzed';
     if (analyzedAtStr.isNotEmpty) {

@@ -17,6 +17,8 @@ abstract class TeacherGroupRepository {
 
   Future<Either<Failure, TeacherGroupDetailEntity>> getGroupDetail(String groupId);
 
+  Future<Either<Failure, void>> deleteGroup(String groupId);
+
   Future<Either<Failure, void>> addStudent({
     required String groupId,
     required String username,

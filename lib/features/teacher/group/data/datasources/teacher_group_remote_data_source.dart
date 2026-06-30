@@ -10,6 +10,7 @@ import 'package:elara/features/teacher/group/data/models/teacher_student_insight
 import 'package:elara/features/teacher/group/domain/entities/teacher_group_detail_entity.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_entity.dart';
 import 'package:elara/features/teacher/group/domain/entities/teacher_student_profile_entity.dart';
+import 'package:elara/features/student/domain/profile/entities/profile_linked_parent_entity.dart';
 import 'package:intl/intl.dart';
 
 class TeacherGroupRemoteDataSourceImpl implements TeacherGroupDataSource {
@@ -34,6 +35,11 @@ class TeacherGroupRemoteDataSourceImpl implements TeacherGroupDataSource {
       },
     );
     return TeacherGroupModel.fromJson(response.data);
+  }
+
+  @override
+  Future<void> deleteGroup(String groupId) async {
+    await _dio.delete(ApiConstants.teacherGroupInfo(groupId));
   }
 
   @override
@@ -152,20 +158,47 @@ class TeacherGroupRemoteDataSourceImpl implements TeacherGroupDataSource {
       orElse: () => group.students.first,
     );
 
-    final cleaned = student.name.replaceAll(RegExp(r'[^a-zA-Z]'), '').toLowerCase();
-    final handle = '@${cleaned.isEmpty ? 'student' : cleaned}';
+    final response = await _dio.get(ApiConstants.teacherStudentInfo(student.id));
+    final responseData = response.data['data'] as Map<String, dynamic>? ?? {};
+
+    final userMap = responseData['user'] as Map<String, dynamic>? ?? {};
+    final gamification = responseData['gamification'] as Map<String, dynamic>? ?? {};
+    final stats = responseData['stats'] as Map<String, dynamic>? ?? {};
+    final parentsList = responseData['parents'] as List<dynamic>? ?? [];
+
+    final username = userMap['username']?.toString() ?? student.name.replaceAll(RegExp(r'[^a-zA-Z]'), '').toLowerCase();
+    final handle = '@${username.isEmpty ? 'student' : username}';
+    final gradeLabel = userMap['gradeLevel']?.toString() ?? 'Grade ${group.grade} Student';
+
+    final attendanceRate = double.tryParse(stats['attendanceRate']?.toString() ?? '0') ?? 0;
 
     return TeacherStudentProfileEntity(
-      student: student,
+      student: TeacherStudentEntity(
+        id: student.id,
+        rank: student.rank,
+        name: userMap['fullName']?.toString() ?? student.name,
+        xp: int.tryParse(stats['totalXp']?.toString() ?? '') ?? student.xp,
+        streak: int.tryParse(stats['streakDays']?.toString() ?? '') ?? student.streak,
+        avatarUrl: userMap['avatarUrl']?.toString() ?? student.avatarUrl,
+        completedLessons: int.tryParse(stats['lessonsCompleted']?.toString() ?? '') ?? student.completedLessons,
+        totalLessons: int.tryParse(stats['totalLessons']?.toString() ?? '') ?? student.totalLessons,
+      ),
       handle: handle,
-      gradeLabel: 'Grade ${group.grade} Student',
-      level: 11,
-      nextLevel: 12,
-      xpCurrent: 1250,
-      xpGoal: 1500,
-      streakDays: 7,
-      attendancePercent: 97,
-      parents: const [],
+      gradeLabel: gradeLabel,
+      level: gamification['currentLevel'] as int? ?? 1,
+      nextLevel: (gamification['currentLevel'] as int? ?? 1) + 1,
+      xpCurrent: gamification['currentXp'] as int? ?? 0,
+      xpGoal: gamification['nextLevelXpThreshold'] as int? ?? 100,
+      streakDays: stats['streakDays'] as int? ?? 0,
+      attendancePercent: (attendanceRate * 100).toInt(),
+      parents: parentsList.map((p) {
+        final pMap = p as Map<String, dynamic>;
+        return ProfileLinkedParentEntity(
+          id: pMap['id']?.toString() ?? '',
+          displayName: pMap['fullName']?.toString() ?? pMap['name']?.toString() ?? '',
+        );
+      }).toList(),
+      insight: TeacherStudentInsightModel.fromJson(response.data),
     );
   }
 
@@ -253,7 +286,7 @@ class TeacherGroupRemoteDataSourceImpl implements TeacherGroupDataSource {
   @override
   Future<TeacherStudentInsightEntity?> getStudentInsights(String studentId) async {
     try {
-      final response = await _dio.get(ApiConstants.teacherStudentInsights(studentId));
+      final response = await _dio.get(ApiConstants.teacherStudentInfo(studentId));
       return TeacherStudentInsightModel.fromJson(response.data);
     } catch (e) {
       return null;

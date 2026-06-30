@@ -45,6 +45,11 @@ class MockTeacherGroupDataSource implements TeacherGroupDataSource {
   }
 
   @override
+  Future<void> deleteGroup(String groupId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  @override
   Future<void> addStudent({
     required String groupId,
     required String username,

@@ -37,8 +37,8 @@ class ApiConstants {
       'api/v1/teacher/groups/$groupId/announcements/$announcementId';
   static String teacherGroupRoadmap(String groupId) =>
       'api/v1/teacher/groups/$groupId/roadmap';
-  static String teacherStudentInsights(String studentId) =>
-      'api/v1/teacher/students/$studentId/insights';
+  static String teacherStudentInfo(String studentId) =>
+      'api/v1/teacher/students/$studentId';
 
   /// Student > Learn — All groups the student is enrolled in.
   static const String studentGroups = 'api/v1/student/groups';

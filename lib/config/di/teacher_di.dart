@@ -22,6 +22,7 @@ import 'package:elara/features/teacher/group/domain/usecases/get_teacher_student
 import 'package:elara/features/teacher/group/domain/usecases/get_teacher_announcements_usecase.dart';
 import 'package:elara/features/teacher/group/domain/usecases/add_teacher_announcement_usecase.dart';
 import 'package:elara/features/teacher/group/domain/usecases/delete_teacher_announcement_usecase.dart';
+import 'package:elara/features/teacher/group/domain/usecases/delete_teacher_group_usecase.dart';
 import 'package:elara/features/teacher/homework/data/repositories/teacher_homework_repository_impl.dart';
 import 'package:elara/features/teacher/homework/domain/repositories/i_teacher_homework_repository.dart';
 import 'package:elara/features/teacher/homework/domain/usecases/get_teacher_module_homework_usecase.dart';
@@ -116,11 +117,15 @@ void setupTeacherDI() {
   getIt.registerLazySingleton<DeleteTeacherAnnouncementUseCase>(
     () => DeleteTeacherAnnouncementUseCase(getIt<TeacherGroupRepository>()),
   );
+  getIt.registerLazySingleton<DeleteTeacherGroupUseCase>(
+    () => DeleteTeacherGroupUseCase(getIt<TeacherGroupRepository>()),
+  );
 
   getIt.registerFactory<TeacherGroupCubit>(
     () => TeacherGroupCubit(
       getGroupDetail: getIt<GetTeacherGroupDetailUseCase>(),
       addStudent: getIt<AddTeacherGroupStudentUseCase>(),
+      deleteGroup: getIt<DeleteTeacherGroupUseCase>(),
     ),
   );
 

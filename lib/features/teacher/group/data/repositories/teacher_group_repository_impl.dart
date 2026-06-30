@@ -50,6 +50,18 @@ class TeacherGroupRepositoryImpl implements TeacherGroupRepository {
   }
 
   @override
+  Future<Either<Failure, void>> deleteGroup(String groupId) async {
+    try {
+      await _remoteDataSource.deleteGroup(groupId);
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Server error'));
+    } catch (e) {
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> addStudent({
     required String groupId,
     required String username,

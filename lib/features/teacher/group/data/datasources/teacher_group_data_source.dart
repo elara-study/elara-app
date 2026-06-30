@@ -15,6 +15,8 @@ abstract class TeacherGroupDataSource {
 
   Future<TeacherGroupDetailEntity> getGroupDetail(String groupId);
 
+  Future<void> deleteGroup(String groupId);
+
   Future<void> addStudent({
     required String groupId,
     required String username,

@@ -84,11 +84,16 @@ class TeacherGroupsScreen extends StatelessWidget {
       builder: (context) => SubjectGroupCard(
         group: group,
         variant: SubjectGroupCardVariant.teacher,
-        onTap: () => AppNavigation.pushNamed(
-          context,
-          AppRoutes.teacherGroup,
-          arguments: group,
-        ),
+        onTap: () async {
+          await AppNavigation.pushNamed(
+            context,
+            AppRoutes.teacherGroup,
+            arguments: group,
+          );
+          if (context.mounted) {
+            context.read<TeacherGroupsCubit>().loadGroups();
+          }
+        },
       ),
     );
   }
