@@ -1,6 +1,8 @@
 import 'package:elara/features/teacher/domain/entities/teacher_dashboard_entity.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
 
+import 'package:elara/features/teacher/domain/entities/teacher_roadmap_entity.dart';
+
 /// Contract for fetching teacher home data.
 ///
 /// Swap the implementation from [TeacherHomeDataSourceImpl] (mock) to a real
@@ -9,6 +11,7 @@ abstract class TeacherHomeDataSource {
   Future<TeacherDashboardEntity> getDashboard();
   Future<List<TeacherGroupEntity>> getGroups();
   Future<List<TeacherGroupEntity>> getRoadmaps();
+  Future<TeacherRoadmapEntity> getRoadmapDetails(String id);
 
   Future<void> createGroup({
     required String title,

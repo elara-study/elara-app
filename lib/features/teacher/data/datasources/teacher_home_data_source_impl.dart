@@ -7,6 +7,8 @@ import 'package:elara/features/teacher/data/datasources/teacher_home_data_source
 import 'package:elara/features/teacher/domain/entities/teacher_activity_entity.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.dart';
+import 'package:elara/features/teacher/domain/entities/teacher_roadmap_entity.dart';
+import 'package:elara/features/teacher/data/models/teacher_roadmap_model.dart';
 
 /// Mock implementation of [TeacherHomeDataSource].
 ///
@@ -192,11 +194,13 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
   Future<List<TeacherGroupEntity>> getGroups() async {
     final response = await _dio.get(ApiConstants.teacherGroups);
     final responseData = response.data;
-    
-    final groupsList = (responseData is Map<String, dynamic> && responseData.containsKey('data')) 
+
+    final groupsList =
+        (responseData is Map<String, dynamic> &&
+            responseData.containsKey('data'))
         ? responseData['data'] as List<dynamic>? ?? []
         : (responseData is List ? responseData : []);
-        
+
     return groupsList.map((g) {
       final map = g as Map<String, dynamic>;
       return TeacherGroupEntity(
@@ -207,9 +211,15 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
             'Unnamed Group',
         subject: map['subject']?.toString() ?? map['Subject']?.toString() ?? '',
         grade: map['grade']?.toString() ?? map['Grade']?.toString() ?? '1',
-        studentCount: (map['studentsCount'] ?? map['StudentsCount'] as num?)?.toInt() ?? 0,
-        totalLessons: (map['totalLessons'] ?? map['TotalLessons'] as num?)?.toInt() ?? 0,
-        progressPercent: (map['progressPercent'] ?? map['ProgressPercent'] as num?)?.toDouble() ?? 0.0,
+        studentCount:
+            (map['studentsCount'] ?? map['StudentsCount'] as num?)?.toInt() ??
+            0,
+        totalLessons:
+            (map['totalLessons'] ?? map['TotalLessons'] as num?)?.toInt() ?? 0,
+        progressPercent:
+            (map['progressPercent'] ?? map['ProgressPercent'] as num?)
+                ?.toDouble() ??
+            0.0,
         colorKey: 'primary',
       );
     }).toList();
@@ -219,11 +229,13 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
   Future<List<TeacherGroupEntity>> getRoadmaps() async {
     final response = await _dio.get(ApiConstants.teacherRoadmaps);
     final responseData = response.data;
-    
-    final roadmapsList = (responseData is Map<String, dynamic> && responseData.containsKey('data')) 
+
+    final roadmapsList =
+        (responseData is Map<String, dynamic> &&
+            responseData.containsKey('data'))
         ? responseData['data'] as List<dynamic>? ?? []
         : (responseData is List ? responseData : []);
-        
+
     return roadmapsList.map((r) {
       final map = r as Map<String, dynamic>;
       return TeacherGroupEntity(
@@ -235,11 +247,24 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
         subject: map['subject']?.toString() ?? map['Subject']?.toString() ?? '',
         grade: map['grade']?.toString() ?? map['Grade']?.toString() ?? '1',
         studentCount: 0,
-        totalLessons: (map['modulesCount'] ?? map['ModulesCount'] as num?)?.toInt() ?? 0,
+        totalLessons:
+            (map['modulesCount'] ?? map['ModulesCount'] as num?)?.toInt() ?? 0,
         progressPercent: 0.0,
         colorKey: 'secondary',
       );
     }).toList();
+  }
+
+  @override
+  Future<TeacherRoadmapEntity> getRoadmapDetails(String id) async {
+    final response = await _dio.get(ApiConstants.teacherRoadmapInfo(id));
+    final responseData = response.data;
+
+    if (responseData is Map<String, dynamic> && responseData.containsKey('data')) {
+      return TeacherRoadmapModel.fromJson(responseData['data'] as Map<String, dynamic>);
+    }
+    
+    return TeacherRoadmapModel.fromJson(responseData as Map<String, dynamic>);
   }
 
   @override
@@ -253,16 +278,13 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
     final gradeInt = int.tryParse(grade.replaceAll(RegExp(r'[^0-9]'), '')) ?? 1;
 
     final requestData = {
-      'name': title, 
-      'grade': gradeInt, 
+      'name': title,
+      'grade': gradeInt,
       'subject': subject,
       'roadmapName': roadmapName,
     };
 
-    await _dio.post(
-      ApiConstants.teacherGroups,
-      data: requestData,
-    );
+    await _dio.post(ApiConstants.teacherGroups, data: requestData);
   }
 
   @override
@@ -272,15 +294,9 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
     required String grade,
   }) async {
     final gradeInt = int.tryParse(grade.replaceAll(RegExp(r'[^0-9]'), '')) ?? 1;
-    final requestData = {
-      'name': title,
-      'grade': gradeInt,
-      'subject': subject,
-    };
 
-    await _dio.post(
-      ApiConstants.teacherRoadmaps,
-      data: requestData,
-    );
+    final requestData = {'name': title, 'grade': gradeInt, 'subject': subject};
+
+    await _dio.post(ApiConstants.teacherRoadmaps, data: requestData);
   }
 }

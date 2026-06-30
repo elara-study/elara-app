@@ -1,6 +1,7 @@
 import 'package:elara/features/teacher/domain/usecases/get_teacher_dashboard_usecase.dart';
 import 'package:elara/features/teacher/domain/usecases/get_teacher_groups_usecase.dart';
 import 'package:elara/features/teacher/domain/usecases/get_teacher_roadmaps_usecase.dart';
+import 'package:elara/features/teacher/domain/usecases/get_teacher_roadmap_details_usecase.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_groups_cubit.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_cubit.dart';
 import 'package:elara/features/teacher/domain/usecases/create_teacher_group_usecase.dart';
@@ -66,6 +67,10 @@ void setupTeacherDI() {
 
   getIt.registerLazySingleton<GetTeacherRoadmapsUseCase>(
     () => GetTeacherRoadmapsUseCase(getIt<TeacherHomeRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetTeacherRoadmapDetailsUseCase>(
+    () => GetTeacherRoadmapDetailsUseCase(getIt<TeacherHomeRepository>()),
   );
 
   getIt.registerFactory<TeacherHomeCubit>(

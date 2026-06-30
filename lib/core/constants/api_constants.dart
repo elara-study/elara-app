@@ -28,6 +28,7 @@ class ApiConstants {
   static const String teacherHome = 'api/v1/teacher/home';
   static const String teacherGroups = 'api/v1/teacher/groups';
   static const String teacherRoadmaps = 'api/v1/teacher/roadmaps';
+  static String teacherRoadmapInfo(String id) => 'api/v1/teacher/roadmaps/$id';
 
   static String teacherGroupInfo(String id) => 'api/v1/teacher/groups/$id';
   static String teacherGroupStudents(String id) =>

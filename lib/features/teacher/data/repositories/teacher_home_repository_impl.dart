@@ -4,6 +4,7 @@ import 'package:elara/core/error/failures.dart';
 import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_dashboard_entity.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/entities/teacher_roadmap_entity.dart';
 import 'package:elara/features/teacher/domain/repositories/teacher_home_repository.dart';
 
 class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
@@ -40,6 +41,18 @@ class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
     try {
       final roadmaps = await _remoteDataSource.getRoadmaps();
       return Right(roadmaps);
+    } on DioException catch (e) {
+      return Left(ServerFailure(e.message ?? e.toString()));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, TeacherRoadmapEntity>> getRoadmapDetails(String id) async {
+    try {
+      final roadmap = await _remoteDataSource.getRoadmapDetails(id);
+      return Right(roadmap);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message ?? e.toString()));
     } catch (e) {
