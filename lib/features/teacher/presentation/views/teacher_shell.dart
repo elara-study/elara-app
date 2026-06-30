@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_groups_cubit.dart';
+import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_cubit.dart';
 import 'package:elara/features/teacher/presentation/views/teacher_groups_screen.dart';
 import 'package:elara/features/teacher/presentation/views/teacher_home_screen.dart';
 import 'package:elara/features/teacher/presentation/views/teacher_roadmaps_screen.dart';
@@ -45,6 +46,9 @@ class _TeacherShellState extends State<TeacherShell> {
         ),
         BlocProvider<TeacherGroupsCubit>(
           create: (_) => getIt<TeacherGroupsCubit>()..loadGroups(),
+        ),
+        BlocProvider<TeacherRoadmapsCubit>(
+          create: (_) => getIt<TeacherRoadmapsCubit>()..loadRoadmaps(),
         ),
       ],
       child: Scaffold(

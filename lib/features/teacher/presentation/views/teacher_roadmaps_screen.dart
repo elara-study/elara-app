@@ -2,8 +2,8 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_home_state.dart';
+import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_cubit.dart';
+import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:elara/shared/widgets/subject_group_card.dart';
@@ -20,17 +20,17 @@ class TeacherRoadmapsScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       appBar: const AppGlassHeader(title: 'Roadmaps'),
-      body: BlocBuilder<TeacherHomeCubit, TeacherHomeState>(
+      body: BlocBuilder<TeacherRoadmapsCubit, TeacherRoadmapsState>(
         builder: (context, state) {
           return switch (state) {
-            TeacherHomeInitial() || TeacherHomeLoading() => const Center(
+            TeacherRoadmapsInitial() || TeacherRoadmapsLoading() => const Center(
               child: CircularProgressIndicator(),
             ),
-            TeacherHomeError(:final message) => _ErrorView(
+            TeacherRoadmapsError(:final message) => _ErrorView(
               message: message,
-              onRetry: () => context.read<TeacherHomeCubit>().loadHome(),
+              onRetry: () => context.read<TeacherRoadmapsCubit>().loadRoadmaps(),
             ),
-            TeacherHomeLoaded(:final roadmaps) =>
+            TeacherRoadmapsLoaded(:final roadmaps) =>
               roadmaps.isEmpty
                   ? const _EmptyGroupsView()
                   : SingleChildScrollView(
@@ -47,7 +47,7 @@ class TeacherRoadmapsScreen extends StatelessWidget {
                           AppSectionHeader(
                             title: 'Learning Paths',
                             onCreateGroup: (title, subject, grade, roadmapName) {
-                              context.read<TeacherHomeCubit>().createRoadmap(
+                              context.read<TeacherRoadmapsCubit>().createRoadmap(
                                 title: title,
                                 subject: subject,
                                 grade: grade,
