@@ -6,6 +6,7 @@ import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_cubi
 import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
+import 'package:elara/shared/widgets/create_group_dialog.dart';
 import 'package:elara/shared/widgets/subject_group_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,7 +47,11 @@ class TeacherRoadmapsScreen extends StatelessWidget {
                           // Page subtitle
                           AppSectionHeader(
                             title: 'Learning Paths',
-                            onCreateGroup: (title, subject, grade, roadmapName) {
+                            dialogConfig: const GroupDialogConfig(
+                              title: 'Create a roadmap',
+                              showRoadmapName: false,
+                            ),
+                            onCreateGroup: (title, subject, grade, _) {
                               context.read<TeacherRoadmapsCubit>().createRoadmap(
                                 title: title,
                                 subject: subject,
@@ -141,23 +146,42 @@ class _EmptyGroupsView extends StatelessWidget {
     return Center(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing2xl.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.groups_outlined,
-              size: 52.sp,
-              color: AppColors.neutral300,
-            ),
-            SizedBox(height: AppSpacing.spacingMd.h),
-            Text('No groups yet', style: AppTypography.h6(color: cs.onSurface)),
-            SizedBox(height: 6.h),
-            Text(
-              'Tap Create to add your first class.',
-              style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
-              textAlign: TextAlign.center,
-            ),
-          ],
+        child: GestureDetector(
+          onTap: () {
+            GroupDialog.show(
+              context,
+              config: const GroupDialogConfig(
+                title: 'Create a roadmap',
+                showRoadmapName: false,
+              ),
+              onSubmit: (title, subject, grade, _) {
+                context.read<TeacherRoadmapsCubit>().createRoadmap(
+                  title: title,
+                  subject: subject,
+                  grade: grade,
+                );
+              },
+            );
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.groups_outlined,
+                size: 52.sp,
+                color: AppColors.neutral300,
+              ),
+              SizedBox(height: AppSpacing.spacingMd.h),
+              Text('No roadmaps yet', style: AppTypography.h6(color: cs.onSurface)),
+              SizedBox(height: 6.h),
+              Text(
+                'Tap Create to add your first roadmap.',
+                style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

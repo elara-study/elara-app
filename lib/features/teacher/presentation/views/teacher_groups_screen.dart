@@ -6,6 +6,8 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_groups_cubit.dart';
 import 'package:elara/features/teacher/presentation/cubits/teacher_groups_state.dart';
+import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_cubit.dart';
+import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:elara/shared/widgets/create_group_dialog.dart';
@@ -23,7 +25,14 @@ class TeacherGroupsScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       appBar: const AppGlassHeader(title: 'Groups'),
-      body: BlocBuilder<TeacherGroupsCubit, TeacherGroupsState>(
+      body: Builder(
+        builder: (context) {
+          final roadmapsState = context.watch<TeacherRoadmapsCubit>().state;
+          final availableRoadmaps = roadmapsState is TeacherRoadmapsLoaded
+              ? roadmapsState.roadmaps.map((r) => r.name).toList()
+              : <String>[];
+
+          return BlocBuilder<TeacherGroupsCubit, TeacherGroupsState>(
         builder: (context, state) {
           return switch (state) {
             TeacherGroupsInitial() || TeacherGroupsLoading() => const Center(
@@ -35,7 +44,7 @@ class TeacherGroupsScreen extends StatelessWidget {
             ),
             TeacherGroupsLoaded(:final groups) =>
               groups.isEmpty
-                  ? const _EmptyGroupsView()
+                  ? _EmptyGroupsView(roadmaps: availableRoadmaps)
                   : SingleChildScrollView(
                       padding: EdgeInsets.only(
                         left: AppSpacing.spacingLg.w,
@@ -49,6 +58,9 @@ class TeacherGroupsScreen extends StatelessWidget {
                           // Page subtitle
                           AppSectionHeader(
                             title: 'My Groups',
+                            dialogConfig: GroupDialogConfig(
+                              roadmaps: availableRoadmaps,
+                            ),
                             onCreateGroup: (title, subject, grade, roadmapName) {
                               context.read<TeacherGroupsCubit>().createGroup(
                                 title: title,
@@ -75,6 +87,8 @@ class TeacherGroupsScreen extends StatelessWidget {
                       ),
                     ),
           };
+        },
+      );
         },
       ),
     );
@@ -103,7 +117,8 @@ class TeacherGroupsScreen extends StatelessWidget {
 // // ── Empty state ────────────────────────────────────────────────────────────────
 
 class _EmptyGroupsView extends StatelessWidget {
-  const _EmptyGroupsView();
+  final List<String> roadmaps;
+  const _EmptyGroupsView({required this.roadmaps});
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +130,7 @@ class _EmptyGroupsView extends StatelessWidget {
           onTap: () {
             GroupDialog.show(
               context,
+              config: GroupDialogConfig(roadmaps: roadmaps),
               onSubmit: (title, subject, grade, roadmapName) {
                 context.read<TeacherGroupsCubit>().createGroup(
                   title: title,

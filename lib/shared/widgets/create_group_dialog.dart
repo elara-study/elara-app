@@ -10,6 +10,8 @@ class GroupDialogConfig {
   final String title;
   final List<String> subjects;
   final List<String> grades;
+  final bool showRoadmapName;
+  final List<String> roadmaps;
 
   const GroupDialogConfig({
     this.title = 'Create a group',
@@ -22,6 +24,8 @@ class GroupDialogConfig {
       'History',
     ],
     this.grades = const ['Grade 10', 'Grade 11', 'Grade 12'],
+    this.showRoadmapName = true,
+    this.roadmaps = const [],
   });
 }
 
@@ -52,7 +56,7 @@ class GroupDialog extends StatelessWidget {
           onSubjectChanged: (v) => setDialogState(() => subject = v),
           onGradeChanged: (v) => setDialogState(() => grade = v),
           onSubmit: () {
-            if (titleValue.isEmpty || roadmapNameValue.isEmpty || subject == null || grade == null) {
+            if (titleValue.isEmpty || (config.showRoadmapName && roadmapNameValue.isEmpty) || subject == null || grade == null) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Please fill all required fields')),
               );
@@ -125,14 +129,17 @@ class GroupDialog extends StatelessWidget {
                 cs: cs,
               ),
               SizedBox(height: AppSpacing.spacing2xl.h),
-              _InputField(
-                label: 'Roadmap Name',
-                hint: 'Enter roadmap name',
-                value: roadmapNameValue,
-                onChanged: onRoadmapNameChanged,
-                cs: cs,
-              ),
-              SizedBox(height: AppSpacing.spacing2xl.h),
+              if (config.showRoadmapName) ...[
+                _StyledDropdown(
+                  label: 'Roadmap',
+                  hint: 'Select roadmap',
+                  value: roadmapNameValue.isEmpty ? null : roadmapNameValue,
+                  items: config.roadmaps.isEmpty ? ['No roadmaps available'] : config.roadmaps,
+                  onChanged: (v) => onRoadmapNameChanged(v ?? ''),
+                  cs: cs,
+                ),
+                SizedBox(height: AppSpacing.spacing2xl.h),
+              ],
               _SubmitButton(label: config.title, onTap: onSubmit),
             ],
           ),
