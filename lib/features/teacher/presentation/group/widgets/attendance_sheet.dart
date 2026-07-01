@@ -1,7 +1,7 @@
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
-import 'package:elara/features/teacher/presentation/group/domain/entities/teacher_student_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_student_entity.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:elara/shared/widgets/app_dialog.dart';
 import 'package:elara/shared/widgets/app_text_field.dart';

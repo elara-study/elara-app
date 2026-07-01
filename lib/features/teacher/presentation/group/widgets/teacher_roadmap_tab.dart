@@ -97,7 +97,7 @@ class _TeacherRoadmapContent extends StatelessWidget {
         AppSpacing.spacingLg.w,
         AppSpacing.spacing5xl.h,
       ),
-      itemCount: 1 + roadmap.materials.length,
+      itemCount: 1 + roadmap.modules.length,
       itemBuilder: (context, index) {
         if (index == 0) {
           return Padding(
@@ -109,18 +109,18 @@ class _TeacherRoadmapContent extends StatelessWidget {
           );
         }
 
-        final material = roadmap.materials[index - 1];
-        // Shim TeacherRoadmapMaterial to GroupRoadmapModule for the UI component
+        final moduleEntity = roadmap.modules[index - 1];
+        // Map TeacherRoadmapModuleEntity to GroupRoadmapModule for UI
         final moduleShim = GroupRoadmapModule(
-          moduleLabel: material.type,
-          title: material.title,
-          description: material.url,
+          moduleLabel: moduleEntity.id,
+          title: moduleEntity.title,
+          description: moduleEntity.description,
           status: RoadmapModuleStatus.completed,
         );
 
         return Padding(
           padding: EdgeInsets.only(
-            bottom: index == roadmap.materials.length
+            bottom: index == roadmap.modules.length
                 ? 0
                 : AppSpacing.spacingXl.h,
             top: index == 0 ? 0 : AppSpacing.spacing2xl.h,

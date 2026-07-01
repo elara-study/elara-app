@@ -3,11 +3,11 @@ import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_groups_cubit.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_groups_state.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_cubit.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_state.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_groups_cubit.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_groups_state.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_roadmaps_cubit.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_roadmaps_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:elara/shared/widgets/create_group_dialog.dart';
@@ -33,62 +33,65 @@ class TeacherGroupsScreen extends StatelessWidget {
               : <String>[];
 
           return BlocBuilder<TeacherGroupsCubit, TeacherGroupsState>(
-        builder: (context, state) {
-          return switch (state) {
-            TeacherGroupsInitial() || TeacherGroupsLoading() => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            TeacherGroupsError(:final message) => _ErrorView(
-              message: message,
-              onRetry: () => context.read<TeacherGroupsCubit>().loadGroups(),
-            ),
-            TeacherGroupsLoaded(:final groups) =>
-              groups.isEmpty
-                  ? _EmptyGroupsView(roadmaps: availableRoadmaps)
-                  : SingleChildScrollView(
-                      padding: EdgeInsets.only(
-                        left: AppSpacing.spacingLg.w,
-                        right: AppSpacing.spacingLg.w,
-                        top: kToolbarHeight + 62.h,
-                        bottom: 120.h,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Page subtitle
-                          AppSectionHeader(
-                            title: 'My Groups',
-                            dialogConfig: GroupDialogConfig(
-                              roadmaps: availableRoadmaps,
-                            ),
-                            onCreateGroup: (title, subject, grade, roadmapName) {
-                              context.read<TeacherGroupsCubit>().createGroup(
-                                title: title,
-                                subject: subject,
-                                grade: grade,
-                                roadmapName: roadmapName,
-                              );
-                            },
+            builder: (context, state) {
+              return switch (state) {
+                TeacherGroupsInitial() || TeacherGroupsLoading() =>
+                  const Center(child: CircularProgressIndicator()),
+                TeacherGroupsError(:final message) => _ErrorView(
+                  message: message,
+                  onRetry: () =>
+                      context.read<TeacherGroupsCubit>().loadGroups(),
+                ),
+                TeacherGroupsLoaded(:final groups) =>
+                  groups.isEmpty
+                      ? _EmptyGroupsView(roadmaps: availableRoadmaps)
+                      : SingleChildScrollView(
+                          padding: EdgeInsets.only(
+                            left: AppSpacing.spacingLg.w,
+                            right: AppSpacing.spacingLg.w,
+                            top: kToolbarHeight + 62.h,
+                            bottom: 120.h,
                           ),
-                          SizedBox(height: AppSpacing.spacing2xl.h),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Page subtitle
+                              AppSectionHeader(
+                                title: 'My Groups',
+                                dialogConfig: GroupDialogConfig(
+                                  roadmaps: availableRoadmaps,
+                                ),
+                                onCreateGroup:
+                                    (title, subject, grade, roadmapName) {
+                                      context
+                                          .read<TeacherGroupsCubit>()
+                                          .createGroup(
+                                            title: title,
+                                            subject: subject,
+                                            grade: grade,
+                                            roadmapName: roadmapName,
+                                          );
+                                    },
+                              ),
+                              SizedBox(height: AppSpacing.spacing2xl.h),
 
-                          // Group cards
-                          ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            itemCount: groups.length,
-                            separatorBuilder: (_, __) =>
-                                SizedBox(height: AppSpacing.spacingLg.h),
-                            itemBuilder: (_, index) =>
-                                _buildGroupCard(groups[index]),
+                              // Group cards
+                              ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                itemCount: groups.length,
+                                separatorBuilder: (_, __) =>
+                                    SizedBox(height: AppSpacing.spacingLg.h),
+                                itemBuilder: (_, index) =>
+                                    _buildGroupCard(groups[index]),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-          };
-        },
-      );
+                        ),
+              };
+            },
+          );
         },
       ),
     );
@@ -151,7 +154,10 @@ class _EmptyGroupsView extends StatelessWidget {
                 color: AppColors.neutral300,
               ),
               SizedBox(height: AppSpacing.spacingMd.h),
-              Text('No groups yet', style: AppTypography.h6(color: cs.onSurface)),
+              Text(
+                'No groups yet',
+                style: AppTypography.h6(color: cs.onSurface),
+              ),
               SizedBox(height: 6.h),
               Text(
                 'Tap Create to add your first class.',

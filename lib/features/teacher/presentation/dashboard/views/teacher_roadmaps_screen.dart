@@ -1,9 +1,9 @@
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_cubit.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_state.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_roadmaps_cubit.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_roadmaps_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:elara/shared/widgets/create_group_dialog.dart';
@@ -92,7 +92,7 @@ class TeacherRoadmapsScreen extends StatelessWidget {
           onTap: () {
             // Fetch roadmap details when clicked
             context.read<TeacherRoadmapsCubit>().loadRoadmapDetails(group.id);
-            
+
             // Show a simple snackbar to acknowledge the action
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -103,7 +103,7 @@ class TeacherRoadmapsScreen extends StatelessWidget {
             );
           },
         );
-      }
+      },
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
 
 class TeacherGroupModel extends TeacherGroupEntity {
   TeacherGroupModel({

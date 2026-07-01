@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_dashboard_entity.dart';
+import 'package:elara/features/teacher/domain/dashboard/entities/teacher_dashboard_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:elara/core/constants/api_constants.dart';
 import 'package:elara/core/theme/app_colors.dart';
-import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_activity_entity.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_roadmap_entity.dart';
-import 'package:elara/features/teacher/data/models/teacher_roadmap_model.dart';
+import 'package:elara/features/teacher/data/dashboard/teacher_home_data_source.dart';
+import 'package:elara/features/teacher/domain/dashboard/entities/teacher_activity_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/dashboard/entities/teacher_profile_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_roadmap_entity.dart';
+import 'package:elara/features/teacher/data/dashboard/teacher_roadmap_model.dart';
 
 /// Mock implementation of [TeacherHomeDataSource].
 ///
@@ -260,10 +260,13 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
     final response = await _dio.get(ApiConstants.teacherRoadmapInfo(id));
     final responseData = response.data;
 
-    if (responseData is Map<String, dynamic> && responseData.containsKey('data')) {
-      return TeacherRoadmapModel.fromJson(responseData['data'] as Map<String, dynamic>);
+    if (responseData is Map<String, dynamic> &&
+        responseData.containsKey('data')) {
+      return TeacherRoadmapModel.fromJson(
+        responseData['data'] as Map<String, dynamic>,
+      );
     }
-    
+
     return TeacherRoadmapModel.fromJson(responseData as Map<String, dynamic>);
   }
 

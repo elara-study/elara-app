@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:elara/features/teacher/domain/usecases/get_teacher_roadmaps_usecase.dart';
-import 'package:elara/features/teacher/domain/usecases/create_teacher_roadmap_usecase.dart';
-import 'package:elara/features/teacher/domain/usecases/get_teacher_roadmap_details_usecase.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_state.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_roadmaps_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/create_teacher_roadmap_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_roadmap_details_usecase.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_roadmaps_state.dart';
 
 class TeacherRoadmapsCubit extends Cubit<TeacherRoadmapsState> {
   final GetTeacherRoadmapsUseCase _getTeacherRoadmapsUseCase;
@@ -46,9 +46,6 @@ class TeacherRoadmapsCubit extends Cubit<TeacherRoadmapsState> {
     // Just hitting the endpoint as requested for now.
     // Further UI state handling can be added here if needed.
     final result = await _getTeacherRoadmapDetailsUseCase(roadmapId);
-    result.fold(
-      (failure) => null,
-      (roadmap) => null,
-    );
+    result.fold((failure) => null, (roadmap) => null);
   }
 }

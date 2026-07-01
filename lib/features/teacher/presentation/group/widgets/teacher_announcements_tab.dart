@@ -1,7 +1,7 @@
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
-import 'package:elara/features/teacher/presentation/group/presentation/cubits/teacher_announcements_cubit.dart';
+import 'package:elara/features/teacher/presentation/group/cubits/teacher_announcements_cubit.dart';
 import 'package:elara/shared/widgets/announcement_card.dart';
 import 'package:elara/shared/widgets/announcement_form_content.dart';
 import 'package:elara/shared/widgets/app_dialog.dart';
@@ -20,7 +20,8 @@ class TeacherAnnouncementsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TeacherAnnouncementsCubit, TeacherAnnouncementsState>(
       builder: (context, state) {
-        if (state is TeacherAnnouncementsInitial || state is TeacherAnnouncementsLoading) {
+        if (state is TeacherAnnouncementsInitial ||
+            state is TeacherAnnouncementsLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is TeacherAnnouncementsError) {
           return Center(
@@ -34,9 +35,7 @@ class TeacherAnnouncementsTab extends StatelessWidget {
             ),
           );
         } else if (state is TeacherAnnouncementsLoaded) {
-          return _TeacherAnnouncementsContent(
-            items: state.announcements,
-          );
+          return _TeacherAnnouncementsContent(items: state.announcements);
         }
         return const SizedBox.shrink();
       },
@@ -59,7 +58,10 @@ class _TeacherAnnouncementsContent extends StatelessWidget {
           submitLabel: 'Add Announcement',
           onSubmit: (title, body) {
             Navigator.of(context).pop();
-            context.read<TeacherAnnouncementsCubit>().addAnnouncement(title, body);
+            context.read<TeacherAnnouncementsCubit>().addAnnouncement(
+              title,
+              body,
+            );
           },
         ),
       ),
@@ -123,7 +125,9 @@ class _TeacherAnnouncementsContent extends StatelessWidget {
               announcement: items[i],
               onEdit: () => _showEditDialog(ctx, items[i]),
               onDelete: () {
-                context.read<TeacherAnnouncementsCubit>().deleteAnnouncement(items[i].id);
+                context.read<TeacherAnnouncementsCubit>().deleteAnnouncement(
+                  items[i].id,
+                );
               },
             ),
           ),

@@ -4,18 +4,18 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/teacher/presentation/group/domain/entities/teacher_group_detail_entity.dart';
-import 'package:elara/features/teacher/presentation/group/domain/entities/teacher_student_entity.dart';
-import 'package:elara/features/teacher/presentation/group/presentation/cubits/teacher_group_cubit.dart';
-import 'package:elara/features/teacher/presentation/group/presentation/widgets/add_student_sheet.dart';
-import 'package:elara/features/teacher/presentation/group/presentation/widgets/attendance_sheet.dart';
-import 'package:elara/features/teacher/presentation/group/presentation/widgets/group_stats_header.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_detail_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_student_entity.dart';
+import 'package:elara/features/teacher/presentation/group/cubits/teacher_group_cubit.dart';
+import 'package:elara/features/teacher/presentation/group/widgets/add_student_sheet.dart';
+import 'package:elara/features/teacher/presentation/group/widgets/attendance_sheet.dart';
+import 'package:elara/features/teacher/presentation/group/widgets/group_stats_header.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/navigation/app_navigation.dart';
-import 'package:elara/features/teacher/presentation/group/presentation/views/teacher_student_profile_route_args.dart';
-import 'package:elara/features/teacher/presentation/group/presentation/views/attendance_history_route_args.dart';
-import 'package:elara/features/teacher/presentation/group/presentation/widgets/student_row.dart';
+import 'package:elara/features/teacher/presentation/group/views/teacher_student_profile_route_args.dart';
+import 'package:elara/features/teacher/presentation/group/views/attendance_history_route_args.dart';
+import 'package:elara/features/teacher/presentation/group/widgets/student_row.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:elara/shared/widgets/app_text_field.dart';
 import 'package:elara/shared/widgets/segmented_progress_bar.dart';
@@ -37,8 +37,9 @@ class StudentsTab extends StatelessWidget {
         return switch (state) {
           TeacherGroupInitial() ||
           TeacherGroupLoading() ||
-          TeacherGroupDeleted() =>
-            const Center(child: CircularProgressIndicator()),
+          TeacherGroupDeleted() => const Center(
+            child: CircularProgressIndicator(),
+          ),
           TeacherGroupError(:final message) => Center(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.spacing2xl),
@@ -145,9 +146,9 @@ class _StudentsContentState extends State<_StudentsContent> {
                   joinCode: widget.detail.joinCode,
                   onSubmit: (username) {
                     context.read<TeacherGroupCubit>().addStudent(
-                          groupId: widget.group.id,
-                          username: username,
-                        );
+                      groupId: widget.group.id,
+                      username: username,
+                    );
                   },
                 ),
               ),

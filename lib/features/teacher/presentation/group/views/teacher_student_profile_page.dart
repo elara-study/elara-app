@@ -1,7 +1,7 @@
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/domain/group/entities/teacher_student_entity.dart';
 import 'package:elara/features/teacher/domain/group/usecases/get_teacher_student_insights_usecase.dart';
 import 'package:elara/features/teacher/domain/group/usecases/get_teacher_student_profile_usecase.dart';

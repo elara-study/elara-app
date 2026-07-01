@@ -42,7 +42,7 @@ import 'package:elara/features/student/presentation/profile/cubits/student_setti
 import 'package:elara/features/student/presentation/profile/views/student_settings_screen.dart';
 import 'package:elara/features/student/presentation/quiz/quiz_route_args.dart';
 import 'package:elara/features/student/presentation/quiz/views/quiz_flow_page.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/presentation/group/views/attendance_history_route_args.dart';
 import 'package:elara/features/teacher/presentation/group/views/attendance_history_screen.dart';
 import 'package:elara/features/teacher/presentation/group/views/teacher_group_page.dart';
@@ -51,7 +51,7 @@ import 'package:elara/features/teacher/presentation/group/views/teacher_student_
 import 'package:elara/features/teacher/presentation/homework/route_args/teacher_module_route_args.dart';
 import 'package:elara/features/teacher/presentation/homework/views/teacher_homework_screen.dart';
 import 'package:elara/features/teacher/presentation/homework/views/teacher_resources_screen.dart';
-import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
+import 'package:elara/features/teacher/presentation/dashboard/views/teacher_shell.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

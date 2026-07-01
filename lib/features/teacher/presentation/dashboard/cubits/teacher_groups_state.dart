@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
 
 sealed class TeacherGroupsState extends Equatable {
   const TeacherGroupsState();

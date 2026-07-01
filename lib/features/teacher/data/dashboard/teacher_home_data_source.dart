@@ -1,7 +1,6 @@
-import 'package:elara/features/teacher/domain/entities/teacher_dashboard_entity.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-
-import 'package:elara/features/teacher/domain/entities/teacher_roadmap_entity.dart';
+import 'package:elara/features/teacher/domain/dashboard/entities/teacher_dashboard_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_roadmap_entity.dart';
 
 /// Contract for fetching teacher home data.
 ///

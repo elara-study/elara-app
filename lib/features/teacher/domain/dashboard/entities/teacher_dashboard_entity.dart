@@ -1,6 +1,6 @@
-import 'package:elara/features/teacher/domain/entities/teacher_activity_entity.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.dart';
+import 'package:elara/features/teacher/domain/dashboard/entities/teacher_activity_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/dashboard/entities/teacher_profile_entity.dart';
 
 class TeacherDashboardEntity {
   final TeacherProfileEntity profile;

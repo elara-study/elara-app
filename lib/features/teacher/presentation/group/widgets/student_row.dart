@@ -2,7 +2,7 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/teacher/presentation/group/domain/entities/teacher_student_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_student_entity.dart';
 import 'package:elara/shared/widgets/progress_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -124,12 +124,16 @@ class _StreakBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (streak == 0) return const SizedBox.shrink();
-    
+
     final cs = Theme.of(context).colorScheme;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(Icons.local_fire_department_rounded, size: 20, color: Colors.orange),
+        const Icon(
+          Icons.local_fire_department_rounded,
+          size: 20,
+          color: Colors.orange,
+        ),
         const SizedBox(width: 2),
         Text(
           streak.toString(),

@@ -1,4 +1,4 @@
-import 'package:elara/features/teacher/domain/entities/teacher_roadmap_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_roadmap_entity.dart';
 
 class TeacherRoadmapModuleModel extends TeacherRoadmapModuleEntity {
   const TeacherRoadmapModuleModel({
@@ -16,11 +16,7 @@ class TeacherRoadmapModuleModel extends TeacherRoadmapModuleEntity {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'description': description,
-    };
+    return {'id': id, 'title': title, 'description': description};
   }
 }
 
@@ -45,8 +41,13 @@ class TeacherRoadmapModel extends TeacherRoadmapEntity {
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now()
           : DateTime.now(),
-      modules: (json['modules'] as List<dynamic>?)
-              ?.map((e) => TeacherRoadmapModuleModel.fromJson(e as Map<String, dynamic>))
+      modules:
+          (json['modules'] as List<dynamic>?)
+              ?.map(
+                (e) => TeacherRoadmapModuleModel.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
               .toList() ??
           [],
     );

@@ -4,7 +4,7 @@ import 'package:elara/features/teacher/domain/group/usecases/get_teacher_announc
 import 'package:elara/features/teacher/domain/group/usecases/add_teacher_announcement_usecase.dart';
 import 'package:elara/features/teacher/domain/group/usecases/delete_teacher_announcement_usecase.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_roadmap_cubit.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_announcements_cubit.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_group_cubit.dart';
 import 'package:elara/features/teacher/presentation/group/views/teacher_group_screen.dart';

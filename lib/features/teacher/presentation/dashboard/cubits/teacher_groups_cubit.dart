@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:elara/features/teacher/domain/usecases/get_teacher_groups_usecase.dart';
-import 'package:elara/features/teacher/domain/usecases/create_teacher_group_usecase.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_groups_state.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_groups_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/create_teacher_group_usecase.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_groups_state.dart';
 
 class TeacherGroupsCubit extends Cubit<TeacherGroupsState> {
   final GetTeacherGroupsUseCase _getTeacherGroupsUseCase;

@@ -1,6 +1,6 @@
 import 'package:elara/core/theme/app_icon_sizes.dart';
 import 'package:elara/core/theme/app_spacing.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/presentation/group/widgets/students_tab.dart';
 import 'package:elara/features/teacher/presentation/group/widgets/teacher_announcements_tab.dart';
 import 'package:elara/features/teacher/presentation/group/widgets/teacher_roadmap_tab.dart';

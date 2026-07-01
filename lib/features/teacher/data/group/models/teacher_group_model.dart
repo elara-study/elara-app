@@ -2,15 +2,14 @@ import 'package:elara/features/teacher/domain/group/entities/teacher_group_entit
 
 class TeacherGroupModel extends TeacherGroupEntity {
   const TeacherGroupModel({
-    super.id,
+    required super.id,
     required super.name,
     required super.grade,
     required super.subject,
-    super.roadmapName,
-    super.studentCount,
-    super.totalLessons,
-    super.progressPercent,
-    super.colorKey,
+    required super.studentCount,
+    required super.totalLessons,
+    required super.progressPercent,
+    required super.colorKey,
   });
 
   factory TeacherGroupModel.fromJson(Map<String, dynamic> json) {
@@ -23,7 +22,10 @@ class TeacherGroupModel extends TeacherGroupEntity {
           json['grade']?.toString() ??
           '0', // Swagger says int, GroupEntity expects String
       subject: json['subject'] as String,
-      roadmapName: json['roadmapName'] as String?,
+      studentCount: json['studentCount'] as int? ?? 0,
+      totalLessons: json['totalLessons'] as int? ?? 0,
+      progressPercent: json['progressPercent'] as double? ?? 0.0,
+      colorKey: json['colorKey'] as String? ?? 'blue',
     );
   }
 
@@ -33,7 +35,6 @@ class TeacherGroupModel extends TeacherGroupEntity {
       'grade':
           int.tryParse(grade) ?? 0, // Convert back to int for the request body
       'subject': subject,
-      if (roadmapName != null) 'roadmap': roadmapName,
     };
   }
 
@@ -43,7 +44,6 @@ class TeacherGroupModel extends TeacherGroupEntity {
       name: name,
       grade: grade,
       subject: subject,
-      roadmapName: roadmapName,
       studentCount: studentCount,
       totalLessons: totalLessons,
       progressPercent: progressPercent,

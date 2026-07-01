@@ -1,5 +1,5 @@
-import 'package:elara/features/teacher/presentation/group/domain/entities/teacher_student_insight_entity.dart';
-import 'package:elara/features/teacher/presentation/group/presentation/cubits/teacher_student_profile_cubit.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_student_insight_entity.dart';
+import 'package:elara/features/teacher/presentation/group/cubits/teacher_student_profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'add_insight_manual_sheet.dart';

@@ -1,3 +1,4 @@
+import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
 import 'package:elara/features/student/domain/profile/entities/profile_linked_parent_entity.dart';
 import 'package:elara/features/teacher/data/group/datasources/teacher_group_data_source.dart';
 import 'package:elara/features/teacher/data/group/models/teacher_group_model.dart';
@@ -23,8 +24,10 @@ class MockTeacherGroupDataSource implements TeacherGroupDataSource {
       name: name,
       grade: grade.toString(),
       subject: subject,
-      roadmapName: roadmap ?? 'Mock Roadmap',
       studentCount: 0,
+      totalLessons: 0,
+      progressPercent: 0.0,
+      colorKey: 'blue',
     );
   }
 
@@ -138,20 +141,35 @@ class MockTeacherGroupDataSource implements TeacherGroupDataSource {
     await Future.delayed(const Duration(milliseconds: 300));
   }
 
+  static const _mockModules = [
+    TeacherRoadmapModuleEntity(
+      id: 'mod_1',
+      title: 'Introduction to Physics',
+      description: 'Basic concepts of physics',
+    ),
+    TeacherRoadmapModuleEntity(
+      id: 'mod_2',
+      title: 'Chemistry Fundamentals',
+      description: 'Introduction to chemistry',
+    ),
+    TeacherRoadmapModuleEntity(
+      id: 'mod_3',
+      title: 'Biology Basics',
+      description: 'Fundamentals of biology',
+    ),
+  ];
+
   @override
   Future<TeacherRoadmapEntity> getRoadmap(String groupId) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    return const TeacherRoadmapEntity(
+    return TeacherRoadmapEntity(
       id: 'mock_roadmap_1',
       name: 'Science Grade 10',
-      lessonsCount: 15,
-      materials: [
-        TeacherRoadmapMaterial(
-          title: 'Syllabus',
-          type: 'PDF',
-          url: 'https://example.com/syllabus.pdf',
-        ),
-      ],
+      description: 'A comprehensive roadmap for Science Grade 10',
+      grade: 10,
+      subject: 'Science',
+      createdAt: DateTime.now(),
+      modules: _mockModules,
     );
   }
 

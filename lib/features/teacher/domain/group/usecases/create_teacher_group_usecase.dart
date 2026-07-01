@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:elara/core/error/failures.dart';
-import 'package:elara/features/teacher/domain/repositories/teacher_home_repository.dart';
+import 'package:elara/features/teacher/domain/dashboard/repositories/teacher_home_repository.dart';
 
 class CreateTeacherGroupUseCase {
   final TeacherHomeRepository _repository;

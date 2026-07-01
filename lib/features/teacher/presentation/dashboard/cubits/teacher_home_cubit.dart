@@ -1,7 +1,7 @@
-import 'package:elara/features/teacher/domain/usecases/get_teacher_dashboard_usecase.dart';
-import 'package:elara/features/teacher/domain/usecases/create_teacher_group_usecase.dart';
-import 'package:elara/features/teacher/domain/usecases/create_teacher_roadmap_usecase.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_home_state.dart';
+import 'package:elara/features/teacher/domain/dashboard/usecases/get_teacher_dashboard_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/create_teacher_group_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/create_teacher_roadmap_usecase.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TeacherHomeCubit extends Cubit<TeacherHomeState> {
@@ -13,10 +13,10 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
     required GetTeacherDashboardUseCase getTeacherDashboard,
     required CreateTeacherGroupUseCase createTeacherGroup,
     required CreateTeacherRoadmapUseCase createTeacherRoadmap,
-  })  : _getTeacherDashboard = getTeacherDashboard,
-        _createTeacherGroup = createTeacherGroup,
-        _createTeacherRoadmap = createTeacherRoadmap,
-        super(const TeacherHomeInitial());
+  }) : _getTeacherDashboard = getTeacherDashboard,
+       _createTeacherGroup = createTeacherGroup,
+       _createTeacherRoadmap = createTeacherRoadmap,
+       super(const TeacherHomeInitial());
 
   Future<void> loadHome() async {
     emit(const TeacherHomeLoading());
@@ -24,7 +24,8 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
       final result = await _getTeacherDashboard();
 
       result.fold(
-        (failure) => emit(TeacherHomeError('Failed to load home: ${failure.message}')),
+        (failure) =>
+            emit(TeacherHomeError('Failed to load home: ${failure.message}')),
         (dashboard) => emit(
           TeacherHomeLoaded(
             profile: dashboard.profile,
@@ -52,9 +53,11 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
         grade: grade,
         roadmapName: roadmapName,
       );
-      
+
       result.fold(
-        (failure) => emit(TeacherHomeError('Failed to create group: ${failure.message}')),
+        (failure) => emit(
+          TeacherHomeError('Failed to create group: ${failure.message}'),
+        ),
         (_) => loadHome(), // refresh the list
       );
     } catch (e) {
@@ -73,9 +76,11 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
         subject: subject,
         grade: grade,
       );
-      
+
       result.fold(
-        (failure) => emit(TeacherHomeError('Failed to create roadmap: ${failure.message}')),
+        (failure) => emit(
+          TeacherHomeError('Failed to create roadmap: ${failure.message}'),
+        ),
         (_) => loadHome(), // refresh the list
       );
     } catch (e) {

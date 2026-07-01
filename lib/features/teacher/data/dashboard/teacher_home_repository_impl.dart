@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:elara/core/error/failures.dart';
-import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_dashboard_entity.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_roadmap_entity.dart';
-import 'package:elara/features/teacher/domain/repositories/teacher_home_repository.dart';
+import 'package:elara/features/teacher/data/dashboard/teacher_home_data_source.dart';
+import 'package:elara/features/teacher/domain/dashboard/entities/teacher_dashboard_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_roadmap_entity.dart';
+import 'package:elara/features/teacher/domain/dashboard/repositories/teacher_home_repository.dart';
 
 class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
   final TeacherHomeDataSource _remoteDataSource;
@@ -49,7 +49,9 @@ class TeacherHomeRepositoryImpl implements TeacherHomeRepository {
   }
 
   @override
-  Future<Either<Failure, TeacherRoadmapEntity>> getRoadmapDetails(String id) async {
+  Future<Either<Failure, TeacherRoadmapEntity>> getRoadmapDetails(
+    String id,
+  ) async {
     try {
       final roadmap = await _remoteDataSource.getRoadmapDetails(id);
       return Right(roadmap);

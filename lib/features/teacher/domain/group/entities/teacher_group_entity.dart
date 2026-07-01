@@ -20,7 +20,7 @@ class TeacherGroupEntity extends GroupEntity {
   @override
   String get lessonProgressLabel => '$totalLessons lessons';
 
-  TeacherGroupEntity({
+  const TeacherGroupEntity({
     required this.id,
     required this.name,
     required this.subject,

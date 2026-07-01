@@ -2,7 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/teacher/presentation/group/domain/entities/teacher_student_insight_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_student_insight_entity.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
