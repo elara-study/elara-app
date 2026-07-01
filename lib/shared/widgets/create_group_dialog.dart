@@ -36,7 +36,13 @@ class GroupDialog extends StatelessWidget {
   static void show(
     BuildContext context, {
     GroupDialogConfig config = const GroupDialogConfig(),
-    required void Function(String title, String subject, String grade, String roadmapName) onSubmit,
+    required void Function(
+      String title,
+      String subject,
+      String grade,
+      String roadmapName,
+    )
+    onSubmit,
   }) {
     String titleValue = '';
     String roadmapNameValue = '';
@@ -53,13 +59,19 @@ class GroupDialog extends StatelessWidget {
           selectedSubject: subject,
           selectedGrade: grade,
           onTitleChanged: (v) => setDialogState(() => titleValue = v),
-          onRoadmapNameChanged: (v) => setDialogState(() => roadmapNameValue = v),
+          onRoadmapNameChanged: (v) =>
+              setDialogState(() => roadmapNameValue = v),
           onSubjectChanged: (v) => setDialogState(() => subject = v),
           onGradeChanged: (v) => setDialogState(() => grade = v),
           onSubmit: () {
-            if (titleValue.isEmpty || (config.showRoadmapName && roadmapNameValue.isEmpty) || subject == null || grade == null) {
+            if (titleValue.isEmpty ||
+                (config.showRoadmapName && roadmapNameValue.isEmpty) ||
+                subject == null ||
+                grade == null) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Please fill all required fields')),
+                const SnackBar(
+                  content: Text('Please fill all required fields'),
+                ),
               );
               return;
             }
@@ -135,9 +147,13 @@ class GroupDialog extends StatelessWidget {
                   label: 'Roadmap',
                   hint: 'Select roadmap',
                   prefixIcon: Icon(Icons.map_outlined, size: 16.w),
-                  options: config.roadmaps.isEmpty ? ['No roadmaps available'] : config.roadmaps,
+                  options: config.roadmaps.isEmpty
+                      ? ['No roadmaps available']
+                      : config.roadmaps,
                   onChanged: onRoadmapNameChanged,
-                  initialValue: roadmapNameValue.isEmpty ? null : roadmapNameValue,
+                  initialValue: roadmapNameValue.isEmpty
+                      ? null
+                      : roadmapNameValue,
                 ),
                 SizedBox(height: AppSpacing.spacing2xl.h),
               ],
@@ -316,7 +332,6 @@ class _SubjectGradeRow extends StatelessWidget {
     );
   }
 }
-
 
 class _SubmitButton extends StatelessWidget {
   final String label;

@@ -5,7 +5,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/parent/domain/children/entities/parent_homework_card_entity.dart';
 import 'package:elara/features/parent/domain/children/entities/parent_homework_status.dart';
 import 'package:elara/features/student/domain/homework/entities/homework_problem_entity.dart';
-import 'package:elara/features/teacher/homework/presentation/widgets/teacher_answer_section.dart';
+import 'package:elara/features/teacher/presentation/homework/widgets/teacher_answer_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -27,20 +27,22 @@ class ParentHomeworkDialogContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (homework.status != ParentHomeworkStatus.active && homework.score != null) ...[
+              if (homework.status != ParentHomeworkStatus.active &&
+                  homework.score != null) ...[
                 Text(
                   homework.score!.replaceAll(' ', ''),
-                  style: AppTypography.h5(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  style: AppTypography.h5(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 SizedBox(height: AppSpacing.spacingLg.h),
               ],
-              ...homework.problems
-                  .map(
-                    (p) => Padding(
-                      padding: EdgeInsets.only(bottom: AppSpacing.spacingLg.h),
-                      child: _buildProblemItem(context, p),
-                    ),
-                  ),
+              ...homework.problems.map(
+                (p) => Padding(
+                  padding: EdgeInsets.only(bottom: AppSpacing.spacingLg.h),
+                  child: _buildProblemItem(context, p),
+                ),
+              ),
             ],
           ),
         ),
@@ -48,7 +50,10 @@ class ParentHomeworkDialogContent extends StatelessWidget {
     );
   }
 
-  Widget _buildProblemItem(BuildContext context, HomeworkProblemEntity problem) {
+  Widget _buildProblemItem(
+    BuildContext context,
+    HomeworkProblemEntity problem,
+  ) {
     if (homework.status == ParentHomeworkStatus.active) {
       return _ParentProblemCard(problem: problem);
     }
@@ -72,7 +77,10 @@ class _ParentProblemCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
-        border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.5), width: 1),
+        border: Border.all(
+          color: cs.outlineVariant.withValues(alpha: 0.5),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,12 +149,18 @@ class _ParentAnswerSection extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (isGraded) ...[
-                      Icon(Icons.check_circle, color: AppColors.brandSecondary500, size: 12.sp),
+                      Icon(
+                        Icons.check_circle,
+                        color: AppColors.brandSecondary500,
+                        size: 12.sp,
+                      ),
                       SizedBox(width: AppSpacing.spacing2xs.w),
                     ],
                     Text(
                       'ANSWER ${problem.problemNumber}',
-                      style: AppTypography.labelSmall(color: AppColors.brandSecondary500),
+                      style: AppTypography.labelSmall(
+                        color: AppColors.brandSecondary500,
+                      ),
                     ),
                   ],
                 ),

@@ -215,8 +215,11 @@ class _RoadmapCard extends StatelessWidget {
 
           children: [
             // ── Colored banner (bottom) ───────────────────────────
-            Container(
-              margin: EdgeInsets.only(top: AppSpacing.spacing7xl.w),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
               height: 86.w,
               width: double.infinity,
               decoration: BoxDecoration(
@@ -243,7 +246,7 @@ class _RoadmapCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      group.subject.toUpperCase(),
+                      group.subject,
                       style: AppTypography.labelLarge(color: AppColors.neutral50)
                           .copyWith(
                             fontWeight: AppTypography.semiBold,
@@ -254,35 +257,14 @@ class _RoadmapCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: AppSpacing.spacingMd.w),
-                  // ACTIVE / DRAFT badge
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.spacingMd.w,
-                      vertical: AppSpacing.spacingXs.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral50.withValues(alpha: 0.25),
-                      borderRadius: BorderRadius.circular(
-                        AppRadius.radiusFull.r,
-                      ),
-                    ),
-                    child: Text(
-                      isDraft ? 'DRAFT' : 'ACTIVE',
-                      style:
-                          AppTypography.labelSmall(
-                            color: AppColors.neutral50,
-                          ).copyWith(
-                            fontWeight: AppTypography.semiBold,
-                            fontSize: 12.sp,
-                          ),
-                    ),
-                  ),
+
                 ],
               ),
             ),
+            ),
             // ── White content area (top) ──────────────────────────
             Container(
-              // margin: EdgeInsets.only(bottom: bannerHeight.h),
+              margin: EdgeInsets.only(bottom: AppSpacing.spacing7xl.w),
               decoration: BoxDecoration(
                 color: cs.surface,
                 borderRadius: BorderRadius.all(

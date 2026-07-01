@@ -9,8 +9,8 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/parent/domain/home/entities/parent_child_progress_entity.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_profile_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_profile_state.dart';
-import 'package:elara/features/teacher/group/presentation/widgets/teacher_student_insight_card.dart';
-import 'package:elara/features/teacher/group/presentation/widgets/teacher_student_stats_grid.dart';
+import 'package:elara/features/teacher/presentation/group/widgets/teacher_student_insight_card.dart';
+import 'package:elara/features/teacher/presentation/group/widgets/teacher_student_stats_grid.dart';
 import 'package:elara/features/student/presentation/profile/widgets/profile_level_progress_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
@@ -191,7 +191,8 @@ class ParentChildProfilePage extends StatelessWidget {
                       AppSectionHeader(
                         title: 'Insights',
                         onSeeAll: () {
-                          AppNavigation.pushNamed(context, 
+                          AppNavigation.pushNamed(
+                            context,
                             AppRoutes.parentChildInsights,
                             arguments: ParentChildInsightsRouteArgs(
                               childId: child.id,
@@ -214,7 +215,8 @@ class ParentChildProfilePage extends StatelessWidget {
                       AppSectionHeader(
                         title: 'Homework',
                         onSeeAll: () {
-                          AppNavigation.pushNamed(context, 
+                          AppNavigation.pushNamed(
+                            context,
                             AppRoutes.parentChildHomework,
                             arguments: ParentChildHomeworkRouteArgs(
                               childId: child.id,

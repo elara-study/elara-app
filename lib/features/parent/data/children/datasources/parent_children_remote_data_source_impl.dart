@@ -6,7 +6,7 @@ import 'package:elara/features/parent/domain/home/entities/parent_subject_group_
 import 'package:elara/features/student/domain/homework/entities/homework_entity.dart';
 import 'package:elara/features/student/domain/homework/entities/homework_problem_entity.dart';
 import 'package:elara/features/student/domain/homework/entities/homework_problem_status.dart';
-import 'package:elara/features/teacher/group/domain/entities/teacher_student_insight_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_student_insight_entity.dart';
 
 /// Mock remote datasource for parent children detail queries.
 class ParentChildrenRemoteDataSourceImpl

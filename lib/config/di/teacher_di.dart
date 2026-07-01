@@ -1,38 +1,38 @@
-import 'package:elara/features/teacher/domain/usecases/get_teacher_dashboard_usecase.dart';
-import 'package:elara/features/teacher/domain/usecases/get_teacher_groups_usecase.dart';
-import 'package:elara/features/teacher/domain/usecases/get_teacher_roadmaps_usecase.dart';
-import 'package:elara/features/teacher/domain/usecases/get_teacher_roadmap_details_usecase.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_groups_cubit.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_roadmaps_cubit.dart';
-import 'package:elara/features/teacher/domain/usecases/create_teacher_group_usecase.dart';
-import 'package:elara/features/teacher/domain/usecases/create_teacher_roadmap_usecase.dart';
-import 'package:elara/features/teacher/data/datasources/teacher_home_data_source.dart';
-import 'package:elara/features/teacher/data/datasources/teacher_home_data_source_impl.dart';
-import 'package:elara/features/teacher/domain/repositories/teacher_home_repository.dart';
-import 'package:elara/features/teacher/data/repositories/teacher_home_repository_impl.dart';
-import 'package:elara/features/teacher/group/data/datasources/teacher_group_data_source.dart';
-import 'package:elara/features/teacher/group/data/datasources/teacher_group_remote_data_source.dart';
-import 'package:elara/features/teacher/group/presentation/cubits/teacher_group_cubit.dart';
-import 'package:elara/features/teacher/homework/data/datasources/mock_teacher_homework_datasource.dart';
-import 'package:elara/features/teacher/homework/data/datasources/teacher_homework_datasource.dart';
-import 'package:elara/features/teacher/group/domain/repositories/teacher_group_repository.dart';
-import 'package:elara/features/teacher/group/data/repositories/teacher_group_repository_impl.dart';
-import 'package:elara/features/teacher/group/domain/usecases/get_teacher_group_detail_usecase.dart';
-import 'package:elara/features/teacher/group/domain/usecases/add_teacher_group_student_usecase.dart';
-import 'package:elara/features/teacher/group/domain/usecases/get_teacher_roadmap_usecase.dart';
-import 'package:elara/features/teacher/group/domain/usecases/get_teacher_student_profile_usecase.dart';
-import 'package:elara/features/teacher/group/domain/usecases/get_teacher_student_insights_usecase.dart';
-import 'package:elara/features/teacher/group/domain/usecases/get_teacher_announcements_usecase.dart';
-import 'package:elara/features/teacher/group/domain/usecases/add_teacher_announcement_usecase.dart';
-import 'package:elara/features/teacher/group/domain/usecases/delete_teacher_announcement_usecase.dart';
-import 'package:elara/features/teacher/group/domain/usecases/delete_teacher_group_usecase.dart';
-import 'package:elara/features/teacher/homework/data/repositories/teacher_homework_repository_impl.dart';
-import 'package:elara/features/teacher/homework/domain/repositories/i_teacher_homework_repository.dart';
-import 'package:elara/features/teacher/homework/domain/usecases/get_teacher_module_homework_usecase.dart';
-import 'package:elara/features/teacher/homework/domain/usecases/get_teacher_module_resources_usecase.dart';
-import 'package:elara/features/teacher/homework/presentation/cubits/teacher_homework_cubit.dart';
-import 'package:elara/features/teacher/homework/presentation/cubits/teacher_resources_cubit.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
+import 'package:elara/features/teacher/domain/dashboard/usecases/get_teacher_dashboard_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_groups_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_roadmaps_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_roadmap_details_usecase.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_groups_cubit.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_roadmaps_cubit.dart';
+import 'package:elara/features/teacher/domain/group/usecases/create_teacher_group_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/create_teacher_roadmap_usecase.dart';
+import 'package:elara/features/teacher/data/dashboard/teacher_home_data_source.dart';
+import 'package:elara/features/teacher/data/dashboard/teacher_home_data_source_impl.dart';
+import 'package:elara/features/teacher/domain/dashboard/repositories/teacher_home_repository.dart';
+import 'package:elara/features/teacher/data/dashboard/teacher_home_repository_impl.dart';
+import 'package:elara/features/teacher/data/group/datasources/teacher_group_data_source.dart';
+import 'package:elara/features/teacher/data/group/datasources/teacher_group_remote_data_source.dart';
+import 'package:elara/features/teacher/presentation/group/cubits/teacher_group_cubit.dart';
+import 'package:elara/features/teacher/data/homework/datasources/mock_teacher_homework_datasource.dart';
+import 'package:elara/features/teacher/data/homework/datasources/teacher_homework_datasource.dart';
+import 'package:elara/features/teacher/domain/group/repositories/teacher_group_repository.dart';
+import 'package:elara/features/teacher/data/group/repositories/teacher_group_repository_impl.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_group_detail_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/add_teacher_group_student_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_roadmap_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_student_profile_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_student_insights_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/get_teacher_announcements_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/add_teacher_announcement_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/delete_teacher_announcement_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/delete_teacher_group_usecase.dart';
+import 'package:elara/features/teacher/data/homework/repositories/teacher_homework_repository_impl.dart';
+import 'package:elara/features/teacher/domain/homework/repositories/i_teacher_homework_repository.dart';
+import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_module_homework_usecase.dart';
+import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_module_resources_usecase.dart';
+import 'package:elara/features/teacher/presentation/homework/cubits/teacher_homework_cubit.dart';
+import 'package:elara/features/teacher/presentation/homework/cubits/teacher_resources_cubit.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_home_cubit.dart';
 import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
 import 'package:elara/core/network/dio_client.dart';
 import 'package:get_it/get_it.dart';
@@ -98,6 +98,7 @@ void setupTeacherDI() {
     () => TeacherRoadmapsCubit(
       getIt<GetTeacherRoadmapsUseCase>(),
       getIt<CreateTeacherRoadmapUseCase>(),
+      getIt<GetTeacherRoadmapDetailsUseCase>(),
     ),
   );
 

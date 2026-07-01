@@ -43,14 +43,14 @@ import 'package:elara/features/student/presentation/profile/views/student_settin
 import 'package:elara/features/student/presentation/quiz/quiz_route_args.dart';
 import 'package:elara/features/student/presentation/quiz/views/quiz_flow_page.dart';
 import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/group/presentation/views/attendance_history_route_args.dart';
-import 'package:elara/features/teacher/group/presentation/views/attendance_history_screen.dart';
-import 'package:elara/features/teacher/group/presentation/views/teacher_group_page.dart';
-import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_page.dart';
-import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_route_args.dart';
-import 'package:elara/features/teacher/homework/presentation/route_args/teacher_module_route_args.dart';
-import 'package:elara/features/teacher/homework/presentation/views/teacher_homework_screen.dart';
-import 'package:elara/features/teacher/homework/presentation/views/teacher_resources_screen.dart';
+import 'package:elara/features/teacher/presentation/group/views/attendance_history_route_args.dart';
+import 'package:elara/features/teacher/presentation/group/views/attendance_history_screen.dart';
+import 'package:elara/features/teacher/presentation/group/views/teacher_group_page.dart';
+import 'package:elara/features/teacher/presentation/group/views/teacher_student_profile_page.dart';
+import 'package:elara/features/teacher/presentation/group/views/teacher_student_profile_route_args.dart';
+import 'package:elara/features/teacher/presentation/homework/route_args/teacher_module_route_args.dart';
+import 'package:elara/features/teacher/presentation/homework/views/teacher_homework_screen.dart';
+import 'package:elara/features/teacher/presentation/homework/views/teacher_resources_screen.dart';
 import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -129,18 +129,12 @@ GoRouter createAppRouter(AuthCubit authCubit) {
     refreshListenable: GoRouterRefreshStream(authCubit.stream),
     redirect: (context, state) => _authRedirect(authCubit.state, state),
     routes: [
-      GoRoute(
-        path: AppRoutes.splash,
-        builder: (_, _) => const SplashScreen(),
-      ),
+      GoRoute(path: AppRoutes.splash, builder: (_, _) => const SplashScreen()),
       GoRoute(
         path: AppRoutes.onboarding,
         builder: (_, _) => const OnboardingView(),
       ),
-      GoRoute(
-        path: AppRoutes.login,
-        builder: (_, _) => const SignInScreen(),
-      ),
+      GoRoute(path: AppRoutes.login, builder: (_, _) => const SignInScreen()),
       GoRoute(
         path: AppRoutes.forgotPassword,
         builder: (_, _) => const ForgotPasswordScreen(),
@@ -185,10 +179,7 @@ GoRouter createAppRouter(AuthCubit authCubit) {
         path: AppRoutes.studentDashboard,
         builder: (_, _) => const StudentShell(),
       ),
-      GoRoute(
-        path: AppRoutes.home,
-        builder: (_, _) => const StudentShell(),
-      ),
+      GoRoute(path: AppRoutes.home, builder: (_, _) => const StudentShell()),
       GoRoute(
         path: AppRoutes.teacherDashboard,
         builder: (_, _) => const TeacherShell(),
@@ -235,9 +226,8 @@ GoRouter createAppRouter(AuthCubit authCubit) {
       ),
       GoRoute(
         path: AppRoutes.comingSoonDashboard,
-        builder: (_, _) => const Scaffold(
-          body: Center(child: Text('Dashboard coming soon')),
-        ),
+        builder: (_, _) =>
+            const Scaffold(body: Center(child: Text('Dashboard coming soon'))),
       ),
       GoRoute(
         path: AppRoutes.studentGroup,
@@ -335,7 +325,8 @@ GoRouter createAppRouter(AuthCubit authCubit) {
       GoRoute(
         path: AppRoutes.studentSettings,
         builder: (context, _) => BlocProvider(
-          create: (_) => StudentSettingsCubit(authCubit: context.read<AuthCubit>()),
+          create: (_) =>
+              StudentSettingsCubit(authCubit: context.read<AuthCubit>()),
           child: const StudentSettingsScreen(),
         ),
       ),
@@ -393,9 +384,8 @@ GoRouter createAppRouter(AuthCubit authCubit) {
         },
       ),
     ],
-    errorBuilder: (_, _) => const Scaffold(
-      body: Center(child: Text('Page not found')),
-    ),
+    errorBuilder: (_, _) =>
+        const Scaffold(body: Center(child: Text('Page not found'))),
   );
 }
 
