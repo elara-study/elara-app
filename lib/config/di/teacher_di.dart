@@ -2,8 +2,8 @@ import 'package:elara/features/teacher/domain/dashboard/usecases/get_teacher_das
 import 'package:elara/features/teacher/domain/group/usecases/get_teacher_groups_usecase.dart';
 import 'package:elara/features/teacher/domain/group/usecases/get_teacher_roadmaps_usecase.dart';
 import 'package:elara/features/teacher/domain/group/usecases/get_teacher_roadmap_details_usecase.dart';
-import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_groups_cubit.dart';
-import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_roadmaps_cubit.dart';
+import 'package:elara/features/teacher/presentation/group/cubits/teacher_groups_cubit.dart';
+import 'package:elara/features/teacher/presentation/roadmap/cubits/teacher_roadmaps_cubit.dart';
 import 'package:elara/features/teacher/domain/group/usecases/create_teacher_group_usecase.dart';
 import 'package:elara/features/teacher/domain/group/usecases/create_teacher_roadmap_usecase.dart';
 import 'package:elara/features/teacher/data/dashboard/teacher_home_data_source.dart';
