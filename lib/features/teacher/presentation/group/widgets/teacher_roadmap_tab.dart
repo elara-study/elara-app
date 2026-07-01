@@ -46,7 +46,7 @@ class TeacherRoadmapTab extends StatelessWidget {
               ),
             ),
           ),
-          TeacherRoadmapLoadStatus.loaded => _TeacherRoadmapContent(
+          TeacherRoadmapLoadStatus.loaded => TeacherRoadmapContent(
             roadmap: state.roadmap!,
             groupId: groupId,
             subject: subject,
@@ -57,12 +57,14 @@ class TeacherRoadmapTab extends StatelessWidget {
   }
 }
 
-class _TeacherRoadmapContent extends StatelessWidget {
+/// Shared roadmap module list used by the group tab and roadmap detail screen.
+class TeacherRoadmapContent extends StatelessWidget {
   final TeacherRoadmapEntity roadmap;
   final String groupId;
   final String subject;
 
-  const _TeacherRoadmapContent({
+  const TeacherRoadmapContent({
+    super.key,
     required this.roadmap,
     required this.groupId,
     required this.subject,
@@ -103,16 +105,17 @@ class _TeacherRoadmapContent extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.only(bottom: AppSpacing.spacingXl.h),
             child: AppSectionHeader(
-              title: roadmap.name, // using name from TeacherRoadmapEntity
+              title: 'Learning Path',
               onAdd: () => _showAddModuleDialog(context),
             ),
           );
         }
 
+        final moduleIndex = index;
         final moduleEntity = roadmap.modules[index - 1];
-        // Map TeacherRoadmapModuleEntity to GroupRoadmapModule for UI
         final moduleShim = GroupRoadmapModule(
-          moduleLabel: moduleEntity.id,
+          moduleLabel:
+              'MODULE ${moduleIndex.toString().padLeft(2, '0')}',
           title: moduleEntity.title,
           description: moduleEntity.description,
           status: RoadmapModuleStatus.completed,

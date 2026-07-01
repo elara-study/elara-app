@@ -1,3 +1,5 @@
+import 'package:elara/config/routes.dart';
+import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
@@ -89,19 +91,11 @@ class TeacherRoadmapsScreen extends StatelessWidget {
         return SubjectGroupCard(
           group: group,
           variant: SubjectGroupCardVariant.roadmap,
-          onTap: () {
-            // Fetch roadmap details when clicked
-            context.read<TeacherRoadmapsCubit>().loadRoadmapDetails(group.id);
-
-            // Show a simple snackbar to acknowledge the action
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Fetching roadmap details for: ${group.name}'),
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          },
+          onTap: () => AppNavigation.pushNamed(
+            context,
+            AppRoutes.teacherRoadmap,
+            arguments: group,
+          ),
         );
       },
     );

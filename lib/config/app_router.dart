@@ -52,6 +52,7 @@ import 'package:elara/features/teacher/presentation/homework/route_args/teacher_
 import 'package:elara/features/teacher/presentation/homework/views/teacher_homework_screen.dart';
 import 'package:elara/features/teacher/presentation/homework/views/teacher_resources_screen.dart';
 import 'package:elara/features/teacher/presentation/dashboard/views/teacher_shell.dart';
+import 'package:elara/features/teacher/presentation/roadmap/views/teacher_roadmap_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -82,6 +83,7 @@ abstract final class AppRoutes {
   static const String home = '/home';
   static const String teacherDashboard = '/teacher';
   static const String teacherGroup = '/teacher-group';
+  static const String teacherRoadmap = '/teacher/roadmap';
   static const String teacherStudentProfile = '/teacher/student-profile';
   static const String attendanceHistory = '/teacher/attendance-history';
   static const String teacherModuleHomework = '/teacher/module-homework';
@@ -252,6 +254,18 @@ GoRouter createAppRouter(AuthCubit authCubit) {
             return TeacherGroupPage(group: args);
           }
           return const Scaffold(body: Center(child: Text('Group not found')));
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.teacherRoadmap,
+        builder: (context, state) {
+          final args = state.extra;
+          if (args is TeacherGroupEntity) {
+            return TeacherRoadmapDetailPage(roadmap: args);
+          }
+          return const Scaffold(
+            body: Center(child: Text('Roadmap not found')),
+          );
         },
       ),
       GoRoute(
