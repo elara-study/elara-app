@@ -114,8 +114,7 @@ class TeacherRoadmapContent extends StatelessWidget {
         final moduleIndex = index;
         final moduleEntity = roadmap.modules[index - 1];
         final moduleShim = GroupRoadmapModule(
-          moduleLabel:
-              'MODULE ${moduleIndex.toString().padLeft(2, '0')}',
+          moduleLabel: 'MODULE ${moduleIndex.toString().padLeft(2, '0')}',
           title: moduleEntity.title,
           description: moduleEntity.description,
           status: RoadmapModuleStatus.completed,
@@ -129,6 +128,7 @@ class TeacherRoadmapContent extends StatelessWidget {
             top: index == 0 ? 0 : AppSpacing.spacing2xl.h,
           ),
           child: _TeacherModuleCard(
+            moduleId: moduleEntity.id,
             module: moduleShim,
             groupId: groupId,
             subject: subject,
@@ -142,11 +142,13 @@ class TeacherRoadmapContent extends StatelessWidget {
 //   Teacher Module card
 
 class _TeacherModuleCard extends StatelessWidget {
+  final String moduleId;
   final GroupRoadmapModule module;
   final String groupId;
   final String subject;
 
   const _TeacherModuleCard({
+    required this.moduleId,
     required this.module,
     required this.groupId,
     required this.subject,
@@ -158,7 +160,7 @@ class _TeacherModuleCard extends StatelessWidget {
       builder: (_) => AppDialog(
         title: 'Interaction Options',
         content: _InteractionOptionsContent(
-          moduleId: module.moduleLabel,
+          moduleId: moduleId,
           moduleTitle: module.title,
           moduleLabel: module.moduleLabel,
           groupId: groupId,

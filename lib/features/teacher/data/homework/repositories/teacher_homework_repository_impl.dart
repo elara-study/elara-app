@@ -1,3 +1,6 @@
+import 'package:dio/dio.dart';
+import 'package:elara/core/error/failures.dart';
+import 'package:elara/core/network/api_result.dart';
 import 'package:elara/features/teacher/data/homework/datasources/teacher_homework_datasource.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_homework_entity.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
@@ -9,14 +12,62 @@ class TeacherHomeworkRepositoryImpl implements ITeacherHomeworkRepository {
   const TeacherHomeworkRepositoryImpl(this._datasource);
 
   @override
-  Future<TeacherHomeworkEntity> getModuleHomework({
+  Future<ApiResult<TeacherHomeworkEntity>> getModuleHomework({
     required String moduleId,
     required String groupId,
-  }) => _datasource.getModuleHomework(moduleId: moduleId, groupId: groupId);
+  }) async {
+    try {
+      final homework = await _datasource.getModuleHomework(
+        moduleId: moduleId,
+        groupId: groupId,
+      );
+      return ApiResult.success(homework);
+    } on DioException catch (e) {
+      return ApiResult.failure(_mapDioToFailure(e));
+    } catch (_) {
+      return ApiResult.failure(
+        const UnknownFailure('Failed to load module homework'),
+      );
+    }
+  }
 
   @override
-  Future<List<TeacherResourceEntity>> getModuleResources({
+  Future<ApiResult<List<TeacherResourceEntity>>> getModuleResources({
     required String moduleId,
     required String groupId,
-  }) => _datasource.getModuleResources(moduleId: moduleId, groupId: groupId);
+  }) async {
+    try {
+      final resources = await _datasource.getModuleResources(
+        moduleId: moduleId,
+        groupId: groupId,
+      );
+      return ApiResult.success(resources);
+    } on DioException catch (e) {
+      return ApiResult.failure(_mapDioToFailure(e));
+    } catch (_) {
+      return ApiResult.failure(
+        const UnknownFailure('Failed to load module resources'),
+      );
+    }
+  }
+
+  Failure _mapDioToFailure(DioException e) {
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.receiveTimeout ||
+        e.type == DioExceptionType.connectionError) {
+      return NetworkFailure(e.message ?? 'Network error');
+    }
+
+    final statusCode = e.response?.statusCode;
+    final message = e.response?.data is Map<String, dynamic>
+        ? (e.response?.data as Map<String, dynamic>)['message']?.toString()
+        : null;
+
+    return ServerFailure(
+      message ??
+          (statusCode != null
+              ? 'HTTP $statusCode'
+              : e.message ?? 'Server error'),
+    );
+  }
 }

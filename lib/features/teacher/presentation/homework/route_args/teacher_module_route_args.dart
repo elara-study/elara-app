@@ -8,7 +8,7 @@ class TeacherModuleRouteArgs {
     required this.subject,
   });
 
-  /// Unique module identifier (e.g. "MODULE 01" used as key until backend is ready).
+  /// Unique backend module identifier (typically a UUID).
   final String moduleId;
 
   /// Display title shown in the app-bar (e.g. "Introduction to Waves").

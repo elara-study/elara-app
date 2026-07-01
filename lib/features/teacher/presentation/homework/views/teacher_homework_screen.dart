@@ -96,6 +96,8 @@ class TeacherHomeworkScreen extends StatelessWidget {
           ),
           TeacherHomeworkLoaded(:final homework) => _HomeworkView(
             homework: homework,
+            fallbackSubject: subject,
+            fallbackModuleTitle: moduleTitle,
           ),
         },
       ),
@@ -107,7 +109,14 @@ class TeacherHomeworkScreen extends StatelessWidget {
 
 class _HomeworkView extends StatelessWidget {
   final TeacherHomeworkEntity homework;
-  const _HomeworkView({required this.homework});
+  final String fallbackSubject;
+  final String fallbackModuleTitle;
+
+  const _HomeworkView({
+    required this.homework,
+    required this.fallbackSubject,
+    required this.fallbackModuleTitle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +126,9 @@ class _HomeworkView extends StatelessWidget {
         extendBodyBehindAppBar: true,
         appBar: AppGlassHeader(
           title: 'Homework',
-          subtitle: '${homework.subject} • ${homework.moduleTitle}',
+          subtitle:
+              '${homework.subject.isEmpty ? fallbackSubject : homework.subject} • '
+              '${homework.moduleTitle.isEmpty ? fallbackModuleTitle : homework.moduleTitle}',
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

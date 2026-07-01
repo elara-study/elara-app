@@ -42,11 +42,12 @@ class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
 
   Future<void> load({required String moduleId, required String groupId}) async {
     emit(const TeacherHomeworkLoading());
-    try {
-      final homework = await _useCase(moduleId: moduleId, groupId: groupId);
-      emit(TeacherHomeworkLoaded(homework));
-    } catch (e) {
-      emit(TeacherHomeworkError(e.toString()));
-    }
+    final result = await _useCase(moduleId: moduleId, groupId: groupId);
+    emit(
+      result.fold(
+        onSuccess: TeacherHomeworkLoaded.new,
+        onFailure: (failure) => TeacherHomeworkError(failure.message),
+      ),
+    );
   }
 }

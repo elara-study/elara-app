@@ -13,8 +13,8 @@ import 'package:elara/features/teacher/data/dashboard/teacher_home_repository_im
 import 'package:elara/features/teacher/data/group/datasources/teacher_group_data_source.dart';
 import 'package:elara/features/teacher/data/group/datasources/teacher_group_remote_data_source.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_group_cubit.dart';
-import 'package:elara/features/teacher/data/homework/datasources/mock_teacher_homework_datasource.dart';
 import 'package:elara/features/teacher/data/homework/datasources/teacher_homework_datasource.dart';
+import 'package:elara/features/teacher/data/homework/datasources/teacher_homework_remote_datasource.dart';
 import 'package:elara/features/teacher/domain/group/repositories/teacher_group_repository.dart';
 import 'package:elara/features/teacher/data/group/repositories/teacher_group_repository_impl.dart';
 import 'package:elara/features/teacher/domain/group/usecases/get_teacher_group_detail_usecase.dart';
@@ -150,7 +150,7 @@ void setupTeacherDI() {
 
   // Homework & Resources
   getIt.registerLazySingleton<TeacherHomeworkDatasource>(
-    () => MockTeacherHomeworkDatasource(),
+    () => TeacherHomeworkRemoteDatasource(getIt<DioClient>().dio),
   );
 
   getIt.registerLazySingleton<ITeacherHomeworkRepository>(

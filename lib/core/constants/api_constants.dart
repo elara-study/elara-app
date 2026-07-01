@@ -29,14 +29,18 @@ class ApiConstants {
   static const String teacherGroups = 'api/v1/teacher/groups';
   static const String teacherRoadmaps = 'api/v1/teacher/roadmaps';
   static String teacherRoadmapInfo(String id) => 'api/v1/teacher/roadmaps/$id';
+  static String teacherModuleHomework(String moduleId) =>
+      'api/v1/modules/$moduleId/homework';
 
   static String teacherGroupInfo(String id) => 'api/v1/teacher/groups/$id';
   static String teacherGroupStudents(String id) =>
       'api/v1/teacher/groups/$id/students';
   static String teacherGroupAnnouncements(String id) =>
       'api/v1/teacher/groups/$id/announcements';
-  static String teacherGroupDeleteAnnouncement(String groupId, String announcementId) =>
-      'api/v1/teacher/groups/$groupId/announcements/$announcementId';
+  static String teacherGroupDeleteAnnouncement(
+    String groupId,
+    String announcementId,
+  ) => 'api/v1/teacher/groups/$groupId/announcements/$announcementId';
   static String teacherGroupRoadmap(String groupId) =>
       'api/v1/teacher/groups/$groupId/roadmap';
   static String teacherStudentInfo(String studentId) =>

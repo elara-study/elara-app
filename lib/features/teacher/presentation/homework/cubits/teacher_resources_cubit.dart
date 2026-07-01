@@ -42,11 +42,12 @@ class TeacherResourcesCubit extends Cubit<TeacherResourcesState> {
 
   Future<void> load({required String moduleId, required String groupId}) async {
     emit(const TeacherResourcesLoading());
-    try {
-      final resources = await _useCase(moduleId: moduleId, groupId: groupId);
-      emit(TeacherResourcesLoaded(resources));
-    } catch (e) {
-      emit(TeacherResourcesError(e.toString()));
-    }
+    final result = await _useCase(moduleId: moduleId, groupId: groupId);
+    emit(
+      result.fold(
+        onSuccess: TeacherResourcesLoaded.new,
+        onFailure: (failure) => TeacherResourcesError(failure.message),
+      ),
+    );
   }
 }
