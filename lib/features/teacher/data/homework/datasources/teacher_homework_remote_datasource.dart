@@ -27,12 +27,7 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
     final payload = _unwrapRoot(response.data);
 
     final module = _readMap(payload, const ['module']) ?? payload;
-    final problemsRaw = _readList(payload, const [
-      'problems',
-      'homeworkProblems',
-      'questions',
-      'problemList',
-    ]);
+    final problemsRaw = _extractProblemMaps(payload);
     final submissionsRaw = _readList(payload, const [
       'submissions',
       'studentSubmissions',
@@ -57,24 +52,76 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
         .map(
           (item) => _toRatedStudent(
             item,
-            _int(payload, ['totalXp', 'totalXP', 'maxXp', 'maxXP']),
+            _int(payload, [
+              'totalScoreXp',
+              'totalXp',
+              'totalXP',
+              'maxXp',
+              'maxXP',
+            ]),
           ),
         )
         .toList();
 
     return TeacherHomeworkModel(
       moduleId: _string(module, const ['id'], fallback: moduleId),
-      moduleTitle: _string(module, const ['title', 'name', 'moduleTitle']),
+      moduleTitle: _string(module, const [
+        'moduleName',
+        'title',
+        'name',
+        'moduleTitle',
+      ]),
       moduleLabel: _string(module, const [
         'label',
         'moduleLabel',
       ], fallback: _string(payload, const ['moduleLabel'], fallback: 'MODULE')),
       groupId: _string(payload, const ['groupId'], fallback: groupId),
       subject: _string(payload, const ['subject', 'courseSubject']),
-      totalXp: _int(payload, const ['totalXp', 'totalXP', 'maxXp', 'maxXP']),
+      totalXp: _int(payload, const [
+        'totalScoreXp',
+        'totalXp',
+        'totalXP',
+        'maxXp',
+        'maxXP',
+      ]),
       problems: problems,
       submissions: submissions,
       ratedStudents: ratedStudents,
+    );
+  }
+
+  @override
+  Future<TeacherHomeworkProblemModel> addModuleProblem({
+    required String moduleId,
+    required String description,
+  }) async {
+    final response = await _dio.post(
+      ApiConstants.teacherModuleHomeworkProblems(moduleId),
+      data: {'description': description},
+    );
+
+    final payload = _unwrapRoot(response.data);
+    final json = _readMap(payload, const ['problem']) ?? payload;
+
+    return TeacherHomeworkProblemModel(
+      id: _string(json, const [
+        'id',
+      ], fallback: 'problem-${DateTime.now().millisecondsSinceEpoch}'),
+      problemNumber: _int(json, const ['problemNumber', 'number', 'order']),
+      questionText: _string(json, const [
+        'description',
+        'questionText',
+        'question',
+        'text',
+      ], fallback: description),
+      sampleAnswerText: _nullable(
+        _string(json, const ['sampleAnswerText', 'sampleAnswer']),
+      ),
+      hasImageSubmission: _bool(json, const [
+        'hasImageSubmission',
+        'hasImage',
+        'containsImageAnswer',
+      ]),
     );
   }
 
@@ -118,11 +165,60 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
     List<String> keys,
   ) {
     for (final key in keys) {
-      final value = source[key];
-      if (value is List) {
-        return value.whereType<Map<String, dynamic>>().toList();
+      final maps = _asListOfMaps(source[key]);
+      if (maps.isNotEmpty) {
+        return maps;
       }
     }
+    return const [];
+  }
+
+  List<Map<String, dynamic>> _extractProblemMaps(Map<String, dynamic> payload) {
+    final direct = _readList(payload, const [
+      'problems',
+      'homeworkProblems',
+      'questions',
+      'problemList',
+      'items',
+    ]);
+    if (direct.isNotEmpty) {
+      return direct;
+    }
+
+    final nestedContainers = <Map<String, dynamic>>[
+      ...['homework', 'overview', 'homeworkOverview', 'assignment']
+          .map((key) => _readMap(payload, [key]))
+          .whereType<Map<String, dynamic>>(),
+    ];
+
+    for (final container in nestedContainers) {
+      final nested = _readList(container, const [
+        'problems',
+        'homeworkProblems',
+        'questions',
+        'problemList',
+        'items',
+      ]);
+      if (nested.isNotEmpty) {
+        return nested;
+      }
+    }
+
+    return const [];
+  }
+
+  List<Map<String, dynamic>> _asListOfMaps(dynamic value) {
+    if (value is List) {
+      return value.whereType<Map<String, dynamic>>().toList();
+    }
+
+    if (value is Map<String, dynamic>) {
+      final nestedList = value['items'] ?? value['data'] ?? value['problems'];
+      if (nestedList is List) {
+        return nestedList.whereType<Map<String, dynamic>>().toList();
+      }
+    }
+
     return const [];
   }
 
@@ -151,6 +247,9 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
         'question',
         'title',
         'prompt',
+        'text',
+        'description',
+        'problemText',
       ]),
       sampleAnswerText: sampleAnswerText.isEmpty ? null : sampleAnswerText,
       hasImageSubmission: hasImage,

@@ -13,15 +13,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// Problem List tab — lists homework problems with an "+ Add" header.
 class TeacherProblemListTab extends StatelessWidget {
   final List<TeacherHomeworkProblemEntity> problems;
+  final Future<void> Function(String description) onAddProblem;
 
-  const TeacherProblemListTab({super.key, required this.problems});
+  const TeacherProblemListTab({
+    super.key,
+    required this.problems,
+    required this.onAddProblem,
+  });
 
   void _showAddProblemDialog(BuildContext context) {
     AppDialog.show(
       context: context,
-      builder: (_) => const AppDialog(
+      builder: (_) => AppDialog(
         title: 'Add a Problem',
-        content: _AddProblemContent(),
+        content: _AddProblemContent(onSubmit: onAddProblem),
       ),
     );
   }
@@ -59,7 +64,9 @@ class TeacherProblemListTab extends StatelessWidget {
 //   Add Problem dialog content
 
 class _AddProblemContent extends StatefulWidget {
-  const _AddProblemContent();
+  final Future<void> Function(String description) onSubmit;
+
+  const _AddProblemContent({required this.onSubmit});
 
   @override
   State<_AddProblemContent> createState() => _AddProblemContentState();
@@ -67,6 +74,7 @@ class _AddProblemContent extends StatefulWidget {
 
 class _AddProblemContentState extends State<_AddProblemContent> {
   final _ctrl = TextEditingController();
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -104,19 +112,36 @@ class _AddProblemContentState extends State<_AddProblemContent> {
         SizedBox(
           width: double.infinity,
           child: FilledButton(
-            onPressed: () {
-              if (_ctrl.text.trim().isNotEmpty) Navigator.of(context).pop();
-            },
+            onPressed: _isSubmitting
+                ? null
+                : () async {
+                    final text = _ctrl.text.trim();
+                    if (text.isEmpty) {
+                      return;
+                    }
+
+                    setState(() => _isSubmitting = true);
+                    await widget.onSubmit(text);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  },
             style: FilledButton.styleFrom(
               backgroundColor: AppColors.brandPrimary500,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
               ),
             ),
-            child: Text(
-              'Add Problem',
-              style: AppTypography.labelRegular(color: AppColors.white),
-            ),
+            child: _isSubmitting
+                ? SizedBox(
+                    width: 18.w,
+                    height: 18.w,
+                    child: const CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(
+                    'Add Problem',
+                    style: AppTypography.labelRegular(color: AppColors.white),
+                  ),
           ),
         ),
       ],

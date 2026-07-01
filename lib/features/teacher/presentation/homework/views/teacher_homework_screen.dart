@@ -98,6 +98,8 @@ class TeacherHomeworkScreen extends StatelessWidget {
             homework: homework,
             fallbackSubject: subject,
             fallbackModuleTitle: moduleTitle,
+            fallbackModuleId: moduleId,
+            fallbackGroupId: groupId,
           ),
         },
       ),
@@ -111,11 +113,15 @@ class _HomeworkView extends StatelessWidget {
   final TeacherHomeworkEntity homework;
   final String fallbackSubject;
   final String fallbackModuleTitle;
+  final String fallbackModuleId;
+  final String fallbackGroupId;
 
   const _HomeworkView({
     required this.homework,
     required this.fallbackSubject,
     required this.fallbackModuleTitle,
+    required this.fallbackModuleId,
+    required this.fallbackGroupId,
   });
 
   @override
@@ -159,7 +165,19 @@ class _HomeworkView extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  TeacherProblemListTab(problems: homework.problems),
+                  TeacherProblemListTab(
+                    problems: homework.problems,
+                    onAddProblem: (description) =>
+                        context.read<TeacherHomeworkCubit>().addProblem(
+                          moduleId: homework.moduleId.isEmpty
+                              ? fallbackModuleId
+                              : homework.moduleId,
+                          groupId: homework.groupId.isEmpty
+                              ? fallbackGroupId
+                              : homework.groupId,
+                          description: description,
+                        ),
+                  ),
                   TeacherSubmissionsTab(
                     submissions: homework.submissions,
                     totalXp: homework.totalXp,

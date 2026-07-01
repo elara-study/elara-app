@@ -3,6 +3,7 @@ import 'package:elara/core/error/failures.dart';
 import 'package:elara/core/network/api_result.dart';
 import 'package:elara/features/teacher/data/homework/datasources/teacher_homework_datasource.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_homework_entity.dart';
+import 'package:elara/features/teacher/domain/homework/entities/teacher_homework_problem_entity.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
 import 'package:elara/features/teacher/domain/homework/repositories/i_teacher_homework_repository.dart';
 
@@ -27,6 +28,26 @@ class TeacherHomeworkRepositoryImpl implements ITeacherHomeworkRepository {
     } catch (_) {
       return ApiResult.failure(
         const UnknownFailure('Failed to load module homework'),
+      );
+    }
+  }
+
+  @override
+  Future<ApiResult<TeacherHomeworkProblemEntity>> addModuleProblem({
+    required String moduleId,
+    required String description,
+  }) async {
+    try {
+      final problem = await _datasource.addModuleProblem(
+        moduleId: moduleId,
+        description: description,
+      );
+      return ApiResult.success(problem);
+    } on DioException catch (e) {
+      return ApiResult.failure(_mapDioToFailure(e));
+    } catch (_) {
+      return ApiResult.failure(
+        const UnknownFailure('Failed to add homework problem'),
       );
     }
   }

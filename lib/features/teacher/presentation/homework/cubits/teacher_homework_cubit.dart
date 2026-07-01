@@ -1,4 +1,5 @@
 import 'package:elara/features/teacher/domain/homework/entities/teacher_homework_entity.dart';
+import 'package:elara/features/teacher/domain/homework/usecases/add_teacher_module_problem_usecase.dart';
 import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_module_homework_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,18 +37,51 @@ final class TeacherHomeworkError extends TeacherHomeworkState {
 // ── Cubit ──────────────────────────────────────────────────────────────────────
 
 class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
-  final GetTeacherModuleHomeworkUseCase _useCase;
+  final GetTeacherModuleHomeworkUseCase _getHomeworkUseCase;
+  final AddTeacherModuleProblemUseCase _addProblemUseCase;
 
-  TeacherHomeworkCubit(this._useCase) : super(const TeacherHomeworkInitial());
+  TeacherHomeworkCubit(this._getHomeworkUseCase, this._addProblemUseCase)
+    : super(const TeacherHomeworkInitial());
 
   Future<void> load({required String moduleId, required String groupId}) async {
     emit(const TeacherHomeworkLoading());
-    final result = await _useCase(moduleId: moduleId, groupId: groupId);
+    final result = await _getHomeworkUseCase(
+      moduleId: moduleId,
+      groupId: groupId,
+    );
     emit(
       result.fold(
         onSuccess: TeacherHomeworkLoaded.new,
         onFailure: (failure) => TeacherHomeworkError(failure.message),
       ),
     );
+  }
+
+  Future<void> addProblem({
+    required String moduleId,
+    required String groupId,
+    required String description,
+  }) async {
+    final trimmed = description.trim();
+    if (trimmed.isEmpty) {
+      return;
+    }
+
+    emit(const TeacherHomeworkLoading());
+    final addResult = await _addProblemUseCase(
+      moduleId: moduleId,
+      description: trimmed,
+    );
+
+    if (!addResult.isSuccess) {
+      emit(
+        TeacherHomeworkError(
+          addResult.failure?.message ?? 'Failed to add homework problem',
+        ),
+      );
+      return;
+    }
+
+    await load(moduleId: moduleId, groupId: groupId);
   }
 }
