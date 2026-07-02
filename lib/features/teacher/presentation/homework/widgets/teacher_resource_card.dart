@@ -16,12 +16,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 ///   Title (labelRegular SemiBold 14px) + Meta (caption 10px Regular).
 class TeacherResourceCard extends StatelessWidget {
   final TeacherResourceEntity resource;
+  final VoidCallback? onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
   const TeacherResourceCard({
     super.key,
     required this.resource,
+    this.onTap,
     this.onEdit,
     this.onDelete,
   });
@@ -32,79 +34,86 @@ class TeacherResourceCard extends StatelessWidget {
     final cs = theme.colorScheme;
     final (icon, iconColor, containerBg) = _typeAssets(resource.type);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: cs.surface,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
-        boxShadow: AppShadows.elevation(theme.brightness),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(AppSpacing.spacingLg.w),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // ── Icon container ────────────────────────────────────────
-            // Figma: 48×48, border-radius 12px, type-specific bg
-            Container(
-              width: 48.w,
-              height: 48.w,
-              decoration: BoxDecoration(
-                color: containerBg,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Icon(icon, size: 32.sp, color: iconColor),
-            ),
-            SizedBox(width: AppSpacing.spacingMd.w),
-
-            // ── Info column ───────────────────────────────────────────
-            // Figma: gap 4px between title and meta
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    resource.title,
-                    // Figma: font/typo/label/regular = SemiBold 14px
-                    style: AppTypography.labelRegular(color: cs.onSurface),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: cs.surface,
+            borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
+            boxShadow: AppShadows.elevation(theme.brightness),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(AppSpacing.spacingLg.w),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // ── Icon container ────────────────────────────────────────
+                // Figma: 48×48, border-radius 12px, type-specific bg
+                Container(
+                  width: 48.w,
+                  height: 48.w,
+                  decoration: BoxDecoration(
+                    color: containerBg,
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  SizedBox(height: AppSpacing.spacingXs.h),
-                  Text(
-                    _subtitle(resource),
-                    // Figma: font/typo/caption = Regular 10px
-                    style: TextStyle(
-                      fontFamily: AppTypography.nunito,
-                      fontSize: 10.sp,
-                      fontWeight: AppTypography.regular,
-                      color: cs.onSurfaceVariant,
-                      height: 1.2,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // ── Overflow menu ⋮ ───────────────────────────────────────
-            AppOverflowMenu(
-              iconSize: 16,
-              items: [
-                AppOverflowMenuItem(
-                  label: 'Edit',
-                  icon: Icons.mode_edit_outline_rounded,
-                  backgroundColor: AppColors.brandPrimary500,
-                  onTap: onEdit ?? () {},
+                  child: Icon(icon, size: 32.sp, color: iconColor),
                 ),
-                AppOverflowMenuItem(
-                  label: 'Delete',
-                  icon: Icons.delete_outline_rounded,
-                  backgroundColor: AppColors.brandSecondary500,
-                  onTap: onDelete ?? () {},
+                SizedBox(width: AppSpacing.spacingMd.w),
+
+                // ── Info column ───────────────────────────────────────────
+                // Figma: gap 4px between title and meta
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        resource.title,
+                        // Figma: font/typo/label/regular = SemiBold 14px
+                        style: AppTypography.labelRegular(color: cs.onSurface),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: AppSpacing.spacingXs.h),
+                      Text(
+                        _subtitle(resource),
+                        // Figma: font/typo/caption = Regular 10px
+                        style: TextStyle(
+                          fontFamily: AppTypography.nunito,
+                          fontSize: 10.sp,
+                          fontWeight: AppTypography.regular,
+                          color: cs.onSurfaceVariant,
+                          height: 1.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // ── Overflow menu ⋮ ───────────────────────────────────────
+                AppOverflowMenu(
+                  iconSize: 16,
+                  items: [
+                    AppOverflowMenuItem(
+                      label: 'Edit',
+                      icon: Icons.mode_edit_outline_rounded,
+                      backgroundColor: AppColors.brandPrimary500,
+                      onTap: onEdit ?? () {},
+                    ),
+                    AppOverflowMenuItem(
+                      label: 'Delete',
+                      icon: Icons.delete_outline_rounded,
+                      backgroundColor: AppColors.brandSecondary500,
+                      onTap: onDelete ?? () {},
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

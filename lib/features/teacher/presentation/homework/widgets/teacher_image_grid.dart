@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,8 +13,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// Each card: 128×96px, border-radius 16px.
 class TeacherImageGrid extends StatelessWidget {
   final List<TeacherResourceEntity> resources;
+  final ValueChanged<TeacherResourceEntity>? onTap;
 
-  const TeacherImageGrid({super.key, required this.resources});
+  const TeacherImageGrid({super.key, required this.resources, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,8 @@ class TeacherImageGrid extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: resources.length,
         separatorBuilder: (_, __) => SizedBox(width: AppSpacing.spacingMd.w),
-        itemBuilder: (_, i) => TeacherImageCell(resource: resources[i]),
+        itemBuilder: (_, i) =>
+            TeacherImageCell(resource: resources[i], onTap: onTap),
       ),
     );
   }
@@ -32,8 +35,9 @@ class TeacherImageGrid extends StatelessWidget {
 /// Single image asset card — 128×96, top placeholder + bottom title bar.
 class TeacherImageCell extends StatelessWidget {
   final TeacherResourceEntity resource;
+  final ValueChanged<TeacherResourceEntity>? onTap;
 
-  const TeacherImageCell({super.key, required this.resource});
+  const TeacherImageCell({super.key, required this.resource, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -41,53 +45,79 @@ class TeacherImageCell extends StatelessWidget {
 
     return SizedBox(
       width: 128.w,
-      child: ClipRRect(
+      child: InkWell(
+        onTap: onTap == null ? null : () => onTap!(resource),
         borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
-        child: Column(
-          children: [
-            // ── Image placeholder (top ~64px) ─────────────────────────
-            Expanded(
-              child: Container(
-                color: AppColors.brandPrimary500Alpha10,
-                child: Center(
-                  child: Icon(
-                    Icons.image_outlined,
-                    size: 28.sp,
-                    color: AppColors.brandPrimary500,
-                  ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
+          child: Column(
+            children: [
+              Expanded(
+                child: resource.url.isEmpty
+                    ? Container(
+                        color: AppColors.brandPrimary500Alpha10,
+                        child: Center(
+                          child: Icon(
+                            Icons.image_outlined,
+                            size: 28.sp,
+                            color: AppColors.brandPrimary500,
+                          ),
+                        ),
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: resource.url,
+                        fit: BoxFit.cover,
+                        placeholder: (context, _) => Container(
+                          color: AppColors.brandPrimary500Alpha10,
+                          child: Center(
+                            child: SizedBox(
+                              width: 18.w,
+                              height: 18.w,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, _, __) => Container(
+                          color: AppColors.brandPrimary500Alpha10,
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image_outlined,
+                              size: 28.sp,
+                              color: AppColors.brandPrimary500,
+                            ),
+                          ),
+                        ),
+                      ),
+              ),
+              Container(
+                height: 32.h,
+                color: cs.surface,
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.spacingMd.w,
+                  vertical: AppSpacing.spacingSm.h,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        resource.fileName ?? resource.title,
+                        style: AppTypography.labelSmall(color: cs.onSurface),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(
+                      Icons.more_vert_rounded,
+                      size: 16.sp,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ],
                 ),
               ),
-            ),
-
-            // ── Title bar (bottom 32px) ────────────────────────────────
-            // Figma: background surface, padding 8px 12px
-            Container(
-              height: 32.h,
-              color: cs.surface,
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.spacingMd.w,
-                vertical: AppSpacing.spacingSm.h,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      resource.fileName ?? resource.title,
-                      // Figma: font/typo/label/small = SemiBold 12px
-                      style: AppTypography.labelSmall(color: cs.onSurface),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Icon(
-                    Icons.more_vert_rounded,
-                    size: 16.sp,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
