@@ -35,6 +35,10 @@ class ApiConstants {
       'api/v1/modules/$moduleId/resources';
   static String teacherModuleHomeworkProblems(String moduleId) =>
       'api/v1/teacher/modules/$moduleId/homework/problems';
+  static String teacherModuleHomeworkSubmissions(String moduleId) =>
+      'api/v1/teacher/modules/$moduleId/homework/submissions';
+  static String teacherStudentSubmission(String moduleId, String studentId) =>
+      'api/v1/teacher/modules/$moduleId/homework/submissions/$studentId';
   static String teacherProblem(String problemId) =>
       'api/v1/teacher/problems/$problemId';
 

@@ -5,6 +5,7 @@ import 'package:elara/features/teacher/data/homework/datasources/teacher_homewor
 import 'package:elara/features/teacher/domain/homework/entities/teacher_homework_entity.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_homework_problem_entity.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
+import 'package:elara/features/teacher/domain/homework/entities/teacher_student_submission_detail_entity.dart';
 import 'package:elara/features/teacher/domain/homework/repositories/i_teacher_homework_repository.dart';
 
 class TeacherHomeworkRepositoryImpl implements ITeacherHomeworkRepository {
@@ -146,5 +147,27 @@ class TeacherHomeworkRepositoryImpl implements ITeacherHomeworkRepository {
               ? 'HTTP $statusCode'
               : e.message ?? 'Server error'),
     );
+  }
+
+  @override
+  Future<ApiResult<TeacherStudentSubmissionDetailEntity>> getStudentSubmission({
+    required String moduleId,
+    required String studentId,
+    required String groupId,
+  }) async {
+    try {
+      final detail = await _datasource.getStudentSubmission(
+        moduleId: moduleId,
+        studentId: studentId,
+        groupId: groupId,
+      );
+      return ApiResult.success(detail);
+    } on DioException catch (e) {
+      return ApiResult.failure(_mapDioToFailure(e));
+    } catch (_) {
+      return ApiResult.failure(
+        const UnknownFailure('Failed to load student submission'),
+      );
+    }
   }
 }

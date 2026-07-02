@@ -4,6 +4,7 @@ import 'package:elara/features/teacher/data/homework/models/teacher_homework_pro
 import 'package:elara/features/teacher/data/homework/models/teacher_rated_student_model.dart';
 import 'package:elara/features/teacher/data/homework/models/teacher_resource_model.dart';
 import 'package:elara/features/teacher/data/homework/models/teacher_student_answer_model.dart';
+import 'package:elara/features/teacher/data/homework/models/teacher_student_submission_detail_model.dart';
 import 'package:elara/features/teacher/data/homework/models/teacher_student_submission_model.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
 
@@ -255,6 +256,25 @@ class MockTeacherHomeworkDatasource implements TeacherHomeworkDatasource {
           : TeacherResourceType.document,
       url: filePath,
       addedAtLabel: 'Just now',
+    );
+  }
+
+  @override
+  Future<TeacherStudentSubmissionDetailModel> getStudentSubmission({
+    required String moduleId,
+    required String studentId,
+    required String groupId,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return const TeacherStudentSubmissionDetailModel(
+      studentName: 'Mock Student',
+      answers: [
+        TeacherStudentAnswerDetailModel(
+          problemId: 1,
+          problemText: 'Unknown Question',
+          studentTextAnswer: 'My name is mock student',
+        ),
+      ],
     );
   }
 }
