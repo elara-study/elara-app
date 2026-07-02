@@ -4,6 +4,21 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
+/// Visual feedback state for a single option after an answer is submitted.
+enum McqOptionFeedback {
+  /// No answer submitted yet — normal selection style.
+  none,
+
+  /// This option was selected and is the correct answer.
+  correct,
+
+  /// This option was selected and is wrong.
+  wrong,
+
+  /// This is the correct answer but was NOT selected (shown after a wrong pick).
+  correctUnselected,
+}
+
 /// Single MCQ row: radio indicator + label (pill container).
 class QuizMcqOptionTile extends StatelessWidget {
   const QuizMcqOptionTile({
@@ -11,11 +26,15 @@ class QuizMcqOptionTile extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    this.feedback = McqOptionFeedback.none,
   });
 
   final String label;
   final bool selected;
   final VoidCallback onTap;
+
+  /// Feedback coloring applied after submission.
+  final McqOptionFeedback feedback;
 
   @override
   Widget build(BuildContext context) {
@@ -23,36 +42,84 @@ class QuizMcqOptionTile extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final surface = theme.colorScheme.surface;
     final onSurface = theme.colorScheme.onSurface;
-    final borderColor = selected
-        ? AppColors.brandPrimary500
-        : (isDark
-              ? DarkModeColors.borderDefault
-              : LightModeColors.borderDefault);
 
-    return Material(
-      color: surface,
-      borderRadius: BorderRadius.circular(AppRadius.radiusFull),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.radiusFull),
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.spacingLg),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppRadius.radiusFull),
-            border: Border.all(color: borderColor, width: selected ? 2 : 1),
+    // Determine border colour based on feedback first, then selection.
+    final Color borderColor;
+    final Color radioDotColor;
+    switch (feedback) {
+      case McqOptionFeedback.correct:
+        borderColor = AppColors.success200;
+        radioDotColor = AppColors.success200;
+      case McqOptionFeedback.wrong:
+        borderColor = AppColors.error300;
+        radioDotColor = AppColors.error300;
+      case McqOptionFeedback.correctUnselected:
+        borderColor = AppColors.success200;
+        radioDotColor = AppColors.success200;
+      case McqOptionFeedback.none:
+        borderColor = selected
+            ? AppColors.brandPrimary500
+            : (isDark
+                  ? DarkModeColors.borderDefault
+                  : LightModeColors.borderDefault);
+        radioDotColor = AppColors.brandPrimary500;
+    }
+
+    final borderWidth = (selected || feedback != McqOptionFeedback.none)
+        ? 2.0
+        : 1.0;
+
+    // Tapping is disabled once feedback is showing.
+    final isInteractive = feedback == McqOptionFeedback.none;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+      decoration: BoxDecoration(
+        color: switch (feedback) {
+          McqOptionFeedback.correct => AppColors.success200.withValues(
+            alpha: 0.08,
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _RadioDot(selected: selected, isDark: isDark),
-              const SizedBox(width: AppSpacing.spacingSm),
-              Expanded(
-                child: Text(
-                  label,
-                  style: AppTypography.labelRegular(color: onSurface),
+          McqOptionFeedback.wrong => AppColors.error300.withValues(alpha: 0.08),
+          McqOptionFeedback.correctUnselected =>
+            AppColors.success200.withValues(alpha: 0.08),
+          McqOptionFeedback.none => surface,
+        },
+        borderRadius: BorderRadius.circular(AppRadius.radiusFull),
+        border: Border.all(color: borderColor, width: borderWidth),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(AppRadius.radiusFull),
+        child: InkWell(
+          onTap: isInteractive ? onTap : null,
+          borderRadius: BorderRadius.circular(AppRadius.radiusFull),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.spacingLg),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _FeedbackDot(
+                  selected:
+                      selected ||
+                      feedback == McqOptionFeedback.correctUnselected,
+                  feedback: feedback,
+                  radioDotColor: radioDotColor,
+                  isDark: isDark,
                 ),
-              ),
-            ],
+                const SizedBox(width: AppSpacing.spacingSm),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: AppTypography.labelRegular(color: onSurface),
+                  ),
+                ),
+                if (feedback == McqOptionFeedback.correct || feedback == McqOptionFeedback.correctUnselected)
+                  const Icon(Icons.check_circle_rounded, color: AppColors.success500, size: 20)
+                else if (feedback == McqOptionFeedback.wrong)
+                  const Icon(Icons.cancel_rounded, color: AppColors.error500, size: 20),
+              ],
+            ),
           ),
         ),
       ),
@@ -60,10 +127,17 @@ class QuizMcqOptionTile extends StatelessWidget {
   }
 }
 
-class _RadioDot extends StatelessWidget {
-  const _RadioDot({required this.selected, required this.isDark});
+class _FeedbackDot extends StatelessWidget {
+  const _FeedbackDot({
+    required this.selected,
+    required this.feedback,
+    required this.radioDotColor,
+    required this.isDark,
+  });
 
   final bool selected;
+  final McqOptionFeedback feedback;
+  final Color radioDotColor;
   final bool isDark;
 
   @override
@@ -71,6 +145,8 @@ class _RadioDot extends StatelessWidget {
     final ring = isDark
         ? DarkModeColors.borderDefault
         : LightModeColors.borderDefault;
+    final showFill =
+        selected || feedback == McqOptionFeedback.correctUnselected;
     return SizedBox(
       width: 20,
       height: 20,
@@ -81,18 +157,20 @@ class _RadioDot extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: selected ? AppColors.brandPrimary500 : ring,
+                color: feedback != McqOptionFeedback.none
+                    ? radioDotColor
+                    : (selected ? AppColors.brandPrimary500 : ring),
                 width: 2,
               ),
             ),
           ),
-          if (selected)
+          if (showFill)
             Container(
               width: 10,
               height: 10,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.brandPrimary500,
+                color: radioDotColor,
               ),
             ),
         ],

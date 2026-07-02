@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/core/theme/app_shadows.dart';
+import 'package:elara/features/student/presentation/quiz/widgets/quiz_hint_sheet.dart';
 import 'package:flutter/material.dart';
 
 /// Question container: left accent (same pattern as [AnnouncementCard] / Elara insight), chips, prompt.
@@ -78,42 +79,51 @@ class QuizQuestionCard extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
+                // Badge is always shown and looks identical whether there is a hint or not.
+                // Tapping it shows a "no hint" message if no hint is available.
                 Material(
-                  color: AppColors.brandSecondary500,
+                  color: onHint != null 
+                      ? AppColors.brandSecondary500 
+                      : AppColors.neutral400,
                   borderRadius: BorderRadius.circular(AppRadius.radiusFull),
                   child: InkWell(
-                    onTap: onHint,
                     borderRadius: BorderRadius.circular(AppRadius.radiusFull),
+                    onTap:
+                        onHint ??
+                        () => showHintSheet(
+                          context,
+                          'No hint available for this question',
+                        ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.spacingSm,
-                        vertical: AppSpacing.spacingXs,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            hintLabel,
-                            style:
-                                AppTypography.labelMedium(
-                                  color: AppColors.white,
-                                ).copyWith(
-                                  fontWeight: AppTypography.semiBold,
-                                  fontSize: 12,
-                                  height: 1.33,
-                                ),
-                          ),
-                          const SizedBox(width: AppSpacing.spacingXs),
-                          const Icon(
-                            Icons.lightbulb_outline_rounded,
-                            size: 16,
-                            color: AppColors.white,
-                          ),
-                        ],
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.spacingSm,
+                          vertical: AppSpacing.spacingXs,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              hintLabel,
+                              style:
+                                  AppTypography.labelMedium(
+                                    color: AppColors.white,
+                                  ).copyWith(
+                                    fontWeight: AppTypography.semiBold,
+                                    fontSize: 12,
+                                    height: 1.33,
+                                  ),
+                            ),
+                            const SizedBox(width: AppSpacing.spacingXs),
+                            const Icon(
+                              Icons.lightbulb_outline_rounded,
+                              size: 16,
+                              color: AppColors.white,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
             const SizedBox(height: AppSpacing.spacingMd),
