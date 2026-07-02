@@ -26,9 +26,9 @@ class ApiConstants {
   /// Student > Learn — All groups the student is enrolled in.
   static const String studentGroups = 'api/v1/student/groups';
 
-  /// Student > Learn — Group overview (apidocs: group-overview).
+  /// Student > Learn — Group overview (GET /api/v1/student/groups/{id}).
   static String studentLearnGroupOverview(String groupId) =>
-      'student/learn/groups/$groupId/overview';
+      'api/v1/student/groups/$groupId';
 
   /// Student > Learn — Leaderboard (apidocs: leaderboard).
   static String studentLearnGroupLeaderboard(String groupId) =>
@@ -71,6 +71,23 @@ class ApiConstants {
   /// DELETE Conversation.
   static String chatbotDeleteConversation(String id) =>
       'api/v1/conversations/$id';
+
+  // ── Quiz ──────────────────────────────────────────────────────────────────
+
+  /// POST — Generate a new quiz session.
+  static const String generateQuiz = 'api/v1/quiz/generate';
+
+  /// GET — Fetch a hint for a specific question in a session.
+  static String quizHint(int sessionId, int questionNumber) =>
+      'api/v1/quiz/sessions/$sessionId/questions/$questionNumber/hint';
+
+  /// POST — Submit a single answer for a question in a session.
+  static String submitAnswer(int sessionId) =>
+      'api/v1/quiz/sessions/$sessionId/answers';
+
+  /// POST — Mark a quiz session as complete and retrieve results.
+  static String completeQuiz(int sessionId) =>
+      'api/v1/quiz/sessions/$sessionId/complete';
 
   /// Absolute URI under [baseUrl] for chat routes (same rules as [API_BASE_URL]).
   static Uri chatUri(String relativePath) {

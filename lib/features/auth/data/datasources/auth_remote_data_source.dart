@@ -10,4 +10,7 @@ abstract class AuthRemoteDataSource {
   Future<OAuthTokenResponse> googleSignIn(GoogleSignInRequest request);
   Future<OAuthTokenResponse> completeRegistration(CompleteRegistrationRequest request);
   Future<UserModel> getMe();
+
+  /// Exchange a refresh token for a new access + refresh token pair.
+  Future<RefreshTokenResponse> refreshToken(RefreshTokenRequest request);
 }
