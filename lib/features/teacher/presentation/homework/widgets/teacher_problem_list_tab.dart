@@ -14,11 +14,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class TeacherProblemListTab extends StatelessWidget {
   final List<TeacherHomeworkProblemEntity> problems;
   final Future<void> Function(String description) onAddProblem;
+  final Future<void> Function({
+    required String problemId,
+    required String description,
+  })
+  onUpdateProblem;
+  final Future<void> Function(String problemId) onDeleteProblem;
 
   const TeacherProblemListTab({
     super.key,
     required this.problems,
     required this.onAddProblem,
+    required this.onUpdateProblem,
+    required this.onDeleteProblem,
   });
 
   void _showAddProblemDialog(BuildContext context) {
@@ -26,7 +34,28 @@ class TeacherProblemListTab extends StatelessWidget {
       context: context,
       builder: (_) => AppDialog(
         title: 'Add a Problem',
-        content: _AddProblemContent(onSubmit: onAddProblem),
+        content: _ProblemFormContent(
+          submitLabel: 'Add Problem',
+          onSubmit: onAddProblem,
+        ),
+      ),
+    );
+  }
+
+  void _showEditProblemDialog(
+    BuildContext context,
+    TeacherHomeworkProblemEntity problem,
+  ) {
+    AppDialog.show(
+      context: context,
+      builder: (_) => AppDialog(
+        title: 'Edit Problem',
+        content: _ProblemFormContent(
+          initialDescription: problem.questionText,
+          submitLabel: 'Save Changes',
+          onSubmit: (description) =>
+              onUpdateProblem(problemId: problem.id, description: description),
+        ),
       ),
     );
   }
@@ -51,30 +80,43 @@ class TeacherProblemListTab extends StatelessWidget {
             onAdd: () => _showAddProblemDialog(ctx),
           );
         }
+        final problem = problems[index - 1];
         return TeacherHomeworkProblemCard(
-          problem: problems[index - 1],
-          onEdit: () {},
-          onDelete: () {},
+          problem: problem,
+          onEdit: () => _showEditProblemDialog(ctx, problem),
+          onDelete: () => onDeleteProblem(problem.id),
         );
       },
     );
   }
 }
 
-//   Add Problem dialog content
+//   Problem form dialog content
 
-class _AddProblemContent extends StatefulWidget {
+class _ProblemFormContent extends StatefulWidget {
+  final String? initialDescription;
+  final String submitLabel;
   final Future<void> Function(String description) onSubmit;
 
-  const _AddProblemContent({required this.onSubmit});
+  const _ProblemFormContent({
+    this.initialDescription,
+    required this.submitLabel,
+    required this.onSubmit,
+  });
 
   @override
-  State<_AddProblemContent> createState() => _AddProblemContentState();
+  State<_ProblemFormContent> createState() => _ProblemFormContentState();
 }
 
-class _AddProblemContentState extends State<_AddProblemContent> {
-  final _ctrl = TextEditingController();
+class _ProblemFormContentState extends State<_ProblemFormContent> {
+  late final TextEditingController _ctrl;
   bool _isSubmitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = TextEditingController(text: widget.initialDescription ?? '');
+  }
 
   @override
   void dispose() {
@@ -139,7 +181,7 @@ class _AddProblemContentState extends State<_AddProblemContent> {
                     child: const CircularProgressIndicator(strokeWidth: 2),
                   )
                 : Text(
-                    'Add Problem',
+                    widget.submitLabel,
                     style: AppTypography.labelRegular(color: AppColors.white),
                   ),
           ),

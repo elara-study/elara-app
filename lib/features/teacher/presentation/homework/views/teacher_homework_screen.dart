@@ -177,6 +177,28 @@ class _HomeworkView extends StatelessWidget {
                               : homework.groupId,
                           description: description,
                         ),
+                    onUpdateProblem:
+                        ({required problemId, required description}) =>
+                            context.read<TeacherHomeworkCubit>().updateProblem(
+                              moduleId: homework.moduleId.isEmpty
+                                  ? fallbackModuleId
+                                  : homework.moduleId,
+                              groupId: homework.groupId.isEmpty
+                                  ? fallbackGroupId
+                                  : homework.groupId,
+                              problemId: problemId,
+                              description: description,
+                            ),
+                    onDeleteProblem: (problemId) =>
+                        context.read<TeacherHomeworkCubit>().deleteProblem(
+                          moduleId: homework.moduleId.isEmpty
+                              ? fallbackModuleId
+                              : homework.moduleId,
+                          groupId: homework.groupId.isEmpty
+                              ? fallbackGroupId
+                              : homework.groupId,
+                          problemId: problemId,
+                        ),
                   ),
                   TeacherSubmissionsTab(
                     submissions: homework.submissions,
