@@ -8,10 +8,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AppDialog extends StatelessWidget {
-  final String title;
+  final String? title;
   final Widget content;
 
-  const AppDialog({super.key, required this.title, required this.content});
+  const AppDialog({super.key, this.title, required this.content});
 
   /// Displays the dialog using a custom slide-up and fade-in transition.
   static Future<T?> show<T>({
@@ -72,31 +72,33 @@ class AppDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Header row ────────────────────────────────────────
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    title,
-                    style: AppTypography.h5(
-                      color: cs.onSurface,
-                    ).copyWith(fontWeight: AppTypography.extraBold),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: SvgPicture.asset(
-                      'assets/icons/clear_icon.svg',
-                      width: AppIconSizes.icon2xs.w,
-                      height: AppIconSizes.icon2xs.w,
-                      colorFilter: ColorFilter.mode(
-                        cs.onSurface,
-                        BlendMode.srcIn,
+              if (title != null) ...[
+                // ── Header row ────────────────────────────────────────
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title!,
+                      style: AppTypography.h5(
+                        color: cs.onSurface,
+                      ).copyWith(fontWeight: AppTypography.extraBold),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: SvgPicture.asset(
+                        'assets/icons/clear_icon.svg',
+                        width: AppIconSizes.icon2xs.w,
+                        height: AppIconSizes.icon2xs.w,
+                        colorFilter: ColorFilter.mode(
+                          cs.onSurface,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: AppSpacing.spacingLg.h),
+                  ],
+                ),
+                SizedBox(height: AppSpacing.spacingLg.h),
+              ],
 
               // ── Content ───────────────────────────────────────────
               content,
