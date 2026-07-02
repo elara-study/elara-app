@@ -8,8 +8,10 @@ import 'package:elara/features/student/presentation/quiz/widgets/quiz_results_ac
 import 'package:elara/features/student/presentation/quiz/widgets/quiz_results_hero.dart';
 import 'package:elara/features/student/presentation/quiz/widgets/quiz_results_insight_card.dart';
 import 'package:elara/features/student/presentation/quiz/widgets/quiz_results_reward_card.dart';
+
 import 'package:elara/features/student/presentation/quiz/widgets/quiz_frosted_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class QuizResultsBody extends StatelessWidget {
   const QuizResultsBody({super.key, required this.state});
@@ -20,6 +22,7 @@ class QuizResultsBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final session = state.session!;
     final results = state.results!;
+    final cs = Theme.of(context).colorScheme;
 
     final celebration =
         results.celebrationSubtitle ??
@@ -65,6 +68,32 @@ class QuizResultsBody extends StatelessWidget {
                   const SizedBox(height: AppSpacing.spacing2xl),
                   QuizResultsInsightCard(message: insight),
                   const SizedBox(height: AppSpacing.spacing2xl),
+                  OutlinedButton(
+                    onPressed: () => context.read<QuizCubit>().startReview(),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: cs.onSurface,
+                      side: BorderSide(color: cs.outlineVariant),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.spacingLg,
+                        vertical: AppSpacing.spacingSm,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.radiusFull),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Review Answers',
+                          style: AppTypography.labelLarge(color: cs.onSurface),
+                        ),
+                        const SizedBox(width: AppSpacing.spacingSm),
+                        const Icon(Icons.history_rounded, size: 20),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.spacingMd),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).popUntil(
