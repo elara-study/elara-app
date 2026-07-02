@@ -1,6 +1,17 @@
 part of 'quiz_cubit.dart';
 
-enum QuizStatus { initial, loading, inProgress, submitting, completed, failure }
+enum QuizStatus {
+  initial,
+  loading,
+  generating,
+  inProgress,
+  submitting,
+  hintLoaded,
+  answerSubmitted,
+  completed,
+  reviewing,
+  failure,
+}
 
 class QuizState extends Equatable {
   const QuizState._({
@@ -9,13 +20,18 @@ class QuizState extends Equatable {
     this.currentQuestionIndex = 0,
     this.mcqSelectionByQuestionId = const {},
     this.writtenTextByQuestionId = const {},
+    this.answerResultsByQuestionId = const {},
     this.results,
+    this.hint,
+    this.answerResult,
     this.message,
   });
 
   const QuizState.initial() : this._(status: QuizStatus.initial);
 
   const QuizState.loading() : this._(status: QuizStatus.loading);
+
+  const QuizState.generating() : this._(status: QuizStatus.generating);
 
   const QuizState.inProgress({
     required QuizSession session,
@@ -28,12 +44,23 @@ class QuizState extends Equatable {
          currentQuestionIndex: currentQuestionIndex,
          mcqSelectionByQuestionId: mcqSelectionByQuestionId,
          writtenTextByQuestionId: writtenTextByQuestionId,
+         answerResultsByQuestionId: const {},
        );
 
   const QuizState.completed({
     required QuizSession session,
     required QuizResults results,
-  }) : this._(status: QuizStatus.completed, session: session, results: results);
+    required Map<String, String> mcqSelectionByQuestionId,
+    required Map<String, String> writtenTextByQuestionId,
+    required Map<String, AnswerResult> answerResultsByQuestionId,
+  }) : this._(
+         status: QuizStatus.completed,
+         session: session,
+         results: results,
+         mcqSelectionByQuestionId: mcqSelectionByQuestionId,
+         writtenTextByQuestionId: writtenTextByQuestionId,
+         answerResultsByQuestionId: answerResultsByQuestionId,
+       );
 
   const QuizState.failure(String message)
     : this._(status: QuizStatus.failure, message: message);
@@ -43,7 +70,15 @@ class QuizState extends Equatable {
   final int currentQuestionIndex;
   final Map<String, String> mcqSelectionByQuestionId;
   final Map<String, String> writtenTextByQuestionId;
+  final Map<String, AnswerResult> answerResultsByQuestionId;
   final QuizResults? results;
+
+  /// Set when state is [QuizStatus.hintLoaded].
+  final QuizHint? hint;
+
+  /// Set when state is [QuizStatus.answerSubmitted].
+  final AnswerResult? answerResult;
+
   final String? message;
 
   QuizState copyWith({
@@ -52,7 +87,10 @@ class QuizState extends Equatable {
     int? currentQuestionIndex,
     Map<String, String>? mcqSelectionByQuestionId,
     Map<String, String>? writtenTextByQuestionId,
+    Map<String, AnswerResult>? answerResultsByQuestionId,
     QuizResults? results,
+    QuizHint? hint,
+    AnswerResult? answerResult,
     String? message,
   }) {
     return QuizState._(
@@ -63,7 +101,11 @@ class QuizState extends Equatable {
           mcqSelectionByQuestionId ?? this.mcqSelectionByQuestionId,
       writtenTextByQuestionId:
           writtenTextByQuestionId ?? this.writtenTextByQuestionId,
+      answerResultsByQuestionId:
+          answerResultsByQuestionId ?? this.answerResultsByQuestionId,
       results: results ?? this.results,
+      hint: hint ?? this.hint,
+      answerResult: answerResult ?? this.answerResult,
       message: message ?? this.message,
     );
   }
@@ -75,7 +117,10 @@ class QuizState extends Equatable {
     currentQuestionIndex,
     mcqSelectionByQuestionId,
     writtenTextByQuestionId,
+    answerResultsByQuestionId,
     results,
+    hint,
+    answerResult,
     message,
   ];
 }
