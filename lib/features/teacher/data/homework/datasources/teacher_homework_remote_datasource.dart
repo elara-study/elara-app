@@ -6,6 +6,7 @@ import 'package:elara/features/teacher/data/homework/models/teacher_homework_pro
 import 'package:elara/features/teacher/data/homework/models/teacher_rated_student_model.dart';
 import 'package:elara/features/teacher/data/homework/models/teacher_resource_model.dart';
 import 'package:elara/features/teacher/data/homework/models/teacher_student_answer_model.dart';
+import 'package:elara/features/teacher/data/homework/models/teacher_student_submission_detail_model.dart';
 import 'package:elara/features/teacher/data/homework/models/teacher_student_submission_model.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
 
@@ -19,22 +20,53 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
     required String moduleId,
     required String groupId,
   }) async {
-    final response = await _dio.get(
-      ApiConstants.teacherModuleHomework(moduleId),
-    );
-    final payload = _unwrapRoot(response.data);
+    final homeworkResponse = await _dio.get(ApiConstants.teacherModuleHomework(moduleId));
+
+    Response? submissionsResponse;
+    // Only fetch submissions when a valid groupId is available (i.e., navigating
+    // from a group context). When coming from the roadmap, groupId is empty.
+    if (groupId.isNotEmpty) {
+      try {
+        submissionsResponse = await _dio.get(
+          ApiConstants.teacherModuleHomeworkSubmissions(moduleId),
+          queryParameters: {'groupId': groupId},
+        );
+      } catch (_) {
+        // Gracefully ignore submissions endpoint errors (e.g., 404 or 500)
+      }
+    }
+
+    final payload = _unwrapRoot(homeworkResponse.data);
+    final subPayload = submissionsResponse != null 
+        ? _unwrapRoot(submissionsResponse.data) 
+        : <String, dynamic>{};
 
     final module = _readMap(payload, const ['module']) ?? payload;
     final problemsRaw = _extractProblemMaps(payload);
-    final submissionsRaw = _readList(payload, const [
+    
+    // Attempt to read from the new subPayload, falling back to original payload
+    // to ensure backwards compatibility if the API shape varies.
+    var submissionsRaw = _readList(subPayload, const [
       'submissions',
       'studentSubmissions',
+      'items',
+      'data',
     ]);
-    final ratedRaw = _readList(payload, const [
+    if (submissionsRaw.isEmpty) {
+      submissionsRaw = _asListOfMaps(subPayload);
+    }
+    if (submissionsRaw.isEmpty) {
+      submissionsRaw = _readList(payload, const ['submissions', 'studentSubmissions']);
+    }
+
+    var ratedRaw = _readList(subPayload, const [
       'ratedStudents',
       'gradedStudents',
       'rated',
     ]);
+    if (ratedRaw.isEmpty) {
+      ratedRaw = _readList(payload, const ['ratedStudents', 'gradedStudents', 'rated']);
+    }
 
     final problems = problemsRaw
         .asMap()
@@ -206,6 +238,23 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
     return _toResource(json, 0);
   }
 
+  @override
+  Future<TeacherStudentSubmissionDetailModel> getStudentSubmission({
+    required String moduleId,
+    required String studentId,
+    required String groupId,
+  }) async {
+    final response = await _dio.get(
+      ApiConstants.teacherStudentSubmission(moduleId, studentId),
+      queryParameters: groupId.isNotEmpty ? {'groupId': groupId} : null,
+    );
+    return TeacherStudentSubmissionDetailModel.fromJson(
+      response.data is Map<String, dynamic>
+          ? response.data as Map<String, dynamic>
+          : <String, dynamic>{},
+    );
+  }
+
   Map<String, dynamic> _unwrapRoot(dynamic value) {
     final root = value is Map<String, dynamic> ? value : <String, dynamic>{};
     final data = root['data'];
@@ -338,7 +387,7 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
     final student = _readMap(json, const ['student']) ?? json;
 
     return TeacherStudentSubmissionModel(
-      id: _string(json, const ['id'], fallback: _string(student, const ['id'])),
+      id: _string(json, const ['id', 'studentId'], fallback: _string(student, const ['id', 'studentId'])),
       studentName: _string(student, const [
         'name',
         'fullName',
