@@ -14,6 +14,12 @@ abstract interface class ITeacherHomeworkRepository {
     required String groupId,
   });
 
+  Future<ApiResult<TeacherResourceEntity>> addModuleResource({
+    required String moduleId,
+    required String title,
+    required String filePath,
+  });
+
   Future<ApiResult<TeacherHomeworkProblemEntity>> addModuleProblem({
     required String moduleId,
     required String description,

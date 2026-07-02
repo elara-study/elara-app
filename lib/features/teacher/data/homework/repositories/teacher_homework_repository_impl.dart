@@ -106,6 +106,28 @@ class TeacherHomeworkRepositoryImpl implements ITeacherHomeworkRepository {
     }
   }
 
+  @override
+  Future<ApiResult<TeacherResourceEntity>> addModuleResource({
+    required String moduleId,
+    required String title,
+    required String filePath,
+  }) async {
+    try {
+      final resource = await _datasource.addModuleResource(
+        moduleId: moduleId,
+        title: title,
+        filePath: filePath,
+      );
+      return ApiResult.success(resource);
+    } on DioException catch (e) {
+      return ApiResult.failure(_mapDioToFailure(e));
+    } catch (_) {
+      return ApiResult.failure(
+        const UnknownFailure('Failed to add module resource'),
+      );
+    }
+  }
+
   Failure _mapDioToFailure(DioException e) {
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.receiveTimeout ||

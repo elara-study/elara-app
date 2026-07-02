@@ -183,6 +183,29 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
         .toList();
   }
 
+  @override
+  Future<TeacherResourceModel> addModuleResource({
+    required String moduleId,
+    required String title,
+    required String filePath,
+  }) async {
+    final fileName = filePath.split('/').last;
+    final formData = FormData.fromMap({
+      'title': title,
+      'file': await MultipartFile.fromFile(filePath, filename: fileName),
+    });
+
+    final response = await _dio.post(
+      ApiConstants.teacherModuleResources(moduleId),
+      data: formData,
+    );
+
+    final payload = _unwrapRoot(response.data);
+    final json = _readMap(payload, const ['resource', 'data']) ?? payload;
+
+    return _toResource(json, 0);
+  }
+
   Map<String, dynamic> _unwrapRoot(dynamic value) {
     final root = value is Map<String, dynamic> ? value : <String, dynamic>{};
     final data = root['data'];

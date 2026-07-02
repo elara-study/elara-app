@@ -13,6 +13,12 @@ abstract interface class TeacherHomeworkDatasource {
     required String groupId,
   });
 
+  Future<TeacherResourceModel> addModuleResource({
+    required String moduleId,
+    required String title,
+    required String filePath,
+  });
+
   Future<TeacherHomeworkProblemModel> addModuleProblem({
     required String moduleId,
     required String description,

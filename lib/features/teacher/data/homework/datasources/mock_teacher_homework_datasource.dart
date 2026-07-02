@@ -237,4 +237,24 @@ class MockTeacherHomeworkDatasource implements TeacherHomeworkDatasource {
       ),
     ];
   }
+
+  @override
+  Future<TeacherResourceModel> addModuleResource({
+    required String moduleId,
+    required String title,
+    required String filePath,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 600));
+
+    return TeacherResourceModel(
+      id: 'res-${DateTime.now().millisecondsSinceEpoch}',
+      title: title,
+      description: '',
+      type: filePath.startsWith('http')
+          ? TeacherResourceType.link
+          : TeacherResourceType.document,
+      url: filePath,
+      addedAtLabel: 'Just now',
+    );
+  }
 }

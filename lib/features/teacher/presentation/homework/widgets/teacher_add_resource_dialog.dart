@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -29,6 +30,9 @@ class _TeacherAddResourceDialogContentState
   late final TextEditingController _urlCtrl;
   late final TextEditingController _descCtrl;
 
+  String? _pickedFilePath;
+  String? _pickedFileName;
+
   @override
   void initState() {
     super.initState();
@@ -45,12 +49,63 @@ class _TeacherAddResourceDialogContentState
     super.dispose();
   }
 
+  Future<void> _pickFile() async {
+    try {
+      FileType fileType = FileType.any;
+      List<String>? allowedExtensions;
+
+      switch (widget.type) {
+        case TeacherResourceType.video:
+          fileType = FileType.video;
+          break;
+        case TeacherResourceType.image:
+          fileType = FileType.image;
+          break;
+        case TeacherResourceType.pdf:
+          fileType = FileType.custom;
+          allowedExtensions = ['pdf'];
+          break;
+        default:
+          fileType = FileType.any;
+          break;
+      }
+
+      final result = await FilePicker.platform.pickFiles(
+        type: fileType,
+        allowedExtensions: allowedExtensions,
+      );
+
+      if (result != null && result.files.single.path != null) {
+        setState(() {
+          _pickedFilePath = result.files.single.path;
+          _pickedFileName = result.files.single.name;
+          if (_titleCtrl.text.isEmpty) {
+            _titleCtrl.text = _pickedFileName ?? '';
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to pick file: $e')),
+        );
+      }
+    }
+  }
+
   void _submit() {
     final title = _titleCtrl.text.trim();
-    final url = _urlCtrl.text.trim();
-    if (title.isEmpty || url.isEmpty) {
+    final url = widget.type == TeacherResourceType.link
+        ? _urlCtrl.text.trim()
+        : _pickedFilePath;
+
+    if (title.isEmpty || url == null || url.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Title and URL are required')),
+        SnackBar(
+          content: Text(
+            'Title and ${widget.type == TeacherResourceType.link ? 'URL' : 'File'} are required',
+          ),
+        ),
       );
       return;
     }
@@ -85,25 +140,7 @@ class _TeacherAddResourceDialogContentState
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Read-only type chip
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.spacingMd.w,
-              vertical: AppSpacing.spacingXs.h,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.brandPrimary500,
-              borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
-            ),
-            child: Text(
-              widget.type.label,
-              style: AppTypography.labelSmall(color: AppColors.white),
-            ),
-          ),
-        ),
-        SizedBox(height: AppSpacing.spacingMd.h),
+
 
         // Title field
         Text('Title', style: AppTypography.labelRegular(color: cs.onSurface)),
@@ -115,15 +152,56 @@ class _TeacherAddResourceDialogContentState
         ),
         SizedBox(height: AppSpacing.spacingMd.h),
 
-        // URL field
-        Text('URL', style: AppTypography.labelRegular(color: cs.onSurface)),
-        SizedBox(height: AppSpacing.spacingXs.h),
-        TextField(
-          controller: _urlCtrl,
-          style: AppTypography.bodyMedium(color: cs.onSurface),
-          keyboardType: TextInputType.url,
-          decoration: fieldDeco('https://…'),
-        ),
+        // Link or File field
+        if (widget.type == TeacherResourceType.link) ...[
+          Text('URL', style: AppTypography.labelRegular(color: cs.onSurface)),
+          SizedBox(height: AppSpacing.spacingXs.h),
+          TextField(
+            controller: _urlCtrl,
+            style: AppTypography.bodyMedium(color: cs.onSurface),
+            keyboardType: TextInputType.url,
+            decoration: fieldDeco('https://…'),
+          ),
+        ] else ...[
+          Text('File', style: AppTypography.labelRegular(color: cs.onSurface)),
+          SizedBox(height: AppSpacing.spacingXs.h),
+          InkWell(
+            onTap: _pickFile,
+            borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.spacingMd.w,
+                vertical: AppSpacing.spacingMd.h,
+              ),
+              decoration: BoxDecoration(
+                color: cs.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(AppRadius.radiusMd.r),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.attach_file_rounded,
+                    color: cs.onSurfaceVariant,
+                    size: 20.sp,
+                  ),
+                  SizedBox(width: AppSpacing.spacingSm.w),
+                  Expanded(
+                    child: Text(
+                      _pickedFileName ?? 'Tap to select file...',
+                      style: AppTypography.bodyMedium(
+                        color: _pickedFileName != null
+                            ? cs.onSurface
+                            : cs.onSurfaceVariant,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
         SizedBox(height: AppSpacing.spacingMd.h),
 
         // Description field
