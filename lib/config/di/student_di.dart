@@ -6,15 +6,20 @@ import 'package:elara/features/student/domain/dashboard/repositories/student_rep
 import 'package:elara/features/student/presentation/dashboard/cubits/home/student_home_cubit.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/learn/student_learn_cubit.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/tab/student_tab_cubit.dart';
-import 'package:elara/features/student/data/group/repositories/mock_student_group_repository.dart';
+import 'package:elara/features/student/data/group/repositories/student_group_repository_impl.dart';
 import 'package:elara/features/student/domain/group/repositories/student_group_repository.dart';
 import 'package:elara/features/student/domain/group/usecases/get_group_announcements_usecase.dart';
 import 'package:elara/features/student/domain/group/usecases/get_group_roadmap_usecase.dart';
 import 'package:elara/features/student/domain/group/usecases/load_student_group_usecase.dart';
 import 'package:elara/features/student/presentation/group/cubits/student_group_cubit.dart';
-import 'package:elara/features/student/data/quiz/repositories/mock_quiz_repository.dart';
+import 'package:elara/features/student/data/quiz/datasources/quiz_remote_datasource.dart';
+import 'package:elara/features/student/data/quiz/repositories/quiz_repository_impl.dart';
 import 'package:elara/features/student/domain/quiz/repositories/quiz_repository.dart';
+import 'package:elara/features/student/domain/quiz/usecases/complete_quiz_use_case.dart';
+import 'package:elara/features/student/domain/quiz/usecases/generate_quiz_use_case.dart';
+import 'package:elara/features/student/domain/quiz/usecases/get_hint_use_case.dart';
 import 'package:elara/features/student/domain/quiz/usecases/get_quiz_session_use_case.dart';
+import 'package:elara/features/student/domain/quiz/usecases/submit_answer_use_case.dart';
 import 'package:elara/features/student/domain/quiz/usecases/submit_quiz_answers_use_case.dart';
 import 'package:elara/features/student/presentation/quiz/cubits/quiz_cubit.dart';
 import 'package:elara/features/student/data/rewards/repositories/remote_student_rewards_repository.dart';
@@ -67,7 +72,7 @@ void setupStudentDI() {
 
   // ── Student group (Learn) ─────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentGroupRepository>(
-    () => MockStudentGroupRepository(),
+    () => StudentGroupRepositoryImpl(dioClient: getIt<DioClient>()),
   );
 
   getIt.registerLazySingleton<StudentRewardsRepository>(
@@ -87,7 +92,8 @@ void setupStudentDI() {
     () => GetStudentRewardsOverviewUseCase(getIt<StudentRewardsRepository>()),
   );
   getIt.registerLazySingleton<GetStudentRewardsLeaderboardUseCase>(
-    () => GetStudentRewardsLeaderboardUseCase(getIt<StudentRewardsRepository>()),
+    () =>
+        GetStudentRewardsLeaderboardUseCase(getIt<StudentRewardsRepository>()),
   );
 
   getIt.registerFactory<StudentGroupCubit>(
@@ -130,10 +136,15 @@ void setupStudentDI() {
   );
 
   // ── Quiz (Learn) ─────────────────────────────────────────────────────────
-  getIt.registerLazySingleton<QuizRepository>(
-    () => MockQuizRepository(),
+  getIt.registerLazySingleton<QuizRemoteDataSource>(
+    () => QuizRemoteDataSource(getIt<DioClient>()),
   );
 
+  getIt.registerLazySingleton<QuizRepository>(
+    () => QuizRepositoryImpl(getIt<QuizRemoteDataSource>()),
+  );
+
+  // Legacy use cases (kept for mock-demo route compatibility).
   getIt.registerLazySingleton(
     () => GetQuizSessionUseCase(getIt<QuizRepository>()),
   );
@@ -141,10 +152,26 @@ void setupStudentDI() {
     () => SubmitQuizAnswersUseCase(getIt<QuizRepository>()),
   );
 
+  // Live API use cases.
+  getIt.registerLazySingleton(
+    () => GenerateQuizUseCase(getIt<QuizRepository>()),
+  );
+  getIt.registerLazySingleton(() => GetHintUseCase(getIt<QuizRepository>()));
+  getIt.registerLazySingleton(
+    () => SubmitAnswerUseCase(getIt<QuizRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => CompleteQuizUseCase(getIt<QuizRepository>()),
+  );
+
   getIt.registerFactory<QuizCubit>(
     () => QuizCubit(
       getQuizSessionUseCase: getIt<GetQuizSessionUseCase>(),
       submitQuizAnswersUseCase: getIt<SubmitQuizAnswersUseCase>(),
+      generateQuizUseCase: getIt<GenerateQuizUseCase>(),
+      getHintUseCase: getIt<GetHintUseCase>(),
+      submitAnswerUseCase: getIt<SubmitAnswerUseCase>(),
+      completeQuizUseCase: getIt<CompleteQuizUseCase>(),
     ),
   );
 
