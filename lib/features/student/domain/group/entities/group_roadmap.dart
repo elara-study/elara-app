@@ -10,6 +10,13 @@ class GroupRoadmapModule extends Equatable {
   final String description;
   final RoadmapModuleStatus status;
 
+  /// UUID string returned by the backend (e.g. "7323677e-e1fc-...").
+  /// Used as [moduleId] when generating a quiz.
+  final String? moduleId;
+
+  /// Legacy int id — kept for compatibility; prefer [moduleId].
+  final int? lessonId;
+
   /// When non-null, shown instead of the default label for [status].
   final String? statusLabelOverride;
 
@@ -18,6 +25,8 @@ class GroupRoadmapModule extends Equatable {
     required this.title,
     required this.description,
     required this.status,
+    this.moduleId,
+    this.lessonId,
     this.statusLabelOverride,
   });
 
@@ -27,6 +36,8 @@ class GroupRoadmapModule extends Equatable {
     title,
     description,
     status,
+    moduleId,
+    lessonId,
     statusLabelOverride,
   ];
 }
