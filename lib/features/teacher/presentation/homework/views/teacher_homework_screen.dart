@@ -203,6 +203,12 @@ class _HomeworkView extends StatelessWidget {
                   TeacherSubmissionsTab(
                     submissions: homework.submissions,
                     totalXp: homework.totalXp,
+                    moduleId: homework.moduleId.isEmpty
+                        ? fallbackModuleId
+                        : homework.moduleId,
+                    groupId: homework.groupId.isEmpty
+                        ? fallbackGroupId
+                        : homework.groupId,
                   ),
                   TeacherRatedTab(ratedStudents: homework.ratedStudents),
                 ],

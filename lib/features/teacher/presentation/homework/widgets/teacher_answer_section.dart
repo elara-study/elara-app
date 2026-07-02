@@ -4,7 +4,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_rated_student_entity.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_student_answer_entity.dart';
-import 'package:elara/features/teacher/domain/homework/entities/teacher_student_submission_entity.dart';
+import 'package:elara/features/teacher/domain/homework/entities/teacher_student_submission_detail_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,12 +15,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 ///
 /// Shows a scrollable list of answers followed by the "Submit Grade" row.
 class TeacherGradeDialogContent extends StatefulWidget {
-  final TeacherStudentSubmissionEntity submission;
+  final List<TeacherStudentAnswerDetailEntity> answers;
   final int maxXp;
 
   const TeacherGradeDialogContent({
     super.key,
-    required this.submission,
+    required this.answers,
     required this.maxXp,
   });
 
@@ -61,13 +61,13 @@ class _TeacherGradeDialogContentState extends State<TeacherGradeDialogContent> {
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: widget.submission.answers
+                children: widget.answers
                     .map(
                       (a) => Padding(
                         padding: EdgeInsets.only(
                           bottom: AppSpacing.spacingLg.h,
                         ),
-                        child: TeacherAnswerSection(answer: a),
+                        child: TeacherAnswerDetailSection(answer: a),
                       ),
                     )
                     .toList(),
@@ -224,7 +224,59 @@ class TeacherAnswerSection extends StatelessWidget {
   }
 }
 
-// ── TeacherAnswerBadge ─────────────────────────────────────────────────────────
+// ── TeacherAnswerDetailSection ─────────────────────────────────────────────────
+
+/// Same layout as [TeacherAnswerSection] but for [TeacherStudentAnswerDetailEntity].
+class TeacherAnswerDetailSection extends StatelessWidget {
+  final TeacherStudentAnswerDetailEntity answer;
+
+  const TeacherAnswerDetailSection({super.key, required this.answer});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: EdgeInsets.all(AppSpacing.spacingLg.w),
+      decoration: BoxDecoration(
+        color: cs.surface,
+        borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
+        border: Border.all(color: AppColors.brandPrimary500, width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TeacherAnswerBadge(number: answer.problemId),
+              Icon(
+                Icons.check_circle_rounded,
+                color: AppColors.brandSecondary500,
+                size: 20.sp,
+              ),
+            ],
+          ),
+          SizedBox(height: AppSpacing.spacingMd.h),
+          Text(
+            answer.problemText,
+            style: AppTypography.labelRegular(color: cs.onSurface),
+          ),
+          if (answer.studentImageUrl != null) ...[
+            SizedBox(height: AppSpacing.spacingMd.h),
+            TeacherImagePlaceholder(borderColor: cs.outlineVariant),
+          ] else if (answer.studentTextAnswer != null) ...[
+            SizedBox(height: AppSpacing.spacingMd.h),
+            Text(
+              answer.studentTextAnswer!,
+              style: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
 
 /// Answer badge used inside the submission overlay.
 ///

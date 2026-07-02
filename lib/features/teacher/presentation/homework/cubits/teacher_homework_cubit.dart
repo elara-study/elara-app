@@ -1,7 +1,9 @@
 import 'package:elara/features/teacher/domain/homework/entities/teacher_homework_entity.dart';
+import 'package:elara/features/teacher/domain/homework/entities/teacher_student_submission_detail_entity.dart';
 import 'package:elara/features/teacher/domain/homework/usecases/add_teacher_module_problem_usecase.dart';
 import 'package:elara/features/teacher/domain/homework/usecases/delete_teacher_problem_usecase.dart';
 import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_module_homework_usecase.dart';
+import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_student_submission_usecase.dart';
 import 'package:elara/features/teacher/domain/homework/usecases/update_teacher_problem_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,12 +45,14 @@ class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
   final AddTeacherModuleProblemUseCase _addProblemUseCase;
   final UpdateTeacherProblemUseCase _updateProblemUseCase;
   final DeleteTeacherProblemUseCase _deleteProblemUseCase;
+  final GetTeacherStudentSubmissionUseCase _getStudentSubmissionUseCase;
 
   TeacherHomeworkCubit(
     this._getHomeworkUseCase,
     this._addProblemUseCase,
     this._updateProblemUseCase,
     this._deleteProblemUseCase,
+    this._getStudentSubmissionUseCase,
   ) : super(const TeacherHomeworkInitial());
 
   Future<void> load({required String moduleId, required String groupId}) async {
@@ -140,5 +144,23 @@ class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
     }
 
     await load(moduleId: moduleId, groupId: groupId);
+  }
+
+  /// Fetches full answer details for a specific student.
+  /// Returns the entity on success, or null on failure (failure is silent).
+  Future<TeacherStudentSubmissionDetailEntity?> loadStudentSubmission({
+    required String moduleId,
+    required String studentId,
+    required String groupId,
+  }) async {
+    final result = await _getStudentSubmissionUseCase(
+      moduleId: moduleId,
+      studentId: studentId,
+      groupId: groupId,
+    );
+    return result.fold(
+      onSuccess: (detail) => detail,
+      onFailure: (_) => null,
+    );
   }
 }
