@@ -33,6 +33,7 @@ import 'package:elara/features/teacher/domain/homework/usecases/add_teacher_modu
 import 'package:elara/features/teacher/domain/homework/usecases/delete_teacher_problem_usecase.dart';
 import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_module_homework_usecase.dart';
 import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_module_resources_usecase.dart';
+import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_student_submission_usecase.dart';
 import 'package:elara/features/teacher/domain/homework/usecases/update_teacher_problem_usecase.dart';
 import 'package:elara/features/teacher/presentation/homework/cubits/teacher_homework_cubit.dart';
 import 'package:elara/features/teacher/presentation/homework/cubits/teacher_resources_cubit.dart';
@@ -185,12 +186,17 @@ void setupTeacherDI() {
     () => DeleteTeacherProblemUseCase(getIt<ITeacherHomeworkRepository>()),
   );
 
+  getIt.registerLazySingleton(
+    () => GetTeacherStudentSubmissionUseCase(getIt<ITeacherHomeworkRepository>()),
+  );
+
   getIt.registerFactory<TeacherHomeworkCubit>(
     () => TeacherHomeworkCubit(
       getIt<GetTeacherModuleHomeworkUseCase>(),
       getIt<AddTeacherModuleProblemUseCase>(),
       getIt<UpdateTeacherProblemUseCase>(),
       getIt<DeleteTeacherProblemUseCase>(),
+      getIt<GetTeacherStudentSubmissionUseCase>(),
     ),
   );
 
