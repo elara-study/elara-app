@@ -2,6 +2,7 @@ import 'package:elara/core/network/api_result.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_homework_entity.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_homework_problem_entity.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
+import 'package:elara/features/teacher/domain/homework/entities/teacher_student_submission_detail_entity.dart';
 
 abstract interface class ITeacherHomeworkRepository {
   Future<ApiResult<TeacherHomeworkEntity>> getModuleHomework({
@@ -31,4 +32,10 @@ abstract interface class ITeacherHomeworkRepository {
   });
 
   Future<ApiResult<void>> deleteProblem({required String problemId});
+
+  Future<ApiResult<TeacherStudentSubmissionDetailEntity>> getStudentSubmission({
+    required String moduleId,
+    required String studentId,
+    required String groupId,
+  });
 }
