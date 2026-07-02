@@ -1,4 +1,4 @@
-import 'package:elara/features/teacher/group/domain/entities/teacher_student_insight_entity.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_student_insight_entity.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class ParentChildInsightsState extends Equatable {

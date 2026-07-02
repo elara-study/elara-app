@@ -1,6 +1,6 @@
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/teacher/group/presentation/widgets/teacher_student_insight_card.dart';
+import 'package:elara/features/teacher/presentation/group/widgets/teacher_student_insight_card.dart';
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_insights_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_child_insights_state.dart';

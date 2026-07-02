@@ -1,4 +1,4 @@
-import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.dart';
+import 'package:elara/features/teacher/domain/dashboard/entities/teacher_profile_entity.dart';
 import 'package:equatable/equatable.dart';
 
 class TeacherProfileState extends Equatable {
@@ -25,8 +25,11 @@ class TeacherProfileState extends Equatable {
     TeacherProfileEntity? profileData,
   }) {
     return TeacherProfileState(
-      pendingSnackMessage: clearSnackMessage ? null : (pendingSnackMessage ?? this.pendingSnackMessage),
-      shouldNavigateToLogin: shouldNavigateToLogin ?? this.shouldNavigateToLogin,
+      pendingSnackMessage: clearSnackMessage
+          ? null
+          : (pendingSnackMessage ?? this.pendingSnackMessage),
+      shouldNavigateToLogin:
+          shouldNavigateToLogin ?? this.shouldNavigateToLogin,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
       profileData: profileData ?? this.profileData,
@@ -35,10 +38,10 @@ class TeacherProfileState extends Equatable {
 
   @override
   List<Object?> get props => [
-        pendingSnackMessage,
-        shouldNavigateToLogin,
-        isLoading,
-        errorMessage,
-        profileData,
-      ];
+    pendingSnackMessage,
+    shouldNavigateToLogin,
+    isLoading,
+    errorMessage,
+    profileData,
+  ];
 }

@@ -27,14 +27,30 @@ class ApiConstants {
   // Teacher
   static const String teacherHome = 'api/v1/teacher/home';
   static const String teacherGroups = 'api/v1/teacher/groups';
+  static const String teacherRoadmaps = 'api/v1/teacher/roadmaps';
+  static String teacherRoadmapInfo(String id) => 'api/v1/teacher/roadmaps/$id';
+  static String teacherModuleHomework(String moduleId) =>
+      'api/v1/modules/$moduleId/homework';
+  static String teacherModuleResources(String moduleId) =>
+      'api/v1/modules/$moduleId/resources';
+  static String teacherModuleHomeworkProblems(String moduleId) =>
+      'api/v1/teacher/modules/$moduleId/homework/problems';
+  static String teacherModuleHomeworkSubmissions(String moduleId) =>
+      'api/v1/teacher/modules/$moduleId/homework/submissions';
+  static String teacherStudentSubmission(String moduleId, String studentId) =>
+      'api/v1/teacher/modules/$moduleId/homework/submissions/$studentId';
+  static String teacherProblem(String problemId) =>
+      'api/v1/teacher/problems/$problemId';
 
   static String teacherGroupInfo(String id) => 'api/v1/teacher/groups/$id';
   static String teacherGroupStudents(String id) =>
       'api/v1/teacher/groups/$id/students';
   static String teacherGroupAnnouncements(String id) =>
       'api/v1/teacher/groups/$id/announcements';
-  static String teacherGroupDeleteAnnouncement(String groupId, String announcementId) =>
-      'api/v1/teacher/groups/$groupId/announcements/$announcementId';
+  static String teacherGroupDeleteAnnouncement(
+    String groupId,
+    String announcementId,
+  ) => 'api/v1/teacher/groups/$groupId/announcements/$announcementId';
   static String teacherGroupRoadmap(String groupId) =>
       'api/v1/teacher/groups/$groupId/roadmap';
   static String teacherStudentInfo(String studentId) =>

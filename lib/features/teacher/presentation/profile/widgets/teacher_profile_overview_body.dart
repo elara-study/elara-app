@@ -3,9 +3,9 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/auth/domain/entities/user_entity.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_profile_entity.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_home_cubit.dart';
-import 'package:elara/features/teacher/presentation/cubits/teacher_home_state.dart';
+import 'package:elara/features/teacher/domain/dashboard/entities/teacher_profile_entity.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_home_cubit.dart';
+import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_home_state.dart';
 import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,7 +39,9 @@ class TeacherProfileOverviewBody extends StatelessWidget {
           Center(
             child: CircleAvatar(
               radius: 46.r,
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest,
               child: Icon(
                 Icons.school_rounded,
                 size: 52.sp,
@@ -176,11 +178,15 @@ class TeacherProfileOverviewBody extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 28.r,
-                          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest,
                           child: Icon(
                             Icons.class_rounded,
                             size: 32.sp,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         SizedBox(height: AppSpacing.spacingSm.h),

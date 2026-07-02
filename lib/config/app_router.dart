@@ -42,16 +42,19 @@ import 'package:elara/features/student/presentation/profile/cubits/student_setti
 import 'package:elara/features/student/presentation/profile/views/student_settings_screen.dart';
 import 'package:elara/features/student/presentation/quiz/quiz_route_args.dart';
 import 'package:elara/features/student/presentation/quiz/views/quiz_flow_page.dart';
-import 'package:elara/features/teacher/domain/entities/teacher_group_entity.dart';
-import 'package:elara/features/teacher/group/presentation/views/attendance_history_route_args.dart';
-import 'package:elara/features/teacher/group/presentation/views/attendance_history_screen.dart';
-import 'package:elara/features/teacher/group/presentation/views/teacher_group_page.dart';
-import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_page.dart';
-import 'package:elara/features/teacher/group/presentation/views/teacher_student_profile_route_args.dart';
-import 'package:elara/features/teacher/homework/presentation/route_args/teacher_module_route_args.dart';
-import 'package:elara/features/teacher/homework/presentation/views/teacher_homework_screen.dart';
-import 'package:elara/features/teacher/homework/presentation/views/teacher_resources_screen.dart';
-import 'package:elara/features/teacher/presentation/views/teacher_shell.dart';
+import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
+import 'package:elara/features/teacher/presentation/group/views/attendance_history_route_args.dart';
+import 'package:elara/features/teacher/presentation/group/views/attendance_history_screen.dart';
+import 'package:elara/features/teacher/presentation/group/views/teacher_group_page.dart';
+import 'package:elara/features/teacher/presentation/group/views/teacher_student_profile_page.dart';
+import 'package:elara/features/teacher/presentation/group/views/teacher_student_profile_route_args.dart';
+import 'package:elara/features/teacher/presentation/homework/route_args/teacher_module_route_args.dart';
+import 'package:elara/features/teacher/presentation/homework/views/teacher_homework_screen.dart';
+import 'package:elara/features/teacher/presentation/homework/views/teacher_resources_screen.dart';
+import 'package:elara/features/teacher/presentation/homework/views/teacher_student_submission_screen.dart';
+import 'package:elara/features/teacher/presentation/homework/route_args/teacher_student_submission_route_args.dart';
+import 'package:elara/features/teacher/presentation/dashboard/views/teacher_shell.dart';
+import 'package:elara/features/teacher/presentation/roadmap/views/teacher_roadmap_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -82,10 +85,12 @@ abstract final class AppRoutes {
   static const String home = '/home';
   static const String teacherDashboard = '/teacher';
   static const String teacherGroup = '/teacher-group';
+  static const String teacherRoadmap = '/teacher/roadmap';
   static const String teacherStudentProfile = '/teacher/student-profile';
   static const String attendanceHistory = '/teacher/attendance-history';
   static const String teacherModuleHomework = '/teacher/module-homework';
   static const String teacherModuleResources = '/teacher/module-resources';
+  static const String teacherStudentSubmission = '/teacher/student-submission';
   static const String parentDashboard = '/parent';
   static const String parentChildProfile = '/parent/child-profile';
   static const String parentChildHomework = '/parent/child-homework';
@@ -129,18 +134,12 @@ GoRouter createAppRouter(AuthCubit authCubit) {
     refreshListenable: GoRouterRefreshStream(authCubit.stream),
     redirect: (context, state) => _authRedirect(authCubit.state, state),
     routes: [
-      GoRoute(
-        path: AppRoutes.splash,
-        builder: (_, _) => const SplashScreen(),
-      ),
+      GoRoute(path: AppRoutes.splash, builder: (_, _) => const SplashScreen()),
       GoRoute(
         path: AppRoutes.onboarding,
         builder: (_, _) => const OnboardingView(),
       ),
-      GoRoute(
-        path: AppRoutes.login,
-        builder: (_, _) => const SignInScreen(),
-      ),
+      GoRoute(path: AppRoutes.login, builder: (_, _) => const SignInScreen()),
       GoRoute(
         path: AppRoutes.forgotPassword,
         builder: (_, _) => const ForgotPasswordScreen(),
@@ -185,10 +184,7 @@ GoRouter createAppRouter(AuthCubit authCubit) {
         path: AppRoutes.studentDashboard,
         builder: (_, _) => const StudentShell(),
       ),
-      GoRoute(
-        path: AppRoutes.home,
-        builder: (_, _) => const StudentShell(),
-      ),
+      GoRoute(path: AppRoutes.home, builder: (_, _) => const StudentShell()),
       GoRoute(
         path: AppRoutes.teacherDashboard,
         builder: (_, _) => const TeacherShell(),
@@ -235,9 +231,8 @@ GoRouter createAppRouter(AuthCubit authCubit) {
       ),
       GoRoute(
         path: AppRoutes.comingSoonDashboard,
-        builder: (_, _) => const Scaffold(
-          body: Center(child: Text('Dashboard coming soon')),
-        ),
+        builder: (_, _) =>
+            const Scaffold(body: Center(child: Text('Dashboard coming soon'))),
       ),
       GoRoute(
         path: AppRoutes.studentGroup,
@@ -262,6 +257,18 @@ GoRouter createAppRouter(AuthCubit authCubit) {
             return TeacherGroupPage(group: args);
           }
           return const Scaffold(body: Center(child: Text('Group not found')));
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.teacherRoadmap,
+        builder: (context, state) {
+          final args = state.extra;
+          if (args is TeacherGroupEntity) {
+            return TeacherRoadmapDetailPage(roadmap: args);
+          }
+          return const Scaffold(
+            body: Center(child: Text('Roadmap not found')),
+          );
         },
       ),
       GoRoute(
@@ -313,6 +320,18 @@ GoRouter createAppRouter(AuthCubit authCubit) {
         },
       ),
       GoRoute(
+        path: AppRoutes.teacherStudentSubmission,
+        builder: (context, state) {
+          final args = state.extra;
+          if (args is TeacherStudentSubmissionRouteArgs) {
+            return TeacherStudentSubmissionScreen.fromArgs(args);
+          }
+          return const Scaffold(
+            body: Center(child: Text('Submission data not found')),
+          );
+        },
+      ),
+      GoRoute(
         path: AppRoutes.quiz,
         builder: (context, state) {
           final args = state.extra;
@@ -335,7 +354,8 @@ GoRouter createAppRouter(AuthCubit authCubit) {
       GoRoute(
         path: AppRoutes.studentSettings,
         builder: (context, _) => BlocProvider(
-          create: (_) => StudentSettingsCubit(authCubit: context.read<AuthCubit>()),
+          create: (_) =>
+              StudentSettingsCubit(authCubit: context.read<AuthCubit>()),
           child: const StudentSettingsScreen(),
         ),
       ),
@@ -393,9 +413,8 @@ GoRouter createAppRouter(AuthCubit authCubit) {
         },
       ),
     ],
-    errorBuilder: (_, _) => const Scaffold(
-      body: Center(child: Text('Page not found')),
-    ),
+    errorBuilder: (_, _) =>
+        const Scaffold(body: Center(child: Text('Page not found'))),
   );
 }
 
