@@ -130,6 +130,14 @@ Split into multiple commits if the task touched multiple logical units.
 - **Domain Layer** → Entities, Repositories (abstract), Use Cases
 - **Data Layer** → Models, DataSources, Repository Implementations
 
+### Student-style wiring is the default for backend integration
+
+For any endpoint wiring task, follow the same complete flow used in student features:
+
+`UI/View -> Cubit -> UseCase -> Repository (abstract) -> RepositoryImpl -> RemoteDataSource -> DioClient`
+
+This is required unless the task explicitly says to keep an existing lean teacher pattern.
+
 Never mix layers:
 
 - ❌ View → Repository
@@ -160,11 +168,12 @@ class LoginCubit extends Cubit<LoginState> {
 }
 ```
 
-### Dependency Injection: GetIt + Injectable
+### Dependency Injection: GetIt (Student-style full registration)
 
-- Register all datasources, repositories, and cubits through `GetIt`.
-- Use `@injectable`, `@lazySingleton`, `@singleton` annotations.
-- Run `flutter pub run build_runner build --delete-conflicting-outputs` after any new `@injectable`.
+- Register all layers in `GetIt`: datasource -> repository impl -> usecase -> cubit.
+- Cubits must depend on use cases, not datasources directly (for student-style wiring).
+- Use `registerLazySingleton` for datasources/repositories/usecases.
+- Use `registerFactory` for cubits.
 - Access via `getIt<T>()` — never instantiate directly in UI.
 
 ---
@@ -232,7 +241,7 @@ lib/features/<feature>/
 │   │   └── <entity>.dart              ← Pure Dart, no Flutter/third-party imports
 │   ├── repositories/
 │   │   └── <feature>_repository.dart  ← Abstract interface
-│   └── usecases/                      ← Optional
+│   └── usecases/                      ← Required for backend integration
 └── presentation/
     ├── cubits/
     │   ├── <feature>_cubit.dart
@@ -240,6 +249,36 @@ lib/features/<feature>/
     ├── views/                         ← Already complete — only wire, don't redesign
     └── widgets/                       ← Already complete — only wire, don't redesign
 ```
+
+### Backend Endpoint Wiring Checklist (Student-style)
+
+For every new endpoint integration, complete **all** applicable layers:
+
+1. Add endpoint constant in `lib/core/constants/api_constants.dart` (no magic strings).
+2. Add/update DataSource method in `data/datasources/*_remote_datasource.dart`.
+3. Add/update Model(s) in `data/models/` with `fromJson`/`toJson` and mapping support.
+4. Add/update repository contract in `domain/repositories/`.
+5. Add/update repository implementation in `data/repositories/`.
+6. Add one dedicated use case per action in `domain/usecases/`.
+7. Inject use case(s) into cubit; cubit should not call Dio/DataSource directly.
+8. Register datasource, repository, usecase, and cubit in DI (`lib/config/di/*.dart`).
+9. Wire cubit to existing UI screen/widgets without redesign.
+10. Run `flutter analyze` before completing the task.
+
+### Backend Endpoint Wiring Checklist (Student-style)
+
+For every new endpoint integration, complete **all** applicable layers:
+
+1. Add endpoint constant in `lib/core/constants/api_constants.dart` (no magic strings).
+2. Add/update DataSource method in `data/datasources/*_remote_datasource.dart`.
+3. Add/update Model(s) in `data/models/` with `fromJson`/`toJson` and mapping support.
+4. Add/update repository contract in `domain/repositories/`.
+5. Add/update repository implementation in `data/repositories/`.
+6. Add one dedicated use case per action in `domain/usecases/`.
+7. Inject use case(s) into cubit; cubit should not call Dio/DataSource directly.
+8. Register datasource, repository, usecase, and cubit in DI (`lib/config/di/*.dart`).
+9. Wire cubit to existing UI screen/widgets without redesign.
+10. Run `flutter analyze` before completing the task.
 
 ---
 
@@ -277,7 +316,7 @@ The UI is done. When connecting the backend:
 
 ## Code Quality
 
-- API paths → `lib/core/constants/api_endpoints.dart` (no magic strings)
+- API paths -> `lib/core/constants/api_constants.dart` (no magic strings)
 - Use `logger` (`log.d`, `log.e`, `log.w`) — never `print()`
 - All state is immutable — use `copyWith`, never mutate
 - Run `flutter analyze` before marking a task done — zero warnings
