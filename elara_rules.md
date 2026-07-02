@@ -140,9 +140,9 @@ This is required unless the task explicitly says to keep an existing lean teache
 
 Never mix layers:
 
-- ❌ View → Repository
-- ❌ Cubit → Dio
-- View → Cubit → Repository → DataSource → Dio
+- ❌ View -> Repository
+- ❌ Cubit -> Dio
+- ✅ View -> Cubit -> UseCase -> Repository -> DataSource -> Dio
 
 ### State Management: BLoC / Cubit
 
@@ -204,7 +204,7 @@ class AuthRemoteDataSource {
 
 ### Error Handling
 
-- Repository methods return `Either<Failure, T>`.
+- Repository methods return `Either<Failure, T>` for backend integrations.
 - Never bubble raw exceptions to Cubit or UI.
 - Failure types: `ServerFailure`, `NetworkFailure`, `UnauthorizedFailure`, `ParseFailure`.
 - On `401`: clear token + redirect to login.
@@ -249,21 +249,6 @@ lib/features/<feature>/
     ├── views/                         ← Already complete — only wire, don't redesign
     └── widgets/                       ← Already complete — only wire, don't redesign
 ```
-
-### Backend Endpoint Wiring Checklist (Student-style)
-
-For every new endpoint integration, complete **all** applicable layers:
-
-1. Add endpoint constant in `lib/core/constants/api_constants.dart` (no magic strings).
-2. Add/update DataSource method in `data/datasources/*_remote_datasource.dart`.
-3. Add/update Model(s) in `data/models/` with `fromJson`/`toJson` and mapping support.
-4. Add/update repository contract in `domain/repositories/`.
-5. Add/update repository implementation in `data/repositories/`.
-6. Add one dedicated use case per action in `domain/usecases/`.
-7. Inject use case(s) into cubit; cubit should not call Dio/DataSource directly.
-8. Register datasource, repository, usecase, and cubit in DI (`lib/config/di/*.dart`).
-9. Wire cubit to existing UI screen/widgets without redesign.
-10. Run `flutter analyze` before completing the task.
 
 ### Backend Endpoint Wiring Checklist (Student-style)
 
