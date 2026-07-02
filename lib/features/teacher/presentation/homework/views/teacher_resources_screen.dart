@@ -11,6 +11,8 @@ import 'package:elara/features/teacher/presentation/homework/widgets/teacher_res
 import 'package:elara/shared/widgets/app_dialog.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -102,6 +104,8 @@ class TeacherResourcesScreen extends StatelessWidget {
             resources: resources,
             moduleTitle: moduleTitle,
             subject: subject,
+            moduleId: moduleId,
+            groupId: groupId,
           ),
         },
       ),
@@ -115,11 +119,15 @@ class _ResourcesView extends StatefulWidget {
   final List<TeacherResourceEntity> resources;
   final String moduleTitle;
   final String subject;
+  final String moduleId;
+  final String groupId;
 
   const _ResourcesView({
     required this.resources,
     required this.moduleTitle,
     required this.subject,
+    required this.moduleId,
+    required this.groupId,
   });
 
   @override
@@ -144,6 +152,53 @@ class _ResourcesViewState extends State<_ResourcesView> {
         .toList();
   }
 
+  void _handleResourceTap(BuildContext context, TeacherResourceEntity resource) async {
+    if (resource.type == TeacherResourceType.image) {
+      _showImageFullScreen(context, resource.url);
+      return;
+    }
+
+    if (resource.url.isNotEmpty) {
+      final uri = Uri.parse(resource.url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    }
+  }
+
+  void _showImageFullScreen(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.zero,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: InteractiveViewer(
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 16,
+              right: 16,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 32),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showAddDialog(BuildContext context, TeacherResourceType type) {
     AppDialog.show(
       context: context,
@@ -152,7 +207,12 @@ class _ResourcesViewState extends State<_ResourcesView> {
         content: TeacherAddResourceDialogContent(
           type: type,
           onSubmit: (title, url, description) {
-            // TODO: dispatch add-resource cubit event when backend is ready
+            context.read<TeacherResourcesCubit>().addResource(
+                  moduleId: widget.moduleId,
+                  groupId: widget.groupId,
+                  title: title,
+                  filePath: url,
+                );
           },
         ),
       ),
@@ -165,7 +225,6 @@ class _ResourcesViewState extends State<_ResourcesView> {
 
     for (final type in _kSectionOrder) {
       final items = filtered.where((r) => r.type == type).toList();
-      if (items.isEmpty) continue;
 
       widgets.add(SizedBox(height: AppSpacing.spacingXl.h));
       widgets.add(
@@ -183,7 +242,10 @@ class _ResourcesViewState extends State<_ResourcesView> {
         widgets.add(
           Padding(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingLg.w),
-            child: TeacherImageGrid(resources: items),
+            child: TeacherImageGrid(
+              resources: items,
+              onTap: (r) => _handleResourceTap(context, r),
+            ),
           ),
         );
       } else {
@@ -197,6 +259,7 @@ class _ResourcesViewState extends State<_ResourcesView> {
               ),
               child: TeacherResourceCard(
                 resource: resource,
+                onTap: () => _handleResourceTap(context, resource),
                 onEdit: () {},
                 onDelete: () {},
               ),
