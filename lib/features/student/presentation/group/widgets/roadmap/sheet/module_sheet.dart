@@ -15,6 +15,9 @@ import 'package:flutter/material.dart';
 Future<void> showModuleSheet(
   BuildContext context, {
   required String moduleTitle,
+  String? groupId,
+  String? moduleId,
+  int? lessonId,
 }) {
   final theme = Theme.of(context);
   return showModalBottomSheet<void>(
@@ -28,15 +31,29 @@ Future<void> showModuleSheet(
         top: Radius.circular(AppRadius.radiusLg),
       ),
     ),
-    builder: (ctx) => ModuleSheet(moduleTitle: moduleTitle),
+    builder: (ctx) => ModuleSheet(
+      moduleTitle: moduleTitle,
+      groupId: groupId,
+      moduleId: moduleId,
+      lessonId: lessonId,
+    ),
   );
 }
 
 /// Body: header, quiz/homework tiles, chat, resources.
 class ModuleSheet extends StatelessWidget {
   final String moduleTitle;
+  final String? groupId;
+  final String? moduleId;
+  final int? lessonId;
 
-  const ModuleSheet({super.key, required this.moduleTitle});
+  const ModuleSheet({
+    super.key,
+    required this.moduleTitle,
+    this.groupId,
+    this.moduleId,
+    this.lessonId,
+  });
 
   void _pop(BuildContext context) => Navigator.of(context).pop();
 
@@ -96,7 +113,12 @@ class ModuleSheet extends StatelessWidget {
                     AppNavigation.pushNamed(
                       context,
                       AppRoutes.quiz,
-                      arguments: const QuizRouteArgs(quizId: 'demo-quiz'),
+                      arguments: QuizRouteArgs(
+                        quizId: 'demo-quiz',
+                        lessonId: lessonId,
+                        groupId: groupId,
+                        moduleId: moduleId,
+                      ),
                     );
                   },
                 ),

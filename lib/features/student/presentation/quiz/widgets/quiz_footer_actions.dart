@@ -8,13 +8,17 @@ import 'package:flutter/material.dart';
 class QuizFooterActions extends StatelessWidget {
   const QuizFooterActions({
     super.key,
-    required this.onLeave,
+    this.secondaryLabel = 'Leave',
+    this.secondaryIcon = Icons.arrow_back_rounded,
+    required this.onSecondary,
     required this.primaryLabel,
     required this.onPrimary,
     this.primaryEnabled = true,
   });
 
-  final VoidCallback onLeave;
+  final String secondaryLabel;
+  final IconData secondaryIcon;
+  final VoidCallback onSecondary;
   final String primaryLabel;
   final VoidCallback onPrimary;
   final bool primaryEnabled;
@@ -25,7 +29,7 @@ class QuizFooterActions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         OutlinedButton(
-          onPressed: onLeave,
+          onPressed: onSecondary,
           style: OutlinedButton.styleFrom(
             foregroundColor: ButtonColors.outlineText,
             side: const BorderSide(color: ButtonColors.outlineBorder),
@@ -40,10 +44,10 @@ class QuizFooterActions extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.arrow_back_rounded, size: 20),
+              Icon(secondaryIcon, size: 20),
               const SizedBox(width: AppSpacing.spacingSm),
               Text(
-                'Leave',
+                secondaryLabel,
                 style: AppTypography.labelLarge(
                   color: ButtonColors.outlineText,
                 ),

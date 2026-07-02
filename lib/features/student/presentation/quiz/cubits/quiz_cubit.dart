@@ -1,26 +1,155 @@
+import 'package:elara/features/student/domain/quiz/entities/answer_result.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_answer_submission.dart';
+import 'package:elara/features/student/domain/quiz/entities/quiz_hint.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_question.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_question_kind.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_results.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_session.dart';
+import 'package:elara/features/student/domain/quiz/usecases/complete_quiz_use_case.dart';
+import 'package:elara/features/student/domain/quiz/usecases/generate_quiz_use_case.dart';
+import 'package:elara/features/student/domain/quiz/usecases/get_hint_use_case.dart';
 import 'package:elara/features/student/domain/quiz/usecases/get_quiz_session_use_case.dart';
+import 'package:elara/features/student/domain/quiz/usecases/submit_answer_use_case.dart';
 import 'package:elara/features/student/domain/quiz/usecases/submit_quiz_answers_use_case.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'quiz_state.dart';
 
-/// Orchestrates load → per-question answers → submit. UI reads [QuizState] only.
+/// Orchestrates the full quiz lifecycle:
+/// generate → per-question (hint, answer) → complete.
+///
+/// Legacy [loadSession] / [advanceOrSubmit] flow is preserved for the demo route.
 class QuizCubit extends Cubit<QuizState> {
   QuizCubit({
     required GetQuizSessionUseCase getQuizSessionUseCase,
     required SubmitQuizAnswersUseCase submitQuizAnswersUseCase,
+    required GenerateQuizUseCase generateQuizUseCase,
+    required GetHintUseCase getHintUseCase,
+    required SubmitAnswerUseCase submitAnswerUseCase,
+    required CompleteQuizUseCase completeQuizUseCase,
   }) : _getQuizSessionUseCase = getQuizSessionUseCase,
        _submitQuizAnswersUseCase = submitQuizAnswersUseCase,
+       _generateQuizUseCase = generateQuizUseCase,
+       _getHintUseCase = getHintUseCase,
+       _submitAnswerUseCase = submitAnswerUseCase,
+       _completeQuizUseCase = completeQuizUseCase,
        super(const QuizState.initial());
 
   final GetQuizSessionUseCase _getQuizSessionUseCase;
   final SubmitQuizAnswersUseCase _submitQuizAnswersUseCase;
+  final GenerateQuizUseCase _generateQuizUseCase;
+  final GetHintUseCase _getHintUseCase;
+  final SubmitAnswerUseCase _submitAnswerUseCase;
+  final CompleteQuizUseCase _completeQuizUseCase;
+
+  // Live API flow
+
+  /// Generates a new quiz session from the backend.
+  Future<void> generateQuiz({
+    required String groupId,
+    required String moduleId,
+    required String difficultyLevel,
+    required int questionCount,
+  }) async {
+    emit(const QuizState.generating());
+    final result = await _generateQuizUseCase(
+      groupId: groupId,
+      moduleId: moduleId,
+      questionCount: questionCount,
+      difficultyLevel: difficultyLevel,
+      questionTypes: const ['MCQ', 'Essay'],
+    );
+    result.fold(
+      onSuccess: (session) => emit(
+        QuizState.inProgress(
+          session: session,
+          currentQuestionIndex: 0,
+          mcqSelectionByQuestionId: const {},
+          writtenTextByQuestionId: const {},
+        ),
+      ),
+      onFailure: (f) => emit(QuizState.failure(f.message)),
+    );
+  }
+
+  /// Fetches a hint for the given question number in the active session.
+  Future<void> getHint({
+    required int sessionId,
+    required int questionNumber,
+  }) async {
+    final result = await _getHintUseCase(
+      sessionId: sessionId,
+      questionNumber: questionNumber,
+    );
+    result.fold(
+      onSuccess: (hint) => emit(state.copyWith(
+        status: QuizStatus.hintLoaded,
+        hint: hint,
+      )),
+      onFailure: (f) => emit(QuizState.failure(f.message)),
+    );
+  }
+
+  /// Submits a single answer and emits [QuizStatus.answerSubmitted] with feedback.
+  Future<void> submitAnswer({
+    required int sessionId,
+    required int questionNumber,
+    required String questionType,
+    String? selectedOptionText,
+    String? answerContent,
+    required bool hintUsed,
+  }) async {
+    emit(state.copyWith(status: QuizStatus.submitting));
+    final result = await _submitAnswerUseCase(
+      sessionId: sessionId,
+      questionNumber: questionNumber,
+      questionType: questionType,
+      selectedOptionText: selectedOptionText,
+      answerContent: answerContent,
+      hintUsed: hintUsed,
+    );
+    result.fold(
+      onSuccess: (answerResult) {
+        final q = _currentQuestion;
+        final nextResults = Map<String, AnswerResult>.from(
+          state.answerResultsByQuestionId,
+        );
+        if (q != null) {
+          nextResults[q.id] = answerResult;
+        }
+        
+        emit(
+          state.copyWith(
+            status: QuizStatus.answerSubmitted,
+            answerResult: answerResult,
+            answerResultsByQuestionId: nextResults,
+          ),
+        );
+      },
+      onFailure: (f) => emit(QuizState.failure(f.message)),
+    );
+  }
+
+  /// Completes the quiz session and emits [QuizStatus.completed] with results.
+  Future<void> completeQuiz(int sessionId) async {
+    emit(state.copyWith(status: QuizStatus.submitting));
+    final result = await _completeQuizUseCase(sessionId);
+    result.fold(
+      onSuccess: (results) => emit(
+        QuizState.completed(
+          session: state.session!,
+          results: results,
+          mcqSelectionByQuestionId: state.mcqSelectionByQuestionId,
+          writtenTextByQuestionId: state.writtenTextByQuestionId,
+          answerResultsByQuestionId: state.answerResultsByQuestionId,
+        ),
+      ),
+      onFailure: (f) => emit(QuizState.failure(f.message)),
+    );
+  }
+
+  // Legacy demo flow (mock-compatible)
 
   String? _quizId;
   String? _groupId;
@@ -108,6 +237,50 @@ class QuizCubit extends Cubit<QuizState> {
     return state.currentQuestionIndex >= session.questions.length - 1;
   }
 
+  /// Starts the review mode, showing the user's answers and feedback.
+  void startReview() {
+    emit(
+      state.copyWith(
+        status: QuizStatus.reviewing,
+        currentQuestionIndex: 0,
+      ),
+    );
+  }
+
+  /// Moves to the next question.
+  /// If in review mode and on the last question, finishes review and returns to completed state.
+  void advanceQuestion() {
+    if (isLastQuestion) {
+      if (state.status == QuizStatus.reviewing) {
+        // Finish review
+        emit(state.copyWith(status: QuizStatus.completed));
+      }
+    } else {
+      emit(
+        state.copyWith(
+          status: state.status == QuizStatus.reviewing 
+              ? QuizStatus.reviewing 
+              : QuizStatus.inProgress,
+          currentQuestionIndex: state.currentQuestionIndex + 1,
+        ),
+      );
+    }
+  }
+
+  /// Moves to the previous question if not on the first question.
+  void previousQuestion() {
+    if (state.currentQuestionIndex > 0) {
+      emit(
+        state.copyWith(
+          status: state.status == QuizStatus.reviewing 
+              ? QuizStatus.reviewing 
+              : QuizStatus.inProgress,
+          currentQuestionIndex: state.currentQuestionIndex - 1,
+        ),
+      );
+    }
+  }
+
   /// Next step: move to following question or submit when on the last one.
   Future<void> advanceOrSubmit() async {
     if (!canAdvanceCurrentQuestion) return;
@@ -152,7 +325,15 @@ class QuizCubit extends Cubit<QuizState> {
     );
 
     result.fold(
-      onSuccess: (r) => emit(QuizState.completed(session: session, results: r)),
+      onSuccess: (r) => emit(
+        QuizState.completed(
+          session: session,
+          results: r,
+          mcqSelectionByQuestionId: snapshot.mcqSelectionByQuestionId,
+          writtenTextByQuestionId: snapshot.writtenTextByQuestionId,
+          answerResultsByQuestionId: snapshot.answerResultsByQuestionId,
+        ),
+      ),
       onFailure: (f) => emit(snapshot),
     );
   }

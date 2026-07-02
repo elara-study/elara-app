@@ -10,11 +10,13 @@ class QuizWrittenField extends StatelessWidget {
     required this.controller,
     this.hintText = 'Type your answer here…',
     this.minLines = 4,
+    this.readOnly = false,
   });
 
   final TextEditingController controller;
   final String hintText;
   final int minLines;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class QuizWrittenField extends StatelessWidget {
         ),
         child: TextField(
           controller: controller,
+          readOnly: readOnly,
           minLines: minLines,
           maxLines: 8,
           style: AppTypography.bodyMedium(color: onSurface),

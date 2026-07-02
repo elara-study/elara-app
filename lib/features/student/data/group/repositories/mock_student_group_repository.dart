@@ -110,18 +110,21 @@ class MockStudentGroupRepository implements StudentGroupRepository {
           title: 'Introduction to Waves',
           description: 'Oscillations, amplitude, and frequency basics.',
           status: RoadmapModuleStatus.completed,
+          lessonId: 1,
         ),
         GroupRoadmapModule(
           moduleLabel: 'MODULE 02',
           title: 'Kinematics',
           description: 'Motion in one and two dimensions.',
           status: RoadmapModuleStatus.inProgress,
+          lessonId: 2,
         ),
         GroupRoadmapModule(
           moduleLabel: 'MODULE 03',
           title: 'Dynamics',
           description: "Newton's laws and force interactions.",
           status: RoadmapModuleStatus.locked,
+          lessonId: 3,
         ),
       ], completedFraction: 0.45),
     );

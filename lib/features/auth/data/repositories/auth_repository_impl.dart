@@ -129,34 +129,92 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<UserEntity?> getCurrentUser() async {
     try {
       final token = await _localDataSource.getAccessToken();
-      if (token == null || token.isEmpty) {
+      final refreshToken = await _localDataSource.getRefreshToken();
+
+      // ── 1. No tokens at all → unauthenticated ────────────────────────────
+      if ((token == null || token.isEmpty) &&
+          (refreshToken == null || refreshToken.isEmpty)) {
         return null;
       }
 
-      final cached = await _localDataSource.getCachedUser();
-      if (cached != null) {
-        return cached;
+      // ── 2. Access token exists — check if it's still valid ───────────────
+      if (token != null && token.isNotEmpty) {
+        final isExpired = _isTokenExpired(token);
+
+        if (!isExpired) {
+          // Token is still valid — return cached profile (offline-first).
+          final cached = await _localDataSource.getCachedUser();
+          if (cached != null) return cached;
+
+          // Cached profile missing — rebuild from JWT claims.
+          final payload = _decodeJwt(token);
+          final user = UserModel(
+            id: payload['nameid'] as String? ?? payload['sub'] as String? ?? '',
+            fullName: payload['name'] as String? ?? '',
+            email: payload['email'] as String? ?? '',
+            role: _parseRole(payload['role'] as String? ?? ''),
+            token: token,
+            refreshToken: refreshToken,
+          );
+          await _localDataSource.cacheUser(user);
+          return user;
+        }
       }
 
-      final refreshToken = await _localDataSource.getRefreshToken();
-      final payload = _decodeJwt(token);
-      final user = UserModel(
-        id: payload['nameid'] as String? ?? payload['sub'] as String? ?? '',
-        fullName: payload['name'] as String? ?? '',
-        email: payload['email'] as String? ?? '',
-        role: _parseRole(payload['role'] as String? ?? ''),
-        token: token,
-        refreshToken: refreshToken,
-      );
+      // ── 3. Access token is expired (or missing) — try refresh ───────────
+      if (refreshToken == null || refreshToken.isEmpty) return null;
 
-      await _localDataSource.cacheUser(user);
-      return user;
+      try {
+        final refreshed = await _remoteDataSource.refreshToken(
+          RefreshTokenRequest(refreshToken: refreshToken),
+        );
+
+        // Decode the new access token to get up-to-date claims.
+        final payload = _decodeJwt(refreshed.token);
+        final user = UserModel(
+          id: payload['nameid'] as String? ?? payload['sub'] as String? ?? '',
+          fullName: payload['name'] as String? ?? '',
+          email: payload['email'] as String? ?? '',
+          role: _parseRole(payload['role'] as String? ?? ''),
+          token: refreshed.token,
+          refreshToken: refreshed.refreshToken,
+        );
+
+        // Persist the new tokens so subsequent requests use them.
+        await _localDataSource.cacheUser(user);
+        return user;
+      } catch (_) {
+        // Refresh failed (token revoked / network error) → force login.
+        await _localDataSource.clearUser();
+        return null;
+      }
     } on CacheException {
       return null;
     } catch (_) {
       return null;
     }
   }
+
+  /// Returns true when the JWT [token]'s `exp` claim is in the past.
+  /// Returns false (i.e. treat as valid) if `exp` is absent or unparseable.
+  bool _isTokenExpired(String token) {
+    try {
+      final payload = _decodeJwt(token);
+      final exp = payload['exp'];
+      if (exp == null) return false;
+      final expiry = DateTime.fromMillisecondsSinceEpoch(
+        (exp as int) * 1000,
+        isUtc: true,
+      );
+      // Add a 30-second buffer so we refresh just before the actual expiry.
+      return DateTime.now().toUtc().isAfter(
+        expiry.subtract(const Duration(seconds: 30)),
+      );
+    } catch (_) {
+      return false; // If we can't parse, don't force a refresh.
+    }
+  }
+
 
   @override
   Future<void> forgotPassword({required String email}) async {

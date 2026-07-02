@@ -357,6 +357,39 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
   }
 
+  @override
+  Future<RefreshTokenResponse> refreshToken(RefreshTokenRequest request) async {
+    try {
+      final response = await _dioClient.dio.post(
+        ApiConstants.refreshToken,
+        data: request.toJson(),
+      );
+
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+
+      final status = body['status'] as String?;
+      if (status != 'Success') {
+        throw ServerException(
+          body['message'] as String? ?? 'Token refresh failed',
+        );
+      }
+
+      return RefreshTokenResponse.fromJson(body);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map<String, dynamic> && data['message'] != null) {
+        throw ServerException(data['message'] as String);
+      }
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
   UserRole _parseRole(String roleStr) {
     switch (roleStr.toLowerCase()) {
       case 'student':

@@ -1,6 +1,8 @@
 import 'package:elara/core/error/failures.dart';
 import 'package:elara/core/network/api_result.dart';
+import 'package:elara/features/student/domain/quiz/entities/answer_result.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_answer_submission.dart';
+import 'package:elara/features/student/domain/quiz/entities/quiz_hint.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_option.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_question.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_question_kind.dart';
@@ -67,15 +69,61 @@ class MockQuizRepository implements QuizRepository {
         totalCount: 20,
         unansweredCount: 1,
         wrongCount: 1,
-        celebrationSubtitle: 'You’ve mastered the Kinematics!',
+        celebrationSubtitle: 'You\u2019ve mastered the Kinematics!',
         xpEarned: 250,
         totalScoreXp: 1250,
         level: 11,
         levelProgress: 0.72,
         streakDays: 7,
         insightMessage:
-            'You’re struggling with Position and Displacement concept.',
+            'You\u2019re struggling with Position and Displacement concept.',
       ),
+    );
+  }
+
+  // ── Live API stubs (not used in mock flow) ─────────────────────────────────
+
+  @override
+  Future<ApiResult<QuizSession>> generateQuiz({
+    required String groupId,
+    required String moduleId,
+    required int questionCount,
+    required String difficultyLevel,
+    required List<String> questionTypes,
+  }) async {
+    return ApiResult.failure(
+      const UnknownFailure('generateQuiz not implemented in mock'),
+    );
+  }
+
+  @override
+  Future<ApiResult<QuizHint>> getHint({
+    required int sessionId,
+    required int questionNumber,
+  }) async {
+    return ApiResult.failure(
+      const UnknownFailure('getHint not implemented in mock'),
+    );
+  }
+
+  @override
+  Future<ApiResult<AnswerResult>> submitAnswer({
+    required int sessionId,
+    required int questionNumber,
+    required String questionType,
+    String? selectedOptionText,
+    String? answerContent,
+    required bool hintUsed,
+  }) async {
+    return ApiResult.failure(
+      const UnknownFailure('submitAnswer not implemented in mock'),
+    );
+  }
+
+  @override
+  Future<ApiResult<QuizResults>> completeQuiz(int sessionId) async {
+    return ApiResult.failure(
+      const UnknownFailure('completeQuiz not implemented in mock'),
     );
   }
 }
