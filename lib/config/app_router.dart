@@ -51,6 +51,8 @@ import 'package:elara/features/teacher/presentation/group/views/teacher_student_
 import 'package:elara/features/teacher/presentation/homework/route_args/teacher_module_route_args.dart';
 import 'package:elara/features/teacher/presentation/homework/views/teacher_homework_screen.dart';
 import 'package:elara/features/teacher/presentation/homework/views/teacher_resources_screen.dart';
+import 'package:elara/features/teacher/presentation/homework/views/teacher_student_submission_screen.dart';
+import 'package:elara/features/teacher/presentation/homework/route_args/teacher_student_submission_route_args.dart';
 import 'package:elara/features/teacher/presentation/dashboard/views/teacher_shell.dart';
 import 'package:elara/features/teacher/presentation/roadmap/views/teacher_roadmap_detail_page.dart';
 import 'package:flutter/material.dart';
@@ -88,6 +90,7 @@ abstract final class AppRoutes {
   static const String attendanceHistory = '/teacher/attendance-history';
   static const String teacherModuleHomework = '/teacher/module-homework';
   static const String teacherModuleResources = '/teacher/module-resources';
+  static const String teacherStudentSubmission = '/teacher/student-submission';
   static const String parentDashboard = '/parent';
   static const String parentChildProfile = '/parent/child-profile';
   static const String parentChildHomework = '/parent/child-homework';
@@ -313,6 +316,18 @@ GoRouter createAppRouter(AuthCubit authCubit) {
           }
           return const Scaffold(
             body: Center(child: Text('Module data not found')),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.teacherStudentSubmission,
+        builder: (context, state) {
+          final args = state.extra;
+          if (args is TeacherStudentSubmissionRouteArgs) {
+            return TeacherStudentSubmissionScreen.fromArgs(args);
+          }
+          return const Scaffold(
+            body: Center(child: Text('Submission data not found')),
           );
         },
       ),
