@@ -1,6 +1,8 @@
 import 'package:elara/features/teacher/domain/homework/entities/teacher_homework_entity.dart';
 import 'package:elara/features/teacher/domain/homework/usecases/add_teacher_module_problem_usecase.dart';
+import 'package:elara/features/teacher/domain/homework/usecases/delete_teacher_problem_usecase.dart';
 import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_module_homework_usecase.dart';
+import 'package:elara/features/teacher/domain/homework/usecases/update_teacher_problem_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,9 +41,15 @@ final class TeacherHomeworkError extends TeacherHomeworkState {
 class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
   final GetTeacherModuleHomeworkUseCase _getHomeworkUseCase;
   final AddTeacherModuleProblemUseCase _addProblemUseCase;
+  final UpdateTeacherProblemUseCase _updateProblemUseCase;
+  final DeleteTeacherProblemUseCase _deleteProblemUseCase;
 
-  TeacherHomeworkCubit(this._getHomeworkUseCase, this._addProblemUseCase)
-    : super(const TeacherHomeworkInitial());
+  TeacherHomeworkCubit(
+    this._getHomeworkUseCase,
+    this._addProblemUseCase,
+    this._updateProblemUseCase,
+    this._deleteProblemUseCase,
+  ) : super(const TeacherHomeworkInitial());
 
   Future<void> load({required String moduleId, required String groupId}) async {
     emit(const TeacherHomeworkLoading());
@@ -77,6 +85,55 @@ class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
       emit(
         TeacherHomeworkError(
           addResult.failure?.message ?? 'Failed to add homework problem',
+        ),
+      );
+      return;
+    }
+
+    await load(moduleId: moduleId, groupId: groupId);
+  }
+
+  Future<void> updateProblem({
+    required String moduleId,
+    required String groupId,
+    required String problemId,
+    required String description,
+  }) async {
+    final trimmed = description.trim();
+    if (trimmed.isEmpty) {
+      return;
+    }
+
+    emit(const TeacherHomeworkLoading());
+    final result = await _updateProblemUseCase(
+      problemId: problemId,
+      description: trimmed,
+    );
+
+    if (!result.isSuccess) {
+      emit(
+        TeacherHomeworkError(
+          result.failure?.message ?? 'Failed to update homework problem',
+        ),
+      );
+      return;
+    }
+
+    await load(moduleId: moduleId, groupId: groupId);
+  }
+
+  Future<void> deleteProblem({
+    required String moduleId,
+    required String groupId,
+    required String problemId,
+  }) async {
+    emit(const TeacherHomeworkLoading());
+    final result = await _deleteProblemUseCase(problemId: problemId);
+
+    if (!result.isSuccess) {
+      emit(
+        TeacherHomeworkError(
+          result.failure?.message ?? 'Failed to delete homework problem',
         ),
       );
       return;

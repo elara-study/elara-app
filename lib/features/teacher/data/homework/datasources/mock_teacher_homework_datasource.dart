@@ -159,6 +159,25 @@ class MockTeacherHomeworkDatasource implements TeacherHomeworkDatasource {
   }
 
   @override
+  Future<TeacherHomeworkProblemModel> updateProblem({
+    required String problemId,
+    required String description,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 250));
+
+    return TeacherHomeworkProblemModel(
+      id: problemId,
+      problemNumber: 0,
+      questionText: description,
+    );
+  }
+
+  @override
+  Future<void> deleteProblem({required String problemId}) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+  }
+
+  @override
   Future<List<TeacherResourceModel>> getModuleResources({
     required String moduleId,
     required String groupId,

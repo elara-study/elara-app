@@ -53,6 +53,40 @@ class TeacherHomeworkRepositoryImpl implements ITeacherHomeworkRepository {
   }
 
   @override
+  Future<ApiResult<TeacherHomeworkProblemEntity>> updateProblem({
+    required String problemId,
+    required String description,
+  }) async {
+    try {
+      final problem = await _datasource.updateProblem(
+        problemId: problemId,
+        description: description,
+      );
+      return ApiResult.success(problem);
+    } on DioException catch (e) {
+      return ApiResult.failure(_mapDioToFailure(e));
+    } catch (_) {
+      return ApiResult.failure(
+        const UnknownFailure('Failed to update homework problem'),
+      );
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> deleteProblem({required String problemId}) async {
+    try {
+      await _datasource.deleteProblem(problemId: problemId);
+      return ApiResult.success(null);
+    } on DioException catch (e) {
+      return ApiResult.failure(_mapDioToFailure(e));
+    } catch (_) {
+      return ApiResult.failure(
+        const UnknownFailure('Failed to delete homework problem'),
+      );
+    }
+  }
+
+  @override
   Future<ApiResult<List<TeacherResourceEntity>>> getModuleResources({
     required String moduleId,
     required String groupId,

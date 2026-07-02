@@ -31,8 +31,12 @@ class ApiConstants {
   static String teacherRoadmapInfo(String id) => 'api/v1/teacher/roadmaps/$id';
   static String teacherModuleHomework(String moduleId) =>
       'api/v1/modules/$moduleId/homework';
+  static String teacherModuleResources(String moduleId) =>
+      'api/v1/modules/$moduleId/resources';
   static String teacherModuleHomeworkProblems(String moduleId) =>
       'api/v1/teacher/modules/$moduleId/homework/problems';
+  static String teacherProblem(String problemId) =>
+      'api/v1/teacher/problems/$problemId';
 
   static String teacherGroupInfo(String id) => 'api/v1/teacher/groups/$id';
   static String teacherGroupStudents(String id) =>

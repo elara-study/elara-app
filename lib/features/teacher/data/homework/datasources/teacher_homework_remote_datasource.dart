@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:elara/core/constants/api_constants.dart';
-import 'package:elara/features/teacher/data/homework/datasources/mock_teacher_homework_datasource.dart';
 import 'package:elara/features/teacher/data/homework/datasources/teacher_homework_datasource.dart';
 import 'package:elara/features/teacher/data/homework/models/teacher_homework_model.dart';
 import 'package:elara/features/teacher/data/homework/models/teacher_homework_problem_model.dart';
@@ -8,13 +7,12 @@ import 'package:elara/features/teacher/data/homework/models/teacher_rated_studen
 import 'package:elara/features/teacher/data/homework/models/teacher_resource_model.dart';
 import 'package:elara/features/teacher/data/homework/models/teacher_student_answer_model.dart';
 import 'package:elara/features/teacher/data/homework/models/teacher_student_submission_model.dart';
+import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
 
 class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
   TeacherHomeworkRemoteDatasource(this._dio);
 
   final Dio _dio;
-  final MockTeacherHomeworkDatasource _mockResources =
-      MockTeacherHomeworkDatasource();
 
   @override
   Future<TeacherHomeworkModel> getModuleHomework({
@@ -104,9 +102,10 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
     final json = _readMap(payload, const ['problem']) ?? payload;
 
     return TeacherHomeworkProblemModel(
-      id: _string(json, const [
-        'id',
-      ], fallback: 'problem-${DateTime.now().millisecondsSinceEpoch}'),
+      id: _problemId(
+        json,
+        fallback: '${DateTime.now().millisecondsSinceEpoch}',
+      ),
       problemNumber: _int(json, const ['problemNumber', 'number', 'order']),
       questionText: _string(json, const [
         'description',
@@ -126,16 +125,62 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
   }
 
   @override
+  Future<TeacherHomeworkProblemModel> updateProblem({
+    required String problemId,
+    required String description,
+  }) async {
+    final response = await _dio.patch(
+      ApiConstants.teacherProblem(problemId),
+      data: {'description': description},
+    );
+
+    final payload = _unwrapRoot(response.data);
+    final json = _readMap(payload, const ['problem']) ?? payload;
+
+    return TeacherHomeworkProblemModel(
+      id: _string(json, const ['id'], fallback: problemId),
+      problemNumber: _int(json, const ['problemNumber', 'number', 'order']),
+      questionText: _string(json, const [
+        'description',
+        'questionText',
+        'question',
+        'text',
+      ], fallback: description),
+      sampleAnswerText: _nullable(
+        _string(json, const ['sampleAnswerText', 'sampleAnswer']),
+      ),
+      hasImageSubmission: _bool(json, const [
+        'hasImageSubmission',
+        'hasImage',
+        'containsImageAnswer',
+      ]),
+    );
+  }
+
+  @override
+  Future<void> deleteProblem({required String problemId}) async {
+    await _dio.delete(ApiConstants.teacherProblem(problemId));
+  }
+
+  @override
   Future<List<TeacherResourceModel>> getModuleResources({
     required String moduleId,
     required String groupId,
-  }) {
-    // This task integrates only the homework endpoint.
-    // Keep current resources behavior until its API is provided.
-    return _mockResources.getModuleResources(
-      moduleId: moduleId,
-      groupId: groupId,
+  }) async {
+    final response = await _dio.get(
+      ApiConstants.teacherModuleResources(moduleId),
     );
+    final payload = _unwrapRoot(response.data);
+    final resourceEntries = _extractResourceEntries(payload);
+
+    return resourceEntries
+        .asMap()
+        .entries
+        .map(
+          (entry) =>
+              _toResource(entry.value.$1, entry.key, hint: entry.value.$2),
+        )
+        .toList();
   }
 
   Map<String, dynamic> _unwrapRoot(dynamic value) {
@@ -236,7 +281,7 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
     ]);
 
     return TeacherHomeworkProblemModel(
-      id: _string(json, const ['id'], fallback: 'problem_${index + 1}'),
+      id: _problemId(json, fallback: '${index + 1}'),
       problemNumber: _int(json, const [
         'problemNumber',
         'number',
@@ -341,6 +386,157 @@ class TeacherHomeworkRemoteDatasource implements TeacherHomeworkDatasource {
         'maxScore',
       ], fallback: fallbackMaxXp),
     );
+  }
+
+  List<(Map<String, dynamic>, TeacherResourceType?)> _extractResourceEntries(
+    Map<String, dynamic> payload,
+  ) {
+    final typed = <(Map<String, dynamic>, TeacherResourceType?)>[];
+
+    void addTyped(String key, TeacherResourceType type) {
+      final list = _readList(payload, [key]);
+      for (final item in list) {
+        typed.add((item, type));
+      }
+    }
+
+    addTyped('videos', TeacherResourceType.video);
+    addTyped('pdfs', TeacherResourceType.pdf);
+    addTyped('images', TeacherResourceType.image);
+    addTyped('links', TeacherResourceType.link);
+    addTyped('documents', TeacherResourceType.document);
+
+    if (typed.isNotEmpty) {
+      return typed;
+    }
+
+    final direct = _readList(payload, const [
+      'resources',
+      'items',
+      'assets',
+      'moduleResources',
+    ]);
+    if (direct.isNotEmpty) {
+      return direct.map((item) => (item, null)).toList();
+    }
+
+    final nestedContainers = <Map<String, dynamic>>[
+      ...['resources', 'module', 'overview', 'data']
+          .map((key) => _readMap(payload, [key]))
+          .whereType<Map<String, dynamic>>(),
+    ];
+
+    for (final container in nestedContainers) {
+      final nestedTyped = _extractResourceEntries(container);
+      if (nestedTyped.isNotEmpty) {
+        return nestedTyped;
+      }
+    }
+
+    return const [];
+  }
+
+  TeacherResourceModel _toResource(
+    Map<String, dynamic> json,
+    int index, {
+    TeacherResourceType? hint,
+  }) {
+    final url = _string(json, const ['url', 'link', 'resourceUrl', 'fileUrl']);
+    final fileName = _string(json, const [
+      'fileName',
+      'filename',
+      'name',
+    ], fallback: '');
+
+    final type = hint ?? _resourceType(json, url: url, fileName: fileName);
+
+    return TeacherResourceModel(
+      id: _string(json, const ['id', 'resourceId'], fallback: '${index + 1}'),
+      title: _string(json, const [
+        'title',
+        'name',
+      ], fallback: fileName.isEmpty ? 'Untitled resource' : fileName),
+      description: _string(json, const ['description', 'summary']),
+      type: type,
+      url: url,
+      addedAtLabel: _string(json, const [
+        'addedAtLabel',
+        'createdAtLabel',
+        'createdAt',
+        'updatedAt',
+      ], fallback: 'Recently added'),
+      duration: _nullable(_string(json, const ['duration', 'videoDuration'])),
+      fileSize: _nullable(_string(json, const ['fileSize', 'size'])),
+      fileName: _nullable(fileName),
+    );
+  }
+
+  TeacherResourceType _resourceType(
+    Map<String, dynamic> json, {
+    required String url,
+    required String fileName,
+  }) {
+    final rawType = _string(json, const [
+      'type',
+      'resourceType',
+      'kind',
+      'mimeType',
+    ]).toLowerCase();
+
+    if (rawType.contains('video')) {
+      return TeacherResourceType.video;
+    }
+    if (rawType.contains('pdf')) {
+      return TeacherResourceType.pdf;
+    }
+    if (rawType.contains('image')) {
+      return TeacherResourceType.image;
+    }
+    if (rawType.contains('link') || rawType.contains('url')) {
+      return TeacherResourceType.link;
+    }
+    if (rawType.contains('doc')) {
+      return TeacherResourceType.document;
+    }
+
+    final source = '${url.toLowerCase()} ${fileName.toLowerCase()}';
+    if (source.contains('.mp4') ||
+        source.contains('.mov') ||
+        source.contains('.webm')) {
+      return TeacherResourceType.video;
+    }
+    if (source.contains('.pdf')) {
+      return TeacherResourceType.pdf;
+    }
+    if (source.contains('.png') ||
+        source.contains('.jpg') ||
+        source.contains('.jpeg') ||
+        source.contains('.gif') ||
+        source.contains('.webp')) {
+      return TeacherResourceType.image;
+    }
+    if (source.contains('.doc') ||
+        source.contains('.docx') ||
+        source.contains('.ppt') ||
+        source.contains('.pptx') ||
+        source.contains('.xls') ||
+        source.contains('.xlsx') ||
+        source.contains('.txt')) {
+      return TeacherResourceType.document;
+    }
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return TeacherResourceType.link;
+    }
+
+    return TeacherResourceType.document;
+  }
+
+  String _problemId(Map<String, dynamic> json, {required String fallback}) {
+    return _string(json, const [
+      'id',
+      'problemId',
+      'homeworkProblemId',
+    ], fallback: fallback);
   }
 
   String _string(

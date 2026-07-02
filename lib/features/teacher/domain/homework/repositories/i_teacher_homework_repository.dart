@@ -18,4 +18,11 @@ abstract interface class ITeacherHomeworkRepository {
     required String moduleId,
     required String description,
   });
+
+  Future<ApiResult<TeacherHomeworkProblemEntity>> updateProblem({
+    required String problemId,
+    required String description,
+  });
+
+  Future<ApiResult<void>> deleteProblem({required String problemId});
 }

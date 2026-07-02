@@ -17,4 +17,11 @@ abstract interface class TeacherHomeworkDatasource {
     required String moduleId,
     required String description,
   });
+
+  Future<TeacherHomeworkProblemModel> updateProblem({
+    required String problemId,
+    required String description,
+  });
+
+  Future<void> deleteProblem({required String problemId});
 }
