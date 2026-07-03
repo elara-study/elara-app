@@ -1,21 +1,15 @@
+import 'package:dio/dio.dart';
+import 'package:elara/core/error/exceptions.dart';
+import 'package:elara/core/network/dio_client.dart';
 import 'package:elara/features/student/data/homework/datasources/homework_data_source.dart';
 import 'package:elara/features/student/data/homework/models/homework_model.dart';
-import 'package:elara/features/student/data/homework/models/homework_problem_model.dart';
-import 'package:elara/features/student/domain/homework/entities/homework_problem_status.dart';
 
-/// MOCKED implementation — realistic data matching the Figma design.
-///
-/// To switch to real API when backend is ready:
-///   1. Inject [DioClient] via constructor.
-///   2. Replace the [Future.delayed] block with the corresponding Dio call.
-///   3. Parse the response using [HomeworkModel.fromJson].
-///   4. Update [dependency_injection.dart] to pass [getIt<DioClient>()].
+/// Concrete implementation of [HomeworkDataSource] that fetches and submits
+/// student homework data from the real API using [DioClient].
 class HomeworkDataSourceImpl implements HomeworkDataSource {
-  // TODO: inject DioClient when backend is ready
-  // final DioClient _dioClient;
-  // HomeworkDataSourceImpl(this._dioClient);
+  final DioClient _dioClient;
 
-  HomeworkDataSourceImpl();
+  HomeworkDataSourceImpl({required DioClient dioClient}) : _dioClient = dioClient;
 
   @override
   Future<HomeworkModel> getHomework({
@@ -23,56 +17,52 @@ class HomeworkDataSourceImpl implements HomeworkDataSource {
     String? groupId,
     String? moduleId,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 600));
+    if (moduleId == null || moduleId.isEmpty) {
+      throw ServerException('Module ID is required to fetch homework');
+    }
 
-    return const HomeworkModel(
-      id: 'hw-001',
-      subject: 'Physics 101',
-      moduleTitle: 'Kinematics',
-      totalXp: 100,
-      problems: [
-        HomeworkProblemModel(
-          id: 'prob-001',
-          problemNumber: 1,
-          questionText:
-              "Define Newton's Second Law of Motion and provide a real-world example involving friction.",
-          status: HomeworkProblemStatus.active,
-        ),
-        HomeworkProblemModel(
-          id: 'prob-002',
-          problemNumber: 2,
-          questionText:
-              'Calculate the velocity of a 2 kg object falling from a height of 10 meters just before it hits the ground. Ignore air resistance.',
-          status: HomeworkProblemStatus.pending,
-          submittedAnswer: 'Using v² = 2gh, v = √(2 × 10 × 10) = 14.14 m/s',
-        ),
-        HomeworkProblemModel(
-          id: 'prob-003',
-          problemNumber: 3,
-          questionText:
-              'Explain the difference between distance and displacement with a practical example.',
-          status: HomeworkProblemStatus.graded,
-          submittedAnswer:
-              'Distance is the total path length while displacement is the straight-line change in position.',
-          grade: 9,
-          maxGrade: 10,
-          feedback:
-              'Great answer! You could also mention that displacement is a vector quantity.',
-        ),
-        HomeworkProblemModel(
-          id: 'prob-004',
-          problemNumber: 4,
-          questionText:
-              'A car accelerates from rest to 60 km/h in 5 seconds. What is its acceleration in m/s²?',
-          status: HomeworkProblemStatus.active,
-        ),
-      ],
-    );
+    try {
+      final response = await _dioClient.dio.get(
+        'api/v1/modules/$moduleId/homework',
+      );
+      return HomeworkModel.fromApiJson(
+        response.data as Map<String, dynamic>,
+        moduleId,
+      );
+    } on DioException catch (e) {
+      throw ServerException(
+        e.response?.data?['message'] as String? ??
+            e.message ??
+            'Failed to load homework',
+      );
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
 
-    // ── REAL ──────────────────────────────────────────────────────────────
-    // final response = await _dioClient.dio.get(
-    //   'groups/$groupId/modules/$moduleId/homework/$homeworkId',
-    // );
-    // return HomeworkModel.fromJson(response.data as Map<String, dynamic>);
+  @override
+  Future<void> submitHomeworkAnswer({
+    required String moduleId,
+    required String problemId,
+    required String groupId,
+    required String answer,
+  }) async {
+    try {
+      await _dioClient.dio.post(
+        'api/v1/modules/$moduleId/homework/problems/$problemId',
+        data: {
+          'groupId': groupId,
+          'answer': answer,
+        },
+      );
+    } on DioException catch (e) {
+      throw ServerException(
+        e.response?.data?['message'] as String? ??
+            e.message ??
+            'Failed to submit homework answer',
+      );
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
 }

@@ -21,4 +21,17 @@ class HomeworkRepositoryImpl implements HomeworkRepository {
     groupId: groupId,
     moduleId: moduleId,
   );
+
+  @override
+  Future<void> submitHomeworkAnswer({
+    required String moduleId,
+    required String problemId,
+    required String groupId,
+    required String answer,
+  }) => _dataSource.submitHomeworkAnswer(
+    moduleId: moduleId,
+    problemId: problemId,
+    groupId: groupId,
+    answer: answer,
+  );
 }

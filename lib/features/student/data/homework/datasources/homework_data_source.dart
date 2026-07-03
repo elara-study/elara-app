@@ -10,4 +10,11 @@ abstract interface class HomeworkDataSource {
     String? groupId,
     String? moduleId,
   });
+
+  Future<void> submitHomeworkAnswer({
+    required String moduleId,
+    required String problemId,
+    required String groupId,
+    required String answer,
+  });
 }

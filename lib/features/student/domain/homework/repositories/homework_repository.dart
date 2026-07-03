@@ -14,4 +14,12 @@ abstract interface class HomeworkRepository {
     String? groupId,
     String? moduleId,
   });
+
+  /// Submits the student's answer for a specific problem.
+  Future<void> submitHomeworkAnswer({
+    required String moduleId,
+    required String problemId,
+    required String groupId,
+    required String answer,
+  });
 }

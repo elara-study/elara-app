@@ -1,9 +1,10 @@
 import 'package:elara/features/student/domain/homework/entities/homework_problem_entity.dart';
+import 'package:elara/features/student/domain/homework/entities/homework_problem_status.dart';
 
 /// Data model for a single homework problem.
 ///
 /// Extends [HomeworkProblemEntity] so the repository can return it directly
-/// without an explicit mapping step. Add [fromJson] when the backend is ready.
+/// without an explicit mapping step.
 class HomeworkProblemModel extends HomeworkProblemEntity {
   const HomeworkProblemModel({
     required super.id,
@@ -17,17 +18,13 @@ class HomeworkProblemModel extends HomeworkProblemEntity {
     super.feedback,
   });
 
-  // ── REAL ──────────────────────────────────────────────────────────────────
-  // factory HomeworkProblemModel.fromJson(Map<String, dynamic> json) {
-  //   return HomeworkProblemModel(
-  //     id: json['id'] as String,
-  //     problemNumber: json['problem_number'] as int,
-  //     questionText: json['question'] as String,
-  //     status: HomeworkProblemStatus.values.byName(json['status'] as String),
-  //     submittedAnswer: json['submitted_answer'] as String?,
-  //     grade: json['grade'] as int?,
-  //     maxGrade: json['max_grade'] as int?,
-  //     feedback: json['feedback'] as String?,
-  //   );
-  // }
+  factory HomeworkProblemModel.fromApiJson(Map<String, dynamic> json) {
+    final problemId = json['problemId'] as int;
+    return HomeworkProblemModel(
+      id: problemId.toString(),
+      problemNumber: problemId,
+      questionText: json['description'] as String? ?? '',
+      status: HomeworkProblemStatus.active,
+    );
+  }
 }
