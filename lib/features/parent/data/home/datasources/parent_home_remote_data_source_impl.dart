@@ -1,17 +1,19 @@
+import 'package:dio/dio.dart';
+import 'package:elara/core/constants/api_constants.dart';
+import 'package:elara/core/error/exceptions.dart';
+import 'package:elara/core/network/dio_client.dart';
 import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source.dart';
-import 'package:elara/features/parent/data/home/models/parent_activity_model.dart';
-import 'package:elara/features/parent/data/home/models/parent_aggregate_stats_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_child_progress_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_children_dashboard_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_home_overview_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_pending_request_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_subject_group_progress_model.dart';
 
-/// Mock remote parent home API — Home `205:2146`, Children `205:2260`.
-///
-/// Replace with HTTP [ParentHomeRemoteDataSource] when the backend exists.
+/// Parent home API — Home `205:2146`, Children `205:2260`.
 class ParentHomeRemoteDataSourceImpl implements ParentHomeRemoteDataSource {
-  const ParentHomeRemoteDataSourceImpl();
+  final DioClient _dioClient;
+
+  ParentHomeRemoteDataSourceImpl(this._dioClient);
 
   static const List<ParentPendingRequestModel> _kPending = [
     ParentPendingRequestModel(
@@ -59,28 +61,30 @@ class ParentHomeRemoteDataSourceImpl implements ParentHomeRemoteDataSource {
 
   @override
   Future<ParentHomeOverviewModel> fetchHomeOverview() async {
-    await Future<void>.delayed(const Duration(milliseconds: 280));
-    return const ParentHomeOverviewModel(
-      children: _kChildren,
-      stats: ParentAggregateStatsModel(
-        avgCompletionPercent: 87,
-        avgAttendancePercent: 92,
-      ),
-      recentActivity: [
-        ParentActivityModel(
-          id: 'a-1',
-          title: 'Lesson Completion',
-          subtitle: 'Tyler completed Quantum Physics Basics',
-          timeLabel: 'Just now',
-        ),
-        ParentActivityModel(
-          id: 'a-2',
-          title: 'Homework Submission',
-          subtitle: 'Drake submitted Calculus Homework',
-          timeLabel: '1h ago',
-        ),
-      ],
-    );
+    try {
+      final response = await _dioClient.dio.get(ApiConstants.parentDashboard);
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+
+      final status = body['status'] as String?;
+      if (status != 'Success') {
+        throw ServerException(body['message'] as String? ?? 'Failed to load dashboard overview');
+      }
+
+      final data = body['data'] as Map<String, dynamic>?;
+      if (data == null) {
+        throw ServerException('No data returned from server');
+      }
+
+      return ParentHomeOverviewModel.fromJson(data);
+    } on DioException catch (e) {
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
   }
 
   @override

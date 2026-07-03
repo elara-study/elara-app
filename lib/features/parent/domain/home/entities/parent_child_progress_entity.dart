@@ -14,6 +14,7 @@ class ParentChildProgressEntity extends Equatable {
     this.gradeLabel = '',
     this.level = 1,
     this.subjectGroups = const [],
+    this.avatarUrl,
   });
 
   final String id;
@@ -34,6 +35,8 @@ class ParentChildProgressEntity extends Equatable {
 
   /// Subject rows under "SUBJECT GROUP PROGRESS".
   final List<ParentSubjectGroupProgressEntity> subjectGroups;
+
+  final String? avatarUrl;
 
   int get progressPercentRounded => (progress * 100).clamp(0, 100).round();
 
@@ -57,5 +60,6 @@ class ParentChildProgressEntity extends Equatable {
     gradeLabel,
     level,
     subjectGroups,
+    avatarUrl,
   ];
 }

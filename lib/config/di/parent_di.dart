@@ -1,3 +1,4 @@
+import 'package:elara/core/network/dio_client.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source.dart';
 import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source_impl.dart';
@@ -35,7 +36,7 @@ final getIt = GetIt.instance;
 
 void setupParentDI() {
   getIt.registerLazySingleton<ParentHomeRemoteDataSource>(
-    () => const ParentHomeRemoteDataSourceImpl(),
+    () => ParentHomeRemoteDataSourceImpl(getIt<DioClient>()),
   );
   getIt.registerLazySingleton<ParentHomeRepository>(
     () => ParentHomeRepositoryImpl(getIt<ParentHomeRemoteDataSource>()),

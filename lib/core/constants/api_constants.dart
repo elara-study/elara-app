@@ -105,6 +105,9 @@ class ApiConstants {
   static String chatbotDeleteConversation(String id) =>
       'api/v1/conversations/$id';
 
+  // Parent
+  static const String parentDashboard = 'api/v1/parent/dashboard';
+
   // ── Quiz ──────────────────────────────────────────────────────────────────
 
   /// POST — Generate a new quiz session.
