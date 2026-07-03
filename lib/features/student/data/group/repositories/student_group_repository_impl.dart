@@ -165,7 +165,7 @@ class StudentGroupRepositoryImpl implements StudentGroupRepository {
       GroupAnnouncement(
         id: 'ann-1',
         title: 'Final Exam Venue Change',
-        body:
+        content:
             'Please note that the final exam will now be held in Room 204 '
             '(East Wing) instead of the lecture hall. Please arrive 15 '
             'minutes early for seating.',
@@ -174,7 +174,7 @@ class StudentGroupRepositoryImpl implements StudentGroupRepository {
       GroupAnnouncement(
         id: 'ann-2',
         title: 'Lab Reports Extended',
-        body:
+        content:
             'The deadline for Lab Report #3 has been extended to Friday at '
             '5 PM due to equipment maintenance issues in Lab B this week.',
         relativeTimeLabel: 'Yesterday',
