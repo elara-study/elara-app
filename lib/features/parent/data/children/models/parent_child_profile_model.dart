@@ -1,5 +1,4 @@
 import 'package:elara/features/parent/data/children/models/parent_child_insight_model.dart';
-import 'package:elara/features/parent/data/children/models/parent_homework_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_child_progress_model.dart';
 import 'package:elara/features/parent/domain/children/entities/parent_child_profile_entity.dart';
 import 'package:elara/features/parent/domain/children/entities/parent_homework_card_entity.dart';
@@ -23,7 +22,7 @@ class ParentChildProfileModel extends ParentChildProfileEntity {
       insight: insightData != null ? ParentChildInsightModel.fromJson(insightData) : null,
       homeworks: homeworksList
           .whereType<Map<String, dynamic>>()
-          .map((h) => ParentHomeworkCardEntity.fromHomework(ParentHomeworkModel.fromJson(h)))
+          .map(ParentHomeworkCardEntity.fromJson)
           .toList(),
     );
   }

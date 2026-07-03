@@ -5,7 +5,6 @@ import 'package:elara/core/network/dio_client.dart';
 import 'package:elara/features/parent/data/children/datasources/parent_children_remote_data_source.dart';
 import 'package:elara/features/parent/data/children/models/parent_child_insight_model.dart';
 import 'package:elara/features/parent/data/children/models/parent_child_profile_model.dart';
-import 'package:elara/features/parent/data/children/models/parent_homework_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_child_progress_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_children_dashboard_model.dart';
 import 'package:elara/features/parent/domain/children/entities/parent_child_profile_entity.dart';
@@ -69,16 +68,20 @@ class ParentChildrenRemoteDataSourceImpl implements ParentChildrenRemoteDataSour
     try {
       final response = await _dioClient.dio.get(ApiConstants.parentChildHomeworks(childId));
       final data = response.data;
-      if (data == null) {
+      if (data == null || data is! Map<String, dynamic>) {
         throw ServerException('Invalid response data');
       }
-      final payload = data['data'] as List?;
+      final payload = data['data'] as Map<String, dynamic>?;
       if (payload == null) {
         return const [];
       }
-      return payload
+      final list = payload['homework_list'] as List? ?? payload['homeworks'] as List?;
+      if (list == null) {
+        return const [];
+      }
+      return list
           .whereType<Map<String, dynamic>>()
-          .map((h) => ParentHomeworkCardEntity.fromHomework(ParentHomeworkModel.fromJson(h)))
+          .map(ParentHomeworkCardEntity.fromJson)
           .toList();
     } on DioException catch (e) {
       throw ServerException(e.message ?? 'Network error');
