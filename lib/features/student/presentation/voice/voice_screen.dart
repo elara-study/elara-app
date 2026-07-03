@@ -28,6 +28,8 @@ class _VoiceView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return BlocConsumer<VoiceCubit, VoiceState>(
       listenWhen: (prev, curr) =>
           prev.status != curr.status || curr.status == VoiceStatus.error,
@@ -57,15 +59,21 @@ class _VoiceView extends StatelessWidget {
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFF0B1120),
-                    Color(0xFF0F172A),
-                    Color(0xFF1A1A2E),
-                  ],
+                  colors: isDark
+                      ? const [
+                          Color(0xFF0B1120),
+                          Color(0xFF0F172A),
+                          Color(0xFF1A1A2E),
+                        ]
+                      : const [
+                          Color(0xFFF8FAFC),
+                          Color(0xFFF1F5F9),
+                          Color(0xFFE2E8F0),
+                        ],
                 ),
               ),
               child: SafeArea(
@@ -77,7 +85,9 @@ class _VoiceView extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(
                           Icons.close_rounded,
-                          color: AppColors.neutral400,
+                          color: isDark
+                              ? AppColors.neutral400
+                              : AppColors.neutral600,
                           size: 28.sp,
                         ),
                         onPressed: () async {
@@ -121,20 +131,8 @@ class _VoiceView extends StatelessWidget {
                     // Controls
                     VoiceControls(
                       isMuted: state.isMuted,
-                      isSpeakerOn: state.isSpeakerOn,
-                      isPaused: state.status == VoiceStatus.paused,
                       onMuteToggle: () =>
                           context.read<VoiceCubit>().toggleMute(),
-                      onSpeakerToggle: () =>
-                          context.read<VoiceCubit>().toggleSpeaker(),
-                      onPauseResume: () {
-                        final cubit = context.read<VoiceCubit>();
-                        if (state.status == VoiceStatus.paused) {
-                          cubit.resumeSession();
-                        } else {
-                          cubit.pauseSession();
-                        }
-                      },
                       onEndCall: () async {
                         await context.read<VoiceCubit>().endSession();
                         if (context.mounted) context.pop();

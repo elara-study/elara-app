@@ -6,26 +6,18 @@ class VoiceControls extends StatelessWidget {
   const VoiceControls({
     super.key,
     required this.isMuted,
-    required this.isSpeakerOn,
     required this.onMuteToggle,
-    required this.onSpeakerToggle,
     required this.onEndCall,
-    required this.onPauseResume,
-    required this.isPaused,
   });
 
   final bool isMuted;
-  final bool isSpeakerOn;
-  final bool isPaused;
   final VoidCallback onMuteToggle;
-  final VoidCallback onSpeakerToggle;
   final VoidCallback onEndCall;
-  final VoidCallback onPauseResume;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Mute button
         _ControlButton(
@@ -36,26 +28,10 @@ class VoiceControls extends StatelessWidget {
           activeColor: AppColors.neutral600,
         ),
 
+        SizedBox(width: 32.w),
+
         // End call button
         _EndCallButton(onTap: onEndCall),
-
-        // Pause/Resume button
-        _ControlButton(
-          icon: isPaused ? Icons.play_arrow_rounded : Icons.pause_rounded,
-          label: isPaused ? 'Resume' : 'Pause',
-          onTap: onPauseResume,
-          isActive: isPaused,
-          activeColor: AppColors.brandAccent500,
-        ),
-
-        // Speaker button
-        _ControlButton(
-          icon: isSpeakerOn ? Icons.volume_up_rounded : Icons.volume_off_rounded,
-          label: isSpeakerOn ? 'Speaker On' : 'Speaker Off',
-          onTap: onSpeakerToggle,
-          isActive: !isSpeakerOn,
-          activeColor: AppColors.neutral600,
-        ),
       ],
     );
   }

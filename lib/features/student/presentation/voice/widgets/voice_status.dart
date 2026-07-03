@@ -20,13 +20,15 @@ class VoiceStatusBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           elapsedFormatted,
           style: TextStyle(
-            color: AppColors.neutral400,
+            color: isDark ? AppColors.neutral400 : AppColors.neutral500,
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
             fontFeatures: const [FontFeature.tabularFigures()],
@@ -47,11 +49,11 @@ class VoiceStatusBar extends StatelessWidget {
         ),
         SizedBox(height: 16.h),
         SizedBox(
-          width: 280.w,
-          height: 60.h,
+          width: 300.w,
+          height: 100.h,
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-            child: _buildMessage(),
+            child: _buildMessage(isDark),
           ),
         ),
       ],
@@ -100,18 +102,18 @@ class VoiceStatusBar extends StatelessWidget {
     }
   }
 
-  Widget _buildMessage() {
+  Widget _buildMessage(bool isDark) {
     if (assistantResponse != null) {
-      return Text(
-        assistantResponse!,
-        key: const ValueKey('assistant'),
-        textAlign: TextAlign.center,
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: AppColors.neutral200,
-          fontSize: 14.sp,
-          height: 1.4,
+      return SingleChildScrollView(
+        child: Text(
+          assistantResponse!,
+          key: const ValueKey('assistant'),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: isDark ? AppColors.neutral200 : AppColors.neutral700,
+            fontSize: 14.sp,
+            height: 1.5,
+          ),
         ),
       );
     }
@@ -124,7 +126,7 @@ class VoiceStatusBar extends StatelessWidget {
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: AppColors.neutral300,
+          color: isDark ? AppColors.neutral300 : AppColors.neutral600,
           fontSize: 14.sp,
           fontStyle: FontStyle.italic,
           height: 1.4,

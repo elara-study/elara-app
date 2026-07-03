@@ -35,10 +35,11 @@ class VoiceCubit extends Cubit<VoiceState> {
   Timer? _elapsedTimer;
   Timer? _silenceTimer;
   bool _isRecording = false;
+  bool _isProcessing = false;
   bool _disposed = false;
   String? _currentRecordingPath;
 
-  static const _silenceTimeout = Duration(seconds: 3);
+  static const _silenceTimeout = Duration(seconds: 5);
 
   final List<Map<String, String>> _conversationHistory = [];
 
@@ -104,22 +105,6 @@ class VoiceCubit extends Cubit<VoiceState> {
     }
   }
 
-  void toggleSpeaker() {
-    emit(state.copyWith(isSpeakerOn: !state.isSpeakerOn));
-  }
-
-  void pauseSession() {
-    if (!state.isListening) return;
-    _pauseRecording();
-    emit(state.copyWith(status: VoiceStatus.paused));
-  }
-
-  void resumeSession() {
-    if (state.status != VoiceStatus.paused) return;
-    emit(state.copyWith(status: VoiceStatus.listening));
-    _resumeRecording();
-  }
-
   Future<void> endSession() async {
     await _stopTimers();
     await _stopRecording();
@@ -134,7 +119,21 @@ class VoiceCubit extends Cubit<VoiceState> {
   // ── Recording ───────────────────────────────────────────────────────
 
   Future<void> _startRecording() async {
-    if (!await _recorder.hasPermission()) return;
+    if (!await _recorder.hasPermission()) {
+      AppLogger.info('Recording: no permission');
+      return;
+    }
+
+    // Reconfigure audio session for recording after playback
+    try {
+      final session = await AudioSession.instance;
+      await session.configure(const AudioSessionConfiguration(
+        androidAudioAttributes: AndroidAudioAttributes(
+          contentType: AndroidAudioContentType.speech,
+          usage: AndroidAudioUsage.voiceCommunication,
+        ),
+      ));
+    } catch (_) {}
 
     final dir = Directory.systemTemp;
     _currentRecordingPath =
@@ -147,9 +146,14 @@ class VoiceCubit extends Cubit<VoiceState> {
       numChannels: 1,
     );
 
-    await _recorder.start(config, path: _currentRecordingPath!);
-
-    _isRecording = true;
+    try {
+      await _recorder.start(config, path: _currentRecordingPath!);
+      _isRecording = true;
+      AppLogger.info('Recording started');
+    } catch (e) {
+      AppLogger.error('Recording start failed', e, StackTrace.current);
+      return;
+    }
 
     // Poll amplitude via timer to avoid stream reuse issues
     _amplitudeTimer?.cancel();
@@ -168,6 +172,7 @@ class VoiceCubit extends Cubit<VoiceState> {
   void _resetSilenceTimer() {
     _silenceTimer?.cancel();
     _silenceTimer = Timer(_silenceTimeout, () {
+      AppLogger.info('Silence timer fired: disposed=$_disposed, recording=$_isRecording, listening=${state.isListening}, muted=${state.isMuted}');
       if (!_disposed && _isRecording && state.isListening && !state.isMuted) {
         _onSilenceDetected();
       }
@@ -175,16 +180,23 @@ class VoiceCubit extends Cubit<VoiceState> {
   }
 
   Future<void> _onSilenceDetected() async {
-    if (!_isRecording) return;
+    if (!_isRecording) {
+      AppLogger.info('Silence: not recording, skip');
+      return;
+    }
 
-    AppLogger.log('Silence detected, stopping recording');
+    AppLogger.info('Silence detected, stopping recording');
     final path = _currentRecordingPath;
     await _stopRecording();
 
-    if (_disposed || path == null) return;
+    if (_disposed || path == null) {
+      AppLogger.info('Silence: disposed or no path');
+      return;
+    }
 
     final file = File(path);
     if (!await file.exists()) {
+      AppLogger.info('Silence: file not found, restarting');
       if (!_disposed && state.isListening) {
         await _startRecording();
       }
@@ -192,15 +204,18 @@ class VoiceCubit extends Cubit<VoiceState> {
     }
 
     final bytes = await file.readAsBytes();
+    AppLogger.info('Silence: read ${bytes.length} bytes');
     await file.delete();
 
     if (bytes.isEmpty) {
+      AppLogger.info('Silence: empty bytes, restarting');
       if (!_disposed && state.isListening) {
         await _startRecording();
       }
       return;
     }
 
+    AppLogger.info('Silence: processing ${bytes.length} bytes');
     _processAudio(bytes);
   }
 
@@ -262,15 +277,19 @@ class VoiceCubit extends Cubit<VoiceState> {
   // ── Audio Processing Pipeline ───────────────────────────────────────
 
   Future<void> _processAudio(Uint8List audioBytes) async {
-    if (_disposed) return;
+    if (_disposed || _isProcessing) return;
+    _isProcessing = true;
 
     try {
+      AppLogger.info('Pipeline: transcribing...');
       emit(state.copyWith(status: VoiceStatus.transcribing));
       final transcript = await _transcribeAudio(audioBytes);
 
       if (_disposed) return;
 
       if (transcript.trim().isEmpty) {
+        AppLogger.info('Pipeline: empty transcript, restarting');
+        _isProcessing = false;
         emit(state.copyWith(
           status: VoiceStatus.listening,
           userTranscript: null,
@@ -279,6 +298,7 @@ class VoiceCubit extends Cubit<VoiceState> {
         return;
       }
 
+      AppLogger.info('Pipeline: transcript="$transcript", generating response...');
       emit(state.copyWith(userTranscript: transcript));
 
       emit(state.copyWith(status: VoiceStatus.thinking));
@@ -289,6 +309,7 @@ class VoiceCubit extends Cubit<VoiceState> {
 
       if (_disposed) return;
 
+      AppLogger.info('Pipeline: response received, synthesizing...');
       _conversationHistory.add({'role': 'user', 'content': transcript});
       _conversationHistory.add({'role': 'assistant', 'content': response});
 
@@ -296,17 +317,12 @@ class VoiceCubit extends Cubit<VoiceState> {
         _conversationHistory.removeRange(0, _conversationHistory.length - 40);
       }
 
-      emit(state.copyWith(assistantResponse: response));
-
       final speechBytes = await _synthesizeSpeech(response);
 
       if (_disposed) return;
 
-      emit(state.copyWith(status: VoiceStatus.speaking));
-      await _playAudio(speechBytes);
-
-      if (_disposed) return;
-
+      AppLogger.info('Pipeline: speech synthesized, playing...');
+      // Show response AND start speaking simultaneously
       final message = VoiceMessageEntity(
         userTranscript: transcript,
         assistantResponse: response,
@@ -315,15 +331,27 @@ class VoiceCubit extends Cubit<VoiceState> {
       final updatedConversation = [...state.conversation, message];
 
       emit(state.copyWith(
-        status: VoiceStatus.listening,
+        status: VoiceStatus.speaking,
+        assistantResponse: response,
         conversation: updatedConversation,
+      ));
+
+      await _playAudio(speechBytes);
+
+      if (_disposed) return;
+
+      AppLogger.info('Pipeline: playback done, restarting recording');
+      emit(state.copyWith(
+        status: VoiceStatus.listening,
         userTranscript: null,
         assistantResponse: null,
       ));
 
+      _isProcessing = false;
       await _startRecording();
     } catch (e, st) {
       AppLogger.error('Pipeline failed', e, st);
+      _isProcessing = false;
       if (!_disposed) {
         emit(state.copyWith(
           status: VoiceStatus.error,
@@ -351,10 +379,9 @@ class VoiceCubit extends Cubit<VoiceState> {
       await _player.setFilePath(tempFile.path);
       AppLogger.info('Player file path set');
 
-      final vol = state.isSpeakerOn ? 1.0 : 0.0;
-      await _player.setVolume(vol);
+      await _player.setVolume(1.0);
       await _player.play();
-      AppLogger.info('Playback started (volume=$vol)');
+      AppLogger.info('Playback started');
 
       await _player.processingStateStream
           .firstWhere((s) => s == ProcessingState.completed)
