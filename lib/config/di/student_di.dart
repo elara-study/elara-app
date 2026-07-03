@@ -43,6 +43,7 @@ import 'package:elara/features/student/data/homework/datasources/homework_data_s
 import 'package:elara/features/student/data/homework/repositories/homework_repository_impl.dart';
 import 'package:elara/features/student/domain/homework/repositories/homework_repository.dart';
 import 'package:elara/features/student/domain/homework/usecases/get_homework_use_case.dart';
+import 'package:elara/features/student/domain/homework/usecases/submit_homework_answer_use_case.dart';
 import 'package:elara/features/student/presentation/homework/cubits/homework_cubit.dart';
 import 'package:get_it/get_it.dart';
 
@@ -177,7 +178,7 @@ void setupStudentDI() {
 
   // ── Homework ──────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<HomeworkDataSource>(
-    () => HomeworkDataSourceImpl(),
+    () => HomeworkDataSourceImpl(dioClient: getIt<DioClient>()),
   );
 
   getIt.registerLazySingleton<HomeworkRepository>(
@@ -188,7 +189,14 @@ void setupStudentDI() {
     () => GetHomeworkUseCase(getIt<HomeworkRepository>()),
   );
 
+  getIt.registerLazySingleton(
+    () => SubmitHomeworkAnswerUseCase(getIt<HomeworkRepository>()),
+  );
+
   getIt.registerFactory<HomeworkCubit>(
-    () => HomeworkCubit(getIt<GetHomeworkUseCase>()),
+    () => HomeworkCubit(
+      getIt<GetHomeworkUseCase>(),
+      getIt<SubmitHomeworkAnswerUseCase>(),
+    ),
   );
 }

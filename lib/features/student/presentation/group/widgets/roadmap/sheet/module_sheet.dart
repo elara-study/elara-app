@@ -136,8 +136,10 @@ class ModuleSheet extends StatelessWidget {
                     AppNavigation.pushNamed(
                       context,
                       AppRoutes.homework,
-                      arguments: const HomeworkRouteArgs(
+                      arguments: HomeworkRouteArgs(
                         homeworkId: 'demo-homework',
+                        groupId: groupId,
+                        moduleId: moduleId,
                       ),
                     );
                   },

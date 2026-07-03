@@ -93,7 +93,9 @@ class HomeworkScreen extends StatelessWidget {
               extendBodyBehindAppBar: true,
               appBar: AppGlassHeader(
                 title: 'Homework',
-                subtitle: '${homework.subject} • ${homework.moduleTitle}',
+                subtitle: homework.subject.isNotEmpty
+                    ? '${homework.subject} • ${homework.moduleTitle}'
+                    : homework.moduleTitle,
                 automaticallyImplyLeading: true,
               ),
               body: ListView(
