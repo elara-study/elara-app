@@ -16,6 +16,16 @@ class ParentInsightModel {
   final String reportParagraph1;
   final String reportParagraph2;
 
+  factory ParentInsightModel.fromJson(Map<String, dynamic> json) {
+    return ParentInsightModel(
+      id: json['id'] as String? ?? '',
+      childName: json['childName'] as String? ?? '',
+      dateLabel: json['dateLabel'] as String? ?? '',
+      reportParagraph1: json['reportParagraph1'] as String? ?? '',
+      reportParagraph2: json['reportParagraph2'] as String? ?? '',
+    );
+  }
+
   ParentInsightEntity toEntity() => ParentInsightEntity(
     id: id,
     childName: childName,

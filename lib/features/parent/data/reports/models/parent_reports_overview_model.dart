@@ -7,6 +7,24 @@ class ParentReportsOverviewModel {
 
   final List<ParentInsightModel> insights;
 
+  factory ParentReportsOverviewModel.fromJson(dynamic json) {
+    if (json is List) {
+      return ParentReportsOverviewModel(
+        insights: json
+            .map((e) => ParentInsightModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    } else if (json is Map<String, dynamic>) {
+      final list = json['insights'] as List? ?? [];
+      return ParentReportsOverviewModel(
+        insights: list
+            .map((e) => ParentInsightModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    }
+    return const ParentReportsOverviewModel(insights: []);
+  }
+
   ParentReportsOverviewEntity toEntity() => ParentReportsOverviewEntity(
     insights: insights.map((e) => e.toEntity()).toList(),
   );

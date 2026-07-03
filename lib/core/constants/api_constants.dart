@@ -119,6 +119,8 @@ class ApiConstants {
       'api/v1/parent/children/$childId/homeworks';
   static String parentChildInsights(String childId) =>
       'api/v1/parent/children/$childId/insights';
+  static const String parentReports = 'api/v1/parent/reports';
+  static const String parentProfile = 'api/v1/parent/profile';
 
   // ── Quiz ──────────────────────────────────────────────────────────────────
 

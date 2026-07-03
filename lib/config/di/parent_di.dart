@@ -61,7 +61,7 @@ void setupParentDI() {
   );
 
   getIt.registerLazySingleton<ParentReportsRemoteDataSource>(
-    () => const ParentReportsRemoteDataSourceImpl(),
+    () => ParentReportsRemoteDataSourceImpl(getIt<DioClient>()),
   );
   getIt.registerLazySingleton<ParentReportsRepository>(
     () => ParentReportsRepositoryImpl(getIt<ParentReportsRemoteDataSource>()),
@@ -71,7 +71,7 @@ void setupParentDI() {
   );
 
   getIt.registerLazySingleton<ParentProfileRemoteDataSource>(
-    () => ParentProfileRemoteDataSourceImpl(),
+    () => ParentProfileRemoteDataSourceImpl(getIt<DioClient>()),
   );
   getIt.registerLazySingleton<ParentProfileRepository>(
     () => ParentProfileRepositoryImpl(getIt<ParentProfileRemoteDataSource>()),
