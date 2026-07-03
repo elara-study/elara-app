@@ -33,25 +33,52 @@ class ParentChildrenCubit extends Cubit<ParentChildrenState> {
 
   Future<void> linkChild(String username) async {
     if (isClosed) return;
+    final prevState = state;
     emit(const ParentChildrenLoading());
     try {
       await _linkStudent(username);
-      await loadChildren();
+      final dashboard = await _getChildrenDashboard();
+      if (isClosed) return;
+      emit(ParentChildrenLoaded(
+        dashboard,
+        successMessage: 'Link request sent successfully.',
+      ));
     } catch (e) {
       if (isClosed) return;
-      emit(ParentChildrenError(e.toString()));
+      if (prevState is ParentChildrenLoaded) {
+        emit(prevState.copyWith(errorMessage: e.toString()));
+      } else {
+        emit(ParentChildrenError(e.toString()));
+      }
     }
   }
 
   Future<void> respondToPendingRequest(String requestId, bool accept) async {
     if (isClosed) return;
+    final prevState = state;
     emit(const ParentChildrenLoading());
     try {
       await _respondToRequest(requestId: requestId, accept: accept);
-      await loadChildren();
+      final dashboard = await _getChildrenDashboard();
+      if (isClosed) return;
+      emit(ParentChildrenLoaded(
+        dashboard,
+        successMessage: accept ? 'Request accepted.' : 'Request declined.',
+      ));
     } catch (e) {
       if (isClosed) return;
-      emit(ParentChildrenError(e.toString()));
+      if (prevState is ParentChildrenLoaded) {
+        emit(prevState.copyWith(errorMessage: e.toString()));
+      } else {
+        emit(ParentChildrenError(e.toString()));
+      }
+    }
+  }
+
+  void clearMessages() {
+    final currentState = state;
+    if (currentState is ParentChildrenLoaded) {
+      emit(ParentChildrenLoaded(currentState.dashboard));
     }
   }
 }

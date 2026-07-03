@@ -17,12 +17,30 @@ class ParentChildrenLoading extends ParentChildrenState {
 }
 
 class ParentChildrenLoaded extends ParentChildrenState {
-  const ParentChildrenLoaded(this.dashboard);
+  const ParentChildrenLoaded(
+    this.dashboard, {
+    this.successMessage,
+    this.errorMessage,
+  });
 
   final ParentChildrenDashboardEntity dashboard;
+  final String? successMessage;
+  final String? errorMessage;
+
+  ParentChildrenLoaded copyWith({
+    ParentChildrenDashboardEntity? dashboard,
+    String? successMessage,
+    String? errorMessage,
+  }) {
+    return ParentChildrenLoaded(
+      dashboard ?? this.dashboard,
+      successMessage: successMessage,
+      errorMessage: errorMessage,
+    );
+  }
 
   @override
-  List<Object?> get props => [dashboard];
+  List<Object?> get props => [dashboard, successMessage, errorMessage];
 }
 
 class ParentChildrenError extends ParentChildrenState {

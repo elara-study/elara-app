@@ -1,3 +1,4 @@
+import 'package:elara/features/parent/presentation/children/widgets/parent_add_child_sheet.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
@@ -6,7 +7,6 @@ import 'package:elara/features/auth/domain/entities/user_entity.dart';
 import 'package:elara/features/parent/domain/profile/entities/parent_profile_entity.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_state.dart';
-import 'package:elara/features/parent/presentation/profile/cubits/parent_profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -142,9 +142,10 @@ class ParentProfileOverviewBody extends StatelessWidget {
                 ),
               ),
               ElevatedButton(
-                onPressed: () => context
-                    .read<ParentProfileCubit>()
-                    .requestPlaceholderSnack('Add Child coming soon.'),
+                onPressed: () => showParentAddChildSheet(
+                  context,
+                  context.read<ParentChildrenCubit>(),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.brandPrimary500,
                   foregroundColor: AppColors.white,

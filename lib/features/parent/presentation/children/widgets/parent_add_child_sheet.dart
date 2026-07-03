@@ -44,7 +44,7 @@ class _ParentAddChildSheetState extends State<ParentAddChildSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return AppFormDialogBody(
+    return AppFormDialogScrollableBody(
       title: 'Add a child',
       children: [
         AppFormDialogTextField(
