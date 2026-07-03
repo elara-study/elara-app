@@ -38,18 +38,16 @@ class RoadmapModuleTile extends StatelessWidget {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
-                // Read groupId from the parent StudentGroupCubit.
-                final groupId = context
-                    .read<StudentGroupCubit>()
-                    .state
-                    .overview
-                    ?.groupId;
+                final groupState = context.read<StudentGroupCubit>().state;
+                final groupId = groupState.overview?.groupId;
+                final subject = groupState.overview?.courseTitle;
                 showModuleSheet(
                   context,
                   moduleTitle: module.title,
                   groupId: groupId,
                   moduleId: module.moduleId,
                   lessonId: module.lessonId,
+                  subject: subject,
                 );
               },
               child: circle,

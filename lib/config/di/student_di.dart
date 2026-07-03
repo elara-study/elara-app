@@ -45,6 +45,8 @@ import 'package:elara/features/student/domain/homework/repositories/homework_rep
 import 'package:elara/features/student/domain/homework/usecases/get_homework_use_case.dart';
 import 'package:elara/features/student/domain/homework/usecases/submit_homework_answer_use_case.dart';
 import 'package:elara/features/student/presentation/homework/cubits/homework_cubit.dart';
+import 'package:elara/features/student/presentation/resources/cubits/student_resources_cubit.dart';
+import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_module_resources_usecase.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -198,5 +200,9 @@ void setupStudentDI() {
       getIt<GetHomeworkUseCase>(),
       getIt<SubmitHomeworkAnswerUseCase>(),
     ),
+  );
+
+  getIt.registerFactory<StudentResourcesCubit>(
+    () => StudentResourcesCubit(getIt<GetTeacherModuleResourcesUseCase>()),
   );
 }

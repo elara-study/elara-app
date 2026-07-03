@@ -9,6 +9,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/features/student/presentation/group/widgets/roadmap/sheet/module_outline_row.dart';
 import 'package:elara/features/student/presentation/group/widgets/roadmap/sheet/module_outline_tile.dart';
 import 'package:elara/features/student/presentation/group/widgets/roadmap/sheet/module_primary_tile.dart';
+import 'package:elara/features/teacher/presentation/homework/route_args/teacher_module_route_args.dart';
 import 'package:flutter/material.dart';
 
 /// Opens the module interaction bottom sheet (Figma: Interaction Options).
@@ -18,6 +19,7 @@ Future<void> showModuleSheet(
   String? groupId,
   String? moduleId,
   int? lessonId,
+  String? subject,
 }) {
   final theme = Theme.of(context);
   return showModalBottomSheet<void>(
@@ -36,6 +38,7 @@ Future<void> showModuleSheet(
       groupId: groupId,
       moduleId: moduleId,
       lessonId: lessonId,
+      subject: subject,
     ),
   );
 }
@@ -46,6 +49,7 @@ class ModuleSheet extends StatelessWidget {
   final String? groupId;
   final String? moduleId;
   final int? lessonId;
+  final String? subject;
 
   const ModuleSheet({
     super.key,
@@ -53,6 +57,7 @@ class ModuleSheet extends StatelessWidget {
     this.groupId,
     this.moduleId,
     this.lessonId,
+    this.subject,
   });
 
   void _pop(BuildContext context) => Navigator.of(context).pop();
@@ -171,7 +176,20 @@ class ModuleSheet extends StatelessWidget {
             labelStyle: optionLabelStyle?.copyWith(
               color: ButtonColors.outlineText,
             ),
-            onTap: () => _pop(context),
+            onTap: () {
+              Navigator.of(context).pop();
+              AppNavigation.pushNamed(
+                context,
+                AppRoutes.studentModuleResources,
+                arguments: TeacherModuleRouteArgs(
+                  moduleId: moduleId ?? '',
+                  moduleTitle: moduleTitle,
+                  moduleLabel: 'MODULE',
+                  groupId: groupId ?? '',
+                  subject: subject ?? '',
+                ),
+              );
+            },
           ),
         ],
       ),
