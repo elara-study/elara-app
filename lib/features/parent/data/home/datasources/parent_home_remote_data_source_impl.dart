@@ -80,7 +80,7 @@ class ParentHomeRemoteDataSourceImpl implements ParentHomeRemoteDataSource {
     try {
       final response = await _dioClient.dio.post(
         ApiConstants.parentLinkStudent,
-        data: {'student_username': studentUsername},
+        data: {'child_username': studentUsername},
       );
       final body = response.data;
       if (body == null || body is! Map<String, dynamic>) {
