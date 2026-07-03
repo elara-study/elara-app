@@ -10,4 +10,10 @@ abstract class ParentHomeRepository {
 
   /// Children tab — Figma `205:2260`.
   Future<ParentChildrenDashboardEntity> getChildrenDashboard();
+
+  Future<void> linkStudent(String studentUsername);
+
+  Future<String> respondToRequest(String requestId, bool accept);
+
+  Future<void> unlinkChild(String childId);
 }

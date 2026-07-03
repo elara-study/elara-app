@@ -1,173 +1,119 @@
+import 'package:dio/dio.dart';
+import 'package:elara/core/constants/api_constants.dart';
+import 'package:elara/core/error/exceptions.dart';
+import 'package:elara/core/network/dio_client.dart';
 import 'package:elara/features/parent/data/children/datasources/parent_children_remote_data_source.dart';
+import 'package:elara/features/parent/data/children/models/parent_child_insight_model.dart';
+import 'package:elara/features/parent/data/children/models/parent_child_profile_model.dart';
+import 'package:elara/features/parent/data/home/models/parent_child_progress_model.dart';
+import 'package:elara/features/parent/data/home/models/parent_children_dashboard_model.dart';
 import 'package:elara/features/parent/domain/children/entities/parent_child_profile_entity.dart';
 import 'package:elara/features/parent/domain/children/entities/parent_homework_card_entity.dart';
-import 'package:elara/features/parent/domain/home/entities/parent_child_progress_entity.dart';
-import 'package:elara/features/parent/domain/home/entities/parent_subject_group_progress_entity.dart';
-import 'package:elara/features/student/domain/homework/entities/homework_entity.dart';
-import 'package:elara/features/student/domain/homework/entities/homework_problem_entity.dart';
-import 'package:elara/features/student/domain/homework/entities/homework_problem_status.dart';
 import 'package:elara/features/teacher/domain/group/entities/teacher_student_insight_entity.dart';
 
-/// Mock remote datasource for parent children detail queries.
-class ParentChildrenRemoteDataSourceImpl
-    implements ParentChildrenRemoteDataSource {
-  const ParentChildrenRemoteDataSourceImpl();
+/// Concrete implementation of ParentChildrenRemoteDataSource using Dio.
+class ParentChildrenRemoteDataSourceImpl implements ParentChildrenRemoteDataSource {
+  const ParentChildrenRemoteDataSourceImpl(this._dioClient);
 
-  /// Shared mock homework list builder.
-  List<ParentHomeworkCardEntity> _buildMockHomeworks() {
-    const homeworks = [
-      HomeworkEntity(
-        id: 'hw-1',
-        subject: 'Mathematics 7A',
-        moduleTitle: 'Introduction to Calculus',
-        totalXp: 250,
-        problems: [
-          HomeworkProblemEntity(
-            id: 'p-1',
-            problemNumber: 1,
-            questionText: 'Find the derivative of f(x) = x².',
-            status: HomeworkProblemStatus.active,
-            submittedAnswer: '',
-          ),
-        ],
-      ),
-      HomeworkEntity(
-        id: 'hw-2',
-        subject: 'Physics 101',
-        moduleTitle: 'Kinematics',
-        totalXp: 100,
-        problems: [
-          HomeworkProblemEntity(
-            id: 'p-2',
-            problemNumber: 1,
-            questionText:
-                'Define Newton\'s Second Law of Motion and provide a real-world example involving friction.',
-            status: HomeworkProblemStatus.graded,
-            submittedAnswer: '',
-            grade: 50,
-            maxGrade: 50,
-          ),
-          HomeworkProblemEntity(
-            id: 'p-3',
-            problemNumber: 2,
-            questionText:
-                'Calculate the velocity of a 2kg object falling from a height of 10 meters just before it hits the ground.',
-            status: HomeworkProblemStatus.graded,
-            submittedAnswer: '',
-            grade: 50,
-            maxGrade: 50,
-          ),
-        ],
-      ),
-      HomeworkEntity(
-        id: 'hw-3',
-        subject: 'Physics 101',
-        moduleTitle: 'Introduction to Waves',
-        totalXp: 200,
-        problems: [
-          HomeworkProblemEntity(
-            id: 'p-4',
-            problemNumber: 1,
-            questionText:
-                'Explain the relationship between frequency and wavelength.',
-            status: HomeworkProblemStatus.submitted,
-            submittedAnswer:
-                'Frequency and wavelength are inversely proportional.',
-          ),
-          HomeworkProblemEntity(
-            id: 'p-5',
-            problemNumber: 2,
-            questionText: 'Define amplitude in the context of wave motion.',
-            status: HomeworkProblemStatus.submitted,
-            submittedAnswer:
-                'Amplitude is the maximum displacement from the equilibrium position.',
-          ),
-        ],
-      ),
-    ];
-    return homeworks
-        .map((hw) => ParentHomeworkCardEntity.fromHomework(hw))
-        .toList();
-  }
+  final DioClient _dioClient;
 
   @override
   Future<ParentChildProfileEntity> fetchChildProfile(String childId) async {
-    await Future<void>.delayed(const Duration(milliseconds: 280));
+    try {
+      // 1. Fetch children dashboard list to find the child's basic progress/stats
+      final dashboardResponse = await _dioClient.dio.get(ApiConstants.parentChildrenDashboard);
+      final dashboardData = dashboardResponse.data;
+      if (dashboardData == null || dashboardData is! Map<String, dynamic>) {
+        throw ServerException('Invalid children response data');
+      }
+      final dashboardPayload = dashboardData['data'] as Map<String, dynamic>?;
+      final dashboardModel = ParentChildrenDashboardModel.fromJson(dashboardPayload ?? {});
+      final childrenList = dashboardModel.children;
 
-    // Resolve which child profile to mock based on childId
-    final String displayName = childId == 'c-2'
-        ? 'Drake'
-        : 'Tyler, The Creator';
-    final int xp = childId == 'c-2' ? 67 : 1250;
-    final int streak = childId == 'c-2' ? 1 : 7;
-    final int currentLsn = childId == 'c-2' ? 1 : 15;
+      final matchingChild = childrenList.firstWhere(
+        (c) => c.id == childId,
+        orElse: () => ParentChildProgressModel(
+          id: childId,
+          displayName: '',
+          xpPoints: 0,
+          streakDays: 0,
+          currentLesson: 0,
+          totalLessons: 0,
+          progress: 0.0,
+        ),
+      );
 
-    final child = ParentChildProgressEntity(
-      id: childId,
-      displayName: displayName,
-      xpPoints: xp,
-      streakDays: streak,
-      currentLesson: currentLsn,
-      totalLessons: 20,
-      progress: childId == 'c-2' ? 0.05 : 0.75,
-      gradeLabel: 'Grade 7',
-      level: 12,
-      subjectGroups: const [
-        ParentSubjectGroupProgressEntity(name: 'Physics 101', progress: 0.65),
-        ParentSubjectGroupProgressEntity(name: 'Advanced Math', progress: 0.45),
-        ParentSubjectGroupProgressEntity(name: 'Biology Lab', progress: 0.80),
-      ],
-    );
+      // 2. Fetch insights
+      final insights = await fetchChildInsights(childId);
+      final latestInsight = insights.isNotEmpty ? insights.first : null;
 
-    final insight = TeacherStudentInsightEntity(
-      updatedLabel: '5 min ago',
-      paragraph1:
-          '$displayName has shown exceptional growth in Quantum Mechanics this term. His ability to grasp complex theoretical concepts, particularly regarding ware-particle duality, is outstanding and frequently pushes classroom discussions to higher levels.',
-      paragraph2:
-          'However, we noticed a dip in his practical lab applications. While his mathematical foundations are strong, a renewed focus on consistent experiment documentation and safety protocol adherence could bridge the gap between his theoretical brilliance and practical execution.',
-      isDraft: false,
-    );
+      // 3. Fetch homeworks
+      final homeworks = await fetchChildHomeworks(childId);
 
-    return ParentChildProfileEntity(
-      child: child,
-      attendanceLabel: '96%',
-      insight: insight,
-      homeworks: _buildMockHomeworks(),
-    );
+      return ParentChildProfileModel(
+        child: matchingChild.toEntity(),
+        attendanceLabel: '100%',
+        insight: latestInsight,
+        homeworks: homeworks,
+      );
+    } on DioException catch (e) {
+      throw ServerException(e.message ?? 'Network error');
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
 
   @override
-  Future<List<ParentHomeworkCardEntity>> fetchChildHomeworks(
-    String childId,
-  ) async {
-    await Future<void>.delayed(const Duration(milliseconds: 200));
-    return _buildMockHomeworks();
+  Future<List<ParentHomeworkCardEntity>> fetchChildHomeworks(String childId) async {
+    try {
+      final response = await _dioClient.dio.get(ApiConstants.parentChildHomeworks(childId));
+      final data = response.data;
+      if (data == null || data is! Map<String, dynamic>) {
+        throw ServerException('Invalid response data');
+      }
+      final payload = data['data'] as Map<String, dynamic>?;
+      if (payload == null) {
+        return const [];
+      }
+      final list = payload['homework_list'] as List? ?? payload['homeworks'] as List?;
+      if (list == null) {
+        return const [];
+      }
+      return list
+          .whereType<Map<String, dynamic>>()
+          .map(ParentHomeworkCardEntity.fromJson)
+          .toList();
+    } on DioException catch (e) {
+      throw ServerException(e.message ?? 'Network error');
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
 
   @override
-  Future<List<TeacherStudentInsightEntity>> fetchChildInsights(
-    String childId,
-  ) async {
-    await Future<void>.delayed(const Duration(milliseconds: 200));
-
-    // Hardcoded mock insights matching the screenshot
-    return const [
-      TeacherStudentInsightEntity(
-        updatedLabel: '5 min ago',
-        paragraph1:
-            'Tyler has shown exceptional growth in Quantum Mechanics this term. His ability to grasp complex theoretical concepts, particularly regarding wave-particle duality, is outstanding and frequently pushes classroom discussions to higher levels.',
-        paragraph2:
-            'However, we noticed a slight dip in his practical lab applications. While his mathematical foundations are strong, a renewed focus on consistent experiment documentation and safety protocol adherence could bridge the gap between his theoretical brilliance and practical execution.',
-        isDraft: false,
-      ),
-      TeacherStudentInsightEntity(
-        updatedLabel: '1 hour ago',
-        paragraph1:
-            'Tyler has shown exceptional growth in Quantum Mechanics this term. His ability to grasp complex theoretical concepts, particularly regarding wave-particle duality, is outstanding and frequently pushes classroom discussions to higher levels.',
-        paragraph2:
-            'However, we noticed a slight dip in his practical lab applications. While his mathematical foundations are strong, a renewed focus on consistent experiment documentation and safety protocol adherence could bridge the gap between his theoretical brilliance and practical execution.',
-        isDraft: false,
-      ),
-    ];
+  Future<List<TeacherStudentInsightEntity>> fetchChildInsights(String childId) async {
+    try {
+      final response = await _dioClient.dio.get(ApiConstants.parentChildInsights(childId));
+      final data = response.data;
+      if (data == null || data is! Map<String, dynamic>) {
+        throw ServerException('Invalid response data');
+      }
+      final payload = data['data'] as Map<String, dynamic>?;
+      if (payload == null) {
+        return const [];
+      }
+      final reports = payload['reports'] as List?;
+      if (reports == null) {
+        return const [];
+      }
+      return reports
+          .whereType<Map<String, dynamic>>()
+          .map(ParentChildInsightModel.fromJson)
+          .toList();
+    } on DioException catch (e) {
+      throw ServerException(e.message ?? 'Network error');
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
 }

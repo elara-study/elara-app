@@ -1,3 +1,4 @@
+import 'package:elara/core/network/dio_client.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source.dart';
 import 'package:elara/features/parent/data/home/datasources/parent_home_remote_data_source_impl.dart';
@@ -10,6 +11,9 @@ import 'package:elara/features/parent/data/reports/repositories/parent_reports_r
 import 'package:elara/features/parent/domain/home/repositories/parent_home_repository.dart';
 import 'package:elara/features/parent/domain/home/usecases/get_parent_children_dashboard_use_case.dart';
 import 'package:elara/features/parent/domain/home/usecases/get_parent_home_use_case.dart';
+import 'package:elara/features/parent/domain/home/usecases/link_student_use_case.dart';
+import 'package:elara/features/parent/domain/home/usecases/respond_to_request_use_case.dart';
+import 'package:elara/features/parent/domain/children/usecases/unlink_child_use_case.dart';
 import 'package:elara/features/parent/domain/profile/repositories/parent_profile_repository.dart';
 import 'package:elara/features/parent/domain/profile/usecases/get_parent_profile_use_case.dart';
 import 'package:elara/features/parent/domain/reports/repositories/parent_reports_repository.dart';
@@ -35,7 +39,7 @@ final getIt = GetIt.instance;
 
 void setupParentDI() {
   getIt.registerLazySingleton<ParentHomeRemoteDataSource>(
-    () => const ParentHomeRemoteDataSourceImpl(),
+    () => ParentHomeRemoteDataSourceImpl(getIt<DioClient>()),
   );
   getIt.registerLazySingleton<ParentHomeRepository>(
     () => ParentHomeRepositoryImpl(getIt<ParentHomeRemoteDataSource>()),
@@ -46,9 +50,18 @@ void setupParentDI() {
   getIt.registerLazySingleton(
     () => GetParentChildrenDashboardUseCase(getIt<ParentHomeRepository>()),
   );
+  getIt.registerLazySingleton(
+    () => LinkStudentUseCase(getIt<ParentHomeRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => RespondToRequestUseCase(getIt<ParentHomeRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => UnlinkChildUseCase(getIt<ParentHomeRepository>()),
+  );
 
   getIt.registerLazySingleton<ParentReportsRemoteDataSource>(
-    () => const ParentReportsRemoteDataSourceImpl(),
+    () => ParentReportsRemoteDataSourceImpl(getIt<DioClient>()),
   );
   getIt.registerLazySingleton<ParentReportsRepository>(
     () => ParentReportsRepositoryImpl(getIt<ParentReportsRemoteDataSource>()),
@@ -58,7 +71,7 @@ void setupParentDI() {
   );
 
   getIt.registerLazySingleton<ParentProfileRemoteDataSource>(
-    () => ParentProfileRemoteDataSourceImpl(),
+    () => ParentProfileRemoteDataSourceImpl(getIt<DioClient>()),
   );
   getIt.registerLazySingleton<ParentProfileRepository>(
     () => ParentProfileRepositoryImpl(getIt<ParentProfileRemoteDataSource>()),
@@ -74,6 +87,8 @@ void setupParentDI() {
   getIt.registerFactory(
     () => ParentChildrenCubit(
       getChildrenDashboard: getIt<GetParentChildrenDashboardUseCase>(),
+      linkStudent: getIt<LinkStudentUseCase>(),
+      respondToRequest: getIt<RespondToRequestUseCase>(),
     ),
   );
   getIt.registerFactory(
@@ -84,7 +99,7 @@ void setupParentDI() {
 
   // Parent Child Profile
   getIt.registerLazySingleton<ParentChildrenRemoteDataSource>(
-    () => const ParentChildrenRemoteDataSourceImpl(),
+    () => ParentChildrenRemoteDataSourceImpl(getIt<DioClient>()),
   );
   getIt.registerLazySingleton<ParentChildrenRepository>(
     () => ParentChildrenRepositoryImpl(getIt<ParentChildrenRemoteDataSource>()),
@@ -95,6 +110,7 @@ void setupParentDI() {
   getIt.registerFactory<ParentChildProfileCubit>(
     () => ParentChildProfileCubit(
       getProfile: getIt<GetParentChildProfileUseCase>(),
+      unlinkChildUseCase: getIt<UnlinkChildUseCase>(),
     ),
   );
 

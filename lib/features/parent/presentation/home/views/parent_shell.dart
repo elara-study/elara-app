@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
+import 'package:elara/features/parent/presentation/children/cubits/parent_children_state.dart';
 import 'package:elara/features/parent/presentation/children/views/parent_children_screen.dart';
 import 'package:elara/features/parent/presentation/home/cubits/parent_home_cubit.dart';
 import 'package:elara/features/parent/presentation/home/cubits/parent_tab_cubit.dart';
@@ -47,28 +48,56 @@ class ParentShell extends StatelessWidget {
           create: (_) => getIt<ParentProfileCubit>()..loadProfile(),
         ),
       ],
-      child: BlocBuilder<ParentTabCubit, int>(
-        builder: (context, currentTab) {
-          return Scaffold(
-            extendBody: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            body: Stack(
-              children: [
-                IndexedStack(index: currentTab, children: _pages),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: AppBottomNavBar(
-                    currentIndex: currentTab,
-                    onTap: (i) => context.read<ParentTabCubit>().goToTab(i),
-                    tabs: AppBottomNavBar.parentTabs,
-                  ),
+      child: BlocListener<ParentChildrenCubit, ParentChildrenState>(
+        listenWhen: (prev, curr) =>
+            curr is ParentChildrenLoaded &&
+            (curr.successMessage != null || curr.errorMessage != null),
+        listener: (context, state) {
+          if (state is ParentChildrenLoaded) {
+            if (state.successMessage != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.successMessage!),
+                  backgroundColor: AppColors.success500,
                 ),
-              ],
-            ),
-          );
+              );
+              context.read<ParentChildrenCubit>().clearMessages();
+              context.read<ParentHomeCubit>().loadHome();
+              context.read<ParentProfileCubit>().loadProfile();
+            } else if (state.errorMessage != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage!),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+              context.read<ParentChildrenCubit>().clearMessages();
+            }
+          }
         },
+        child: BlocBuilder<ParentTabCubit, int>(
+          builder: (context, currentTab) {
+            return Scaffold(
+              extendBody: true,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              body: Stack(
+                children: [
+                  IndexedStack(index: currentTab, children: _pages),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: AppBottomNavBar(
+                      currentIndex: currentTab,
+                      onTap: (i) => context.read<ParentTabCubit>().goToTab(i),
+                      tabs: AppBottomNavBar.parentTabs,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

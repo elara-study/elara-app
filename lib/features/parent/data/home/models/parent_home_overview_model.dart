@@ -15,6 +15,24 @@ class ParentHomeOverviewModel {
   final ParentAggregateStatsModel stats;
   final List<ParentActivityModel> recentActivity;
 
+  factory ParentHomeOverviewModel.fromJson(Map<String, dynamic> json) {
+    final childrenList = json['children'] as List? ?? [];
+    final statsMap = json['overall_stats'] as Map<String, dynamic>? ?? json['stats'] as Map<String, dynamic>? ?? {};
+    final recentList = json['recent_activity'] as List? ?? json['recentActivity'] as List? ?? [];
+
+    return ParentHomeOverviewModel(
+      children: childrenList
+          .whereType<Map<String, dynamic>>()
+          .map(ParentChildProgressModel.fromJson)
+          .toList(),
+      stats: ParentAggregateStatsModel.fromJson(statsMap),
+      recentActivity: recentList
+          .whereType<Map<String, dynamic>>()
+          .map(ParentActivityModel.fromJson)
+          .toList(),
+    );
+  }
+
   ParentHomeOverviewEntity toEntity() => ParentHomeOverviewEntity(
     children: children.map((e) => e.toEntity()).toList(),
     stats: stats.toEntity(),

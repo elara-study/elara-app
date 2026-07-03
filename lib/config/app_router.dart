@@ -33,6 +33,7 @@ import 'package:elara/features/student/presentation/chatbot/chatbot_route_args.d
 import 'package:elara/features/student/presentation/chatbot/cubits/chatbot_cubit.dart';
 import 'package:elara/features/student/presentation/chatbot/cubits/sessions_cubit.dart';
 import 'package:elara/features/student/presentation/chatbot/views/chatbot_screen.dart';
+import 'package:elara/features/student/presentation/voice/voice_screen.dart';
 import 'package:elara/features/student/presentation/dashboard/views/student_shell.dart';
 import 'package:elara/features/student/presentation/group/views/student_group_page.dart';
 import 'package:elara/features/student/domain/dashboard/entities/student_group_entity.dart';
@@ -76,6 +77,7 @@ abstract final class AppRoutes {
   static const String quiz = '/quiz';
   static const String homework = '/homework';
   static const String chatbot = '/chatbot';
+  static const String voice = '/voice';
   static const String studentSettings = '/student/settings';
   static const String teacherSettings = '/teacher/settings';
   static const String parentSettings = '/parent/settings';
@@ -410,6 +412,10 @@ GoRouter createAppRouter(AuthCubit authCubit) {
           create: (_) => NotificationsSettingsCubit(),
           child: const NotificationsSettingsScreen(),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.voice,
+        builder: (_, _) => const VoiceScreen(),
       ),
       GoRoute(
         path: AppRoutes.chatbot,

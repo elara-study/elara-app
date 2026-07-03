@@ -3,14 +3,21 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/features/parent/presentation/children/cubits/parent_child_profile_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// App bar overflow (⋮) for Parent: “Remove Child”, then confirmation dialog.
 class ParentChildProfileOverflowMenu extends StatefulWidget {
-  const ParentChildProfileOverflowMenu({super.key, required this.childName});
+  const ParentChildProfileOverflowMenu({
+    super.key,
+    required this.childName,
+    required this.childId,
+  });
 
   final String childName;
+  final String childId;
 
   @override
   State<ParentChildProfileOverflowMenu> createState() =>
@@ -24,6 +31,7 @@ class _ParentChildProfileOverflowMenuState
 
   void _openConfirmation() {
     _portal.hide();
+    final profileCubit = context.read<ParentChildProfileCubit>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       showDialog<void>(
@@ -32,11 +40,12 @@ class _ParentChildProfileOverflowMenuState
         builder: (dialogContext) => _RemoveChildConfirmationDialog(
           childName: widget.childName,
           onCancel: () => Navigator.of(dialogContext).pop(),
-          onConfirmRemove: () {
+          onConfirmRemove: () async {
+            final navigator = Navigator.of(context);
             Navigator.of(dialogContext).pop();
-            if (!context.mounted) return;
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
+            final success = await profileCubit.unlinkChild(widget.childId);
+            if (success && navigator.mounted) {
+              navigator.pop(true);
             }
           },
         ),

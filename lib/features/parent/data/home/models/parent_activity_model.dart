@@ -14,6 +14,15 @@ class ParentActivityModel {
   final String subtitle;
   final String timeLabel;
 
+  factory ParentActivityModel.fromJson(Map<String, dynamic> json) {
+    return ParentActivityModel(
+      id: (json['id'] ?? '').toString(),
+      title: json['title'] as String? ?? '',
+      subtitle: json['description'] as String? ?? json['subtitle'] as String? ?? '',
+      timeLabel: json['time_ago'] as String? ?? json['timeLabel'] as String? ?? '',
+    );
+  }
+
   ParentActivityEntity toEntity() => ParentActivityEntity(
     id: id,
     title: title,

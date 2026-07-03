@@ -10,4 +10,10 @@ abstract class ParentHomeRemoteDataSource {
 
   /// Children tab — pending requests + detailed child cards (Figma `205:2260`).
   Future<ParentChildrenDashboardModel> fetchChildrenDashboard();
+
+  Future<void> linkStudent(String studentUsername);
+
+  Future<String> respondToRequest(String requestId, bool accept);
+
+  Future<void> unlinkChild(String childId);
 }
