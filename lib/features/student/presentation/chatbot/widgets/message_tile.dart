@@ -6,6 +6,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/chatbot/entities/chatbot_message.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
@@ -60,15 +61,63 @@ class ChatbotMessageTile extends StatelessWidget {
               ),
               SizedBox(height: AppSpacing.spacingSm.h),
             ],
-            Text(
-              message.text,
-              textAlign: hasImage
-                  ? (isBot ? TextAlign.left : TextAlign.right)
-                  : null,
-              style: AppTypography.bodyMedium(
-                color: textColor,
-              ).copyWith(height: 1.45),
-            ),
+            if (isBot)
+              MarkdownBody(
+                data: message.text,
+                shrinkWrap: true,
+                styleSheet: MarkdownStyleSheet(
+                  p: AppTypography.bodyMedium(color: textColor)
+                      .copyWith(height: 1.5),
+                  strong: AppTypography.bodyMedium(color: textColor).copyWith(
+                    fontWeight: FontWeight.bold,
+                    height: 1.5,
+                  ),
+                  em: AppTypography.bodyMedium(color: textColor).copyWith(
+                    fontStyle: FontStyle.italic,
+                    height: 1.5,
+                  ),
+                  h1: AppTypography.h1(color: textColor),
+                  h2: AppTypography.h2(color: textColor),
+                  h3: AppTypography.h3(color: textColor),
+                  listBullet: AppTypography.bodyMedium(color: textColor)
+                      .copyWith(height: 1.5),
+                  blockquotePadding:
+                      EdgeInsets.symmetric(horizontal: AppSpacing.spacingSm.w),
+                  blockquoteDecoration: const BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: AppColors.brandPrimary500,
+                        width: 3,
+                      ),
+                    ),
+                  ),
+                  code: AppTypography.bodySmall(color: textColor).copyWith(
+                    fontFamily: 'monospace',
+                    backgroundColor:
+                        AppColors.brandPrimary500.withValues(alpha: 0.15),
+                  ),
+                  codeblockDecoration: BoxDecoration(
+                    color: AppColors.brandPrimary500.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  horizontalRuleDecoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        color: textColor.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            else
+              Text(
+                message.text,
+                textAlign: hasImage ? TextAlign.right : null,
+                style: AppTypography.bodyMedium(
+                  color: textColor,
+                ).copyWith(height: 1.45),
+              ),
             if (message.choices != null && message.choices!.isNotEmpty) ...[
               SizedBox(height: AppSpacing.spacingSm.h),
               Wrap(
