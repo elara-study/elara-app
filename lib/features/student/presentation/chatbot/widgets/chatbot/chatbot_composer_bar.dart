@@ -15,6 +15,7 @@ class ChatbotComposerBar extends StatelessWidget {
     required this.isSending,
     required this.onAttachmentTap,
     required this.onSendTap,
+    required this.onMicTap,
   });
 
   final GlobalKey attachmentMenuAnchorKey;
@@ -22,6 +23,7 @@ class ChatbotComposerBar extends StatelessWidget {
   final bool isSending;
   final Future<void> Function() onAttachmentTap;
   final VoidCallback onSendTap;
+  final VoidCallback onMicTap;
 
   @override
   Widget build(BuildContext context) {
@@ -94,12 +96,15 @@ class ChatbotComposerBar extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.only(right: 4.w),
-                    child: Tooltip(
-                      message: 'Voice input',
-                      child: Icon(
-                        Icons.mic_rounded,
-                        color: ButtonColors.ghostText,
-                        size: 24.sp,
+                    child: GestureDetector(
+                      onTap: onMicTap,
+                      child: Tooltip(
+                        message: 'Voice input',
+                        child: Icon(
+                          Icons.mic_rounded,
+                          color: ButtonColors.ghostText,
+                          size: 24.sp,
+                        ),
                       ),
                     ),
                   ),

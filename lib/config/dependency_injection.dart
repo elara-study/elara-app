@@ -6,6 +6,7 @@ import 'di/teacher_di.dart';
 import 'di/parent_di.dart';
 import 'di/chatbot_di.dart';
 import 'di/settings_di.dart';
+import 'di/voice_di.dart';
 
 final getIt = GetIt.instance;
 
@@ -20,4 +21,5 @@ Future<void> setupDependencyInjection() async {
   setupParentDI();
   setupChatbotDI();
   setupSettingsDI();
+  setupVoiceDI();
 }

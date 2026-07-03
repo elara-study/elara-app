@@ -14,7 +14,9 @@ import 'package:elara/features/student/presentation/chatbot/widgets/chatbot/chat
 import 'package:elara/features/student/presentation/chatbot/widgets/image_preview_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key, required this.routeArgs});
@@ -105,6 +107,19 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     if (trimmed.isEmpty) return;
     _text.clear();
     await cubit.sendUserMessage(trimmed);
+  }
+
+  Future<void> _onMicTap() async {
+    final status = await Permission.microphone.request();
+    if (status.isGranted && mounted) {
+      context.push('/voice');
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Microphone permission is required for voice mode.'),
+        ),
+      );
+    }
   }
 
   @override
@@ -206,6 +221,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 isSending: state.isSending,
                 onAttachmentTap: _openAttachmentMenu,
                 onSendTap: _send,
+                onMicTap: _onMicTap,
               ),
             ],
           );
