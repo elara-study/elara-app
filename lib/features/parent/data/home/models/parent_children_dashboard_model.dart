@@ -13,7 +13,7 @@ class ParentChildrenDashboardModel {
 
   factory ParentChildrenDashboardModel.fromJson(Map<String, dynamic> json) {
     final pendingRequestsList = json['pending_requests'] as List? ?? json['pendingRequests'] as List? ?? [];
-    final childrenList = json['children'] as List? ?? [];
+    final childrenList = json['my_children'] as List? ?? json['children'] as List? ?? [];
 
     return ParentChildrenDashboardModel(
       pendingRequests: pendingRequestsList

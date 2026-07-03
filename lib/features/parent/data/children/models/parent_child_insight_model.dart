@@ -1,4 +1,5 @@
 import 'package:elara/features/teacher/domain/group/entities/teacher_student_insight_entity.dart';
+import 'package:intl/intl.dart';
 
 class ParentChildInsightModel extends TeacherStudentInsightEntity {
   const ParentChildInsightModel({
@@ -9,11 +10,21 @@ class ParentChildInsightModel extends TeacherStudentInsightEntity {
   });
 
   factory ParentChildInsightModel.fromJson(Map<String, dynamic> json) {
+    final analyzedAtStr = json['analyzedAt'] as String? ?? '';
+    String dateLabel = 'Recently analyzed';
+    if (analyzedAtStr.isNotEmpty) {
+      try {
+        final dt = DateTime.parse(analyzedAtStr).toLocal();
+        dateLabel = 'Analyzed • ${DateFormat.yMMMd().add_jm().format(dt)}';
+      } catch (_) {
+        dateLabel = analyzedAtStr;
+      }
+    }
     return ParentChildInsightModel(
-      updatedLabel: json['updated_at'] as String? ?? json['updatedLabel'] as String? ?? '',
-      paragraph1: json['paragraph1'] as String? ?? '',
-      paragraph2: json['paragraph2'] as String? ?? '',
-      isDraft: json['is_draft'] as bool? ?? json['isDraft'] as bool? ?? false,
+      updatedLabel: dateLabel,
+      paragraph1: json['title'] as String? ?? '',
+      paragraph2: json['reportText'] as String? ?? '',
+      isDraft: false,
     );
   }
 }

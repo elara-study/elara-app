@@ -30,30 +30,51 @@ class ParentChildProgressModel {
   final String? avatarUrl;
 
   factory ParentChildProgressModel.fromJson(Map<String, dynamic> json) {
+    final stats = json['stats'] as Map<String, dynamic>? ?? {};
     final progressMap = json['progress'] as Map<String, dynamic>?;
-    final completionPercentage = progressMap?['completion_percentage'] as num? ?? 0;
+
+    final subjectProgressList = json['subject_progress'] as List? ?? json['subject_groups'] as List? ?? json['subjectGroups'] as List? ?? [];
     
+    double avgProgress = 0.0;
+    if (progressMap != null) {
+      final completionPercentage = progressMap['completion_percentage'] as num? ?? 0;
+      avgProgress = completionPercentage / 100.0;
+    } else if (subjectProgressList.isNotEmpty) {
+      double total = 0.0;
+      for (final sp in subjectProgressList) {
+        if (sp is Map<String, dynamic>) {
+          total += (sp['progress_percentage'] as num? ?? sp['progress'] as num? ?? 0).toDouble();
+        }
+      }
+      avgProgress = (total / subjectProgressList.length) / 100.0;
+    }
+
+    final lessonsCompleted = stats['lessons_completed'] as int? ?? 
+                             progressMap?['current_lesson'] as int? ?? 
+                             json['lessonsCompleted'] as int? ?? 0;
+
+    final totalLessons = progressMap?['total_lessons'] as int? ?? lessonsCompleted;
+
+    final xpPoints = stats['total_xp'] as int? ?? json['xpPoints'] as int? ?? json['xp_points'] as int? ?? 0;
+    final streakDays = stats['day_streak'] as int? ?? json['streakDays'] as int? ?? json['streak_days'] as int? ?? 0;
+
+    final gradeVal = json['grade'];
+    final gradeLabel = gradeVal != null ? 'Grade $gradeVal' : (json['gradeLabel'] as String? ?? json['grade_label'] as String? ?? '');
+
     return ParentChildProgressModel(
       id: json['id'] as String? ?? '',
-      displayName: json['name'] as String? ?? '',
-      xpPoints: json['xp_points'] as int? ?? json['xpPoints'] as int? ?? 0,
-      streakDays: json['streak_days'] as int? ?? json['streakDays'] as int? ?? 0,
-      currentLesson: progressMap?['current_lesson'] as int? ?? 0,
-      totalLessons: progressMap?['total_lessons'] as int? ?? 0,
-      progress: completionPercentage / 100.0,
-      gradeLabel: json['grade_label'] as String? ?? json['gradeLabel'] as String? ?? '',
+      displayName: json['name'] as String? ?? json['displayName'] as String? ?? '',
+      xpPoints: xpPoints,
+      streakDays: streakDays,
+      currentLesson: lessonsCompleted,
+      totalLessons: totalLessons,
+      progress: avgProgress,
+      gradeLabel: gradeLabel,
       level: json['level'] as int? ?? 1,
-      subjectGroups: json['subject_groups'] != null
-          ? (json['subject_groups'] as List)
-              .whereType<Map<String, dynamic>>()
-              .map(ParentSubjectGroupProgressModel.fromJson)
-              .toList()
-          : json['subjectGroups'] != null
-              ? (json['subjectGroups'] as List)
-                  .whereType<Map<String, dynamic>>()
-                  .map(ParentSubjectGroupProgressModel.fromJson)
-                  .toList()
-              : const [],
+      subjectGroups: subjectProgressList
+          .whereType<Map<String, dynamic>>()
+          .map(ParentSubjectGroupProgressModel.fromJson)
+          .toList(),
       avatarUrl: json['avatar_url'] as String? ?? json['avatarUrl'] as String?,
     );
   }

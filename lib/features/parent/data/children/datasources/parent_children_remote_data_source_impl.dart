@@ -64,14 +64,18 @@ class ParentChildrenRemoteDataSourceImpl implements ParentChildrenRemoteDataSour
     try {
       final response = await _dioClient.dio.get(ApiConstants.parentChildInsights(childId));
       final data = response.data;
-      if (data == null) {
+      if (data == null || data is! Map<String, dynamic>) {
         throw ServerException('Invalid response data');
       }
-      final payload = data['data'] as List?;
+      final payload = data['data'] as Map<String, dynamic>?;
       if (payload == null) {
         return const [];
       }
-      return payload
+      final reports = payload['reports'] as List?;
+      if (reports == null) {
+        return const [];
+      }
+      return reports
           .whereType<Map<String, dynamic>>()
           .map(ParentChildInsightModel.fromJson)
           .toList();

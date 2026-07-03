@@ -108,7 +108,7 @@ class ApiConstants {
   // Parent
   static const String parentDashboard = 'api/v1/parent/dashboard';
   static const String parentChildrenDashboard =
-      'api/v1/parent/children/dashboard';
+      'api/v1/parent/children';
   static const String parentLinkStudent = 'api/v1/parent/link-student';
   static String parentRespondToRequest(String id) =>
       'api/v1/parent/requests/$id';
@@ -119,8 +119,9 @@ class ApiConstants {
       'api/v1/parent/children/$childId/homeworks';
   static String parentChildInsights(String childId) =>
       'api/v1/parent/children/$childId/insights';
-  static const String parentReports = 'api/v1/parent/reports';
+  static const String parentReports = 'api/v1/parent/child-insights';
   static const String parentProfile = 'api/v1/parent/profile';
+  static const String alerts = 'api/v1/alerts';
 
   // ── Quiz ──────────────────────────────────────────────────────────────────
 
