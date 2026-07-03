@@ -5,6 +5,6 @@ class RespondToRequestUseCase {
 
   final ParentHomeRepository _repository;
 
-  Future<void> call({required String requestId, required bool accept}) =>
+  Future<String> call({required String requestId, required bool accept}) =>
       _repository.respondToRequest(requestId, accept);
 }

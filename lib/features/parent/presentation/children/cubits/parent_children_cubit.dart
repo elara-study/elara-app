@@ -58,12 +58,12 @@ class ParentChildrenCubit extends Cubit<ParentChildrenState> {
     final prevState = state;
     emit(const ParentChildrenLoading());
     try {
-      await _respondToRequest(requestId: requestId, accept: accept);
+      final serverMessage = await _respondToRequest(requestId: requestId, accept: accept);
       final dashboard = await _getChildrenDashboard();
       if (isClosed) return;
       emit(ParentChildrenLoaded(
         dashboard,
-        successMessage: accept ? 'Request accepted.' : 'Request declined.',
+        successMessage: serverMessage,
       ));
     } catch (e) {
       if (isClosed) return;

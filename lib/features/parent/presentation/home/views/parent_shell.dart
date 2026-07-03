@@ -62,6 +62,8 @@ class ParentShell extends StatelessWidget {
                 ),
               );
               context.read<ParentChildrenCubit>().clearMessages();
+              context.read<ParentHomeCubit>().loadHome();
+              context.read<ParentProfileCubit>().loadProfile();
             } else if (state.errorMessage != null) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

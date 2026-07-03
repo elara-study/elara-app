@@ -36,24 +36,18 @@ Future<T?> showAppFormDialog<T>(BuildContext context, {required Widget child}) {
   return showDialog<T>(
     context: context,
     builder: (ctx) {
-      final bottom = MediaQuery.viewInsetsOf(ctx).bottom;
       final scheme = Theme.of(ctx).colorScheme;
-      return AnimatedPadding(
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeOut,
-        padding: EdgeInsets.only(bottom: bottom),
-        child: Dialog(
-          backgroundColor: scheme.surface,
-          surfaceTintColor: Colors.transparent,
-          insetPadding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.spacingLg.w,
-            vertical: AppSpacing.spacingLg.h,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
-          ),
-          child: child,
+      return Dialog(
+        backgroundColor: scheme.surface,
+        surfaceTintColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.spacingLg.w,
+          vertical: AppSpacing.spacingLg.h,
         ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
+        ),
+        child: child,
       );
     },
   );

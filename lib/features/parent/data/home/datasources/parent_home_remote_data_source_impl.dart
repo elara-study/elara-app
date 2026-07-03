@@ -99,11 +99,11 @@ class ParentHomeRemoteDataSourceImpl implements ParentHomeRemoteDataSource {
   }
 
   @override
-  Future<void> respondToRequest(String requestId, bool accept) async {
+  Future<String> respondToRequest(String requestId, bool accept) async {
     try {
       final response = await _dioClient.dio.put(
         ApiConstants.parentRespondToRequest(requestId),
-        data: {'accept': accept},
+        data: {'action': accept ? 'accept' : 'decline'},
       );
       final body = response.data;
       if (body == null || body is! Map<String, dynamic>) {
@@ -113,6 +113,7 @@ class ParentHomeRemoteDataSourceImpl implements ParentHomeRemoteDataSource {
       if (status != 'Success') {
         throw ServerException(body['message'] as String? ?? 'Failed to respond to request');
       }
+      return body['message'] as String? ?? (accept ? 'Request accepted.' : 'Request declined.');
     } on DioException catch (e) {
       throw ServerException(e.message ?? 'Server connection error');
     } catch (e) {

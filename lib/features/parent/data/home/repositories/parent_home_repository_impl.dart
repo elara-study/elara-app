@@ -69,9 +69,9 @@ class ParentHomeRepositoryImpl implements ParentHomeRepository {
   }
 
   @override
-  Future<void> respondToRequest(String requestId, bool accept) async {
+  Future<String> respondToRequest(String requestId, bool accept) async {
     try {
-      await _remote.respondToRequest(requestId, accept);
+      return await _remote.respondToRequest(requestId, accept);
     } on ServerException catch (e) {
       throw ServerFailure(e.message);
     } on DioException catch (e) {

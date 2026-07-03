@@ -13,7 +13,7 @@ abstract class ParentHomeRemoteDataSource {
 
   Future<void> linkStudent(String studentUsername);
 
-  Future<void> respondToRequest(String requestId, bool accept);
+  Future<String> respondToRequest(String requestId, bool accept);
 
   Future<void> unlinkChild(String childId);
 }
