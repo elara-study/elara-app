@@ -1,10 +1,21 @@
 import 'package:elara/core/theme/app_spacing.dart';
+import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
 import 'package:elara/shared/widgets/app_form_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Future<void> showParentAddChildSheet(BuildContext context) {
-  return showAppFormDialog<void>(context, child: const ParentAddChildSheet());
+Future<void> showParentAddChildSheet(
+  BuildContext context,
+  ParentChildrenCubit cubit,
+) {
+  return showAppFormDialog<void>(
+    context,
+    child: BlocProvider.value(
+      value: cubit,
+      child: const ParentAddChildSheet(),
+    ),
+  );
 }
 
 class ParentAddChildSheet extends StatefulWidget {
@@ -24,13 +35,16 @@ class _ParentAddChildSheetState extends State<ParentAddChildSheet> {
   }
 
   void _submit() {
-    // TODO: wire link-child use case when backend exists
+    final username = _usernameController.text.trim();
+    if (username.isNotEmpty) {
+      context.read<ParentChildrenCubit>().linkChild(username);
+    }
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppFormDialogBody(
+    return AppFormDialogScrollableBody(
       title: 'Add a child',
       children: [
         AppFormDialogTextField(

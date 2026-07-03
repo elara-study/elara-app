@@ -55,7 +55,9 @@ class ParentChildProgressCard extends StatelessWidget {
                         ).copyWith(fontWeight: AppTypography.semiBold),
                       ),
                       SizedBox(height: AppSpacing.spacingXs.h),
-                      Row(
+                      Wrap(
+                        spacing: AppSpacing.spacingXs.w,
+                        runSpacing: AppSpacing.spacing2xs.h,
                         children: [
                           _StatCapsule(
                             background: AppColors.brandPrimary500Alpha10,
@@ -63,7 +65,6 @@ class ParentChildProgressCard extends StatelessWidget {
                             icon: Icons.emoji_events_outlined,
                             label: '${child.xpPoints}',
                           ),
-                          SizedBox(width: AppSpacing.spacingXs.w),
                           _StatCapsule(
                             background: AppColors.brandSecondary500Alpha10,
                             foreground: AppColors.brandSecondary500,

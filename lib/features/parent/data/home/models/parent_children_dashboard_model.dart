@@ -11,6 +11,22 @@ class ParentChildrenDashboardModel {
   final List<ParentPendingRequestModel> pendingRequests;
   final List<ParentChildProgressModel> children;
 
+  factory ParentChildrenDashboardModel.fromJson(Map<String, dynamic> json) {
+    final pendingRequestsList = json['pending_requests'] as List? ?? json['pendingRequests'] as List? ?? [];
+    final childrenList = json['my_children'] as List? ?? json['children'] as List? ?? [];
+
+    return ParentChildrenDashboardModel(
+      pendingRequests: pendingRequestsList
+          .whereType<Map<String, dynamic>>()
+          .map(ParentPendingRequestModel.fromJson)
+          .toList(),
+      children: childrenList
+          .whereType<Map<String, dynamic>>()
+          .map(ParentChildProgressModel.fromJson)
+          .toList(),
+    );
+  }
+
   ParentChildrenDashboardEntity toEntity() => ParentChildrenDashboardEntity(
     pendingRequests: pendingRequests.map((e) => e.toEntity()).toList(),
     children: children.map((e) => e.toEntity()).toList(),

@@ -105,6 +105,23 @@ class ApiConstants {
   static String chatbotDeleteConversation(String id) =>
       'api/v1/conversations/$id';
 
+  // Parent
+  static const String parentDashboard = 'api/v1/parent/dashboard';
+  static const String parentChildrenDashboard = 'api/v1/parent/children';
+  static const String parentLinkStudent = 'api/v1/parent/children/link';
+  static String parentRespondToRequest(String id) =>
+      'api/v1/parent/children/requests/$id';
+  static String parentUnlinkChild(String id) => 'api/v1/parent/children/$id';
+  static String parentChildProfile(String childId) =>
+      'api/v1/parent/children/$childId';
+  static String parentChildHomeworks(String childId) =>
+      'api/v1/children/$childId/homework';
+  static String parentChildInsights(String childId) =>
+      'api/v1/parent/children/$childId/insights';
+  static const String parentReports = 'api/v1/parent/child-insights';
+  static const String parentProfile = 'api/v1/parent/profile';
+  static const String alerts = 'api/v1/alerts';
+
   // ── Quiz ──────────────────────────────────────────────────────────────────
 
   /// POST — Generate a new quiz session.
