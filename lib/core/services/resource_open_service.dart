@@ -13,14 +13,6 @@ class ResourceOpenService {
     }
 
     try {
-      if (!await canLaunchUrl(uri)) {
-        if (!context.mounted) {
-          return;
-        }
-        _showError(context, 'Could not open resource');
-        return;
-      }
-
       final launched = await launchUrl(
         uri,
         mode: LaunchMode.externalApplication,

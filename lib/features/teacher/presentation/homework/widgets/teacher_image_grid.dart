@@ -14,8 +14,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class TeacherImageGrid extends StatelessWidget {
   final List<TeacherResourceEntity> resources;
   final ValueChanged<TeacherResourceEntity>? onTap;
+  final bool showActions;
 
-  const TeacherImageGrid({super.key, required this.resources, this.onTap});
+  const TeacherImageGrid({
+    super.key,
+    required this.resources,
+    this.onTap,
+    this.showActions = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,11 @@ class TeacherImageGrid extends StatelessWidget {
         itemCount: resources.length,
         separatorBuilder: (_, __) => SizedBox(width: AppSpacing.spacingMd.w),
         itemBuilder: (_, i) =>
-            TeacherImageCell(resource: resources[i], onTap: onTap),
+            TeacherImageCell(
+              resource: resources[i],
+              onTap: onTap,
+              showActions: showActions,
+            ),
       ),
     );
   }
@@ -36,8 +46,14 @@ class TeacherImageGrid extends StatelessWidget {
 class TeacherImageCell extends StatelessWidget {
   final TeacherResourceEntity resource;
   final ValueChanged<TeacherResourceEntity>? onTap;
+  final bool showActions;
 
-  const TeacherImageCell({super.key, required this.resource, this.onTap});
+  const TeacherImageCell({
+    super.key,
+    required this.resource,
+    this.onTap,
+    this.showActions = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -108,11 +124,12 @@ class TeacherImageCell extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Icon(
-                      Icons.more_vert_rounded,
-                      size: 16.sp,
-                      color: cs.onSurfaceVariant,
-                    ),
+                    if (showActions)
+                      Icon(
+                        Icons.more_vert_rounded,
+                        size: 16.sp,
+                        color: cs.onSurfaceVariant,
+                      ),
                   ],
                 ),
               ),

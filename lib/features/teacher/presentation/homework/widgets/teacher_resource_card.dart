@@ -19,6 +19,7 @@ class TeacherResourceCard extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
+  final bool showActions;
 
   const TeacherResourceCard({
     super.key,
@@ -26,6 +27,7 @@ class TeacherResourceCard extends StatelessWidget {
     this.onTap,
     this.onEdit,
     this.onDelete,
+    this.showActions = true,
   });
 
   @override
@@ -94,23 +96,24 @@ class TeacherResourceCard extends StatelessWidget {
                 ),
 
                 // ── Overflow menu ⋮ ───────────────────────────────────────
-                AppOverflowMenu(
-                  iconSize: 16,
-                  items: [
-                    AppOverflowMenuItem(
-                      label: 'Edit',
-                      icon: Icons.mode_edit_outline_rounded,
-                      backgroundColor: AppColors.brandPrimary500,
-                      onTap: onEdit ?? () {},
-                    ),
-                    AppOverflowMenuItem(
-                      label: 'Delete',
-                      icon: Icons.delete_outline_rounded,
-                      backgroundColor: AppColors.brandSecondary500,
-                      onTap: onDelete ?? () {},
-                    ),
-                  ],
-                ),
+                if (showActions)
+                  AppOverflowMenu(
+                    iconSize: 16,
+                    items: [
+                      AppOverflowMenuItem(
+                        label: 'Edit',
+                        icon: Icons.mode_edit_outline_rounded,
+                        backgroundColor: AppColors.brandPrimary500,
+                        onTap: onEdit ?? () {},
+                      ),
+                      AppOverflowMenuItem(
+                        label: 'Delete',
+                        icon: Icons.delete_outline_rounded,
+                        backgroundColor: AppColors.brandSecondary500,
+                        onTap: onDelete ?? () {},
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),

@@ -3,12 +3,10 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
-import 'package:elara/features/teacher/presentation/homework/cubits/teacher_resources_cubit.dart';
+import 'package:elara/features/student/presentation/resources/cubits/student_resources_cubit.dart';
 import 'package:elara/features/teacher/presentation/homework/route_args/teacher_module_route_args.dart';
-import 'package:elara/features/teacher/presentation/homework/widgets/teacher_add_resource_dialog.dart';
 import 'package:elara/features/teacher/presentation/homework/widgets/teacher_image_grid.dart';
 import 'package:elara/features/teacher/presentation/homework/widgets/teacher_resource_card.dart';
-import 'package:elara/shared/widgets/app_dialog.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -26,18 +24,15 @@ const _kSectionOrder = [
   TeacherResourceType.document,
 ];
 
-/// Teacher resources management screen for a specific module.
-///
-/// Provides its own [TeacherResourcesCubit] and loads on mount.
-/// Pushed via [AppRoutes.teacherModuleResources].
-class TeacherResourcesScreen extends StatelessWidget {
+/// Student resources viewer screen for a specific module.
+class StudentResourcesScreen extends StatelessWidget {
   final String moduleId;
   final String moduleTitle;
   final String moduleLabel;
   final String groupId;
   final String subject;
 
-  const TeacherResourcesScreen({
+  const StudentResourcesScreen({
     super.key,
     required this.moduleId,
     required this.moduleTitle,
@@ -46,8 +41,8 @@ class TeacherResourcesScreen extends StatelessWidget {
     required this.subject,
   });
 
-  factory TeacherResourcesScreen.fromArgs(TeacherModuleRouteArgs args) =>
-      TeacherResourcesScreen(
+  factory StudentResourcesScreen.fromArgs(TeacherModuleRouteArgs args) =>
+      StudentResourcesScreen(
         moduleId: args.moduleId,
         moduleTitle: args.moduleTitle,
         moduleLabel: args.moduleLabel,
@@ -57,20 +52,20 @@ class TeacherResourcesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TeacherResourcesCubit>(
+    return BlocProvider<StudentResourcesCubit>(
       create: (_) =>
-          getIt<TeacherResourcesCubit>()
+          getIt<StudentResourcesCubit>()
             ..load(moduleId: moduleId, groupId: groupId),
-      child: BlocBuilder<TeacherResourcesCubit, TeacherResourcesState>(
+      child: BlocBuilder<StudentResourcesCubit, StudentResourcesState>(
         builder: (context, state) => switch (state) {
-          TeacherResourcesInitial() || TeacherResourcesLoading() => Scaffold(
+          StudentResourcesInitial() || StudentResourcesLoading() => Scaffold(
             appBar: AppGlassHeader(
               title: 'Resources',
               subtitle: '$subject • $moduleTitle',
             ),
             body: const Center(child: CircularProgressIndicator()),
           ),
-          TeacherResourcesError(:final message) => Scaffold(
+          StudentResourcesError(:final message) => Scaffold(
             appBar: AppGlassHeader(
               title: 'Resources',
               subtitle: '$subject • $moduleTitle',
@@ -91,7 +86,7 @@ class TeacherResourcesScreen extends StatelessWidget {
                     SizedBox(height: AppSpacing.spacingXl.h),
                     TextButton(
                       onPressed: () => context
-                          .read<TeacherResourcesCubit>()
+                          .read<StudentResourcesCubit>()
                           .load(moduleId: moduleId, groupId: groupId),
                       child: const Text('Try again'),
                     ),
@@ -100,7 +95,7 @@ class TeacherResourcesScreen extends StatelessWidget {
               ),
             ),
           ),
-          TeacherResourcesLoaded(:final resources) => _ResourcesView(
+          StudentResourcesLoaded(:final resources) => _ResourcesView(
             resources: resources,
             moduleTitle: moduleTitle,
             subject: subject,
@@ -217,32 +212,13 @@ class _ResourcesViewState extends State<_ResourcesView> {
     );
   }
 
-  void _showAddDialog(BuildContext context, TeacherResourceType type) {
-    AppDialog.show(
-      context: context,
-      builder: (_) => AppDialog(
-        title: 'Add Resource',
-        content: TeacherAddResourceDialogContent(
-          type: type,
-          onSubmit: (title, url, description) {
-            context.read<TeacherResourcesCubit>().addResource(
-                  moduleId: widget.moduleId,
-                  groupId: widget.groupId,
-                  title: title,
-                  filePath: url,
-                );
-          },
-        ),
-      ),
-    );
-  }
-
   List<Widget> _buildSections(BuildContext context) {
     final filtered = _filtered;
     final widgets = <Widget>[];
 
     for (final type in _kSectionOrder) {
       final items = filtered.where((r) => r.type == type).toList();
+      if (items.isEmpty) continue; // Only show sections that have items in student view.
 
       widgets.add(SizedBox(height: AppSpacing.spacingXl.h));
       widgets.add(
@@ -250,7 +226,6 @@ class _ResourcesViewState extends State<_ResourcesView> {
           padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacingLg.w),
           child: AppSectionHeader(
             title: type.sectionTitle,
-            onAdd: () => _showAddDialog(context, type),
           ),
         ),
       );
@@ -263,6 +238,7 @@ class _ResourcesViewState extends State<_ResourcesView> {
             child: TeacherImageGrid(
               resources: items,
               onTap: (r) => _handleResourceTap(context, r),
+              showActions: false,
             ),
           ),
         );
@@ -270,16 +246,13 @@ class _ResourcesViewState extends State<_ResourcesView> {
         for (final resource in items) {
           widgets.add(
             Padding(
-              padding: EdgeInsets.only(
-                left: AppSpacing.spacingLg.w,
-                right: AppSpacing.spacingLg.w,
-                bottom: AppSpacing.spacingMd.h,
-              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.spacingLg.w,
+              ).copyWith(bottom: AppSpacing.spacingMd.h),
               child: TeacherResourceCard(
                 resource: resource,
                 onTap: () => _handleResourceTap(context, resource),
-                onEdit: () {},
-                onDelete: () {},
+                showActions: false,
               ),
             ),
           );

@@ -1,9 +1,9 @@
+import 'package:elara/features/student/data/homework/models/homework_problem_model.dart';
 import 'package:elara/features/student/domain/homework/entities/homework_entity.dart';
 
 /// Data model for the full homework assignment.
 ///
 /// Extends [HomeworkEntity] — no explicit entity-to-model mapping needed.
-/// Add [fromJson] when the backend is ready.
 class HomeworkModel extends HomeworkEntity {
   const HomeworkModel({
     required super.id,
@@ -13,16 +13,17 @@ class HomeworkModel extends HomeworkEntity {
     required super.problems,
   });
 
-  // ── REAL ──────────────────────────────────────────────────────────────────
-  // factory HomeworkModel.fromJson(Map<String, dynamic> json) {
-  //   return HomeworkModel(
-  //     id: json['id'] as String,
-  //     subject: json['subject'] as String,
-  //     moduleTitle: json['module_title'] as String,
-  //     totalXp: json['total_xp'] as int,
-  //     problems: (json['problems'] as List)
-  //         .map((p) => HomeworkProblemModel.fromJson(p as Map<String, dynamic>))
-  //         .toList(),
-  //   );
-  // }
+  factory HomeworkModel.fromApiJson(Map<String, dynamic> json, String moduleId) {
+    final data = json['data'] as Map<String, dynamic>? ?? {};
+    final problemsList = data['problems'] as List<dynamic>? ?? [];
+    return HomeworkModel(
+      id: moduleId,
+      subject: '',
+      moduleTitle: data['moduleName'] as String? ?? '',
+      totalXp: data['totalScoreXp'] as int? ?? 100,
+      problems: problemsList
+          .map((p) => HomeworkProblemModel.fromApiJson(p as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 }

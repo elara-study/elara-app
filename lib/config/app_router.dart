@@ -38,6 +38,7 @@ import 'package:elara/features/student/presentation/group/views/student_group_pa
 import 'package:elara/features/student/domain/dashboard/entities/student_group_entity.dart';
 import 'package:elara/features/student/presentation/homework/homework_route_args.dart';
 import 'package:elara/features/student/presentation/homework/views/homework_screen.dart';
+import 'package:elara/features/student/presentation/resources/views/resources_screen.dart';
 import 'package:elara/features/student/presentation/profile/cubits/student_settings_cubit.dart';
 import 'package:elara/features/student/presentation/profile/views/student_settings_screen.dart';
 import 'package:elara/features/student/presentation/quiz/quiz_route_args.dart';
@@ -90,6 +91,7 @@ abstract final class AppRoutes {
   static const String attendanceHistory = '/teacher/attendance-history';
   static const String teacherModuleHomework = '/teacher/module-homework';
   static const String teacherModuleResources = '/teacher/module-resources';
+  static const String studentModuleResources = '/student/module-resources';
   static const String teacherStudentSubmission = '/teacher/student-submission';
   static const String parentDashboard = '/parent';
   static const String parentChildProfile = '/parent/child-profile';
@@ -313,6 +315,18 @@ GoRouter createAppRouter(AuthCubit authCubit) {
           final args = state.extra;
           if (args is TeacherModuleRouteArgs) {
             return TeacherResourcesScreen.fromArgs(args);
+          }
+          return const Scaffold(
+            body: Center(child: Text('Module data not found')),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.studentModuleResources,
+        builder: (context, state) {
+          final args = state.extra;
+          if (args is TeacherModuleRouteArgs) {
+            return StudentResourcesScreen.fromArgs(args);
           }
           return const Scaffold(
             body: Center(child: Text('Module data not found')),

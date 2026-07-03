@@ -1,4 +1,6 @@
+import 'package:elara/features/student/domain/homework/entities/homework_problem_status.dart';
 import 'package:elara/features/student/domain/homework/usecases/get_homework_use_case.dart';
+import 'package:elara/features/student/domain/homework/usecases/submit_homework_answer_use_case.dart';
 import 'package:elara/features/student/presentation/homework/cubits/homework_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,8 +14,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// Call [submitProblem] when the student taps "Submit Answer".
 class HomeworkCubit extends Cubit<HomeworkState> {
   final GetHomeworkUseCase _getHomework;
+  final SubmitHomeworkAnswerUseCase _submitHomeworkAnswer;
 
-  HomeworkCubit(this._getHomework) : super(const HomeworkInitial());
+  String? _groupId;
+  String? _moduleId;
+
+  HomeworkCubit(
+    this._getHomework,
+    this._submitHomeworkAnswer,
+  ) : super(const HomeworkInitial());
 
   /// Fetches the homework assignment. Safe to call again as a manual refresh.
   Future<void> loadHomework({
@@ -21,6 +30,8 @@ class HomeworkCubit extends Cubit<HomeworkState> {
     String? groupId,
     String? moduleId,
   }) async {
+    _groupId = groupId;
+    _moduleId = moduleId;
     emit(const HomeworkLoading());
     try {
       final homework = await _getHomework(
@@ -45,14 +56,36 @@ class HomeworkCubit extends Cubit<HomeworkState> {
 
   /// Submits the current answer for [problemId], transitioning its status to
   /// [HomeworkProblemStatus.pending]. No-op if data is not yet loaded.
-  ///
-  /// When the backend is ready, replace the local-only state update below
-  /// with a use case that POSTs to the server, then emits the result.
-  void submitProblem(String problemId) {
+  Future<void> submitProblem(String problemId) async {
     final current = state;
     if (current is HomeworkLoaded) {
+      final problem = current.homework.problems.firstWhere((p) => p.id == problemId);
+      final answerText = problem.answerText;
+      if (answerText.trim().isEmpty) return;
+
+      // Optimistically update state to pending/submitted
       emit(current.withSubmittedProblem(problemId));
-      // TODO: call SubmitHomeworkAnswerUseCase(problemId, answer) when backend ready.
+
+      try {
+        await _submitHomeworkAnswer(
+          moduleId: _moduleId ?? '',
+          problemId: problemId,
+          groupId: _groupId ?? '',
+          answer: answerText,
+        );
+      } catch (e) {
+        // Revert status to active if failed
+        final updatedCurrent = state;
+        if (updatedCurrent is HomeworkLoaded) {
+          final reverted = problem.copyWith(
+            status: HomeworkProblemStatus.active,
+            submittedAnswer: null,
+          );
+          emit(HomeworkLoaded(
+            updatedCurrent.homework.withUpdatedProblem(reverted),
+          ));
+        }
+      }
     }
   }
 }
