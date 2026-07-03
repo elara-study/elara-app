@@ -7,6 +7,7 @@ import 'package:elara/features/student/presentation/resources/cubits/student_res
 import 'package:elara/features/teacher/presentation/homework/route_args/teacher_module_route_args.dart';
 import 'package:elara/features/teacher/presentation/homework/widgets/teacher_image_grid.dart';
 import 'package:elara/features/teacher/presentation/homework/widgets/teacher_resource_card.dart';
+import 'package:elara/features/student/presentation/rewards/cubits/rewards_cubit.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -148,6 +149,7 @@ class _ResourcesViewState extends State<_ResourcesView> {
   }
 
   void _handleResourceTap(BuildContext context, TeacherResourceEntity resource) async {
+    getIt<RewardsCubit>().completeLesson();
     if (resource.type == TeacherResourceType.image) {
       _showImageFullScreen(context, resource.url);
       return;

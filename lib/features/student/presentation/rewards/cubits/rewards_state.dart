@@ -1,3 +1,4 @@
+import 'package:elara/features/student/domain/dashboard/entities/daily_goal_entity.dart';
 import 'package:elara/features/student/domain/rewards/entities/badge_entity.dart';
 import 'package:elara/features/student/domain/rewards/entities/leaderboard_entry_entity.dart';
 import 'package:elara/features/student/domain/rewards/entities/rewards_profile_entity.dart';
@@ -22,15 +23,17 @@ class RewardsLoaded extends RewardsState {
   final RewardsProfileEntity profile;
   final List<BadgeEntity> badges;
   final List<LeaderboardEntryEntity> leaderboard;
+  final List<DailyGoalEntity> dailyGoals;
 
   const RewardsLoaded({
     required this.profile,
     required this.badges,
     required this.leaderboard,
+    required this.dailyGoals,
   });
 
   @override
-  List<Object?> get props => [profile, badges, leaderboard];
+  List<Object?> get props => [profile, badges, leaderboard, dailyGoals];
 }
 
 class RewardsError extends RewardsState {
