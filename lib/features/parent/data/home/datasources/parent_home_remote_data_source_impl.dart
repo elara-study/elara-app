@@ -6,7 +6,6 @@ import 'package:elara/features/parent/data/home/datasources/parent_home_remote_d
 import 'package:elara/features/parent/data/home/models/parent_child_progress_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_children_dashboard_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_home_overview_model.dart';
-import 'package:elara/features/parent/data/home/models/parent_pending_request_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_subject_group_progress_model.dart';
 
 /// Parent home API — Home `205:2146`, Children `205:2260`.
@@ -14,15 +13,6 @@ class ParentHomeRemoteDataSourceImpl implements ParentHomeRemoteDataSource {
   final DioClient _dioClient;
 
   ParentHomeRemoteDataSourceImpl(this._dioClient);
-
-  static const List<ParentPendingRequestModel> _kPending = [
-    ParentPendingRequestModel(
-      id: 'pr-1',
-      displayName: 'Tyler, The Creator',
-      gradeLabel: 'Grade 7',
-      requestedTimeLabel: 'Requested 2 hours ago',
-    ),
-  ];
 
   static const List<ParentChildProgressModel> _kChildren = [
     ParentChildProgressModel(
@@ -95,10 +85,97 @@ class ParentHomeRemoteDataSourceImpl implements ParentHomeRemoteDataSource {
 
   @override
   Future<ParentChildrenDashboardModel> fetchChildrenDashboard() async {
-    await Future<void>.delayed(const Duration(milliseconds: 280));
-    return const ParentChildrenDashboardModel(
-      pendingRequests: _kPending,
-      children: _kChildren,
-    );
+    try {
+      final response = await _dioClient.dio.get(ApiConstants.parentChildrenDashboard);
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+
+      final status = body['status'] as String?;
+      if (status != 'Success') {
+        throw ServerException(body['message'] as String? ?? 'Failed to load children dashboard');
+      }
+
+      final data = body['data'] as Map<String, dynamic>?;
+      if (data == null) {
+        throw ServerException('No data returned from server');
+      }
+
+      return ParentChildrenDashboardModel.fromJson(data);
+    } on DioException catch (e) {
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<void> linkStudent(String studentUsername) async {
+    try {
+      final response = await _dioClient.dio.post(
+        ApiConstants.parentLinkStudent,
+        data: {'student_username': studentUsername},
+      );
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+      final status = body['status'] as String?;
+      if (status != 'Success') {
+        throw ServerException(body['message'] as String? ?? 'Failed to send link request');
+      }
+    } on DioException catch (e) {
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<void> respondToRequest(String requestId, bool accept) async {
+    try {
+      final response = await _dioClient.dio.put(
+        ApiConstants.parentRespondToRequest(requestId),
+        data: {'accept': accept},
+      );
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+      final status = body['status'] as String?;
+      if (status != 'Success') {
+        throw ServerException(body['message'] as String? ?? 'Failed to respond to request');
+      }
+    } on DioException catch (e) {
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<void> unlinkChild(String childId) async {
+    try {
+      final response = await _dioClient.dio.delete(
+        ApiConstants.parentUnlinkChild(childId),
+      );
+      final body = response.data;
+      if (body == null || body is! Map<String, dynamic>) {
+        throw ServerException('Invalid server response format');
+      }
+      final status = body['status'] as String?;
+      if (status != 'Success') {
+        throw ServerException(body['message'] as String? ?? 'Failed to unlink child');
+      }
+    } on DioException catch (e) {
+      throw ServerException(e.message ?? 'Server connection error');
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(e.toString());
+    }
   }
 }

@@ -89,7 +89,10 @@ class ParentChildrenScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ParentChildrenPageHeader(
-                    onAddPressed: () => showParentAddChildSheet(context),
+                    onAddPressed: () => showParentAddChildSheet(
+                      context,
+                      context.read<ParentChildrenCubit>(),
+                    ),
                   ),
                   SizedBox(height: AppSpacing.spacing2xl.h),
                   if (d.pendingRequests.isNotEmpty) ...[
@@ -98,8 +101,12 @@ class ParentChildrenScreen extends StatelessWidget {
                     for (final p in d.pendingRequests) ...[
                       ParentPendingRequestCard(
                         request: p,
-                        onDecline: () {},
-                        onAccept: () {},
+                        onDecline: () => context
+                            .read<ParentChildrenCubit>()
+                            .respondToPendingRequest(p.id, false),
+                        onAccept: () => context
+                            .read<ParentChildrenCubit>()
+                            .respondToPendingRequest(p.id, true),
                       ),
                       SizedBox(height: AppSpacing.spacingMd.h),
                     ],
@@ -111,11 +118,15 @@ class ParentChildrenScreen extends StatelessWidget {
                     for (var i = 0; i < d.children.length; i++) ...[
                       ParentChildDashboardCard(
                         child: d.children[i],
-                        onOpenDetail: () {
-                          AppNavigation.pushNamed(context, 
+                        onOpenDetail: () async {
+                          final unlinked = await AppNavigation.pushNamed(
+                            context,
                             AppRoutes.parentChildProfile,
                             arguments: d.children[i],
                           );
+                          if (unlinked == true && context.mounted) {
+                            context.read<ParentChildrenCubit>().loadChildren();
+                          }
                         },
                       ),
                       if (i < d.children.length - 1)

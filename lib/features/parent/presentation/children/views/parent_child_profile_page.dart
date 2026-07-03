@@ -50,6 +50,7 @@ class ParentChildProfilePage extends StatelessWidget {
               padding: EdgeInsets.only(right: AppSpacing.spacingSm.w),
               child: ParentChildProfileOverflowMenu(
                 childName: child.displayName,
+                childId: child.id,
               ),
             ),
           ],

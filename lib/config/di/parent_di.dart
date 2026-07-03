@@ -11,6 +11,9 @@ import 'package:elara/features/parent/data/reports/repositories/parent_reports_r
 import 'package:elara/features/parent/domain/home/repositories/parent_home_repository.dart';
 import 'package:elara/features/parent/domain/home/usecases/get_parent_children_dashboard_use_case.dart';
 import 'package:elara/features/parent/domain/home/usecases/get_parent_home_use_case.dart';
+import 'package:elara/features/parent/domain/home/usecases/link_student_use_case.dart';
+import 'package:elara/features/parent/domain/home/usecases/respond_to_request_use_case.dart';
+import 'package:elara/features/parent/domain/children/usecases/unlink_child_use_case.dart';
 import 'package:elara/features/parent/domain/profile/repositories/parent_profile_repository.dart';
 import 'package:elara/features/parent/domain/profile/usecases/get_parent_profile_use_case.dart';
 import 'package:elara/features/parent/domain/reports/repositories/parent_reports_repository.dart';
@@ -47,6 +50,15 @@ void setupParentDI() {
   getIt.registerLazySingleton(
     () => GetParentChildrenDashboardUseCase(getIt<ParentHomeRepository>()),
   );
+  getIt.registerLazySingleton(
+    () => LinkStudentUseCase(getIt<ParentHomeRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => RespondToRequestUseCase(getIt<ParentHomeRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => UnlinkChildUseCase(getIt<ParentHomeRepository>()),
+  );
 
   getIt.registerLazySingleton<ParentReportsRemoteDataSource>(
     () => const ParentReportsRemoteDataSourceImpl(),
@@ -75,6 +87,8 @@ void setupParentDI() {
   getIt.registerFactory(
     () => ParentChildrenCubit(
       getChildrenDashboard: getIt<GetParentChildrenDashboardUseCase>(),
+      linkStudent: getIt<LinkStudentUseCase>(),
+      respondToRequest: getIt<RespondToRequestUseCase>(),
     ),
   );
   getIt.registerFactory(
@@ -96,6 +110,7 @@ void setupParentDI() {
   getIt.registerFactory<ParentChildProfileCubit>(
     () => ParentChildProfileCubit(
       getProfile: getIt<GetParentChildProfileUseCase>(),
+      unlinkChildUseCase: getIt<UnlinkChildUseCase>(),
     ),
   );
 

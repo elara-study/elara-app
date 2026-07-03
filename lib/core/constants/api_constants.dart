@@ -107,6 +107,12 @@ class ApiConstants {
 
   // Parent
   static const String parentDashboard = 'api/v1/parent/dashboard';
+  static const String parentChildrenDashboard =
+      'api/v1/parent/children/dashboard';
+  static const String parentLinkStudent = 'api/v1/parent/link-student';
+  static String parentRespondToRequest(String id) =>
+      'api/v1/parent/requests/$id';
+  static String parentUnlinkChild(String id) => 'api/v1/parent/children/$id';
 
   // ── Quiz ──────────────────────────────────────────────────────────────────
 

@@ -54,4 +54,43 @@ class ParentHomeRepositoryImpl implements ParentHomeRepository {
       throw ServerFailure(e.toString());
     }
   }
+
+  @override
+  Future<void> linkStudent(String studentUsername) async {
+    try {
+      await _remote.linkStudent(studentUsername);
+    } on ServerException catch (e) {
+      throw ServerFailure(e.message);
+    } on DioException catch (e) {
+      throw ServerFailure.fromDioException(e);
+    } catch (e) {
+      throw ServerFailure(e.toString());
+    }
+  }
+
+  @override
+  Future<void> respondToRequest(String requestId, bool accept) async {
+    try {
+      await _remote.respondToRequest(requestId, accept);
+    } on ServerException catch (e) {
+      throw ServerFailure(e.message);
+    } on DioException catch (e) {
+      throw ServerFailure.fromDioException(e);
+    } catch (e) {
+      throw ServerFailure(e.toString());
+    }
+  }
+
+  @override
+  Future<void> unlinkChild(String childId) async {
+    try {
+      await _remote.unlinkChild(childId);
+    } on ServerException catch (e) {
+      throw ServerFailure(e.message);
+    } on DioException catch (e) {
+      throw ServerFailure.fromDioException(e);
+    } catch (e) {
+      throw ServerFailure(e.toString());
+    }
+  }
 }

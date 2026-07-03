@@ -13,6 +13,15 @@ class ParentPendingRequestModel {
   final String gradeLabel;
   final String requestedTimeLabel;
 
+  factory ParentPendingRequestModel.fromJson(Map<String, dynamic> json) {
+    return ParentPendingRequestModel(
+      id: (json['id'] ?? '').toString(),
+      displayName: json['student_name'] as String? ?? json['displayName'] as String? ?? '',
+      gradeLabel: json['grade'] as String? ?? json['gradeLabel'] as String? ?? '',
+      requestedTimeLabel: json['requested_at'] as String? ?? json['requestedTimeLabel'] as String? ?? '',
+    );
+  }
+
   ParentPendingRequestEntity toEntity() => ParentPendingRequestEntity(
     id: id,
     displayName: displayName,
