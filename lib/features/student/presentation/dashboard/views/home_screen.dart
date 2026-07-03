@@ -1,3 +1,4 @@
+import 'package:elara/config/app_router.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_radius.dart';
@@ -9,6 +10,8 @@ import 'package:elara/features/student/presentation/dashboard/cubits/home/studen
 import 'package:elara/features/student/presentation/dashboard/cubits/home/student_home_state.dart';
 import 'package:elara/features/student/presentation/dashboard/widgets/home/continue_learning_card.dart';
 import 'package:elara/features/student/presentation/dashboard/widgets/home/daily_goal_item.dart';
+import 'package:elara/features/student/presentation/rewards/cubits/rewards_cubit.dart';
+import 'package:elara/features/student/presentation/rewards/cubits/rewards_state.dart';
 import 'package:elara/shared/widgets/app_action_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
@@ -19,54 +22,120 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/utils/ui_helpers.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with RouteAware {
+  RewardsState? _displayedRewardsState;
+  RewardsState? _pendingRewardsState;
+  bool _isRouteActive = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    _isRouteActive = false;
+  }
+
+  @override
+  void didPopNext() {
+    _isRouteActive = true;
+    if (_pendingRewardsState != null) {
+      setState(() {
+        _displayedRewardsState = _pendingRewardsState;
+        _pendingRewardsState = null;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<StudentHomeCubit, StudentHomeState>(
-      builder: (context, state) {
-        if (state is StudentHomeLoading || state is StudentHomeInitial) {
-          return Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            body: const Center(child: CircularProgressIndicator()),
-          );
+    return BlocListener<RewardsCubit, RewardsState>(
+      listener: (context, rewardsState) {
+        if (_isRouteActive) {
+          setState(() {
+            _displayedRewardsState = rewardsState;
+            _pendingRewardsState = null;
+          });
+        } else {
+          _pendingRewardsState = rewardsState;
         }
-        if (state is StudentHomeError) {
-          return Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            body: _ErrorView(
-              message: state.message,
-              onRetry: () => context.read<StudentHomeCubit>().loadHome(),
-            ),
-          );
-        }
-        if (state is StudentHomeLoaded) {
-          return Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            extendBodyBehindAppBar: true,
-            appBar: AppGlassHeader(
-              title: 'elara',
-              actions: [
-                _HeaderChip(
-                  iconAsset: 'assets/icons/fire_icon.svg',
-                  label: '${state.profile.notificationCount}',
-                  color: AppColors.brandSecondary500,
-                ),
-                SizedBox(width: AppSpacing.spacingSm.w),
-                _HeaderChip(
-                  iconAsset: 'assets/icons/rewards_icon.svg',
-                  label: '${state.profile.points}',
-                  color: AppColors.brandPrimary500,
-                ),
-                SizedBox(width: AppSpacing.spacingLg.w),
-              ],
-            ),
-            body: _HomeContent(state: state),
-          );
-        }
-        return const SizedBox.shrink();
       },
+      child: BlocBuilder<RewardsCubit, RewardsState>(
+        builder: (context, rawRewardsState) {
+          _displayedRewardsState ??= rawRewardsState;
+          final currentRewards = _displayedRewardsState;
+
+          return BlocBuilder<StudentHomeCubit, StudentHomeState>(
+            builder: (context, state) {
+              if (state is StudentHomeLoading || state is StudentHomeInitial) {
+                return Scaffold(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  body: const Center(child: CircularProgressIndicator()),
+                );
+              }
+              if (state is StudentHomeError) {
+                return Scaffold(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  body: _ErrorView(
+                    message: state.message,
+                    onRetry: () => context.read<StudentHomeCubit>().loadHome(),
+                  ),
+                );
+              }
+              if (state is StudentHomeLoaded) {
+                final int streakDays = currentRewards is RewardsLoaded
+                    ? currentRewards.profile.streakDays
+                    : 7;
+                final int totalXp = currentRewards is RewardsLoaded
+                    ? currentRewards.profile.totalXp
+                    : state.profile.points;
+
+                return Scaffold(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  extendBodyBehindAppBar: true,
+                  appBar: AppGlassHeader(
+                    title: 'elara',
+                    actions: [
+                      _HeaderChip(
+                        iconAsset: 'assets/icons/fire_icon.svg',
+                        value: streakDays,
+                        color: AppColors.brandSecondary500,
+                      ),
+                      SizedBox(width: AppSpacing.spacingSm.w),
+                      _HeaderChip(
+                        iconAsset: 'assets/icons/rewards_icon.svg',
+                        value: totalXp,
+                        color: AppColors.brandPrimary500,
+                      ),
+                      SizedBox(width: AppSpacing.spacingLg.w),
+                    ],
+                  ),
+                  body: _HomeContent(
+                    state: state,
+                    rewardsState: currentRewards,
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -75,13 +144,21 @@ class HomeScreen extends StatelessWidget {
 
 class _HomeContent extends StatelessWidget {
   final StudentHomeLoaded state;
+  final RewardsState? rewardsState;
 
-  const _HomeContent({required this.state});
+  const _HomeContent({required this.state, this.rewardsState});
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final previewGroups = state.groups.take(2).toList();
+
+    final hasRewards = rewardsState is RewardsLoaded;
+    final dailyGoals = hasRewards
+        ? (rewardsState as RewardsLoaded).dailyGoals
+        : state.dailyGoals;
+    final completedGoalsCount =
+        dailyGoals.where((g) => g.isCompleted).length;
 
     return SingleChildScrollView(
       padding: EdgeInsets.only(
@@ -123,7 +200,7 @@ class _HomeContent extends StatelessWidget {
           AppSectionHeader(
             title: 'Daily Goals',
             seeAllLabel:
-                '${state.completedGoalsCount}/${state.dailyGoals.length} completed',
+                '$completedGoalsCount/${dailyGoals.length} completed',
           ),
 
           SizedBox(height: AppSpacing.spacingLg.h),
@@ -145,10 +222,9 @@ class _HomeContent extends StatelessWidget {
             ),
             child: Column(
               children: [
-                for (int i = 0; i < state.dailyGoals.length; i++) ...[
+                for (int i = 0; i < dailyGoals.length; i++) ...[
                   DailyGoalItem(
-                    goal: state.dailyGoals[i],
-                    progressPercent: _goalProgress(i),
+                    goal: dailyGoals[i],
                   ),
                 ],
               ],
@@ -205,13 +281,6 @@ class _HomeContent extends StatelessWidget {
         return Icons.groups_outlined;
     }
   }
-
-  /// Mock per-goal progress until the API provides real values.
-  /// TODO: replace with entity.progressPercent when backend adds it.
-  double _goalProgress(int index) {
-    const values = [0.75, 1.0, 0.40];
-    return values[index % values.length];
-  }
 }
 
 // ── Error view ────────────────────────────────────────────────────────────────
@@ -257,16 +326,58 @@ class _ErrorView extends StatelessWidget {
   }
 }
 
-class _HeaderChip extends StatelessWidget {
+class _HeaderChip extends StatefulWidget {
   final String iconAsset;
-  final String label;
+  final int value;
   final Color color;
 
   const _HeaderChip({
     required this.iconAsset,
-    required this.label,
+    required this.value,
     required this.color,
   });
+
+  @override
+  State<_HeaderChip> createState() => _HeaderChipState();
+}
+
+class _HeaderChipState extends State<_HeaderChip> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<int> _animation;
+  int _oldValue = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _oldValue = widget.value;
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _animation = IntTween(begin: _oldValue, end: widget.value).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+    _controller.forward();
+  }
+
+  @override
+  void didUpdateWidget(_HeaderChip oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      _oldValue = oldWidget.value;
+      _animation = IntTween(begin: _oldValue, end: widget.value).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+      );
+      _controller.reset();
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -276,20 +387,28 @@ class _HeaderChip extends StatelessWidget {
         vertical: AppSpacing.spacingSm.h,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: widget.color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadius.radiusFull),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
-            iconAsset,
+            widget.iconAsset,
             width: 10.w,
             height: 13.w,
-            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(widget.color, BlendMode.srcIn),
           ),
           SizedBox(width: AppSpacing.spacingXs.w),
-          Text(label, style: AppTypography.labelRegular(color: color)),
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return Text(
+                '${_animation.value}',
+                style: AppTypography.labelRegular(color: widget.color),
+              );
+            },
+          ),
         ],
       ),
     );

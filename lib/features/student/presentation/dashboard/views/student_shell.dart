@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/features/student/domain/rewards/entities/badge_entity.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/home/student_home_cubit.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/learn/student_learn_cubit.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/tab/student_tab_cubit.dart';
@@ -8,6 +10,7 @@ import 'package:elara/features/student/presentation/profile/cubits/student_profi
 import 'package:elara/features/student/presentation/dashboard/views/home_screen.dart';
 import 'package:elara/features/student/presentation/dashboard/views/learn_screen.dart';
 import 'package:elara/features/student/presentation/rewards/cubits/rewards_cubit.dart';
+import 'package:elara/features/student/presentation/rewards/widgets/badge_celebration_overlay.dart';
 import 'package:elara/features/student/presentation/profile/views/student_profile_screen.dart';
 import 'package:elara/features/student/presentation/rewards/views/rewards_screen.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
@@ -22,8 +25,17 @@ import 'package:elara/core/theme/app_spacing.dart';
 /// Provides [StudentTabCubit], [StudentHomeCubit] and [StudentLearnCubit]
 /// scoped to this shell. Any descendant can call
 /// `context.read<StudentTabCubit>().goToLearn()` to switch tabs.
-class StudentShell extends StatelessWidget {
+class StudentShell extends StatefulWidget {
   const StudentShell({super.key});
+
+  @override
+  State<StudentShell> createState() => _StudentShellState();
+}
+
+class _StudentShellState extends State<StudentShell> {
+  StreamSubscription<BadgeEntity>? _badgeSubscription;
+  BadgeEntity? _celebratingBadge;
+  final List<BadgeEntity> _celebrationQueue = [];
 
   static const List<Widget> _pages = [
     HomeScreen(),
@@ -32,6 +44,26 @@ class StudentShell extends StatelessWidget {
     _ComingSoonPage(label: 'Alerts'),
     StudentProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen to badge unlocked events
+    _badgeSubscription = getIt<RewardsCubit>().badgeUnlockedStream.listen((badge) {
+      if (mounted) {
+        setState(() {
+          _celebrationQueue.add(badge);
+          _celebratingBadge ??= _celebrationQueue.first;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _badgeSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +88,6 @@ class StudentShell extends StatelessWidget {
           return Scaffold(
             extendBody: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            // body: IndexedStack(index: currentTab, children: _pages),
-            // bottomNavigationBar: AppBottomNavBar(
-            //   currentIndex: currentTab,
-            //   onTap: (i) => context.read<StudentTabCubit>().goToTab(i),
-            // ),
             body: Stack(
               children: [
                 IndexedStack(index: currentTab, children: _pages),
@@ -73,6 +100,22 @@ class StudentShell extends StatelessWidget {
                     onTap: (i) => context.read<StudentTabCubit>().goToTab(i),
                   ),
                 ),
+                if (_celebratingBadge != null)
+                  Positioned.fill(
+                    child: BadgeCelebrationOverlay(
+                      badge: _celebratingBadge!,
+                      onDismiss: () {
+                        setState(() {
+                          if (_celebrationQueue.isNotEmpty) {
+                            _celebrationQueue.removeAt(0);
+                          }
+                          _celebratingBadge = _celebrationQueue.isNotEmpty
+                              ? _celebrationQueue.first
+                              : null;
+                        });
+                      },
+                    ),
+                  ),
               ],
             ),
           );

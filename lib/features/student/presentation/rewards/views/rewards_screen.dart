@@ -157,24 +157,30 @@ class _AchievementsCard extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: AchievementStatCard(
-                value: fmt(profile.totalXp),
-                label: 'Total XP',
-                svgAsset: 'assets/icons/electric_icon.svg',
-                cardColor: AppColors.brandPrimary500,
-                iconBgColor: AppColors.brandPrimary200,
-                textColor: AppColors.brandPrimary100,
+              child: StaggeredSlideFadeIn(
+                index: 0,
+                child: AchievementStatCard(
+                  value: fmt(profile.totalXp),
+                  label: 'Total XP',
+                  svgAsset: 'assets/icons/electric_icon.svg',
+                  cardColor: AppColors.brandPrimary500,
+                  iconBgColor: AppColors.brandPrimary200,
+                  textColor: AppColors.brandPrimary100,
+                ),
               ),
             ),
             SizedBox(width: AppSpacing.spacingMd.w),
             Expanded(
-              child: AchievementStatCard(
-                value: '${profile.lessonsCompleted}',
-                label: 'Lessons',
-                svgAsset: 'assets/icons/book_icon.svg',
-                cardColor: AppColors.success500,
-                iconBgColor: AppColors.success200,
-                textColor: AppColors.success100,
+              child: StaggeredSlideFadeIn(
+                index: 1,
+                child: AchievementStatCard(
+                  value: '${profile.lessonsCompleted}',
+                  label: 'Lessons',
+                  svgAsset: 'assets/icons/book_icon.svg',
+                  cardColor: AppColors.success500,
+                  iconBgColor: AppColors.success200,
+                  textColor: AppColors.success100,
+                ),
               ),
             ),
           ],
@@ -186,24 +192,30 @@ class _AchievementsCard extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: AchievementStatCard(
-                value: '${profile.streakDays} days',
-                label: 'Streak',
-                svgAsset: 'assets/icons/fire_icon.svg',
-                cardColor: AppColors.brandSecondary500,
-                iconBgColor: AppColors.brandSecondary200,
-                textColor: AppColors.brandSecondary100,
+              child: StaggeredSlideFadeIn(
+                index: 2,
+                child: AchievementStatCard(
+                  value: '${profile.streakDays} days',
+                  label: 'Streak',
+                  svgAsset: 'assets/icons/fire_icon.svg',
+                  cardColor: AppColors.brandSecondary500,
+                  iconBgColor: AppColors.brandSecondary200,
+                  textColor: AppColors.brandSecondary100,
+                ),
               ),
             ),
             SizedBox(width: AppSpacing.spacingMd.w),
             Expanded(
-              child: AchievementStatCard(
-                value: profile.badgesLabel,
-                label: 'Badges',
-                svgAsset: 'assets/icons/rewards_icon_filled.svg',
-                cardColor: AppColors.brandAccent500,
-                iconBgColor: AppColors.brandAccent200,
-                textColor: AppColors.brandAccent100,
+              child: StaggeredSlideFadeIn(
+                index: 3,
+                child: AchievementStatCard(
+                  value: profile.badgesLabel,
+                  label: 'Badges',
+                  svgAsset: 'assets/icons/rewards_icon_filled.svg',
+                  cardColor: AppColors.brandAccent500,
+                  iconBgColor: AppColors.brandAccent200,
+                  textColor: AppColors.brandAccent100,
+                ),
               ),
             ),
           ],
@@ -231,10 +243,20 @@ class _BadgesGrid extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(child: BadgeCard(badge: badges[i])),
+              Expanded(
+                child: StaggeredSlideFadeIn(
+                  index: i + 4,
+                  child: BadgeCard(badge: badges[i]),
+                ),
+              ),
               if (right != null) ...[
                 SizedBox(width: AppSpacing.spacingMd.w),
-                Expanded(child: BadgeCard(badge: right)),
+                Expanded(
+                  child: StaggeredSlideFadeIn(
+                    index: i + 5,
+                    child: BadgeCard(badge: right),
+                  ),
+                ),
               ] else
                 const Expanded(child: SizedBox.shrink()),
             ],
@@ -262,10 +284,79 @@ class _LeaderboardList extends StatelessWidget {
     return Column(
       children: [
         for (int i = 0; i < entries.length; i++) ...[
-          LeaderboardEntryTile(entry: entries[i]),
+          StaggeredSlideFadeIn(
+            index: i + 4,
+            child: LeaderboardEntryTile(entry: entries[i]),
+          ),
           if (i < entries.length - 1) SizedBox(height: AppSpacing.spacingMd.h),
         ],
       ],
+    );
+  }
+}
+
+class StaggeredSlideFadeIn extends StatefulWidget {
+  final Widget child;
+  final int index;
+  final Duration delay;
+
+  const StaggeredSlideFadeIn({
+    super.key,
+    required this.child,
+    required this.index,
+    this.delay = const Duration(milliseconds: 80),
+  });
+
+  @override
+  State<StaggeredSlideFadeIn> createState() => _StaggeredSlideFadeInState();
+}
+
+class _StaggeredSlideFadeInState extends State<StaggeredSlideFadeIn>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.15),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutQuad),
+    );
+
+    Future.delayed(widget.delay * widget.index, () {
+      if (mounted) {
+        _controller.forward();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: widget.child,
+      ),
     );
   }
 }

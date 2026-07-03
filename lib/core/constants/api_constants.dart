@@ -75,6 +75,21 @@ class ApiConstants {
   static String studentLearnGroupAnnouncements(String groupId) =>
       'student/learn/groups/$groupId/announcements';
 
+  /// Student > Rewards — Summary (GET /api/v1/Rewards/summary).
+  static const String rewardsSummary = 'api/v1/Rewards/summary';
+
+  /// Student > Rewards — Badges (GET /api/v1/Rewards/badges).
+  static const String rewardsBadges = 'api/v1/Rewards/badges';
+
+  /// Student > Rewards — Leaderboard with pagination and period filter.
+  /// e.g. `rewardsLeaderboard(period: 'allTime', page: 1, pageSize: 10)`
+  static String rewardsLeaderboard({
+    String period = 'allTime',
+    int page = 1,
+    int pageSize = 10,
+  }) =>
+      'api/v1/Rewards/leaderboard?period=$period&page=$page&pageSize=$pageSize';
+
   /// Student > Rewards — Overview (GET /v1/student/rewards/overview).
   static const String studentRewardsOverview = 'v1/student/rewards/overview';
 

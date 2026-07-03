@@ -131,12 +131,15 @@ abstract final class AppRoutes {
   }
 }
 
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
 GoRouter createAppRouter(AuthCubit authCubit) {
   return GoRouter(
     navigatorKey: navigatorKey,
     initialLocation: AppRoutes.splash,
     refreshListenable: GoRouterRefreshStream(authCubit.stream),
     redirect: (context, state) => _authRedirect(authCubit.state, state),
+    observers: [routeObserver],
     routes: [
       GoRoute(path: AppRoutes.splash, builder: (_, _) => const SplashScreen()),
       GoRoute(

@@ -26,11 +26,14 @@ import 'package:elara/features/student/data/rewards/repositories/remote_student_
 import 'package:elara/features/student/domain/rewards/repositories/student_rewards_repository.dart';
 import 'package:elara/features/student/domain/rewards/usecases/get_student_rewards_leaderboard_usecase.dart';
 import 'package:elara/features/student/domain/rewards/usecases/get_student_rewards_overview_usecase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:elara/features/student/data/rewards/datasources/rewards_local_cache.dart';
 import 'package:elara/features/student/data/rewards/datasources/rewards_remote_data_source.dart';
 import 'package:elara/features/student/data/rewards/datasources/rewards_remote_data_source_impl.dart';
 import 'package:elara/features/student/data/rewards/repositories/rewards_repository_impl.dart';
 import 'package:elara/features/student/domain/rewards/repositories/rewards_repository.dart';
 import 'package:elara/features/student/domain/rewards/usecases/get_rewards_use_case.dart';
+import 'package:elara/features/student/domain/rewards/usecases/update_rewards_stats_use_case.dart';
 import 'package:elara/features/student/presentation/rewards/cubits/rewards_cubit.dart';
 import 'package:elara/features/student/data/profile/datasources/student_profile_remote_data_source.dart';
 import 'package:elara/features/student/data/profile/datasources/student_profile_remote_data_source_impl.dart';
@@ -105,21 +108,36 @@ void setupStudentDI() {
 
   // ── Rewards Gamification: Data Source ────────────────────────────────────
   getIt.registerLazySingleton<RewardsRemoteDataSource>(
-    () => RewardsRemoteDataSourceImpl(),
+    () => RewardsRemoteDataSourceImpl(getIt<DioClient>()),
+  );
+
+  getIt.registerLazySingleton<RewardsLocalCache>(
+    () => RewardsLocalCache(getIt<SharedPreferences>()),
   );
 
   // ── Rewards Gamification: Repository ────────────────────────────────────
   getIt.registerLazySingleton<RewardsRepository>(
-    () => RewardsRepositoryImpl(getIt<RewardsRemoteDataSource>()),
+    () => RewardsRepositoryImpl(
+      getIt<RewardsRemoteDataSource>(),
+      getIt<RewardsLocalCache>(),
+    ),
   );
 
   // ── Rewards Gamification: Use Case ───────────────────────────────────────
   getIt.registerLazySingleton(
     () => GetRewardsUseCase(getIt<RewardsRepository>()),
   );
+  getIt.registerLazySingleton(
+    () => UpdateRewardsStatsUseCase(getIt<RewardsRepository>()),
+  );
 
   // ── Rewards Gamification: Cubit ──────────────────────────────────────────
-  getIt.registerFactory(() => RewardsCubit(getIt<GetRewardsUseCase>()));
+  getIt.registerLazySingleton<RewardsCubit>(
+    () => RewardsCubit(
+      getIt<GetRewardsUseCase>(),
+      getIt<UpdateRewardsStatsUseCase>(),
+    ),
+  );
 
   // ── Student Profile tab ─────────────────────────────────────────────────
   getIt.registerLazySingleton<StudentProfileRemoteDataSource>(

@@ -27,6 +27,26 @@ class BadgeEntity extends Equatable {
     this.progressTotal = 0,
   });
 
+  BadgeEntity copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? iconKey,
+    bool? isUnlocked,
+    int? progressCurrent,
+    int? progressTotal,
+  }) {
+    return BadgeEntity(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      iconKey: iconKey ?? this.iconKey,
+      isUnlocked: isUnlocked ?? this.isUnlocked,
+      progressCurrent: progressCurrent ?? this.progressCurrent,
+      progressTotal: progressTotal ?? this.progressTotal,
+    );
+  }
+
   /// Progress fraction [0.0 – 1.0] — safe to use directly in a LinearProgressIndicator.
   double get progressPercent => progressTotal > 0
       ? (progressCurrent / progressTotal).clamp(0.0, 1.0)
