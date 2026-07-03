@@ -7,6 +7,8 @@ class DailyGoalModel extends DailyGoalEntity {
     required super.iconKey,
     required super.xpReward,
     required super.isCompleted,
+    super.progressCurrent = 0,
+    super.progressTotal = 1,
   });
 
   factory DailyGoalModel.fromJson(Map<String, dynamic> json) {
@@ -16,6 +18,8 @@ class DailyGoalModel extends DailyGoalEntity {
       iconKey: json['icon_key'] as String,
       xpReward: json['xp_reward'] as int,
       isCompleted: json['is_completed'] as bool? ?? false,
+      progressCurrent: (json['progress_current'] as num?)?.toInt() ?? 0,
+      progressTotal: (json['progress_total'] as num?)?.toInt() ?? 1,
     );
   }
 
@@ -25,5 +29,7 @@ class DailyGoalModel extends DailyGoalEntity {
     'icon_key': iconKey,
     'xp_reward': xpReward,
     'is_completed': isCompleted,
+    'progress_current': progressCurrent,
+    'progress_total': progressTotal,
   };
 }
