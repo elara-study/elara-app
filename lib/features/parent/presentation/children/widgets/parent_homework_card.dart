@@ -167,15 +167,20 @@ class ParentHomeworkCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    entity.subject.toUpperCase(),
-                    style: AppTypography.labelLarge(color: AppColors.neutral50)
-                        .copyWith(
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.2,
-                          fontSize: 16.sp,
-                        ),
+                  Expanded(
+                    child: Text(
+                      entity.subject.toUpperCase(),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: AppTypography.labelLarge(color: AppColors.neutral50)
+                          .copyWith(
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.2,
+                            fontSize: 16.sp,
+                          ),
+                    ),
                   ),
+                  SizedBox(width: AppSpacing.spacingMd.w),
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 14.w,

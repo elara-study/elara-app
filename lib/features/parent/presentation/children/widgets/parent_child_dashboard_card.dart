@@ -64,7 +64,8 @@ class ParentChildDashboardCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: AppSpacing.spacingXs.h),
-                      Row(
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           if (child.gradeLabel.isNotEmpty) ...[
                             _GradeChip(label: child.gradeLabel),
