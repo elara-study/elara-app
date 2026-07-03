@@ -160,8 +160,26 @@ class _ResourcesViewState extends State<_ResourcesView> {
 
     if (resource.url.isNotEmpty) {
       final uri = Uri.parse(resource.url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      try {
+        final launched = await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
+        if (!launched) {
+          await launchUrl(
+            uri,
+            mode: LaunchMode.platformDefault,
+          );
+        }
+      } catch (_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Could not open resource: ${resource.title}'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
       }
     }
   }
