@@ -99,7 +99,7 @@ void setupParentDI() {
 
   // Parent Child Profile
   getIt.registerLazySingleton<ParentChildrenRemoteDataSource>(
-    () => const ParentChildrenRemoteDataSourceImpl(),
+    () => ParentChildrenRemoteDataSourceImpl(getIt<DioClient>()),
   );
   getIt.registerLazySingleton<ParentChildrenRepository>(
     () => ParentChildrenRepositoryImpl(getIt<ParentChildrenRemoteDataSource>()),

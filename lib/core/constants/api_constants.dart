@@ -113,6 +113,12 @@ class ApiConstants {
   static String parentRespondToRequest(String id) =>
       'api/v1/parent/requests/$id';
   static String parentUnlinkChild(String id) => 'api/v1/parent/children/$id';
+  static String parentChildProfile(String childId) =>
+      'api/v1/parent/children/$childId';
+  static String parentChildHomeworks(String childId) =>
+      'api/v1/parent/children/$childId/homeworks';
+  static String parentChildInsights(String childId) =>
+      'api/v1/parent/children/$childId/insights';
 
   // ── Quiz ──────────────────────────────────────────────────────────────────
 
