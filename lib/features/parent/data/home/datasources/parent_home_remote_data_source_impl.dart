@@ -6,48 +6,12 @@ import 'package:elara/features/parent/data/home/datasources/parent_home_remote_d
 import 'package:elara/features/parent/data/home/models/parent_child_progress_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_children_dashboard_model.dart';
 import 'package:elara/features/parent/data/home/models/parent_home_overview_model.dart';
-import 'package:elara/features/parent/data/home/models/parent_subject_group_progress_model.dart';
 
 /// Parent home API — Home `205:2146`, Children `205:2260`.
 class ParentHomeRemoteDataSourceImpl implements ParentHomeRemoteDataSource {
   final DioClient _dioClient;
 
   ParentHomeRemoteDataSourceImpl(this._dioClient);
-
-  static const List<ParentChildProgressModel> _kChildren = [
-    ParentChildProgressModel(
-      id: 'c-1',
-      displayName: 'Tyler, The Creator',
-      xpPoints: 1250,
-      streakDays: 7,
-      currentLesson: 15,
-      totalLessons: 20,
-      progress: 0.75,
-      gradeLabel: 'Grade 7',
-      level: 12,
-      subjectGroups: [
-        ParentSubjectGroupProgressModel(name: 'Physics 101', progress: 0.65),
-        ParentSubjectGroupProgressModel(name: 'Advanced Math', progress: 0.45),
-        ParentSubjectGroupProgressModel(name: 'Biology Lab', progress: 0.80),
-      ],
-    ),
-    ParentChildProgressModel(
-      id: 'c-2',
-      displayName: 'Drake',
-      xpPoints: 67,
-      streakDays: 1,
-      currentLesson: 1,
-      totalLessons: 20,
-      progress: 0.05,
-      gradeLabel: 'Grade 7',
-      level: 12,
-      subjectGroups: [
-        ParentSubjectGroupProgressModel(name: 'Physics 101', progress: 0.65),
-        ParentSubjectGroupProgressModel(name: 'Advanced Math', progress: 0.45),
-        ParentSubjectGroupProgressModel(name: 'Biology Lab', progress: 0.80),
-      ],
-    ),
-  ];
 
   @override
   Future<ParentHomeOverviewModel> fetchHomeOverview() async {
@@ -79,8 +43,8 @@ class ParentHomeRemoteDataSourceImpl implements ParentHomeRemoteDataSource {
 
   @override
   Future<List<ParentChildProgressModel>> fetchLinkedChildren() async {
-    await Future<void>.delayed(const Duration(milliseconds: 280));
-    return _kChildren;
+    final dashboard = await fetchChildrenDashboard();
+    return dashboard.children;
   }
 
   @override
