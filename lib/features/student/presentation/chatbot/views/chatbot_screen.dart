@@ -13,6 +13,7 @@ import 'package:elara/features/student/presentation/chatbot/widgets/chatbot/chat
 import 'package:elara/features/student/presentation/chatbot/widgets/chatbot/chatbot_screen_dimensions.dart';
 import 'package:elara/features/student/presentation/chatbot/widgets/image_preview_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -115,8 +116,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       context.push('/voice');
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Microphone permission is required for voice mode.'),
+        SnackBar(
+          content: Text(context.l10n.chatbotMicPermissionRequired),
         ),
       );
     }

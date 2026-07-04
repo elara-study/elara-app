@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Caption + send row above the composer when an image is staged.
@@ -50,7 +51,7 @@ class ImagePreviewBar extends StatelessWidget {
                   child: TextField(
                     controller: captionController,
                     decoration: InputDecoration(
-                      hintText: 'Add a caption (optional)',
+                      hintText: context.l10n.chatbotAddCaption,
                       hintStyle: AppTypography.bodySmall(
                         color: cs.onSurfaceVariant,
                       ),
@@ -81,7 +82,9 @@ class ImagePreviewBar extends StatelessWidget {
                         child: const CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.send_rounded),
-                label: Text(isSending ? 'Sending…' : 'Send image'),
+                label: Text(isSending
+                    ? context.l10n.commonSending
+                    : context.l10n.chatbotSendImage),
               ),
             ),
           ],

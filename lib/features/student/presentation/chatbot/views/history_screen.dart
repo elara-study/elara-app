@@ -5,6 +5,7 @@ import 'package:elara/features/student/presentation/chatbot/cubits/sessions_stat
 import 'package:elara/features/student/presentation/chatbot/widgets/history/history_panel_bottom_bar.dart';
 import 'package:elara/features/student/presentation/chatbot/widgets/history/history_panel_header.dart';
 import 'package:elara/features/student/presentation/chatbot/widgets/history/history_sessions_section.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,16 +43,16 @@ class _HistoryPanelState extends State<HistoryPanel> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete chat?'),
-        content: const Text('This removes the conversation from your history.'),
+        title: Text(context.l10n.chatbotDeleteChatTitle),
+        content: Text(context.l10n.chatbotDeleteChatConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete'),
+            child: Text(context.l10n.commonDelete),
           ),
         ],
       ),
