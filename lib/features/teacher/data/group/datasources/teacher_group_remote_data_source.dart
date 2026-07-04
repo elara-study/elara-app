@@ -298,6 +298,11 @@ class TeacherGroupRemoteDataSourceImpl implements TeacherGroupDataSource {
   }
 
   @override
+  Future<void> deleteRoadmap(String roadmapId) async {
+    await _dio.delete(ApiConstants.teacherRoadmapInfo(roadmapId));
+  }
+
+  @override
   Future<TeacherStudentInsightEntity?> getStudentInsights(
     String studentId,
   ) async {

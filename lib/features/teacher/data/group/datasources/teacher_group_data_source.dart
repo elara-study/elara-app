@@ -29,5 +29,6 @@ abstract class TeacherGroupDataSource {
   Future<void> deleteAnnouncement(String groupId, String announcementId);
 
   Future<TeacherRoadmapEntity> getRoadmap(String groupId);
+  Future<void> deleteRoadmap(String roadmapId);
   Future<TeacherStudentInsightEntity?> getStudentInsights(String studentId);
 }

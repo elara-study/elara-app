@@ -14,6 +14,7 @@ import 'package:elara/features/student/presentation/rewards/cubits/rewards_cubit
 import 'package:elara/features/student/presentation/rewards/cubits/rewards_state.dart';
 import 'package:elara/shared/widgets/app_action_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
+import 'package:elara/shared/widgets/app_refresh_indicator.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -160,7 +161,11 @@ class _HomeContent extends StatelessWidget {
     final completedGoalsCount =
         dailyGoals.where((g) => g.isCompleted).length;
 
-    return SingleChildScrollView(
+    return AppRefreshIndicator(
+      onRefresh: () async {
+        context.read<StudentHomeCubit>().loadHome();
+      },
+      child: SingleChildScrollView(
       padding: EdgeInsets.only(
         left: AppSpacing.spacingLg.w,
         right: AppSpacing.spacingLg.w,
@@ -265,6 +270,7 @@ class _HomeContent extends StatelessWidget {
 
           SizedBox(height: AppSpacing.spacingSm.h),
         ],
+      ),
       ),
     );
   }

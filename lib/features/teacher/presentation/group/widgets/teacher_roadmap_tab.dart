@@ -46,6 +46,7 @@ class TeacherRoadmapTab extends StatelessWidget {
               ),
             ),
           ),
+          TeacherRoadmapLoadStatus.deleted => const SizedBox.shrink(),
           TeacherRoadmapLoadStatus.loaded => TeacherRoadmapContent(
             roadmap: state.roadmap!,
             groupId: groupId,

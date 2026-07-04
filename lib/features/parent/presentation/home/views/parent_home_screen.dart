@@ -8,6 +8,7 @@ import 'package:elara/features/parent/presentation/home/widgets/parent_activity_
 import 'package:elara/features/parent/presentation/home/widgets/parent_child_progress_card.dart';
 import 'package:elara/features/parent/presentation/home/widgets/parent_stat_cards_row.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
+import 'package:elara/shared/widgets/app_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,7 +56,11 @@ class ParentHomeScreen extends StatelessWidget {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             extendBodyBehindAppBar: true,
             appBar: const AppGlassHeader(title: 'elara'),
-            body: SingleChildScrollView(
+            body: AppRefreshIndicator(
+              onRefresh: () async {
+                context.read<ParentHomeCubit>().loadHome();
+              },
+              child: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(
                 AppSpacing.spacingLg.w,
                 kToolbarHeight + 54.h + AppSpacing.spacing2xl.h,
@@ -136,6 +141,7 @@ class ParentHomeScreen extends StatelessWidget {
                     SizedBox(height: AppSpacing.spacingMd.h),
                   ],
                 ],
+              ),
               ),
             ),
           );

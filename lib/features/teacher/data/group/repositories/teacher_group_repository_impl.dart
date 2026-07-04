@@ -156,6 +156,18 @@ class TeacherGroupRepositoryImpl implements TeacherGroupRepository {
   }
 
   @override
+  Future<Either<Failure, void>> deleteRoadmap(String roadmapId) async {
+    try {
+      await _remoteDataSource.deleteRoadmap(roadmapId);
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Server error'));
+    } catch (e) {
+      return Left(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, TeacherStudentInsightEntity?>> getStudentInsights(
     String studentId,
   ) async {

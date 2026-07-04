@@ -2,17 +2,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elara/features/teacher/domain/group/usecases/get_teacher_roadmaps_usecase.dart';
 import 'package:elara/features/teacher/domain/group/usecases/create_teacher_roadmap_usecase.dart';
 import 'package:elara/features/teacher/domain/group/usecases/get_teacher_roadmap_details_usecase.dart';
+import 'package:elara/features/teacher/domain/group/usecases/delete_teacher_roadmap_usecase.dart';
 import 'package:elara/features/teacher/presentation/roadmap/cubits/teacher_roadmaps_state.dart';
 
 class TeacherRoadmapsCubit extends Cubit<TeacherRoadmapsState> {
   final GetTeacherRoadmapsUseCase _getTeacherRoadmapsUseCase;
   final CreateTeacherRoadmapUseCase _createTeacherRoadmapUseCase;
   final GetTeacherRoadmapDetailsUseCase _getTeacherRoadmapDetailsUseCase;
+  final DeleteTeacherRoadmapUseCase _deleteTeacherRoadmapUseCase;
 
   TeacherRoadmapsCubit(
     this._getTeacherRoadmapsUseCase,
     this._createTeacherRoadmapUseCase,
     this._getTeacherRoadmapDetailsUseCase,
+    this._deleteTeacherRoadmapUseCase,
   ) : super(const TeacherRoadmapsInitial());
 
   Future<void> loadRoadmaps() async {
@@ -38,13 +41,19 @@ class TeacherRoadmapsCubit extends Cubit<TeacherRoadmapsState> {
 
     result.fold(
       (failure) => emit(TeacherRoadmapsError(message: failure.message)),
-      (_) => loadRoadmaps(), // Reload roadmaps after creation
+      (_) => loadRoadmaps(),
+    );
+  }
+
+  Future<void> deleteRoadmap(String roadmapId) async {
+    final result = await _deleteTeacherRoadmapUseCase(roadmapId);
+    result.fold(
+      (failure) => emit(TeacherRoadmapsError(message: failure.message)),
+      (_) => loadRoadmaps(),
     );
   }
 
   Future<void> loadRoadmapDetails(String roadmapId) async {
-    // Just hitting the endpoint as requested for now.
-    // Further UI state handling can be added here if needed.
     final result = await _getTeacherRoadmapDetailsUseCase(roadmapId);
     result.fold((failure) => null, (roadmap) => null);
   }
