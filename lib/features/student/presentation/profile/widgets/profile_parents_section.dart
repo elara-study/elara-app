@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/profile/entities/profile_linked_parent_entity.dart';
 import 'package:elara/features/student/presentation/profile/widgets/profile_link_parent_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileParentsSection extends StatelessWidget {
@@ -20,7 +21,7 @@ class ProfileParentsSection extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                'Parents',
+                context.l10n.profileParentsTitle,
                 style: AppTypography.h4(color: cs.onSurface),
               ),
             ),
@@ -37,7 +38,7 @@ class ProfileParentsSection extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Add',
+                    context.l10n.commonAdd,
                     style: AppTypography.labelSmall(color: cs.onPrimary),
                   ),
                   SizedBox(width: AppSpacing.spacingXs.w),

@@ -1,6 +1,7 @@
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/shared/widgets/app_form_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> showProfileLinkParentSheet(BuildContext context) {
@@ -33,14 +34,17 @@ class _ProfileLinkParentSheetState extends State<ProfileLinkParentSheet> {
   @override
   Widget build(BuildContext context) {
     return AppFormDialogBody(
-      title: 'Link a Parent',
+      title: context.l10n.profileLinkParentTitle,
       children: [
         AppFormDialogTextField(
           controller: _usernameController,
-          hintText: "Enter your parent's username",
+          hintText: context.l10n.profileLinkParentHint,
         ),
         SizedBox(height: AppSpacing.spacingLg.h),
-        AppFormDialogPrimaryButton(label: 'Link Parent', onPressed: _submit),
+        AppFormDialogPrimaryButton(
+          label: context.l10n.profileLinkParentButton,
+          onPressed: _submit,
+        ),
         SizedBox(height: AppSpacing.spacingSm.h),
       ],
     );

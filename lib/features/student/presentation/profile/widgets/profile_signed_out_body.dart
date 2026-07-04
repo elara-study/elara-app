@@ -2,6 +2,7 @@ import 'package:elara/config/routes.dart';
 import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class ProfileSignedOutBody extends StatelessWidget {
   const ProfileSignedOutBody({super.key});
@@ -14,7 +15,7 @@ class ProfileSignedOutBody extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Sign in to view your profile',
+            context.l10n.profileSignInToView,
             style: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
           ),
           const SizedBox(height: 16.0),
@@ -23,7 +24,7 @@ class ProfileSignedOutBody extends StatelessWidget {
               AppNavigation.goNamed(context, AppRoutes.login);
             },
             child: Text(
-              'Login',
+              context.l10n.authLoginButton,
               style: AppTypography.button(color: cs.onPrimary),
             ),
           ),

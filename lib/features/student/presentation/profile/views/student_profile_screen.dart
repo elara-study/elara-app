@@ -9,6 +9,7 @@ import 'package:elara/features/student/presentation/profile/widgets/profile_over
 import 'package:elara/features/student/presentation/profile/widgets/profile_signed_out_body.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Student profile tab — UI from Figma; data from [StudentProfileCubit]
@@ -31,11 +32,11 @@ class StudentProfileScreen extends StatelessWidget {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           extendBodyBehindAppBar: true,
           appBar: AppGlassHeader(
-            title: user != null ? user.fullName : 'Profile',
+            title: user != null ? user.fullName : context.l10n.studentProfileScreenTitle,
             actions: [
               IconButton(
                 icon: const Icon(Icons.settings_rounded),
-                tooltip: 'Settings',
+                tooltip: context.l10n.settingsTitle,
                 onPressed: () =>
                     AppNavigation.pushNamed(context, AppRoutes.studentSettings),
               ),

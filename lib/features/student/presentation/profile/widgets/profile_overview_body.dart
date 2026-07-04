@@ -9,6 +9,7 @@ import 'package:elara/features/student/presentation/profile/widgets/profile_pare
 import 'package:elara/features/student/presentation/profile/widgets/profile_recent_achievements_section.dart';
 import 'package:elara/shared/widgets/learner_stats_row.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileOverviewBody extends StatelessWidget {
@@ -79,7 +80,7 @@ class ProfileOverviewBody extends StatelessWidget {
                       ),
                       SizedBox(width: AppSpacing.spacingXs.w),
                       Text(
-                        'Level ${overview.level}',
+                        context.l10n.rewardsLevel(overview.level),
                         style: AppTypography.labelSmall(
                           color: cs.onSurfaceVariant,
                         ),
