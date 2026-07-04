@@ -1,5 +1,6 @@
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:elara/features/settings/presentation/cubits/notifications_settings_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/notifications_settings_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
@@ -20,7 +21,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppGlassHeader(
-            title: 'Notifications',
+            title: context.l10n.notificationSettingsTitle,
             titleStyle: AppTypography.h4(
               color: cs.onSurface,
               font: AppTypography.comfortaa,
@@ -40,27 +41,27 @@ class NotificationsSettingsScreen extends StatelessWidget {
             child: SettingsSectionList(
               children: [
                 SettingsToggleTile(
-                  label: 'Streak Reminders',
+                  label: context.l10n.notificationSettingsStreakReminders,
                   value: state.streakRemindersEnabled,
                   onChanged: cubit.setStreakReminders,
                 ),
                 SettingsToggleTile(
-                  label: 'Homework Reminders',
+                  label: context.l10n.notificationSettingsHomeworkReminders,
                   value: state.homeworkRemindersEnabled,
                   onChanged: cubit.setHomeworkReminders,
                 ),
                 SettingsToggleTile(
-                  label: 'New Lessons',
+                  label: context.l10n.notificationSettingsNewLessons,
                   value: state.newLessonsEnabled,
                   onChanged: cubit.setNewLessons,
                 ),
                 SettingsToggleTile(
-                  label: 'AI Progress Reports',
+                  label: context.l10n.notificationSettingsAiReports,
                   value: state.aiProgressReportsEnabled,
                   onChanged: cubit.setAiProgressReports,
                 ),
                 SettingsToggleTile(
-                  label: 'Group Updates',
+                  label: context.l10n.notificationSettingsGroupUpdates,
                   value: state.groupUpdatesEnabled,
                   onChanged: cubit.setGroupUpdates,
                 ),

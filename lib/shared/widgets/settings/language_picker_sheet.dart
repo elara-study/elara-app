@@ -28,7 +28,7 @@ class LanguagePickerSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppRadius.radius2xl.r),
+          top: Radius.circular(AppRadius.radiusLg.r),
         ),
       ),
       padding: EdgeInsets.only(
@@ -85,7 +85,7 @@ class LanguagePickerSheet extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? cs.primaryContainer.withOpacity(0.4)
+                              ? cs.primaryContainer.withValues(alpha: 0.4)
                               : cs.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
                           border: Border.all(

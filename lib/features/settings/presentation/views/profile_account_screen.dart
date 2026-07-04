@@ -9,6 +9,7 @@ import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/settings/domain/entities/profile_account_entity.dart';
 import 'package:elara/features/settings/presentation/cubits/profile_account_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/profile_account_state.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/settings/settings_card.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +33,17 @@ class ProfileAccountScreen extends StatelessWidget {
       listener: (context, state) {
         if (state case ProfileAccountLoaded(:final pendingSnackMessage)) {
           if (pendingSnackMessage != null) {
+            final String localizedMsg;
+            if (pendingSnackMessage == 'Profile updated (demo).') {
+              localizedMsg = context.l10n.profileUpdatedDemo;
+            } else if (pendingSnackMessage == 'Account deletion is not available yet.') {
+              localizedMsg = context.l10n.profileDeletionUnavailable;
+            } else {
+              localizedMsg = pendingSnackMessage;
+            }
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text(pendingSnackMessage)));
+            ).showSnackBar(SnackBar(content: Text(localizedMsg)));
             context.read<ProfileAccountCubit>().clearSnackMessage();
           }
         }
@@ -43,7 +52,7 @@ class ProfileAccountScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppGlassHeader(
-            title: 'Profile & Account',
+            title: context.l10n.profileTitle,
             titleStyle: AppTypography.h4(
               color: cs.onSurface,
               font: AppTypography.comfortaa,
@@ -78,7 +87,7 @@ class ProfileAccountScreen extends StatelessWidget {
                     onPressed: () =>
                         context.read<ProfileAccountCubit>().loadProfile(),
                     child: Text(
-                      'Try again',
+                      context.l10n.commonTryAgain,
                       style: AppTypography.button(
                         color: AppColors.brandPrimary500,
                       ),
@@ -124,17 +133,17 @@ class _ProfileAccountForm extends StatelessWidget {
                   SizedBox(width: AppSpacing.spacingMd.w),
                   Expanded(
                     child: Text(
-                      'Personal Information',
+                      context.l10n.profilePersonalInformation,
                       style: AppTypography.h5(color: cs.onSurface),
                     ),
                   ),
                 ],
               ),
               SizedBox(height: AppSpacing.spacingLg.h),
-              _LabeledDisplayField(label: 'Full Name', value: profile.fullName),
+              _LabeledDisplayField(label: context.l10n.profileFullName, value: profile.fullName),
               SizedBox(height: AppSpacing.spacingLg.h),
               _LabeledDisplayField(
-                label: 'Username',
+                label: context.l10n.profileUsername,
                 value: profile.username,
                 leading: Icon(
                   Icons.alternate_email_rounded,
@@ -144,7 +153,7 @@ class _ProfileAccountForm extends StatelessWidget {
               ),
               SizedBox(height: AppSpacing.spacingLg.h),
               _LabeledDisplayField(
-                label: 'Email',
+                label: context.l10n.profileEmail,
                 value: profile.email,
                 leading: Icon(
                   Icons.email_outlined,
@@ -171,8 +180,8 @@ class _ProfileAccountForm extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: _LabeledDisplayField(
-                                  label: 'Phone Number',
-                                  value: profile.phoneNumber ?? '+20 10 12345678',
+                                  label: context.l10n.profilePhoneNumber,
+                                  value: profile.phoneNumber ?? context.l10n.gradePhoneNumber,
                                   leading: Icon(
                                     Icons.phone_outlined,
                                     size: 16.sp,
@@ -183,8 +192,8 @@ class _ProfileAccountForm extends StatelessWidget {
                               SizedBox(width: AppSpacing.spacingLg.w),
                               Expanded(
                                 child: _LabeledDisplayField(
-                                  label: 'Subject(s)',
-                                  value: profile.subjects?.join(', ') ?? 'Math',
+                                  label: context.l10n.profileSubjects,
+                                  value: profile.subjects?.join(', ') ?? context.l10n.mathSubjectFallback,
                                   leading: Icon(
                                     Icons.menu_book_rounded,
                                     size: 16.sp,
@@ -201,8 +210,8 @@ class _ProfileAccountForm extends StatelessWidget {
                           ),
                           SizedBox(height: AppSpacing.spacingLg.h),
                           _LabeledDisplayField(
-                            label: 'Country',
-                            value: profile.country ?? 'Egypt',
+                            label: context.l10n.profileCountry,
+                            value: profile.country ?? context.l10n.countryFallback,
                             leading: Icon(
                               Icons.public_rounded,
                               size: 16.sp,
@@ -222,8 +231,8 @@ class _ProfileAccountForm extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           _LabeledDisplayField(
-                            label: 'Phone Number',
-                            value: profile.phoneNumber ?? '+20 10 12345678',
+                            label: context.l10n.profilePhoneNumber,
+                            value: profile.phoneNumber ?? context.l10n.gradePhoneNumber,
                             leading: Icon(
                               Icons.phone_outlined,
                               size: 16.sp,
@@ -232,8 +241,8 @@ class _ProfileAccountForm extends StatelessWidget {
                           ),
                           SizedBox(height: AppSpacing.spacingLg.h),
                           _LabeledDisplayField(
-                            label: 'Country',
-                            value: profile.country ?? 'Egypt',
+                            label: context.l10n.profileCountry,
+                            value: profile.country ?? context.l10n.countryFallback,
                             leading: Icon(
                               Icons.public_rounded,
                               size: 16.sp,
@@ -254,8 +263,8 @@ class _ProfileAccountForm extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _LabeledDisplayField(
-                              label: 'Grade',
-                              value: profile.grade ?? '7',
+                              label: context.l10n.profileGrade,
+                              value: profile.grade ?? context.l10n.gradeFallback,
                               leading: Icon(
                                 Icons.school_outlined,
                                 size: 16.sp,
@@ -271,8 +280,8 @@ class _ProfileAccountForm extends StatelessWidget {
                           SizedBox(width: AppSpacing.spacingLg.w),
                           Expanded(
                             child: _LabeledDisplayField(
-                              label: 'Country',
-                              value: profile.country ?? 'Egypt',
+                              label: context.l10n.profileCountry,
+                              value: profile.country ?? context.l10n.countryFallback,
                               leading: Icon(
                                 Icons.public_rounded,
                                 size: 16.sp,
@@ -298,7 +307,7 @@ class _ProfileAccountForm extends StatelessWidget {
                       context.read<ProfileAccountCubit>().saveChanges(),
                   icon: Icon(Icons.save_outlined, size: 16.sp),
                   label: Text(
-                    'Save Changes',
+                    context.l10n.profileSaveChanges,
                     style: AppTypography.labelSmall(color: cs.onPrimary),
                   ),
                   style: FilledButton.styleFrom(
@@ -334,7 +343,7 @@ class _ProfileAccountForm extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Danger Zone',
+                  context.l10n.profileDangerZone,
                   style: AppTypography.h5(color: AppColors.error500),
                 ),
                 SizedBox(height: AppSpacing.spacingMd.h),
@@ -343,8 +352,7 @@ class _ProfileAccountForm extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        'Permanently delete your account and all of your '
-                        'content',
+                        context.l10n.profileDeleteAccountDescription,
                         style: AppTypography.bodySmall(
                           color: AppColors.error400,
                         ),
@@ -363,7 +371,7 @@ class _ProfileAccountForm extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Delete Account',
+                        context.l10n.profileDeleteAccount,
                         style: AppTypography.labelSmall(color: AppColors.white),
                       ),
                     ),
