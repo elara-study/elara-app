@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/features/student/presentation/voice/cubit/voice_state.dart'
     as state;
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class VoiceStatusBar extends StatelessWidget {
@@ -38,8 +39,8 @@ class VoiceStatusBar extends StatelessWidget {
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: Text(
-            _statusLabel,
-            key: ValueKey(_statusLabel),
+            _getStatusLabel(context),
+            key: ValueKey(_getStatusLabel(context)),
             style: TextStyle(
               color: _statusColor,
               fontSize: 16.sp,
@@ -60,24 +61,24 @@ class VoiceStatusBar extends StatelessWidget {
     );
   }
 
-  String get _statusLabel {
+  String _getStatusLabel(BuildContext context) {
     switch (status) {
       case state.VoiceStatus.idle:
-        return 'Tap to start';
+        return context.l10n.voiceStatusTapToStart;
       case state.VoiceStatus.connecting:
-        return 'Connecting…';
+        return context.l10n.voiceStatusConnecting;
       case state.VoiceStatus.listening:
-        return 'Listening… Tap orb to send';
+        return context.l10n.voiceStatusListening;
       case state.VoiceStatus.transcribing:
-        return 'Transcribing…';
+        return context.l10n.voiceStatusTranscribing;
       case state.VoiceStatus.thinking:
-        return 'Thinking…';
+        return context.l10n.voiceStatusThinking;
       case state.VoiceStatus.speaking:
-        return 'Speaking… Tap orb to interrupt';
+        return context.l10n.voiceStatusSpeaking;
       case state.VoiceStatus.paused:
-        return 'Paused';
+        return context.l10n.voiceStatusPaused;
       case state.VoiceStatus.error:
-        return 'Tap to retry';
+        return context.l10n.voiceStatusTapToRetry;
     }
   }
 
