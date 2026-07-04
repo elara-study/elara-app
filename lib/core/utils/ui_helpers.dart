@@ -1,13 +1,14 @@
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 
 class UiHelpers {
   /// Returns a time-appropriate greeting (e.g. Good morning, Good afternoon, Good evening).
-  static String getGreeting() {
+  static String getGreeting(BuildContext context) {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return context.l10n.homeGreetingMorning;
+    if (hour < 17) return context.l10n.homeGreetingAfternoon;
+    return context.l10n.homeGreetingEvening;
   }
 
   /// Resolves the primary gradient colour for a group based on its colour key.
