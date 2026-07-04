@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// App bar overflow (⋮): “Leave Group” row, then confirmation dialog.
 class StudentGroupOverflowMenu extends StatefulWidget {
@@ -102,7 +103,7 @@ class _StudentGroupOverflowMenuState extends State<StudentGroupOverflowMenu> {
                             ),
                             const SizedBox(width: AppSpacing.spacingSm),
                             Text(
-                              'Leave Group',
+                              overlayContext.l10n.groupLeaveGroup,
                               style: AppTypography.labelRegular(
                                 color: overlayCs.onSurface,
                               ),
@@ -119,7 +120,7 @@ class _StudentGroupOverflowMenuState extends State<StudentGroupOverflowMenu> {
         },
         child: IconButton(
           icon: const Icon(Icons.more_vert_rounded),
-          tooltip: 'More options',
+          tooltip: context.l10n.commonMoreOptions,
           onPressed: _portal.toggle,
         ),
       ),
@@ -174,34 +175,19 @@ class _LeaveGroupConfirmationDialog extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.spacingLg),
               Text(
-                'Leave Group?',
+                context.l10n.groupLeaveGroupTitle,
                 textAlign: TextAlign.center,
                 style: AppTypography.h5(
                   color: cs.onSurface,
                 ).copyWith(fontWeight: FontWeight.w800, height: 24 / 18),
               ),
               const SizedBox(height: AppSpacing.spacingXs),
-              Text.rich(
-                TextSpan(
-                  style: AppTypography.bodySmall(
-                    color: onVar,
-                  ).copyWith(height: 18 / 12),
-                  children: [
-                    const TextSpan(text: 'Are you sure you want to leave '),
-                    TextSpan(
-                      text: courseTitle,
-                      style: AppTypography.bodySmall(
-                        color: cs.onSurface,
-                      ).copyWith(fontWeight: FontWeight.w600, height: 16 / 12),
-                    ),
-                    const TextSpan(
-                      text:
-                          '? You will lose access to all shared materials '
-                          'and progress.',
-                    ),
-                  ],
-                ),
+              Text(
+                context.l10n.groupLeaveGroupConfirm(courseTitle),
                 textAlign: TextAlign.center,
+                style: AppTypography.bodySmall(
+                  color: onVar,
+                ).copyWith(height: 18 / 12),
               ),
               const SizedBox(height: AppSpacing.spacingLg),
               SizedBox(
@@ -218,7 +204,7 @@ class _LeaveGroupConfirmationDialog extends StatelessWidget {
                     shape: const StadiumBorder(),
                   ),
                   child: Text(
-                    'Leave Group',
+                    context.l10n.groupLeaveGroup,
                     style: AppTypography.labelLarge(color: AppColors.white),
                   ),
                 ),
@@ -238,7 +224,7 @@ class _LeaveGroupConfirmationDialog extends StatelessWidget {
                     shape: const StadiumBorder(),
                   ),
                   child: Text(
-                    'Cancel',
+                    context.l10n.commonCancel,
                     style: AppTypography.labelLarge(
                       color: ButtonColors.outlineText,
                     ),

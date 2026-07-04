@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/features/student/presentation/group/cubits/roadmap_cubit.dart';
 import 'package:elara/features/student/presentation/group/widgets/roadmap/content/roadmap_content.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RoadmapTab extends StatelessWidget {
@@ -20,7 +21,7 @@ class RoadmapTab extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.spacing2xl),
                 child: Text(
-                  state.message ?? 'Something went wrong',
+                  state.message ?? context.l10n.commonSomethingWentWrong,
                   textAlign: TextAlign.center,
                 ),
               ),

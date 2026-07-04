@@ -3,6 +3,7 @@ import 'package:elara/features/student/domain/group/entities/group_roadmap.dart'
 import 'package:elara/features/student/presentation/group/widgets/roadmap/module/roadmap_module_tile.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class RoadmapContent extends StatelessWidget {
   final GroupRoadmap roadmap;
@@ -22,9 +23,9 @@ class RoadmapContent extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.spacingXl),
             child: AppSectionHeader(
-              title: 'Learning Path',
+              title: context.l10n.roadmapLearningPath,
               trailing: Text(
-                '$percent% completed',
+                context.l10n.roadmapPercentCompleted(percent),
                 style: textTheme.bodyMedium,
               ),
             ),

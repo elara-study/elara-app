@@ -8,6 +8,7 @@ import 'package:elara/features/student/presentation/group/widgets/student_group_
 import 'package:elara/shared/widgets/pill_tab_bar.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Student group shell: app bar, progress card, segmented tabs, tab bodies.
@@ -15,18 +16,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class StudentGroupScreen extends StatelessWidget {
   const StudentGroupScreen({super.key});
 
-  static const _tabs = [
-    Tab(text: 'Leaderboard'),
-    Tab(text: 'Roadmap'),
-    Tab(text: 'Announcements'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tabs = [
+      Tab(text: context.l10n.rewardsLeaderboard),
+      Tab(text: context.l10n.groupRoadmap),
+      Tab(text: context.l10n.groupAnnouncements),
+    ];
 
     return DefaultTabController(
-      length: _tabs.length,
+      length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
           forceMaterialTransparency: true,
@@ -54,7 +54,7 @@ class StudentGroupScreen extends StatelessWidget {
               buildWhen: (prev, next) =>
                   prev.overview?.courseTitle != next.overview?.courseTitle,
               builder: (context, state) {
-                final title = state.overview?.courseTitle ?? 'this group';
+                final title = state.overview?.courseTitle ?? context.l10n.commonThisGroup;
                 return StudentGroupOverflowMenu(courseTitle: title);
               },
             ),
@@ -89,15 +89,15 @@ class StudentGroupScreen extends StatelessWidget {
                   ),
                   child: GroupProgressCard(
                     completedLabel: loaded
-                        ? 'Lesson $completed of $total'
-                        : 'Lesson …',
+                        ? context.l10n.groupLessonProgress(completed, total)
+                        : context.l10n.groupLessonProgressPlaceholder,
                     progress: progress,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.spacingLg),
-                const PillTabBar(
-                  tabs: _tabs,
-                  padding: EdgeInsets.symmetric(
+                PillTabBar(
+                  tabs: tabs,
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.spacingLg,
                   ),
                 ),

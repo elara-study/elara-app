@@ -6,6 +6,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/shared/widgets/progress_bar.dart';
 import 'package:elara/shared/widgets/gradient_glow_card.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class GroupProgressCard extends StatelessWidget {
   final String completedLabel;
@@ -60,7 +61,7 @@ class GroupProgressCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Your Group Progress',
+                    context.l10n.groupYourProgress,
                     style: AppTypography.h4(color: AppColors.neutral50),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
