@@ -5,6 +5,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/parent/domain/reports/entities/parent_insight_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 /// Teacher insight card — Figma Insight (1417:7620).
 class ParentInsightCard extends StatelessWidget {
@@ -53,11 +54,19 @@ class ParentInsightCard extends StatelessWidget {
             Text(
               insight.reportParagraph1,
               style: AppTypography.bodyMedium(color: onSurface),
+              textDirection:
+                  Bidi.detectRtlDirectionality(insight.reportParagraph1)
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
             ),
             SizedBox(height: AppSpacing.spacingLg.h),
             Text(
               insight.reportParagraph2,
               style: AppTypography.bodyMedium(color: onSurface),
+              textDirection:
+                  Bidi.detectRtlDirectionality(insight.reportParagraph2)
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
             ),
           ],
         ),

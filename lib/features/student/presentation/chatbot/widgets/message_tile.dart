@@ -8,7 +8,7 @@ import 'package:elara/features/student/domain/chatbot/entities/chatbot_message.d
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 class ChatbotMessageTile extends StatelessWidget {
   const ChatbotMessageTile({super.key, required this.message});
@@ -62,49 +62,54 @@ class ChatbotMessageTile extends StatelessWidget {
               SizedBox(height: AppSpacing.spacingSm.h),
             ],
             if (isBot)
-              MarkdownBody(
-                data: message.text,
-                shrinkWrap: true,
-                styleSheet: MarkdownStyleSheet(
-                  p: AppTypography.bodyMedium(color: textColor)
-                      .copyWith(height: 1.5),
-                  strong: AppTypography.bodyMedium(color: textColor).copyWith(
-                    fontWeight: FontWeight.bold,
-                    height: 1.5,
-                  ),
-                  em: AppTypography.bodyMedium(color: textColor).copyWith(
-                    fontStyle: FontStyle.italic,
-                    height: 1.5,
-                  ),
-                  h1: AppTypography.h1(color: textColor),
-                  h2: AppTypography.h2(color: textColor),
-                  h3: AppTypography.h3(color: textColor),
-                  listBullet: AppTypography.bodyMedium(color: textColor)
-                      .copyWith(height: 1.5),
-                  blockquotePadding:
-                      EdgeInsets.symmetric(horizontal: AppSpacing.spacingSm.w),
-                  blockquoteDecoration: const BoxDecoration(
-                    border: Border(
-                      left: BorderSide(
-                        color: AppColors.brandPrimary500,
-                        width: 3,
+              Directionality(
+                textDirection: Bidi.detectRtlDirectionality(message.text)
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
+                child: MarkdownBody(
+                  data: message.text,
+                  shrinkWrap: true,
+                  styleSheet: MarkdownStyleSheet(
+                    p: AppTypography.bodyMedium(color: textColor)
+                        .copyWith(height: 1.5),
+                    strong: AppTypography.bodyMedium(color: textColor).copyWith(
+                      fontWeight: FontWeight.bold,
+                      height: 1.5,
+                    ),
+                    em: AppTypography.bodyMedium(color: textColor).copyWith(
+                      fontStyle: FontStyle.italic,
+                      height: 1.5,
+                    ),
+                    h1: AppTypography.h1(color: textColor),
+                    h2: AppTypography.h2(color: textColor),
+                    h3: AppTypography.h3(color: textColor),
+                    listBullet: AppTypography.bodyMedium(color: textColor)
+                        .copyWith(height: 1.5),
+                    blockquotePadding:
+                        EdgeInsets.symmetric(horizontal: AppSpacing.spacingSm.w),
+                    blockquoteDecoration: const BoxDecoration(
+                      border: Border(
+                        left: BorderSide(
+                          color: AppColors.brandPrimary500,
+                          width: 3,
+                        ),
                       ),
                     ),
-                  ),
-                  code: AppTypography.bodySmall(color: textColor).copyWith(
-                    fontFamily: 'monospace',
-                    backgroundColor:
-                        AppColors.brandPrimary500.withValues(alpha: 0.15),
-                  ),
-                  codeblockDecoration: BoxDecoration(
-                    color: AppColors.brandPrimary500.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  horizontalRuleDecoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        color: textColor.withValues(alpha: 0.2),
-                        width: 1,
+                    code: AppTypography.bodySmall(color: textColor).copyWith(
+                      fontFamily: 'monospace',
+                      backgroundColor:
+                          AppColors.brandPrimary500.withValues(alpha: 0.15),
+                    ),
+                    codeblockDecoration: BoxDecoration(
+                      color: AppColors.brandPrimary500.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    horizontalRuleDecoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          color: textColor.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
                       ),
                     ),
                   ),

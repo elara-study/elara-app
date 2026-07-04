@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 class QuizResultsInsightCard extends StatelessWidget {
   const QuizResultsInsightCard({super.key, required this.message});
@@ -51,6 +52,9 @@ class QuizResultsInsightCard extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.start,
+            textDirection: Bidi.detectRtlDirectionality(message)
+                ? TextDirection.rtl
+                : TextDirection.ltr,
             style: AppTypography.bodyMedium(color: secondary),
           ),
         ],

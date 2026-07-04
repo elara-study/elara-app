@@ -6,6 +6,7 @@ import 'package:elara/features/teacher/domain/group/entities/teacher_student_ins
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 /// Draft insight card with Edit / Send actions (Figma Insight, 1417:7510).
 class TeacherStudentInsightCard extends StatelessWidget {
@@ -48,11 +49,17 @@ class TeacherStudentInsightCard extends StatelessWidget {
             Text(
               insight.paragraph1,
               style: AppTypography.bodyMedium(color: cs.onSurface),
+              textDirection: Bidi.detectRtlDirectionality(insight.paragraph1)
+                  ? TextDirection.rtl
+                  : TextDirection.ltr,
             ),
             SizedBox(height: AppSpacing.spacingLg.h),
             Text(
               insight.paragraph2,
               style: AppTypography.bodyMedium(color: cs.onSurface),
+              textDirection: Bidi.detectRtlDirectionality(insight.paragraph2)
+                  ? TextDirection.rtl
+                  : TextDirection.ltr,
             ),
             if (onEdit != null || onSend != null) ...[
               SizedBox(height: AppSpacing.spacingLg.h),
