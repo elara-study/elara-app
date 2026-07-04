@@ -8,6 +8,7 @@ import 'di/chatbot_di.dart';
 import 'di/settings_di.dart';
 import 'di/voice_di.dart';
 import 'di/alerts_di.dart';
+import 'di/notification_di.dart';
 
 final getIt = GetIt.instance;
 
@@ -24,4 +25,5 @@ Future<void> setupDependencyInjection() async {
   setupSettingsDI();
   setupVoiceDI();
   setupAlertsDI();
+  setupNotificationDI();
 }
