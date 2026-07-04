@@ -1,25 +1,26 @@
 import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/enums/user_role.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:elara/features/auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class SignUpRoleScreen extends StatefulWidget {
-  final String title;
+  final String? title;
   final bool showSocialAuth;
 
   const SignUpRoleScreen({
     super.key,
-    this.title = 'Welcome to elara',
+    this.title,
     this.showSocialAuth = true,
   });
 
   /// Named constructor used when reached from a social auth button —
   /// hides the social row since the user is already in that flow.
   const SignUpRoleScreen.social({super.key})
-    : title = 'Choose your role',
+    : title = null,
       showSocialAuth = false;
 
   @override
@@ -51,11 +52,13 @@ class _SignUpRoleScreenState extends State<SignUpRoleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final resolvedTitle = widget.title ?? context.l10n.authChooseRole;
+
     return Scaffold(
       body: AuthScreenLayout(
         // m comes from the full-page LayoutBuilder — correct dimensions.
         builder: (context, m) => _RoleCardContent(
-          title: widget.title,
+          title: resolvedTitle,
           showSocialAuth: widget.showSocialAuth,
           selectedRole: _selectedRole,
           metrics: m,
@@ -96,32 +99,47 @@ class _RoleCardContent extends StatelessWidget {
       children: [
         AuthCardHeader(
           title: title,
-          subtitle: 'Choose your role to start your journey',
+          subtitle: context.l10n.authChooseRoleSubtitle,
           isCompact: m.isCompact,
         ),
         SizedBox(height: m.sectionGap),
 
         // Role cards
         ...UserRole.values.map(
-          (role) => Padding(
-            padding: EdgeInsets.only(
-              bottom: role == UserRole.values.last ? 0 : m.roleGap,
-            ),
-            child: RoleCard(
-              role: role,
-              isSelected: selectedRole == role,
-              height: m.roleCardHeight,
-              contentPadding: m.roleCardContentPadding,
-              iconSize: m.roleIconSize,
-              onTap: () => onRoleTap(role),
-            ),
-          ),
+          (role) {
+            final cardTitle = switch (role) {
+              UserRole.student => context.l10n.authRoleStudent,
+              UserRole.teacher => context.l10n.authRoleTeacher,
+              UserRole.parent => context.l10n.authRoleParent,
+            };
+            final cardSubtitle = switch (role) {
+              UserRole.student => context.l10n.authRoleStudentSubtitle,
+              UserRole.teacher => context.l10n.authRoleTeacherSubtitle,
+              UserRole.parent => context.l10n.authRoleParentSubtitle,
+            };
+
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: role == UserRole.values.last ? 0 : m.roleGap,
+              ),
+              child: RoleCard(
+                role: role,
+                title: cardTitle,
+                subtitle: cardSubtitle,
+                isSelected: selectedRole == role,
+                height: m.roleCardHeight,
+                contentPadding: m.roleCardContentPadding,
+                iconSize: m.roleIconSize,
+                onTap: () => onRoleTap(role),
+              ),
+            );
+          },
         ),
 
         // ── Social auth (sign-up flow only) ─────────────────────────
         if (showSocialAuth) ...[
           SizedBox(height: m.sectionGap),
-          const AuthDivider(label: 'OR SIGN UP WITH'),
+          AuthDivider(label: context.l10n.authOrSignUpWith),
           SizedBox(height: m.sectionGap),
           AuthSocialRow(
             gap: m.socialGap,
@@ -134,8 +152,8 @@ class _RoleCardContent extends StatelessWidget {
 
         SizedBox(height: m.sectionGap),
         AuthCardFooter(
-          prompt: 'Already have an account?',
-          actionLabel: 'Sign in',
+          prompt: context.l10n.authAlreadyHaveAccount,
+          actionLabel: context.l10n.authSignIn,
           onTap: () => AppNavigation.goNamed(context, AppRoutes.login),
         ),
       ],
