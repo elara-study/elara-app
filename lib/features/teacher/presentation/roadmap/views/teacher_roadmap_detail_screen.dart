@@ -85,6 +85,7 @@ class TeacherRoadmapDetailScreen extends StatelessWidget {
   }
 
   void _showDeleteConfirmation(BuildContext context) {
+    final cubit = context.read<TeacherRoadmapDetailCubit>();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -101,7 +102,7 @@ class TeacherRoadmapDetailScreen extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
-              context.read<TeacherRoadmapDetailCubit>().deleteRoadmap();
+              cubit.deleteRoadmap();
               AppSnackBar.success(context, 'Roadmap deleted');
               Navigator.of(context).pop();
             },
