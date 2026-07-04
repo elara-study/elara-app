@@ -92,7 +92,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   Future<ApiResult<T>> _run<T>(Future<T> Function() action) async {
     try {
       final result = await action();
-      return ApiResult.success(result as T);
+      return ApiResult.success(result);
     } on DioException catch (e) {
       return ApiResult.failure(_mapDio(e));
     } catch (e) {

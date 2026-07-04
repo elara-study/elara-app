@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:elara/core/network/dio_client.dart';
 import 'package:elara/core/services/notification_service.dart';
 import 'package:elara/features/notifications/data/datasources/notification_remote_data_source.dart';
