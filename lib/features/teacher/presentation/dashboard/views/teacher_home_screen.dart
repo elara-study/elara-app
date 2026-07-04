@@ -59,7 +59,7 @@ class TeacherHomeScreen extends StatelessWidget {
                   children: [
                     // ── Greeting ──────────────────────────────────────────
                     Text(
-                      '${UiHelpers.getGreeting()}, prof. ${profile.firstName}!',
+                      '${UiHelpers.getGreeting(context)}, prof. ${profile.firstName}!',
                       style:
                           AppTypography.h3(
                             color: Theme.of(context).colorScheme.onSurface,
