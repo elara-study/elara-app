@@ -106,7 +106,7 @@ class ParentSettingsScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  user?.fullName ?? 'Parent Name',
+                                  user?.fullName ?? context.l10n.parentNameFallback,
                                   style: AppTypography.labelLarge(
                                     color: Theme.of(
                                       context,
@@ -116,7 +116,7 @@ class ParentSettingsScreen extends StatelessWidget {
                                 Text(
                                   user?.email != null
                                       ? '@${user!.email.split('@').first}'
-                                      : '@handle',
+                                      : context.l10n.parentHandleFallback,
                                   style: AppTypography.bodySmall(
                                     color: Theme.of(
                                       context,
