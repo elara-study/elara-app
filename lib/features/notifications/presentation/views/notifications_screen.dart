@@ -2,6 +2,7 @@ import 'package:elara/config/app_router.dart' show AppRoutes;
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_icon_sizes.dart';
+import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/notifications/presentation/cubits/notifications_cubit.dart';
@@ -175,7 +176,8 @@ class _NotificationsList extends StatelessWidget {
           final notification = notifications[index - 1];
           return Padding(
             padding: EdgeInsets.only(bottom: AppSpacing.spacingMd.h),
-            child: GestureDetector(
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
               onTap: () {
                 if (!notification.isRead) {
                   context.read<NotificationsCubit>().markAsRead(notification.id);

@@ -57,23 +57,21 @@ class NotificationCard extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Flexible(
-                            child: Text(
-                              notification.type,
-                              style: AppTypography.labelRegular(
-                                color: cs.onSurface,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                          Text(
+                            notification.type,
+                            style: AppTypography.labelRegular(
+                              color: cs.onSurface,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           if (!notification.isRead) ...[
                             SizedBox(width: 6.w),
                             Container(
                               width: 8.w,
                               height: 8.w,
-                              decoration: const BoxDecoration(
-                                color: AppColors.brandPrimary500,
+                              decoration: BoxDecoration(
+                                color: cs.primary,
                                 shape: BoxShape.circle,
                               ),
                             ),
