@@ -17,14 +17,50 @@ class DailyGoalEntity extends Equatable {
   /// Whether the student has already completed this goal today
   final bool isCompleted;
 
+  /// The current progress towards this daily goal (e.g. 2 lessons completed)
+  final int progressCurrent;
+
+  /// The target progress required to complete this daily goal (e.g. 3 lessons)
+  final int progressTotal;
+
   const DailyGoalEntity({
     required this.id,
     required this.label,
     required this.iconKey,
     required this.xpReward,
     required this.isCompleted,
+    this.progressCurrent = 0,
+    this.progressTotal = 1,
   });
 
+  DailyGoalEntity copyWith({
+    String? id,
+    String? label,
+    String? iconKey,
+    int? xpReward,
+    bool? isCompleted,
+    int? progressCurrent,
+    int? progressTotal,
+  }) {
+    return DailyGoalEntity(
+      id: id ?? this.id,
+      label: label ?? this.label,
+      iconKey: iconKey ?? this.iconKey,
+      xpReward: xpReward ?? this.xpReward,
+      isCompleted: isCompleted ?? this.isCompleted,
+      progressCurrent: progressCurrent ?? this.progressCurrent,
+      progressTotal: progressTotal ?? this.progressTotal,
+    );
+  }
+
   @override
-  List<Object?> get props => [id, label, iconKey, xpReward, isCompleted];
+  List<Object?> get props => [
+        id,
+        label,
+        iconKey,
+        xpReward,
+        isCompleted,
+        progressCurrent,
+        progressTotal,
+      ];
 }

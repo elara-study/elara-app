@@ -9,6 +9,8 @@ class LeaderboardEntryModel extends LeaderboardEntryEntity {
     super.isCurrentUser = false,
   });
 
+  // ── Cache round-trip (internal snake_case keys) ───────────────────────────
+
   factory LeaderboardEntryModel.fromJson(Map<String, dynamic> json) {
     return LeaderboardEntryModel(
       rank: (json['rank'] as num).toInt(),
@@ -24,4 +26,20 @@ class LeaderboardEntryModel extends LeaderboardEntryEntity {
     'xp': xp,
     'is_current_user': isCurrentUser,
   };
+
+  // ── Backend API response (GET /api/v1/Rewards/leaderboard) ───────────────
+  //
+  // Response shape per item:
+  // { "rank": 1, "userId": "...", "name": "You", "avatarUrl": null,
+  //   "xp": 440, "isCurrentUser": true }
+
+  factory LeaderboardEntryModel.fromApiJson(Map<String, dynamic> json) {
+    return LeaderboardEntryModel(
+      rank: (json['rank'] as num).toInt(),
+      name: json['name'] as String? ?? '',
+      xp: (json['xp'] as num? ?? 0).toInt(),
+      isCurrentUser: json['isCurrentUser'] as bool? ?? false,
+    );
+  }
 }
+

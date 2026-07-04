@@ -20,12 +20,40 @@ class RewardsProfileEntity extends Equatable {
   /// Total badges available on the platform.
   final int totalBadges;
 
+  /// The calculated level of the student.
+  final int level;
+
+  /// Progress fraction (0.0 to 1.0) within the current level.
+  final double levelProgress;
+
+  /// The last activity completion date (in YYYY-MM-DD).
+  final String? lastActivityDate;
+
+  /// Number of lessons completed today.
+  final int lessonsCompletedToday;
+
+  /// Set of subject names mastered (quizzes completed with 100% accuracy).
+  final Set<String> masteredSubjects;
+
+  /// Consecutive days where all daily goals were completed.
+  final int consecutivePerfectDays;
+
+  /// The last date when all daily goals were fully completed (in YYYY-MM-DD).
+  final String? lastPerfectDate;
+
   const RewardsProfileEntity({
     required this.totalXp,
     required this.lessonsCompleted,
     required this.streakDays,
     required this.badgesUnlocked,
     required this.totalBadges,
+    this.level = 11,
+    this.levelProgress = 0.0,
+    this.lastActivityDate,
+    this.lessonsCompletedToday = 0,
+    this.masteredSubjects = const {},
+    this.consecutivePerfectDays = 0,
+    this.lastPerfectDate,
   });
 
   /// Formatted badge count label, e.g. "4/8".
@@ -38,5 +66,12 @@ class RewardsProfileEntity extends Equatable {
     streakDays,
     badgesUnlocked,
     totalBadges,
+    level,
+    levelProgress,
+    lastActivityDate,
+    lessonsCompletedToday,
+    masteredSubjects,
+    consecutivePerfectDays,
+    lastPerfectDate,
   ];
 }

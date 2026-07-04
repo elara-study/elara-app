@@ -1,3 +1,4 @@
+import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/features/student/domain/quiz/entities/answer_result.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_answer_submission.dart';
 import 'package:elara/features/student/domain/quiz/entities/quiz_hint.dart';
@@ -11,6 +12,7 @@ import 'package:elara/features/student/domain/quiz/usecases/get_hint_use_case.da
 import 'package:elara/features/student/domain/quiz/usecases/get_quiz_session_use_case.dart';
 import 'package:elara/features/student/domain/quiz/usecases/submit_answer_use_case.dart';
 import 'package:elara/features/student/domain/quiz/usecases/submit_quiz_answers_use_case.dart';
+import 'package:elara/features/student/presentation/rewards/cubits/rewards_cubit.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -43,6 +45,8 @@ class QuizCubit extends Cubit<QuizState> {
   final SubmitAnswerUseCase _submitAnswerUseCase;
   final CompleteQuizUseCase _completeQuizUseCase;
 
+  DateTime? _quizStartTime;
+
   // Live API flow
 
   /// Generates a new quiz session from the backend.
@@ -61,14 +65,17 @@ class QuizCubit extends Cubit<QuizState> {
       questionTypes: const ['MCQ', 'Essay'],
     );
     result.fold(
-      onSuccess: (session) => emit(
-        QuizState.inProgress(
-          session: session,
-          currentQuestionIndex: 0,
-          mcqSelectionByQuestionId: const {},
-          writtenTextByQuestionId: const {},
-        ),
-      ),
+      onSuccess: (session) {
+        _quizStartTime = DateTime.now();
+        emit(
+          QuizState.inProgress(
+            session: session,
+            currentQuestionIndex: 0,
+            mcqSelectionByQuestionId: const {},
+            writtenTextByQuestionId: const {},
+          ),
+        );
+      },
       onFailure: (f) => emit(QuizState.failure(f.message)),
     );
   }
@@ -136,15 +143,26 @@ class QuizCubit extends Cubit<QuizState> {
     emit(state.copyWith(status: QuizStatus.submitting));
     final result = await _completeQuizUseCase(sessionId);
     result.fold(
-      onSuccess: (results) => emit(
-        QuizState.completed(
-          session: state.session!,
-          results: results,
-          mcqSelectionByQuestionId: state.mcqSelectionByQuestionId,
-          writtenTextByQuestionId: state.writtenTextByQuestionId,
-          answerResultsByQuestionId: state.answerResultsByQuestionId,
-        ),
-      ),
+      onSuccess: (results) {
+        final elapsedSeconds = _quizStartTime != null
+            ? DateTime.now().difference(_quizStartTime!).inSeconds
+            : 0;
+        getIt<RewardsCubit>().completeActivity(
+          xpGained: results.xpEarned,
+          quizAccuracy: results.scorePercent.toDouble(),
+          subject: state.session?.moduleLabel,
+          practiceSeconds: elapsedSeconds,
+        );
+        emit(
+          QuizState.completed(
+            session: state.session!,
+            results: results,
+            mcqSelectionByQuestionId: state.mcqSelectionByQuestionId,
+            writtenTextByQuestionId: state.writtenTextByQuestionId,
+            answerResultsByQuestionId: state.answerResultsByQuestionId,
+          ),
+        );
+      },
       onFailure: (f) => emit(QuizState.failure(f.message)),
     );
   }
@@ -177,6 +195,7 @@ class QuizCubit extends Cubit<QuizState> {
     );
     result.fold(
       onSuccess: (session) {
+        _quizStartTime = DateTime.now();
         emit(
           QuizState.inProgress(
             session: session,
@@ -325,15 +344,26 @@ class QuizCubit extends Cubit<QuizState> {
     );
 
     result.fold(
-      onSuccess: (r) => emit(
-        QuizState.completed(
-          session: session,
-          results: r,
-          mcqSelectionByQuestionId: snapshot.mcqSelectionByQuestionId,
-          writtenTextByQuestionId: snapshot.writtenTextByQuestionId,
-          answerResultsByQuestionId: snapshot.answerResultsByQuestionId,
-        ),
-      ),
+      onSuccess: (r) {
+        final elapsedSeconds = _quizStartTime != null
+            ? DateTime.now().difference(_quizStartTime!).inSeconds
+            : 0;
+        getIt<RewardsCubit>().completeActivity(
+          xpGained: r.xpEarned,
+          quizAccuracy: r.scorePercent.toDouble(),
+          subject: session.moduleLabel,
+          practiceSeconds: elapsedSeconds,
+        );
+        emit(
+          QuizState.completed(
+            session: session,
+            results: r,
+            mcqSelectionByQuestionId: snapshot.mcqSelectionByQuestionId,
+            writtenTextByQuestionId: snapshot.writtenTextByQuestionId,
+            answerResultsByQuestionId: snapshot.answerResultsByQuestionId,
+          ),
+        );
+      },
       onFailure: (f) => emit(snapshot),
     );
   }
