@@ -6,7 +6,6 @@ import 'package:elara/features/auth/domain/entities/user_entity.dart';
 import 'package:elara/features/teacher/domain/dashboard/entities/teacher_profile_entity.dart';
 import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_home_cubit.dart';
 import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_home_state.dart';
-import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,16 +34,14 @@ class TeacherProfileOverviewBody extends StatelessWidget {
         children: [
           SizedBox(height: AppSpacing.spacingMd.h),
 
-          // Avatar & Name
+          // ── Profile Header ──────────────────────────────────────────────
           Center(
             child: CircleAvatar(
-              radius: 46.r,
-              backgroundColor: Theme.of(
-                context,
-              ).colorScheme.surfaceContainerHighest,
+              radius: 39.r,
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: Icon(
                 Icons.school_rounded,
-                size: 52.sp,
+                size: 40.sp,
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
@@ -53,205 +50,260 @@ class TeacherProfileOverviewBody extends StatelessWidget {
           Text(
             user?.fullName ?? profileData.fullName,
             textAlign: TextAlign.center,
-            style: AppTypography.h4(
+            style: AppTypography.h3(
               color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
-          SizedBox(height: AppSpacing.spacing2xl.h),
+          SizedBox(height: 4.h),
+          Text(
+            _buildSubjectsLabel(context),
+            textAlign: TextAlign.center,
+            style: AppTypography.bodyLarge(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          SizedBox(height: AppSpacing.spacingXl.h),
 
-          // Contact Info Card
+          // ── Info Card ───────────────────────────────────────────────────
           Container(
             padding: EdgeInsets.all(AppSpacing.spacingLg.w),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHigh,
+              color: AppColors.white,
               borderRadius: BorderRadius.circular(AppRadius.radiusXl.r),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.email_rounded,
-                      size: 16.sp,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    SizedBox(width: AppSpacing.spacingMd.w),
-                    Text(
-                      user?.email ?? 'teacher@example.com',
-                      style: AppTypography.labelMedium(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
+                _InfoRow(
+                  icon: Icons.email_outlined,
+                  text: user?.email ?? 'teacher@example.com',
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                  child: const Divider(
+                    height: 1,
+                    color: AppColors.neutral200,
+                  ),
+                ),
+                _InfoRow(
+                  icon: Icons.phone_outlined,
+                  text: user?.phone ?? '+20 10 12345678',
                 ),
               ],
             ),
           ),
           SizedBox(height: AppSpacing.spacingXl.h),
 
-          // Stats Row
-          Row(
-            children: [
-              Expanded(
-                child: _TeacherStatCard(
-                  color: AppColors.brandPrimary500,
-                  icon: Icons.group_rounded,
-                  label: 'Total Groups',
-                  value: '${profileData.groupCount}',
-                ),
-              ),
-              SizedBox(width: AppSpacing.spacingMd.w),
-              Expanded(
-                child: _TeacherStatCard(
-                  color: AppColors.brandSecondary500,
-                  icon: Icons.check_circle_outline_rounded,
-                  label: 'Avg. Completion',
-                  value: '${(profileData.avgCompletion * 100).toInt()}%',
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: AppSpacing.spacing2xl.h),
-
-          // Groups Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Groups',
-                style: AppTypography.h5(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () => context
-                    .read<TeacherProfileCubit>()
-                    .requestPlaceholderSnack('Add Group coming soon.'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.brandPrimary500,
-                  foregroundColor: AppColors.white,
-                  elevation: 0,
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 0),
-                  minimumSize: Size(0, 32.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Add',
-                      style: AppTypography.labelSmall(color: AppColors.white),
-                    ),
-                    SizedBox(width: 4.w),
-                    Icon(Icons.add_rounded, size: 14.sp),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: AppSpacing.spacingLg.h),
-
-          // Groups Row
-          BlocBuilder<TeacherHomeCubit, TeacherHomeState>(
-            builder: (context, homeState) {
-              if (homeState is TeacherHomeLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (homeState is TeacherHomeLoaded) {
-                final groups = homeState.groups;
-                if (groups.isEmpty) {
-                  return Text(
-                    'No groups created yet.',
-                    style: AppTypography.bodyMedium(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  );
-                }
-                return Wrap(
-                  spacing: AppSpacing.spacingXl.w,
-                  runSpacing: AppSpacing.spacingLg.h,
-                  children: groups.map((group) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircleAvatar(
-                          radius: 28.r,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
-                          child: Icon(
-                            Icons.class_rounded,
-                            size: 32.sp,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        SizedBox(height: AppSpacing.spacingSm.h),
-                        Text(
-                          group.name,
-                          style: AppTypography.labelSmall(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                );
-              }
-              return const SizedBox();
-            },
-          ),
-          SizedBox(height: 100.h),
+          // ── Stats Grid ──────────────────────────────────────────────────
+          _StatsGrid(profileData: profileData),
         ],
       ),
     );
   }
+
+  String _buildSubjectsLabel(BuildContext context) {
+    final homeState = context.watch<TeacherHomeCubit>().state;
+    if (homeState is TeacherHomeLoaded && homeState.groups.isNotEmpty) {
+      final subjects = homeState.groups
+          .map((g) => g.subject)
+          .where((s) => s.isNotEmpty)
+          .toSet()
+          .toList();
+      if (subjects.isNotEmpty) return subjects.join(', ');
+    }
+    return 'Science, Mathematics';
+  }
 }
 
-class _TeacherStatCard extends StatelessWidget {
-  const _TeacherStatCard({
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 16.sp, color: AppColors.neutral400),
+        SizedBox(width: AppSpacing.spacingMd.w),
+        Expanded(
+          child: Text(
+            text,
+            style: AppTypography.bodyMedium(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatsGrid extends StatelessWidget {
+  const _StatsGrid({required this.profileData});
+
+  final TeacherProfileEntity profileData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _GlowStatCard(
+                color: AppColors.brandPrimary500,
+                icon: Icons.person_outline_rounded,
+                value: '${profileData.totalStudentsCount}',
+                label: 'Total Students',
+              ),
+            ),
+            SizedBox(width: AppSpacing.spacingMd.w),
+            Expanded(
+              child: _GlowStatCard(
+                color: AppColors.brandSecondary500,
+                icon: Icons.people_outline_rounded,
+                value: '${profileData.groupCount}',
+                label: 'Active Groups',
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: AppSpacing.spacingMd.h),
+        Row(
+          children: [
+            Expanded(
+              child: _GlowStatCard(
+                color: AppColors.brandAccent500,
+                icon: Icons.route_outlined,
+                value: '${profileData.roadmapsCreated}',
+                label: 'Roadmaps Created',
+              ),
+            ),
+            SizedBox(width: AppSpacing.spacingMd.w),
+            Expanded(
+              child: _GlowStatCard(
+                color: AppColors.success500,
+                icon: Icons.timelapse_outlined,
+                value: '${profileData.yearsTeaching}',
+                label: 'Years Teaching',
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _GlowStatCard extends StatelessWidget {
+  const _GlowStatCard({
     required this.color,
     required this.icon,
-    required this.label,
     required this.value,
+    required this.label,
   });
 
   final Color color;
   final IconData icon;
-  final String label;
   final String value;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(AppSpacing.spacingLg.w),
+    final radius = BorderRadius.circular(AppRadius.radiusXl.r);
+    final gradient = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color.lerp(color, AppColors.white, 0.12) ?? color,
+        color,
+      ],
+    );
+
+    return DecoratedBox(
       decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(AppRadius.radiusLg.r),
+        borderRadius: radius,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 16.sp, color: AppColors.white),
-              SizedBox(width: AppSpacing.spacingXs.w),
-              Expanded(
-                child: Text(
-                  label,
-                  style: AppTypography.labelSmall(color: AppColors.white),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+      child: ClipRRect(
+        borderRadius: radius,
+        clipBehavior: Clip.hardEdge,
+        child: Stack(
+          clipBehavior: Clip.hardEdge,
+          children: [
+            // Gradient background
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(gradient: gradient),
+              ),
+            ),
+            // White half-ellipse glow at top — full width
+            Positioned(
+              top: -70.h,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: AppColors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: SizedBox(
+                      width: 250.w,
+                      height: 150.w,
+                    ),
+                  ),
                 ),
               ),
-            ],
-          ),
-          SizedBox(height: AppSpacing.spacingMd.h),
-          Text(value, style: AppTypography.h4(color: AppColors.white)),
-        ],
+            ),
+            // Content
+            Center(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  AppSpacing.spacingLg.w,
+                  AppSpacing.spacing2xl.h,
+                  AppSpacing.spacingLg.w,
+                  AppSpacing.spacing2xl.h,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(icon, size: 32.sp, color: AppColors.white),
+                    SizedBox(height: AppSpacing.spacingLg.h),
+                    Text(
+                      value,
+                      textAlign: TextAlign.center,
+                      style: AppTypography.h5(color: AppColors.white),
+                    ),
+                    Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      style: AppTypography.bodySmall(
+                        color: AppColors.white.withValues(alpha: 0.8),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

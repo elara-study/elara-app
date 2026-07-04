@@ -13,6 +13,15 @@ class TeacherProfileEntity {
   /// Average completion percentage across all groups (0.0 – 1.0).
   final double avgCompletion;
 
+  /// Total number of students across all groups.
+  final int totalStudentsCount;
+
+  /// Number of roadmaps created by this teacher.
+  final int roadmapsCreated;
+
+  /// Years of teaching experience.
+  final int yearsTeaching;
+
   const TeacherProfileEntity({
     required this.id,
     required this.firstName,
@@ -20,6 +29,9 @@ class TeacherProfileEntity {
     required this.groupCount,
     required this.activeStudentCount,
     required this.avgCompletion,
+    this.totalStudentsCount = 0,
+    this.roadmapsCreated = 0,
+    this.yearsTeaching = 0,
   });
 
   String get fullName => '$firstName $lastName';
