@@ -11,14 +11,13 @@ import 'package:elara/features/student/presentation/rewards/widgets/badge_card.d
 import 'package:elara/features/student/presentation/rewards/widgets/leaderboard_entry_tile.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/pill_tab_bar.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RewardsScreen extends StatelessWidget {
   const RewardsScreen({super.key});
-
-  static const _tabs = [Tab(text: 'Badges'), Tab(text: 'Leaderboard')];
 
   // Shared XP formatter: 1250 → "1,250"
   static String _fmt(int n) {
@@ -32,7 +31,7 @@ class RewardsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const AppGlassHeader(title: 'Rewards'),
+      appBar: AppGlassHeader(title: context.l10n.rewardsTitle),
       body: BlocBuilder<RewardsCubit, RewardsState>(
         builder: (context, state) {
           if (state is RewardsInitial || state is RewardsLoading) {
@@ -64,7 +63,7 @@ class RewardsScreen extends StatelessWidget {
                       onPressed: () =>
                           context.read<RewardsCubit>().loadRewards(),
                       child: Text(
-                        'Try again',
+                        context.l10n.commonTryAgain,
                         style: AppTypography.button(
                           color: AppColors.brandPrimary500,
                         ),
@@ -78,7 +77,7 @@ class RewardsScreen extends StatelessWidget {
 
           if (state is RewardsLoaded) {
             return DefaultTabController(
-              length: _tabs.length,
+              length: 2,
               child: Builder(
                 builder: (context) {
                   final tabController = DefaultTabController.of(context);
@@ -100,9 +99,12 @@ class RewardsScreen extends StatelessWidget {
                               fmt: _fmt,
                             ),
                             SizedBox(height: AppSpacing.spacing2xl.h),
-                            const PillTabBar(
-                              tabs: _tabs,
-                              padding: EdgeInsets.symmetric(
+                            PillTabBar(
+                              tabs: [
+                                Tab(text: context.l10n.rewardsBadges),
+                                Tab(text: context.l10n.rewardsLeaderboard),
+                              ],
+                              padding: const EdgeInsets.symmetric(
                                 vertical: AppSpacing.spacingSm,
                               ),
                             ),
@@ -140,13 +142,13 @@ class _AchievementsCard extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Achievements',
+          context.l10n.rewardsAchievements,
           style: AppTypography.h3(
             color: Theme.of(context).colorScheme.onSurface,
           ).copyWith(fontWeight: AppTypography.black),
         ),
         Text(
-          'Track your progress and rewards',
+          context.l10n.rewardsTrackProgress,
           style: AppTypography.bodyLarge(
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
@@ -161,7 +163,7 @@ class _AchievementsCard extends StatelessWidget {
                 index: 0,
                 child: AchievementStatCard(
                   value: fmt(profile.totalXp),
-                  label: 'Total XP',
+                  label: context.l10n.rewardsTotalXP,
                   svgAsset: 'assets/icons/electric_icon.svg',
                   cardColor: AppColors.brandPrimary500,
                   iconBgColor: AppColors.brandPrimary200,
@@ -175,7 +177,7 @@ class _AchievementsCard extends StatelessWidget {
                 index: 1,
                 child: AchievementStatCard(
                   value: '${profile.lessonsCompleted}',
-                  label: 'Lessons',
+                  label: context.l10n.rewardsLessons,
                   svgAsset: 'assets/icons/book_icon.svg',
                   cardColor: AppColors.success500,
                   iconBgColor: AppColors.success200,
@@ -195,8 +197,8 @@ class _AchievementsCard extends StatelessWidget {
               child: StaggeredSlideFadeIn(
                 index: 2,
                 child: AchievementStatCard(
-                  value: '${profile.streakDays} days',
-                  label: 'Streak',
+                  value: context.l10n.rewardsDays(profile.streakDays),
+                  label: context.l10n.rewardsStreak,
                   svgAsset: 'assets/icons/fire_icon.svg',
                   cardColor: AppColors.brandSecondary500,
                   iconBgColor: AppColors.brandSecondary200,
@@ -210,7 +212,7 @@ class _AchievementsCard extends StatelessWidget {
                 index: 3,
                 child: AchievementStatCard(
                   value: profile.badgesLabel,
-                  label: 'Badges',
+                  label: context.l10n.rewardsBadges,
                   svgAsset: 'assets/icons/rewards_icon_filled.svg',
                   cardColor: AppColors.brandAccent500,
                   iconBgColor: AppColors.brandAccent200,

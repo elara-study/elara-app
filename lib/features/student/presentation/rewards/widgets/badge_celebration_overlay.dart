@@ -5,6 +5,7 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/rewards/entities/badge_entity.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 
 class BadgeCelebrationOverlay extends StatefulWidget {
@@ -233,7 +234,7 @@ class _BadgeCelebrationOverlayState extends State<BadgeCelebrationOverlay>
                         child: Column(
                           children: [
                             Text(
-                              'NEW BADGE UNLOCKED!',
+                              context.l10n.rewardsNewBadgeUnlocked,
                               textAlign: TextAlign.center,
                               style: AppTypography.labelLarge(
                                 color: AppColors.brandSecondary400,
@@ -283,7 +284,7 @@ class _BadgeCelebrationOverlayState extends State<BadgeCelebrationOverlay>
                             elevation: 8,
                           ),
                           child: Text(
-                            'AWESOME!',
+                            context.l10n.rewardsAwesome,
                             style: AppTypography.labelLarge(color: AppColors.neutral900).copyWith(
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.1,
