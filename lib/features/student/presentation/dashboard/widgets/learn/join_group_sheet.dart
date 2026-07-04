@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:elara/core/theme/app_spacing.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// "Join a Group" modal dialog overlay.
 ///
@@ -70,8 +71,8 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
         if (state is StudentLearnJoinSuccess) {
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Successfully joined the group!'),
+            SnackBar(
+              content: Text(context.l10n.learnJoinSuccess),
               backgroundColor: AppColors.success500,
               behavior: SnackBarBehavior.floating,
             ),
@@ -114,7 +115,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Join a Group',
+                        context.l10n.learnJoinGroup,
                         style: AppTypography.h5(
                           color: cs.onSurface,
                         ).copyWith(fontWeight: AppTypography.extraBold),
@@ -135,7 +136,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                   ),
 
                   Text(
-                    'Enter the group code provided by your teacher',
+                    context.l10n.learnEnterGroupCodeSubtitle,
                     style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
                   ),
 
@@ -157,7 +158,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                         horizontal: AppSpacing.spacingMd.w,
                         vertical: AppSpacing.spacingSm.h,
                       ),
-                      hintText: 'Enter group code (e.g., ABCD1234)',
+                      hintText: context.l10n.learnGroupCodeHintFull,
                       hintStyle: AppTypography.bodySmall(
                         color: cs.onSurfaceVariant,
                       ).copyWith(fontWeight: AppTypography.regular),
@@ -186,10 +187,10 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                     ),
                     validator: (val) {
                       if (val == null || val.trim().isEmpty) {
-                        return 'Please enter a group code';
+                        return context.l10n.learnGroupCodeRequired;
                       }
                       if (val.trim().length < 4) {
-                        return 'Code must be at least 4 characters';
+                        return context.l10n.learnGroupCodeMinLength;
                       }
                       return null;
                     },
@@ -242,7 +243,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                                   ),
                                 )
                               : Text(
-                                  'Join Group',
+                                  context.l10n.learnJoinGroup,
                                   style: AppTypography.labelSmall(
                                     color: ButtonColors.primaryText,
                                   ),

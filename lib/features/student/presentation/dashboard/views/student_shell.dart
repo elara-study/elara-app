@@ -13,6 +13,7 @@ import 'package:elara/features/student/presentation/rewards/widgets/badge_celebr
 import 'package:elara/features/student/presentation/profile/views/student_profile_screen.dart';
 import 'package:elara/features/student/presentation/rewards/views/rewards_screen.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -94,6 +95,13 @@ class _StudentShellState extends State<StudentShell> {
                   child: AppBottomNavBar(
                     currentIndex: currentTab,
                     onTap: (i) => context.read<StudentTabCubit>().goToTab(i),
+                    tabs: [
+                      AppNavTab(label: context.l10n.navHome, assetPath: 'assets/icons/home_icon.svg'),
+                      AppNavTab(label: context.l10n.navLearn, assetPath: 'assets/icons/learn_icon.svg'),
+                      AppNavTab(label: context.l10n.navRewards, assetPath: 'assets/icons/rewards_icon.svg'),
+                      AppNavTab(label: context.l10n.navAlerts, assetPath: 'assets/icons/alerts_icon.svg'),
+                      AppNavTab(label: context.l10n.navProfile, assetPath: 'assets/icons/profile_icon.svg'),
+                    ],
                   ),
                 ),
                 if (_celebratingBadge != null)
