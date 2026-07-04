@@ -1,38 +1,36 @@
+import 'package:elara/config/app_router.dart' show AppRoutes;
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_icon_sizes.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/alerts/presentation/cubits/alerts_cubit.dart';
-import 'package:elara/features/alerts/presentation/cubits/alerts_state.dart';
-import 'package:elara/features/alerts/presentation/widgets/notification_card.dart';
+import 'package:elara/features/notifications/presentation/cubits/notifications_cubit.dart';
+import 'package:elara/features/notifications/presentation/cubits/notifications_state.dart';
+import 'package:elara/features/notifications/presentation/widgets/notification_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
-/// Alerts screen shared across Student, Teacher, and Parent roles.
-///
-/// Displays a list of notification cards with a "Mark all as read" action
-/// and an unread count badge.
-class AlertsScreen extends StatelessWidget {
-  const AlertsScreen({super.key});
+class NotificationsScreen extends StatelessWidget {
+  const NotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
     return BlocProvider(
-      create: (_) => getIt<AlertsCubit>()..loadAlerts(),
+      create: (_) => getIt<NotificationsCubit>()..loadNotifications(),
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         extendBodyBehindAppBar: true,
         appBar: AppGlassHeader(
-          title: 'Alerts',
+          title: 'Notifications',
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () => context.push(AppRoutes.notificationsSettings),
               icon: SvgPicture.asset(
                 'assets/icons/settings_icon.svg',
                 height: AppIconSizes.iconSm.h,
@@ -42,13 +40,13 @@ class AlertsScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: BlocBuilder<AlertsCubit, AlertsState>(
+        body: BlocBuilder<NotificationsCubit, NotificationsState>(
           builder: (context, state) {
             return Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: AppSpacing.spacingLg.w,
               ),
-              child: _AlertsList(state: state),
+              child: _NotificationsList(state: state),
             );
           },
         ),
@@ -58,15 +56,14 @@ class AlertsScreen extends StatelessWidget {
 }
 
 class _TopRow extends StatelessWidget {
-  final AlertsState state;
-
+  final NotificationsState state;
   const _TopRow({required this.state});
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final unreadCount = switch (state) {
-      AlertsLoaded(:final unreadCount) => unreadCount,
+      NotificationsLoaded(:final unreadCount) => unreadCount,
       _ => 0,
     };
 
@@ -74,7 +71,7 @@ class _TopRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
-          onTap: () => context.read<AlertsCubit>().markAllAsRead(),
+          onTap: () => context.read<NotificationsCubit>().markAllAsRead(),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -106,16 +103,16 @@ class _TopRow extends StatelessWidget {
   }
 }
 
-class _AlertsList extends StatelessWidget {
-  final AlertsState state;
-
-  const _AlertsList({required this.state});
+class _NotificationsList extends StatelessWidget {
+  final NotificationsState state;
+  const _NotificationsList({required this.state});
 
   @override
   Widget build(BuildContext context) {
     return switch (state) {
-      AlertsLoading() => const Center(child: CircularProgressIndicator()),
-      AlertsError(:final message) => Center(
+      NotificationsLoading() =>
+        const Center(child: CircularProgressIndicator()),
+      NotificationsError(:final message) => Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -135,38 +132,39 @@ class _AlertsList extends StatelessWidget {
           ],
         ),
       ),
-      AlertsLoaded(:final alerts) when alerts.isEmpty => Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.notifications_none_rounded,
-              size: 48.sp,
-              color: AppColors.neutral300,
-            ),
-            SizedBox(height: AppSpacing.spacingMd.h),
-            Text(
-              'No alerts yet',
-              style: AppTypography.h5(
-                color: Theme.of(context).colorScheme.onSurface,
+      NotificationsLoaded(:final notifications) when notifications.isEmpty =>
+        Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.notifications_none_rounded,
+                size: 48.sp,
+                color: AppColors.neutral300,
               ),
-            ),
-            SizedBox(height: 6.h),
-            Text(
-              'You\'re all caught up!',
-              style: AppTypography.bodyMedium(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              SizedBox(height: AppSpacing.spacingMd.h),
+              Text(
+                'No notifications yet',
+                style: AppTypography.h5(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 6.h),
+              Text(
+                'You\'re all caught up!',
+                style: AppTypography.bodyMedium(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      AlertsLoaded(:final alerts) => ListView.builder(
+      NotificationsLoaded(:final notifications) => ListView.builder(
         padding: EdgeInsets.only(
           top: kToolbarHeight + 62.h,
           bottom: 120.h,
         ),
-        itemCount: alerts.length + 1,
+        itemCount: notifications.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return Padding(
@@ -176,7 +174,9 @@ class _AlertsList extends StatelessWidget {
           }
           return Padding(
             padding: EdgeInsets.only(bottom: AppSpacing.spacingMd.h),
-            child: NotificationCard(alert: alerts[index - 1]),
+            child: NotificationCard(
+              notification: notifications[index - 1],
+            ),
           );
         },
       ),

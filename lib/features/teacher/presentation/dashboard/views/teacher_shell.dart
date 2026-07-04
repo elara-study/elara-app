@@ -1,5 +1,5 @@
 import 'package:elara/config/dependency_injection.dart';
-import 'package:elara/features/alerts/presentation/views/alerts_screen.dart';
+import 'package:elara/features/notifications/presentation/views/notifications_screen.dart';
 import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_home_cubit.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_groups_cubit.dart';
 import 'package:elara/features/teacher/presentation/roadmap/cubits/teacher_roadmaps_cubit.dart';
@@ -26,7 +26,7 @@ class _TeacherShellState extends State<TeacherShell> {
     TeacherHomeScreen(),
     TeacherGroupsScreen(),
     TeacherRoadmapsScreen(),
-    AlertsScreen(),
+    NotificationsScreen(),
     TeacherProfileScreen(),
   ];
 

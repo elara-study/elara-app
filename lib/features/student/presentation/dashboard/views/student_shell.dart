@@ -1,5 +1,5 @@
 import 'package:elara/config/dependency_injection.dart';
-import 'package:elara/features/alerts/presentation/views/alerts_screen.dart';
+import 'package:elara/features/notifications/presentation/views/notifications_screen.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/home/student_home_cubit.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/learn/student_learn_cubit.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/tab/student_tab_cubit.dart';
@@ -25,7 +25,7 @@ class StudentShell extends StatelessWidget {
     HomeScreen(),
     LearnScreen(),
     RewardsScreen(),
-    AlertsScreen(),
+    NotificationsScreen(),
     StudentProfileScreen(),
   ];
 

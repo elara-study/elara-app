@@ -13,6 +13,7 @@ import 'package:elara/features/notifications/domain/usecases/mark_notification_r
 import 'package:elara/features/notifications/domain/usecases/register_device_token_use_case.dart';
 import 'package:elara/features/notifications/domain/usecases/remove_device_token_use_case.dart';
 import 'package:elara/features/notifications/domain/usecases/update_notification_preferences_use_case.dart';
+import 'package:elara/features/notifications/presentation/cubits/notifications_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -61,5 +62,15 @@ void setupNotificationDI() {
   );
   getIt.registerLazySingleton<UpdateNotificationPreferencesUseCase>(
     () => UpdateNotificationPreferencesUseCase(getIt<NotificationRepository>()),
+  );
+
+  // ── Presentation ────────────────────────────────────────────────────────
+  getIt.registerFactory<NotificationsCubit>(
+    () => NotificationsCubit(
+      getNotificationsUseCase: getIt<GetNotificationsUseCase>(),
+      getUnreadCountUseCase: getIt<GetUnreadCountUseCase>(),
+      markAllNotificationsReadUseCase: getIt<MarkAllNotificationsReadUseCase>(),
+      markNotificationReadUseCase: getIt<MarkNotificationReadUseCase>(),
+    ),
   );
 }

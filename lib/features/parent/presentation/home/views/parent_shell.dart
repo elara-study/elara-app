@@ -1,6 +1,6 @@
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_colors.dart';
-import 'package:elara/features/alerts/presentation/views/alerts_screen.dart';
+import 'package:elara/features/notifications/presentation/views/notifications_screen.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_state.dart';
 import 'package:elara/features/parent/presentation/children/views/parent_children_screen.dart';
@@ -23,7 +23,7 @@ class ParentShell extends StatelessWidget {
     ParentHomeScreen(),
     ParentChildrenScreen(),
     ParentReportsScreen(),
-    AlertsScreen(),
+    NotificationsScreen(),
     ParentProfileScreen(),
   ];
 

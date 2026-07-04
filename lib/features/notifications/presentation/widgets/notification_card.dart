@@ -3,19 +3,14 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/alerts/domain/entities/alert_entity.dart';
+import 'package:elara/features/notifications/domain/entities/notification_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// A single notification card matching the Figma Alerts design.
-///
-/// White card with rounded corners, icon circle on the left, title + date
-/// on the first row, and body text below.
 class NotificationCard extends StatelessWidget {
-  final AlertEntity alert;
-
-  const NotificationCard({super.key, required this.alert});
+  final NotificationEntity notification;
+  const NotificationCard({super.key, required this.notification});
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +36,16 @@ class NotificationCard extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(12.r),
               child: SvgPicture.asset(
-                alert.iconAsset,
+                _resolveIcon(notification.type),
                 fit: BoxFit.contain,
                 colorFilter: ColorFilter.mode(
-                  alert.iconColor,
+                  _resolveColor(notification.type),
                   BlendMode.srcIn,
                 ),
               ),
             ),
           ),
-
           SizedBox(width: AppSpacing.spacingMd.w),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +55,7 @@ class NotificationCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        alert.title,
+                        notification.type,
                         style: AppTypography.labelRegular(
                           color: cs.onSurface,
                         ),
@@ -72,7 +65,7 @@ class NotificationCard extends StatelessWidget {
                     ),
                     SizedBox(width: AppSpacing.spacingSm.w),
                     Text(
-                      alert.date,
+                      _formatDate(notification.notificationDate),
                       style: AppTypography.caption(
                         color: cs.onSurfaceVariant,
                       ),
@@ -81,7 +74,7 @@ class NotificationCard extends StatelessWidget {
                 ),
                 SizedBox(height: AppSpacing.spacing2xs.h),
                 Text(
-                  alert.body,
+                  notification.message,
                   style: AppTypography.bodySmall(
                     color: cs.onSurfaceVariant,
                   ),
@@ -94,5 +87,41 @@ class NotificationCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _resolveIcon(String type) {
+    if (type.toLowerCase().contains('lesson')) {
+      return 'assets/icons/book_icon.svg';
+    }
+    if (type.toLowerCase().contains('achievement')) {
+      return 'assets/icons/rewards_icon.svg';
+    }
+    if (type.toLowerCase().contains('announcement')) {
+      return 'assets/icons/alerts_icon_filled.svg';
+    }
+    return 'assets/icons/alerts_icon_filled.svg';
+  }
+
+  Color _resolveColor(String type) {
+    if (type.toLowerCase().contains('lesson')) {
+      return AppColors.brandPrimary500;
+    }
+    if (type.toLowerCase().contains('achievement')) {
+      return AppColors.brandAccent500;
+    }
+    if (type.toLowerCase().contains('announcement')) {
+      return AppColors.brandSecondary500;
+    }
+    return AppColors.brandPrimary500;
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final diff = now.difference(date);
+    if (diff.inSeconds < 60) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes} min ago';
+    if (diff.inHours < 24) return '${diff.inHours} hour ago';
+    if (diff.inDays < 7) return '${diff.inDays} day ago';
+    return '${date.day}/${date.month}/${date.year}';
   }
 }

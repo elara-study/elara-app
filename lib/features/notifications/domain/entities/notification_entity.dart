@@ -27,6 +27,22 @@ class NotificationEntity extends Equatable {
     required this.notificationDate,
   });
 
+  NotificationEntity copyWith({
+    String? id,
+    String? message,
+    bool? isRead,
+    String? type,
+    DateTime? notificationDate,
+  }) {
+    return NotificationEntity(
+      id: id ?? this.id,
+      message: message ?? this.message,
+      isRead: isRead ?? this.isRead,
+      type: type ?? this.type,
+      notificationDate: notificationDate ?? this.notificationDate,
+    );
+  }
+
   @override
   List<Object?> get props => [id, message, isRead, type, notificationDate];
 }
