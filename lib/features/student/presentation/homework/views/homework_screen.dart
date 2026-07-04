@@ -8,6 +8,7 @@ import 'package:elara/shared/widgets/assignment_overview_card.dart';
 import 'package:elara/features/student/presentation/homework/widgets/homework_problem_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -53,8 +54,8 @@ class HomeworkScreen extends StatelessWidget {
               body: Center(child: CircularProgressIndicator()),
             ),
             HomeworkError(:final message) => Scaffold(
-              appBar: const AppGlassHeader(
-                title: 'Homework',
+              appBar: AppGlassHeader(
+                title: context.l10n.homeworkTitle,
                 automaticallyImplyLeading: true,
               ),
               body: Center(
@@ -82,7 +83,7 @@ class HomeworkScreen extends StatelessWidget {
                               groupId: groupId,
                               moduleId: moduleId,
                             ),
-                        child: const Text('Try again'),
+                        child: Text(context.l10n.commonTryAgain),
                       ),
                     ],
                   ),
@@ -92,7 +93,7 @@ class HomeworkScreen extends StatelessWidget {
             HomeworkLoaded(:final homework) => Scaffold(
               extendBodyBehindAppBar: true,
               appBar: AppGlassHeader(
-                title: 'Homework',
+                title: context.l10n.homeworkTitle,
                 subtitle: homework.subject.isNotEmpty
                     ? '${homework.subject} • ${homework.moduleTitle}'
                     : homework.moduleTitle,
@@ -115,7 +116,7 @@ class HomeworkScreen extends StatelessWidget {
                   SizedBox(height: AppSpacing.spacing2xl.h),
 
                   Text(
-                    "Problem List",
+                    context.l10n.homeworkProblemList,
                     style: AppTypography.h5(
                       color: cs.onSurface,
                     ).copyWith(fontWeight: AppTypography.extraBold),

@@ -6,6 +6,7 @@ import 'package:elara/features/student/domain/homework/entities/homework_problem
 import 'package:elara/features/student/domain/homework/entities/homework_problem_status.dart';
 import 'package:elara/features/student/presentation/homework/cubits/homework_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -81,7 +82,7 @@ class HomeworkProblemCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          'Grade: ',
+                          context.l10n.homeworkGradeLabel,
                           style: AppTypography.labelSmall(
                             color: AppColors.success700,
                           ).copyWith(fontWeight: AppTypography.bold),
@@ -167,7 +168,7 @@ class HomeworkProblemCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Submit Answer',
+                              context.l10n.homeworkSubmitAnswer,
                               style: AppTypography.labelLarge(
                                 color: ButtonColors.primaryText,
                               ),
@@ -240,7 +241,7 @@ class _ProblemBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
       ),
       child: Text(
-        'PROBLEM $number',
+        context.l10n.homeworkProblemBadge(number),
         style: AppTypography.labelSmall(
           color: AppColors.neutral50,
         ).copyWith(fontWeight: AppTypography.semiBold),
@@ -257,13 +258,22 @@ class _StatusLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, color) = switch (status) {
-      HomeworkProblemStatus.active => ('Active', AppColors.brandSecondary500),
-      HomeworkProblemStatus.pending => ('Pending', AppColors.warning500),
+      HomeworkProblemStatus.active => (
+        context.l10n.homeworkStatusActive,
+        AppColors.brandSecondary500
+      ),
+      HomeworkProblemStatus.pending => (
+        context.l10n.homeworkStatusPending,
+        AppColors.warning500
+      ),
       HomeworkProblemStatus.submitted => (
-        'Submitted',
+        context.l10n.homeworkStatusSubmitted,
         AppColors.brandPrimary500,
       ),
-      HomeworkProblemStatus.graded => ('Graded', AppColors.success500),
+      HomeworkProblemStatus.graded => (
+        context.l10n.homeworkStatusGraded,
+        AppColors.success500
+      ),
     };
 
     return Text(
@@ -381,7 +391,7 @@ class _ShadowTextFieldState extends State<_ShadowTextField> {
         minLines: 3,
         style: AppTypography.bodySmall(color: cs.onSurface),
         decoration: InputDecoration(
-          hintText: 'Type your answer here...',
+          hintText: context.l10n.homeworkTypeAnswerHint,
           hintStyle: AppTypography.bodySmall(color: cs.onSurfaceVariant),
           filled: true,
           fillColor: Colors.transparent,
