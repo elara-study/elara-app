@@ -1,3 +1,4 @@
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/teacher/domain/group/entities/teacher_student_insight_entity.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_student_profile_cubit.dart';
 import 'package:flutter/material.dart';
@@ -65,9 +66,7 @@ class EditInsightManualDialog extends StatelessWidget {
                 paragraphs,
               );
               Navigator.pop(dialogContext);
-              ScaffoldMessenger.of(parentContext).showSnackBar(
-                const SnackBar(content: Text('Insight updated successfully')),
-              );
+              AppSnackBar.success(parentContext, 'Insight updated successfully');
             },
           );
         },

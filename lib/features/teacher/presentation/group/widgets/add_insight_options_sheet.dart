@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/shared/widgets/app_form_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,12 +63,9 @@ Future<void> showAddInsightOptionsSheet(
                           onTap: () {
                             Navigator.of(dialogContext).pop();
                             if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Elara is drafting an insight for $studentName',
-                                ),
-                              ),
+                            AppSnackBar.info(
+                              context,
+                              'Elara is drafting an insight for $studentName',
                             );
                           },
                           child: Padding(

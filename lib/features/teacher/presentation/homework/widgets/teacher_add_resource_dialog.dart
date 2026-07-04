@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -86,9 +87,7 @@ class _TeacherAddResourceDialogContentState
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to pick file: $e')),
-        );
+        AppSnackBar.error(context, 'Failed to pick file: $e');
       }
     }
   }
@@ -100,12 +99,9 @@ class _TeacherAddResourceDialogContentState
         : _pickedFilePath;
 
     if (title.isEmpty || url == null || url.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Title and ${widget.type == TeacherResourceType.link ? 'URL' : 'File'} are required',
-          ),
-        ),
+      AppSnackBar.warning(
+        context,
+        'Title and ${widget.type == TeacherResourceType.link ? 'URL' : 'File'} are required',
       );
       return;
     }

@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -68,11 +69,7 @@ class GroupDialog extends StatelessWidget {
                 (config.showRoadmapName && roadmapNameValue.isEmpty) ||
                 subject == null ||
                 grade == null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Please fill all required fields'),
-                ),
-              );
+              AppSnackBar.warning(context, 'Please fill all required fields');
               return;
             }
             onSubmit(titleValue, subject!, grade!, roadmapNameValue);

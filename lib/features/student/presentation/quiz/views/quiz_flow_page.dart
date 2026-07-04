@@ -1,4 +1,5 @@
 import 'package:elara/config/dependency_injection.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/student/presentation/quiz/cubits/quiz_cubit.dart';
 import 'package:elara/features/student/presentation/quiz/quiz_route_args.dart';
 import 'package:elara/features/student/presentation/quiz/widgets/quiz_difficulty_sheet.dart';
@@ -122,20 +123,14 @@ class _QuizFlowPageState extends State<QuizFlowPage> {
         listener: (context, state) {
           switch (state.status) {
             case QuizStatus.failure:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message ?? 'Something went wrong'),
-                  backgroundColor: Theme.of(context).colorScheme.error,
-                ),
-              );
+              AppSnackBar.error(context, state.message ?? 'Something went wrong');
             case QuizStatus.hintLoaded:
               final hint = state.hint;
               if (hint != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(hint.content),
-                    duration: const Duration(seconds: 5),
-                  ),
+                AppSnackBar.info(
+                  context,
+                  hint.content,
+                  duration: const Duration(seconds: 5),
                 );
               }
             case QuizStatus.answerSubmitted:

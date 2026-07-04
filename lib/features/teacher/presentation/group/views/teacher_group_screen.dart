@@ -1,5 +1,6 @@
 import 'package:elara/core/theme/app_icon_sizes.dart';
 import 'package:elara/core/theme/app_spacing.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/presentation/group/widgets/students_tab.dart';
 import 'package:elara/features/teacher/presentation/group/widgets/teacher_announcements_tab.dart';
@@ -30,9 +31,7 @@ class TeacherGroupScreen extends StatelessWidget {
         if (state is TeacherGroupDeleted) {
           Navigator.of(context).pop();
         } else if (state is TeacherGroupError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+          AppSnackBar.error(context, state.message);
         }
       },
       child: DefaultTabController(

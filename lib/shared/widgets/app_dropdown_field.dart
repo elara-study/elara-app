@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -153,19 +154,7 @@ class _AppDropdownFieldState extends State<AppDropdownField>
 
   void _showComingSoon() {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '🚀 Coming soon!',
-          style: AppTypography.labelSmall(color: AppColors.white),
-        ),
-        backgroundColor: AppColors.brandPrimary600,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.radiusSm),
-        ),
-      ),
-    );
+    AppSnackBar.info(context, '🚀 Coming soon!');
   }
 
   // ── Build ────────────────────────────────────────────────────────────────────

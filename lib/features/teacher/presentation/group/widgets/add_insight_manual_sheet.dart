@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_student_profile_cubit.dart';
 import 'package:elara/shared/widgets/app_form_dialog.dart';
 import 'package:flutter/material.dart';
@@ -192,9 +193,7 @@ class AddInsightManualDialog extends StatelessWidget {
                 paragraphs,
               );
               Navigator.pop(dialogContext);
-              ScaffoldMessenger.of(parentContext).showSnackBar(
-                const SnackBar(content: Text('Insight saved as draft')),
-              );
+              AppSnackBar.success(parentContext, 'Insight saved as draft');
             },
           );
         },
