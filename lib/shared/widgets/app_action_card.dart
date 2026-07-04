@@ -4,7 +4,6 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/shared/widgets/gradient_glow_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 
 List<BoxShadow> _selectionGlow(Color primaryColor) => [
@@ -86,15 +85,10 @@ class AppActionCard extends StatelessWidget {
                     color: primaryColor,
                     shape: BoxShape.circle,
                   ),
-                  child: SvgPicture.asset(
-                    'assets/icons/people_outline.svg',
-                    width: AppSpacing.spacingXl.w,
-                    height: AppSpacing.spacingXl.w,
-                    fit: BoxFit.scaleDown,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.neutral50,
-                      BlendMode.srcIn,
-                    ),
+                  child: Icon(
+                    icon,
+                    size: AppSpacing.spacingXl.w,
+                    color: AppColors.neutral50,
                   ),
                 ),
 

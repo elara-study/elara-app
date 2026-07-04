@@ -2,13 +2,13 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/features/student/presentation/rewards/widgets/achievement_stat_card.dart';
 import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_home_cubit.dart';
 import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_home_state.dart';
 import 'package:elara/features/teacher/presentation/dashboard/views/chat_with_elara.dart';
 import 'package:elara/shared/widgets/app_action_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
+import 'package:elara/shared/widgets/app_stat_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -145,7 +145,7 @@ class TeacherHomeScreen extends StatelessWidget {
                               title: group.name,
                               subtitle:
                                   '${group.studentCount} students • ${(group.progressPercent * 100).round()}% complete',
-                              icon: Icons.groups_rounded,
+                              icon: Icons.map_outlined,
                               primaryColor: UiHelpers.getGroupPrimaryColor(
                                 group.colorKey,
                               ),
@@ -173,25 +173,20 @@ class TeacherHomeScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           Expanded(
-                            child: AchievementStatCard(
-                              value: '${profile.activeStudentCount}',
+                            child: AppStatTile(
+                              icon: 'assets/icons/profile_icon_filled.svg',
                               label: 'Active Students',
-                              svgAsset: 'assets/icons/graduation_cap_icon.svg',
-                              cardColor: AppColors.brandPrimary600,
-                              iconBgColor: AppColors.brandPrimary700,
-                              textColor: AppColors.brandPrimary100,
+                              value: '${profile.activeStudentCount}',
+                              backgroundColor: AppColors.brandPrimary500,
                             ),
                           ),
                           SizedBox(width: AppSpacing.spacingMd.w),
                           Expanded(
-                            child: AchievementStatCard(
-                              value:
-                                  '${(profile.avgCompletion * 100).round()}%',
+                            child: AppStatTile(
+                              icon: 'assets/icons/check_circle_icon.svg',
                               label: 'Avg. Completion',
-                              svgAsset: 'assets/icons/flag_icon.svg',
-                              cardColor: AppColors.brandSecondary600,
-                              iconBgColor: AppColors.brandSecondary700,
-                              textColor: AppColors.brandSecondary100,
+                              value: '${(profile.avgCompletion * 100).round()}%',
+                              backgroundColor: AppColors.brandSecondary500,
                             ),
                           ),
                         ],

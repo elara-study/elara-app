@@ -9,6 +9,7 @@ class UserEntity extends Equatable {
   final String token;
   // Null until verifyEmail or login issues the refresh token.
   final String? refreshToken;
+  final String? phone;
 
   const UserEntity({
     required this.id,
@@ -17,8 +18,9 @@ class UserEntity extends Equatable {
     required this.role,
     required this.token,
     this.refreshToken,
+    this.phone,
   });
 
   @override
-  List<Object?> get props => [id, fullName, email, role, token, refreshToken];
+  List<Object?> get props => [id, fullName, email, role, token, refreshToken, phone];
 }

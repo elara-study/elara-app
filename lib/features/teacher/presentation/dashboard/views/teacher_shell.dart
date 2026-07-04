@@ -1,6 +1,5 @@
 import 'package:elara/config/dependency_injection.dart';
-import 'package:elara/core/theme/app_colors.dart';
-import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/features/notifications/presentation/views/notifications_screen.dart';
 import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_home_cubit.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_groups_cubit.dart';
 import 'package:elara/features/teacher/presentation/roadmap/cubits/teacher_roadmaps_cubit.dart';
@@ -10,11 +9,8 @@ import 'package:elara/features/teacher/presentation/roadmap/views/teacher_roadma
 import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
 import 'package:elara/features/teacher/presentation/profile/views/teacher_profile_screen.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
-import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:elara/core/theme/app_spacing.dart';
 
 class TeacherShell extends StatefulWidget {
   const TeacherShell({super.key});
@@ -30,7 +26,7 @@ class _TeacherShellState extends State<TeacherShell> {
     TeacherHomeScreen(),
     TeacherGroupsScreen(),
     TeacherRoadmapsScreen(),
-    _ComingSoonPage(label: 'Alerts'),
+    NotificationsScreen(),
     TeacherProfileScreen(),
   ];
 
@@ -66,43 +62,6 @@ class _TeacherShellState extends State<TeacherShell> {
                 currentIndex: _currentTab,
                 onTap: (i) => setState(() => _currentTab = i),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Coming soon placeholder ───────────────────────────────────────────────────
-
-class _ComingSoonPage extends StatelessWidget {
-  final String label;
-
-  const _ComingSoonPage({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      extendBodyBehindAppBar: true,
-      appBar: AppGlassHeader(title: label),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.construction_rounded,
-              size: 48.sp,
-              color: AppColors.neutral300,
-            ),
-            SizedBox(height: AppSpacing.spacingMd.h),
-            Text(label, style: AppTypography.h5(color: cs.onSurface)),
-            SizedBox(height: 6.h),
-            Text(
-              'Coming soon',
-              style: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
             ),
           ],
         ),

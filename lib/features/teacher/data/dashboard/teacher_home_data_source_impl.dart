@@ -61,7 +61,52 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
   Future<TeacherDashboardEntity> getDashboard() async {
     final data = await _fetchHome();
 
-    // 1. Parse Profile
+    // 1. Parse Groups (needed for profile stats)
+    final groupsList = (data['groups'] ?? data['Groups']) as List? ?? [];
+    final groupColorKeys = ['primary', 'orange'];
+    final groups = groupsList.asMap().entries.map((entry) {
+      final index = entry.key;
+      final map = entry.value as Map<String, dynamic>;
+      return TeacherGroupEntity(
+        id: map['id']?.toString() ?? map['Id']?.toString() ?? '',
+        name:
+            map['name']?.toString() ??
+            map['Name']?.toString() ??
+            'Unnamed Group',
+        subject: map['subject']?.toString() ?? map['Subject']?.toString() ?? '',
+        grade: map['grade']?.toString() ?? map['Grade']?.toString() ?? '1',
+        studentCount:
+            (map['studentsCount'] ?? map['StudentsCount'] as num?)?.toInt() ??
+            0,
+        totalLessons: 0,
+        progressPercent: 0.0,
+        colorKey: groupColorKeys[index % groupColorKeys.length],
+      );
+    }).toList();
+
+    // 2. Parse Roadmaps (needed for profile stats)
+    final roadmapsList = (data['roadmaps'] ?? data['Roadmaps']) as List? ?? [];
+    final roadmapColorKeys = ['primary', 'orange'];
+    final roadmaps = roadmapsList.asMap().entries.map((entry) {
+      final index = entry.key;
+      final map = entry.value as Map<String, dynamic>;
+      return TeacherGroupEntity(
+        id: map['id']?.toString() ?? map['Id']?.toString() ?? '',
+        name:
+            map['title']?.toString() ??
+            map['Title']?.toString() ??
+            'Unnamed Roadmap',
+        subject: map['subject']?.toString() ?? map['Subject']?.toString() ?? '',
+        grade: map['grade']?.toString() ?? map['Grade']?.toString() ?? '1',
+        studentCount: 0,
+        totalLessons:
+            (map['lessonsCount'] ?? map['LessonsCount'] as num?)?.toInt() ?? 0,
+        progressPercent: 0.0,
+        colorKey: roadmapColorKeys[index % roadmapColorKeys.length],
+      );
+    }).toList();
+
+    // 3. Parse Profile (after groups/roadmaps so we can use their counts)
     final firstName =
         data['firstName']?.toString() ??
         data['FirstName']?.toString() ??
@@ -76,12 +121,16 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
         (stats['avgCompletion'] ?? stats['AvgCompletion'])
             as Map<String, dynamic>? ??
         {};
-    final groupsRaw = (data['groups'] ?? data['Groups']) as List? ?? [];
+    final totalStudentsCount =
+        (stats['totalStudents'] ?? stats['TotalStudents'] as num?)?.toInt() ??
+        groups.fold<int>(0, (sum, g) => sum + g.studentCount);
+    final yearsTeaching =
+        (stats['yearsTeaching'] ?? stats['YearsTeaching'] as num?)?.toInt() ?? 0;
     final profile = TeacherProfileEntity(
       id: 'teacher-1',
       firstName: firstName,
       lastName: '',
-      groupCount: groupsRaw.length,
+      groupCount: groups.length,
       activeStudentCount:
           (activeStudents['count'] ?? activeStudents['Count'] as num?)
               ?.toInt() ??
@@ -90,48 +139,10 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
           (avgCompletion['percentage'] ?? avgCompletion['Percentage'] as num?)
               ?.toDouble() ??
           0.0,
+      totalStudentsCount: totalStudentsCount,
+      roadmapsCreated: roadmaps.length,
+      yearsTeaching: yearsTeaching,
     );
-
-    // 2. Parse Groups
-    final groupsList = (data['groups'] ?? data['Groups']) as List? ?? [];
-    final groups = groupsList.map((g) {
-      final map = g as Map<String, dynamic>;
-      return TeacherGroupEntity(
-        id: map['id']?.toString() ?? map['Id']?.toString() ?? '',
-        name:
-            map['name']?.toString() ??
-            map['Name']?.toString() ??
-            'Unnamed Group',
-        subject: map['subject']?.toString() ?? map['Subject']?.toString() ?? '',
-        grade: map['grade']?.toString() ?? map['Grade']?.toString() ?? '1',
-        studentCount:
-            (map['studentsCount'] ?? map['StudentsCount'] as num?)?.toInt() ??
-            0,
-        totalLessons: 0,
-        progressPercent: 0.0,
-        colorKey: 'primary',
-      );
-    }).toList();
-
-    // 3. Parse Roadmaps
-    final roadmapsList = (data['roadmaps'] ?? data['Roadmaps']) as List? ?? [];
-    final roadmaps = roadmapsList.map((r) {
-      final map = r as Map<String, dynamic>;
-      return TeacherGroupEntity(
-        id: map['id']?.toString() ?? map['Id']?.toString() ?? '',
-        name:
-            map['title']?.toString() ??
-            map['Title']?.toString() ??
-            'Unnamed Roadmap',
-        subject: map['subject']?.toString() ?? map['Subject']?.toString() ?? '',
-        grade: map['grade']?.toString() ?? map['Grade']?.toString() ?? '1',
-        studentCount: 0,
-        totalLessons:
-            (map['lessonsCount'] ?? map['LessonsCount'] as num?)?.toInt() ?? 0,
-        progressPercent: 0.0,
-        colorKey: 'secondary',
-      );
-    }).toList();
 
     // 4. Parse Activity
     final activityList =
@@ -175,8 +186,9 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
         id: 'activity_$index',
         title: title,
         subtitle: subtitle,
-        timeAgo:
-            map['date']?.toString() ?? map['Date']?.toString() ?? 'Just now',
+        timeAgo: _formatActivityDate(
+          map['date']?.toString() ?? map['Date']?.toString(),
+        ),
         iconAsset: iconAsset,
         iconColor: iconColor,
       );
@@ -301,5 +313,27 @@ class TeacherHomeDataSourceImpl implements TeacherHomeDataSource {
     final requestData = {'name': title, 'grade': gradeInt, 'subject': subject};
 
     await _dio.post(ApiConstants.teacherRoadmaps, data: requestData);
+  }
+
+  String _formatActivityDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) return 'Just now';
+    try {
+      final date = DateTime.parse(dateString);
+      final day = date.day;
+      final month = _monthName(date.month);
+      final hour = date.hour.toString().padLeft(2, '0');
+      final minute = date.minute.toString().padLeft(2, '0');
+      return '$day $month, $hour:$minute';
+    } catch (_) {
+      return dateString;
+    }
+  }
+
+  String _monthName(int month) {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    return months[month - 1];
   }
 }

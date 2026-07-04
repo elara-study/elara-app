@@ -4,6 +4,10 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Required on Android 13+ (API 33+) to show notification permission dialog. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Required for notification vibration on older API levels. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:label="elara"
@@ -36,6 +40,19 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- Sets the default FCM notification channel so background messages
+             from the FCM console land on the correct high-importance channel
+             that we create in Dart via flutter_local_notifications. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="elara_notifications_channel" />
+
+        <!-- Default notification icon shown in the status bar for FCM messages
+             displayed by the system (background / terminated state). -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

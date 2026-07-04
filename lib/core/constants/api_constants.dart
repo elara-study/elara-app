@@ -137,6 +137,41 @@ class ApiConstants {
   static const String parentProfile = 'api/v1/parent/profile';
   static const String alerts = 'api/v1/alerts';
 
+  // ── Notifications (FCM + Notification Center) ─────────────────────────────
+
+  /// POST `{ "token": "<FCM_TOKEN>" }` — Register a device token.
+  static const String registerDeviceToken =
+      'api/v1/notifications/device-token';
+
+  /// DELETE `{ "token": "<FCM_TOKEN>" }` — Remove a device token.
+  static const String removeDeviceToken = 'api/v1/notifications/device-token';
+
+  /// GET `?page=&limit=` — Paginated notification list.
+  static const String notifications = 'api/v1/notifications';
+
+  /// PATCH — Mark all notifications as read.
+  static const String markAllNotificationsRead = 'api/v1/notifications';
+
+  /// GET — Unread notification count.
+  static const String notificationsUnreadCount =
+      'api/v1/notifications/unread-count';
+
+  /// PATCH — Mark a single notification as read.
+  static String markNotificationRead(String id) =>
+      'api/v1/notifications/$id';
+
+  /// PATCH `{ "notificationIds": [...] }` — Mark multiple as read.
+  static const String markMultipleNotificationsRead =
+      'api/v1/notifications/batch';
+
+  /// GET — Notification preferences.
+  static const String notificationPreferences =
+      'api/v1/notifications/preferences';
+
+  /// PATCH — Update notification preferences.
+  static const String updateNotificationPreferences =
+      'api/v1/notifications/preferences';
+
   // ── Quiz ──────────────────────────────────────────────────────────────────
 
   /// POST — Generate a new quiz session.
