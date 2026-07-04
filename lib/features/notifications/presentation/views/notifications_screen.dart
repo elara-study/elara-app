@@ -172,10 +172,18 @@ class _NotificationsList extends StatelessWidget {
               child: _TopRow(state: state),
             );
           }
+          final notification = notifications[index - 1];
           return Padding(
             padding: EdgeInsets.only(bottom: AppSpacing.spacingMd.h),
-            child: NotificationCard(
-              notification: notifications[index - 1],
+            child: GestureDetector(
+              onTap: () {
+                if (!notification.isRead) {
+                  context.read<NotificationsCubit>().markAsRead(notification.id);
+                }
+              },
+              child: NotificationCard(
+                notification: notification,
+              ),
             ),
           );
         },
