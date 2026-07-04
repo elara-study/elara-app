@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:elara/features/onboarding/presentation/widgets/onboarding_slide.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
@@ -23,33 +24,26 @@ class _OnboardingViewState extends State<OnboardingView> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // Slide 3 has no highlighted word per Figma spec.
-  static const List<OnboardingSlideData> _slides = [
-    OnboardingSlideData(
-      imagePath: 'assets/images/onboarding1.svg',
-      title: 'Join the Future\nof Education',
-      highlightedWord: 'Future',
-      subtitle:
-          'Connect with a global network of scholars and industry experts. '
-          "Unlock personalized learning journeys powered by Elara's intelligence",
-    ),
-    OnboardingSlideData(
-      imagePath: 'assets/images/onboarding2.svg',
-      title: 'Master Your\nPotential',
-      highlightedWord: 'Potential',
-      subtitle:
-          'Embark on a learning journey tailored to your unique cognitive '
-          'fingerprint, personal strengths, evolving interests, and future career goals.',
-    ),
-    OnboardingSlideData(
-      imagePath: 'assets/images/onboarding3.svg',
-      title: 'AI-Powered\nInsights',
-      highlightedWord: '', // no highlight per Figma
-      subtitle:
-          'Elara adapts to your unique learning style, identifying knowledge '
-          'gaps and providing real-time feedback exactly when you need it most.',
-    ),
-  ];
+  List<OnboardingSlideData> get _slides => [
+        OnboardingSlideData(
+          imagePath: 'assets/images/onboarding1.svg',
+          title: context.l10n.onboardingSlide1Title,
+          highlightedWord: context.l10n.onboardingSlide1Highlight,
+          subtitle: context.l10n.onboardingSlide1Subtitle,
+        ),
+        OnboardingSlideData(
+          imagePath: 'assets/images/onboarding2.svg',
+          title: context.l10n.onboardingSlide2Title,
+          highlightedWord: context.l10n.onboardingSlide2Highlight,
+          subtitle: context.l10n.onboardingSlide2Subtitle,
+        ),
+        OnboardingSlideData(
+          imagePath: 'assets/images/onboarding3.svg',
+          title: context.l10n.onboardingSlide3Title,
+          highlightedWord: context.l10n.onboardingSlide3Highlight,
+          subtitle: context.l10n.onboardingSlide3Subtitle,
+        ),
+      ];
 
   @override
   void dispose() {
@@ -84,8 +78,9 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   @override
   Widget build(BuildContext context) {
+    final slides = _slides;
     final isFirst = _currentPage == 0;
-    final isLast = _currentPage == _slides.length - 1;
+    final isLast = _currentPage == slides.length - 1;
 
     return Scaffold(
       body: DecoratedBox(
@@ -111,7 +106,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     Expanded(
                       child: _SegmentedProgressBar(
                         current: _currentPage,
-                        total: _slides.length,
+                        total: slides.length,
                       ),
                     ),
                     SizedBox(width: AppSpacing.spacingLg.w),
@@ -123,7 +118,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                         onTap: isLast ? null : _finishOnboarding,
                         behavior: HitTestBehavior.opaque,
                         child: Text(
-                          'SKIP',
+                          context.l10n.commonSkip.toUpperCase(),
                           style: AppTypography.labelSmall(
                             color: AppColors.brandPrimary500,
                           ),
@@ -140,8 +135,8 @@ class _OnboardingViewState extends State<OnboardingView> {
                   controller: _pageController,
                   physics: const BouncingScrollPhysics(),
                   onPageChanged: (p) => setState(() => _currentPage = p),
-                  itemCount: _slides.length,
-                  itemBuilder: (_, i) => OnboardingSlide(data: _slides[i]),
+                  itemCount: slides.length,
+                  itemBuilder: (_, i) => OnboardingSlide(data: slides[i]),
                 ),
               ),
 
@@ -158,7 +153,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                         width: double.infinity,
                         // AppPrimaryButton with capsule shape override
                         child: AppPrimaryButton(
-                          text: 'Continue',
+                          text: context.l10n.commonContinue,
                           onPressed: _nextPage,
                           icon: Icons.arrow_forward_rounded,
                           borderRadius: BorderRadius.circular(
@@ -172,7 +167,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                           SizedBox(width: AppSpacing.spacing2xl.w), // 24 px
                           Expanded(
                             child: AppPrimaryButton(
-                              text: isLast ? 'Get Started' : 'Continue',
+                              text: isLast ? context.l10n.commonGetStarted : context.l10n.commonContinue,
                               onPressed: _nextPage,
                               icon: Icons.arrow_forward_rounded,
                               borderRadius: BorderRadius.circular(
