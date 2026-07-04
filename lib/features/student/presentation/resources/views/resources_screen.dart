@@ -13,6 +13,7 @@ import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -60,15 +61,15 @@ class StudentResourcesScreen extends StatelessWidget {
       child: BlocBuilder<StudentResourcesCubit, StudentResourcesState>(
         builder: (context, state) => switch (state) {
           StudentResourcesInitial() || StudentResourcesLoading() => Scaffold(
-            appBar: AppGlassHeader(
-              title: 'Resources',
+             appBar: AppGlassHeader(
+              title: context.l10n.resourcesTitle,
               subtitle: '$subject • $moduleTitle',
             ),
             body: const Center(child: CircularProgressIndicator()),
           ),
           StudentResourcesError(:final message) => Scaffold(
             appBar: AppGlassHeader(
-              title: 'Resources',
+              title: context.l10n.resourcesTitle,
               subtitle: '$subject • $moduleTitle',
             ),
             body: Center(
@@ -89,7 +90,7 @@ class StudentResourcesScreen extends StatelessWidget {
                       onPressed: () => context
                           .read<StudentResourcesCubit>()
                           .load(moduleId: moduleId, groupId: groupId),
-                      child: const Text('Try again'),
+                      child: Text(context.l10n.commonTryAgain),
                     ),
                   ],
                 ),
@@ -172,7 +173,7 @@ class _ResourcesViewState extends State<_ResourcesView> {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Could not open resource: ${resource.title}'),
+              content: Text(context.l10n.resourcesOpenError(resource.title)),
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -273,7 +274,7 @@ class _ResourcesViewState extends State<_ResourcesView> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppGlassHeader(
-        title: 'Resources',
+        title: context.l10n.resourcesTitle,
         subtitle: '${widget.subject} • ${widget.moduleTitle}',
       ),
       body: Column(
@@ -325,7 +326,7 @@ class _SearchBar extends StatelessWidget {
       onChanged: onChanged,
       style: AppTypography.bodyMedium(color: cs.onSurface),
       decoration: InputDecoration(
-        hintText: 'Search resources...',
+        hintText: context.l10n.resourcesSearchHint,
         hintStyle: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
         prefixIcon: Icon(
           Icons.search_rounded,
