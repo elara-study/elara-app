@@ -340,6 +340,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           data['role'] as String? ?? data['userRole'] as String? ?? '',
         ),
         token: '',
+        phone: data['phone'] as String? ??
+            data['Phone'] as String? ??
+            data['phoneNumber'] as String? ??
+            data['PhoneNumber'] as String?,
       );
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
