@@ -5,6 +5,8 @@ import 'package:elara/core/theme/theme_cubit.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/core/enums/user_role.dart';
+import 'package:elara/core/localization/locale_constants.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/student/presentation/profile/cubits/student_settings_cubit.dart';
@@ -12,6 +14,7 @@ import 'package:elara/features/student/presentation/profile/cubits/student_setti
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/settings/settings_card.dart';
 import 'package:elara/shared/widgets/settings/settings_section_list.dart';
+import 'package:elara/shared/widgets/settings/language_picker_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,11 +46,16 @@ class StudentSettingsScreen extends StatelessWidget {
         return BlocBuilder<AuthCubit, AuthState>(
           builder: (context, auth) {
             final user = auth is AuthAuthenticated ? auth.user : null;
+            final currentLanguage = AppLocaleConstants.supportedLanguages.firstWhere(
+              (l) => l.locale.languageCode == Localizations.localeOf(context).languageCode,
+              orElse: () => AppLocaleConstants.supportedLanguages.first,
+            );
+
             return Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               extendBodyBehindAppBar: true,
               appBar: AppGlassHeader(
-                title: 'Settings',
+                title: context.l10n.settingsTitle,
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back_rounded),
                   onPressed: () => Navigator.of(context).maybePop(),
@@ -115,7 +123,7 @@ class StudentSettingsScreen extends StatelessWidget {
                           builder: (context, themeMode) {
                             return SettingsToggleTile(
                               icon: Icons.palette,
-                              label: 'Dark Mode',
+                              label: context.l10n.settingsDarkMode,
                               value: ThemeCubit.isDarkActive(
                                 context,
                                 themeMode,
@@ -127,11 +135,9 @@ class StudentSettingsScreen extends StatelessWidget {
                         ),
                         SettingsDenseChipTile(
                           icon: Icons.language_rounded,
-                          label: 'Language',
-                          trailingLabel: 'English',
-                          onTap: () => context
-                              .read<StudentSettingsCubit>()
-                              .requestLanguagePlaceholderSnack(),
+                          label: context.l10n.settingsLanguage,
+                          trailingLabel: currentLanguage.nativeName,
+                          onTap: () => LanguagePickerSheet.show(context),
                         ),
                       ],
                     ),
@@ -140,7 +146,7 @@ class StudentSettingsScreen extends StatelessWidget {
                       children: [
                         SettingsNavigationTile(
                           icon: Icons.person_rounded,
-                          label: 'Profile & Account',
+                          label: context.l10n.settingsProfileAndAccount,
                           onTap: () => AppNavigation.pushNamed(
                             context,
                             AppRoutes.profileAccount,
@@ -149,7 +155,7 @@ class StudentSettingsScreen extends StatelessWidget {
                         ),
                         SettingsNavigationTile(
                           icon: Icons.shield,
-                          label: 'Password & Security',
+                          label: context.l10n.settingsPasswordAndSecurity,
                           onTap: () => AppNavigation.pushNamed(
                             context,
                             AppRoutes.passwordSecurity,
@@ -157,7 +163,7 @@ class StudentSettingsScreen extends StatelessWidget {
                         ),
                         SettingsNavigationTile(
                           icon: Icons.notifications,
-                          label: 'Notifications',
+                          label: context.l10n.settingsNotifications,
                           onTap: () => AppNavigation.pushNamed(
                             context,
                             AppRoutes.notificationsSettings,
@@ -170,17 +176,17 @@ class StudentSettingsScreen extends StatelessWidget {
                       children: [
                         SettingsNavigationTile(
                           icon: Icons.groups_2_rounded,
-                          label: 'About Us',
+                          label: context.l10n.settingsAboutUs,
                           onTap: () {},
                         ),
                         SettingsNavigationTile(
                           icon: Icons.help_rounded,
-                          label: 'Contact Support',
+                          label: context.l10n.settingsContactSupport,
                           onTap: () {},
                         ),
                         SettingsNavigationTile(
                           icon: Icons.lightbulb_rounded,
-                          label: 'Feedback & Suggestions',
+                          label: context.l10n.settingsFeedbackAndSuggestions,
                           onTap: () {},
                         ),
                       ],
@@ -190,7 +196,7 @@ class StudentSettingsScreen extends StatelessWidget {
                       children: [
                         SettingsNavigationTile(
                           icon: Icons.logout_rounded,
-                          label: 'Log Out',
+                          label: context.l10n.settingsLogOut,
                           labelColor: AppColors.error500,
                           iconColor: AppColors.error500,
                           onTap: () =>
