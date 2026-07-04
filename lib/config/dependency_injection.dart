@@ -8,12 +8,16 @@ import 'di/chatbot_di.dart';
 import 'di/settings_di.dart';
 import 'di/voice_di.dart';
 import 'di/notification_di.dart';
+import 'di/locale_di.dart';
 
 final getIt = GetIt.instance;
 
 Future<void> setupDependencyInjection() async {
   // Core Services (External, network client, local storage setup, theme, etc.)
   await setupCoreDI();
+
+  // Localization registration (must happen after core SharedPreferences is ready)
+  setupLocaleDI();
 
   // Feature Registrations
   setupAuthDI();

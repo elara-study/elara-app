@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   cupertino_icons: ^1.0.8
 
@@ -34,7 +36,7 @@ dependencies:
   flutter_screenutil: ^5.9.0
 
   # Utils
-  intl: ^0.18.1
+  intl: ^0.20.2
   logger: ^2.0.2+1
   connectivity_plus: ^7.1.1
   image_picker:
@@ -74,6 +76,7 @@ dependency_overrides:
 
 flutter:
   uses-material-design: true
+  generate: true
 
   assets:
     - .env
