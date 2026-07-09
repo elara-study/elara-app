@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -87,7 +88,7 @@ class _TeacherAddResourceDialogContentState
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to pick file: $e')),
+          SnackBar(content: Text(context.l10n.teacherFailedPickFile('$e'))),
         );
       }
     }
@@ -103,7 +104,11 @@ class _TeacherAddResourceDialogContentState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Title and ${widget.type == TeacherResourceType.link ? 'URL' : 'File'} are required',
+            context.l10n.teacherTitleAndFileRequired(
+              widget.type == TeacherResourceType.link
+                  ? context.l10n.teacherUrlResource
+                  : context.l10n.teacherFileResource,
+            ),
           ),
         ),
       );
@@ -140,30 +145,37 @@ class _TeacherAddResourceDialogContentState
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-
-
         // Title field
-        Text('Title', style: AppTypography.labelRegular(color: cs.onSurface)),
+        Text(
+          context.l10n.teacherTitleResource,
+          style: AppTypography.labelRegular(color: cs.onSurface),
+        ),
         SizedBox(height: AppSpacing.spacingXs.h),
         TextField(
           controller: _titleCtrl,
           style: AppTypography.bodyMedium(color: cs.onSurface),
-          decoration: fieldDeco('Resource title…'),
+          decoration: fieldDeco(context.l10n.teacherResourceTitleHint),
         ),
         SizedBox(height: AppSpacing.spacingMd.h),
 
         // Link or File field
         if (widget.type == TeacherResourceType.link) ...[
-          Text('URL', style: AppTypography.labelRegular(color: cs.onSurface)),
+          Text(
+            context.l10n.teacherUrlResource,
+            style: AppTypography.labelRegular(color: cs.onSurface),
+          ),
           SizedBox(height: AppSpacing.spacingXs.h),
           TextField(
             controller: _urlCtrl,
             style: AppTypography.bodyMedium(color: cs.onSurface),
             keyboardType: TextInputType.url,
-            decoration: fieldDeco('https://…'),
+            decoration: fieldDeco(context.l10n.teacherUrlHint),
           ),
         ] else ...[
-          Text('File', style: AppTypography.labelRegular(color: cs.onSurface)),
+          Text(
+            context.l10n.teacherFileResource,
+            style: AppTypography.labelRegular(color: cs.onSurface),
+          ),
           SizedBox(height: AppSpacing.spacingXs.h),
           InkWell(
             onTap: _pickFile,
@@ -187,7 +199,7 @@ class _TeacherAddResourceDialogContentState
                   SizedBox(width: AppSpacing.spacingSm.w),
                   Expanded(
                     child: Text(
-                      _pickedFileName ?? 'Tap to select file...',
+                      _pickedFileName ?? context.l10n.teacherTapSelectFile,
                       style: AppTypography.bodyMedium(
                         color: _pickedFileName != null
                             ? cs.onSurface
@@ -206,7 +218,7 @@ class _TeacherAddResourceDialogContentState
 
         // Description field
         Text(
-          'Description (optional)',
+          context.l10n.teacherDescriptionOptional,
           style: AppTypography.labelRegular(color: cs.onSurface),
         ),
         SizedBox(height: AppSpacing.spacingXs.h),
@@ -214,7 +226,7 @@ class _TeacherAddResourceDialogContentState
           controller: _descCtrl,
           style: AppTypography.bodyMedium(color: cs.onSurface),
           maxLines: 3,
-          decoration: fieldDeco('Brief description…'),
+          decoration: fieldDeco(context.l10n.teacherBriefDescription),
         ),
         SizedBox(height: AppSpacing.spacingXl.h),
 
@@ -228,7 +240,7 @@ class _TeacherAddResourceDialogContentState
             ),
           ),
           child: Text(
-            'Add Resource',
+            context.l10n.teacherAddResourceDialog,
             style: AppTypography.labelRegular(color: AppColors.white),
           ),
         ),

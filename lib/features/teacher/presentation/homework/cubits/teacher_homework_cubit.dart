@@ -31,11 +31,14 @@ final class TeacherHomeworkLoaded extends TeacherHomeworkState {
   List<Object?> get props => [homework];
 }
 
+enum TeacherHomeworkErrorType { add, update, delete }
+
 final class TeacherHomeworkError extends TeacherHomeworkState {
-  final String message;
-  const TeacherHomeworkError(this.message);
+  final String? message;
+  final TeacherHomeworkErrorType? errorType;
+  const TeacherHomeworkError({this.message, this.errorType});
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, errorType];
 }
 
 // ── Cubit ──────────────────────────────────────────────────────────────────────
@@ -64,7 +67,7 @@ class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
     emit(
       result.fold(
         onSuccess: TeacherHomeworkLoaded.new,
-        onFailure: (failure) => TeacherHomeworkError(failure.message),
+        onFailure: (failure) => TeacherHomeworkError(message: failure.message),
       ),
     );
   }
@@ -88,7 +91,8 @@ class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
     if (!addResult.isSuccess) {
       emit(
         TeacherHomeworkError(
-          addResult.failure?.message ?? 'Failed to add homework problem',
+          message: addResult.failure?.message,
+          errorType: TeacherHomeworkErrorType.add,
         ),
       );
       return;
@@ -117,7 +121,8 @@ class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
     if (!result.isSuccess) {
       emit(
         TeacherHomeworkError(
-          result.failure?.message ?? 'Failed to update homework problem',
+          message: result.failure?.message,
+          errorType: TeacherHomeworkErrorType.update,
         ),
       );
       return;
@@ -137,7 +142,8 @@ class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
     if (!result.isSuccess) {
       emit(
         TeacherHomeworkError(
-          result.failure?.message ?? 'Failed to delete homework problem',
+          message: result.failure?.message,
+          errorType: TeacherHomeworkErrorType.delete,
         ),
       );
       return;
@@ -158,9 +164,6 @@ class TeacherHomeworkCubit extends Cubit<TeacherHomeworkState> {
       studentId: studentId,
       groupId: groupId,
     );
-    return result.fold(
-      onSuccess: (detail) => detail,
-      onFailure: (_) => null,
-    );
+    return result.fold(onSuccess: (detail) => detail, onFailure: (_) => null);
   }
 }

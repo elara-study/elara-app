@@ -5,6 +5,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
 import 'package:elara/shared/widgets/app_overflow_menu.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -101,13 +102,13 @@ class TeacherResourceCard extends StatelessWidget {
                     iconSize: 16,
                     items: [
                       AppOverflowMenuItem(
-                        label: 'Edit',
+                        label: context.l10n.commonEdit,
                         icon: Icons.mode_edit_outline_rounded,
                         backgroundColor: AppColors.brandPrimary500,
                         onTap: onEdit ?? () {},
                       ),
                       AppOverflowMenuItem(
-                        label: 'Delete',
+                        label: context.l10n.commonDelete,
                         icon: Icons.delete_outline_rounded,
                         backgroundColor: AppColors.brandSecondary500,
                         onTap: onDelete ?? () {},

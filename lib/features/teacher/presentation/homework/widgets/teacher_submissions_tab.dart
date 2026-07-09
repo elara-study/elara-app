@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_student_submission_entity.dart';
 import 'package:elara/features/teacher/presentation/homework/route_args/teacher_student_submission_route_args.dart';
 import 'package:elara/shared/widgets/student_row_card.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -55,7 +56,7 @@ class TeacherSubmissionsTab extends StatelessWidget {
             AppSpacing.spacingMd.h,
           ),
           child: Text(
-            'Submissions',
+            context.l10n.teacherSubmissions,
             // Figma: font/typo/heading/4 = ExtraBold 20px
             style: AppTypography.h4(color: cs.onSurface),
           ),

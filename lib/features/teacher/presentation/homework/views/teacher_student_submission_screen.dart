@@ -6,6 +6,7 @@ import 'package:elara/features/teacher/domain/homework/usecases/get_teacher_stud
 import 'package:elara/features/teacher/presentation/homework/route_args/teacher_student_submission_route_args.dart';
 import 'package:elara/features/teacher/presentation/homework/widgets/teacher_answer_section.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -31,14 +32,13 @@ class TeacherStudentSubmissionScreen extends StatefulWidget {
 
   factory TeacherStudentSubmissionScreen.fromArgs(
     TeacherStudentSubmissionRouteArgs args,
-  ) =>
-      TeacherStudentSubmissionScreen(
-        moduleId: args.moduleId,
-        studentId: args.studentId,
-        studentName: args.studentName,
-        groupId: args.groupId,
-        totalXp: args.totalXp,
-      );
+  ) => TeacherStudentSubmissionScreen(
+    moduleId: args.moduleId,
+    studentId: args.studentId,
+    studentName: args.studentName,
+    groupId: args.groupId,
+    totalXp: args.totalXp,
+  );
 
   @override
   State<TeacherStudentSubmissionScreen> createState() =>
@@ -64,10 +64,7 @@ class _TeacherStudentSubmissionScreenState
       studentId: widget.studentId,
       groupId: widget.groupId,
     );
-    return result.fold(
-      onSuccess: (detail) => detail,
-      onFailure: (_) => null,
-    );
+    return result.fold(onSuccess: (detail) => detail, onFailure: (_) => null);
   }
 
   @override
@@ -83,7 +80,7 @@ class _TeacherStudentSubmissionScreenState
     return Scaffold(
       appBar: AppGlassHeader(
         title: widget.studentName,
-        subtitle: 'Submission Details',
+        subtitle: context.l10n.teacherSubmissionDetails,
       ),
       body: FutureBuilder<TeacherStudentSubmissionDetailEntity?>(
         future: _submissionFuture,
@@ -107,7 +104,7 @@ class _TeacherStudentSubmissionScreenState
                     ),
                     SizedBox(height: AppSpacing.spacingLg.h),
                     Text(
-                      'Failed to load submission details.',
+                      context.l10n.teacherFailedLoadSubmission,
                       textAlign: TextAlign.center,
                       style: AppTypography.bodyMedium(color: cs.onSurface),
                     ),
