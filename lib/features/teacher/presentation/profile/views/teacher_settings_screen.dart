@@ -4,14 +4,17 @@ import 'package:elara/core/theme/theme_cubit.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/core/enums/user_role.dart';
+ import 'package:elara/core/localization/locale_constants.dart';
+import 'package:elara/core/localization/localization_extension.dart';
+ import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/core/utils/app_snackbar.dart';
-import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
+ import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
 import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/settings/settings_section_list.dart';
+import 'package:elara/shared/widgets/settings/language_picker_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,11 +34,16 @@ class TeacherSettingsScreen extends StatelessWidget {
         }
       },
       builder: (context, profileState) {
+        final currentLanguage = AppLocaleConstants.supportedLanguages.firstWhere(
+          (l) => l.locale.languageCode == Localizations.localeOf(context).languageCode,
+          orElse: () => AppLocaleConstants.supportedLanguages.first,
+        );
+
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           extendBodyBehindAppBar: true,
           appBar: AppGlassHeader(
-            title: 'Settings',
+            title: context.l10n.settingsTitle,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_rounded),
               onPressed: () => Navigator.of(context).maybePop(),
@@ -90,7 +98,7 @@ class TeacherSettingsScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  user?.fullName ?? 'Teacher Name',
+                                  user?.fullName ?? context.l10n.teacherNameFallback,
                                   style: AppTypography.labelLarge(
                                     color: Theme.of(
                                       context,
@@ -100,7 +108,7 @@ class TeacherSettingsScreen extends StatelessWidget {
                                 Text(
                                   user?.email != null
                                       ? '@${user!.email.split('@').first}'
-                                      : '@handle',
+                                      : context.l10n.teacherHandleFallback,
                                   style: AppTypography.bodySmall(
                                     color: Theme.of(
                                       context,
@@ -123,7 +131,7 @@ class TeacherSettingsScreen extends StatelessWidget {
                       builder: (context, themeMode) {
                         return SettingsToggleTile(
                           icon: Icons.palette,
-                          label: 'Dark Mode',
+                          label: context.l10n.settingsDarkMode,
                           value: ThemeCubit.isDarkActive(context, themeMode),
                           onChanged: (v) =>
                               context.read<ThemeCubit>().setDarkMode(v),
@@ -132,13 +140,9 @@ class TeacherSettingsScreen extends StatelessWidget {
                     ),
                     SettingsDenseChipTile(
                       icon: Icons.language_rounded,
-                      label: 'Language',
-                      trailingLabel: 'English',
-                      onTap: () => context
-                          .read<TeacherProfileCubit>()
-                          .requestPlaceholderSnack(
-                            'Language picker coming soon.',
-                          ),
+                      label: context.l10n.settingsLanguage,
+                      trailingLabel: currentLanguage.nativeName,
+                      onTap: () => LanguagePickerSheet.show(context),
                     ),
                   ],
                 ),
@@ -147,7 +151,7 @@ class TeacherSettingsScreen extends StatelessWidget {
                   children: [
                     SettingsNavigationTile(
                       icon: Icons.person_rounded,
-                      label: 'Profile & Account',
+                      label: context.l10n.settingsProfileAndAccount,
                       onTap: () => AppNavigation.pushNamed(
                         context,
                         AppRoutes.profileAccount,
@@ -156,7 +160,7 @@ class TeacherSettingsScreen extends StatelessWidget {
                     ),
                     SettingsNavigationTile(
                       icon: Icons.shield,
-                      label: 'Password & Security',
+                      label: context.l10n.settingsPasswordAndSecurity,
                       onTap: () => AppNavigation.pushNamed(
                         context,
                         AppRoutes.passwordSecurity,
@@ -164,7 +168,7 @@ class TeacherSettingsScreen extends StatelessWidget {
                     ),
                     SettingsNavigationTile(
                       icon: Icons.notifications,
-                      label: 'Notifications',
+                      label: context.l10n.settingsNotifications,
                       onTap: () => AppNavigation.pushNamed(
                         context,
                         AppRoutes.notificationsSettings,
@@ -177,28 +181,24 @@ class TeacherSettingsScreen extends StatelessWidget {
                   children: [
                     SettingsNavigationTile(
                       icon: Icons.people_alt_rounded,
-                      label: 'About Us',
+                      label: context.l10n.settingsAboutUs,
                       onTap: () => context
                           .read<TeacherProfileCubit>()
-                          .requestPlaceholderSnack('About Us coming soon.'),
+                          .requestPlaceholderSnack(context.l10n.teacherAboutUsSoon),
                     ),
                     SettingsNavigationTile(
                       icon: Icons.help_outline_rounded,
-                      label: 'Contact Support',
+                      label: context.l10n.settingsContactSupport,
                       onTap: () => context
                           .read<TeacherProfileCubit>()
-                          .requestPlaceholderSnack(
-                            'Contact Support coming soon.',
-                          ),
+                          .requestPlaceholderSnack(context.l10n.teacherContactSupportSoon),
                     ),
                     SettingsNavigationTile(
                       icon: Icons.lightbulb_outline_rounded,
-                      label: 'Feedback & Suggestions',
+                      label: context.l10n.settingsFeedbackAndSuggestions,
                       onTap: () => context
                           .read<TeacherProfileCubit>()
-                          .requestPlaceholderSnack(
-                            'Feedback & Suggestions coming soon.',
-                          ),
+                          .requestPlaceholderSnack(context.l10n.teacherFeedbackSoon),
                     ),
                   ],
                 ),
@@ -207,7 +207,7 @@ class TeacherSettingsScreen extends StatelessWidget {
                   children: [
                     SettingsNavigationTile(
                       icon: Icons.logout_rounded,
-                      label: 'Log Out',
+                      label: context.l10n.settingsLogOut,
                       iconColor: Theme.of(context).colorScheme.error,
                       labelColor: Theme.of(context).colorScheme.error,
                       onTap: () => context.read<AuthCubit>().logout(),

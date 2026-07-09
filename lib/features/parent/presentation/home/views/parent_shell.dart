@@ -12,6 +12,7 @@ import 'package:elara/features/parent/presentation/reports/views/parent_reports_
 import 'package:elara/features/parent/presentation/profile/views/parent_profile_screen.dart';
 import 'package:elara/features/parent/presentation/profile/cubits/parent_profile_cubit.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -77,7 +78,13 @@ class ParentShell extends StatelessWidget {
                     child: AppBottomNavBar(
                       currentIndex: currentTab,
                       onTap: (i) => context.read<ParentTabCubit>().goToTab(i),
-                      tabs: AppBottomNavBar.parentTabs,
+                      tabs: [
+                        AppNavTab(label: context.l10n.navHome, assetPath: 'assets/icons/home_icon.svg'),
+                        AppNavTab(label: context.l10n.navChildren, assetPath: 'assets/icons/people_outline.svg'),
+                        AppNavTab(label: context.l10n.navReports, assetPath: 'assets/icons/report_icon.svg'),
+                        AppNavTab(label: context.l10n.navAlerts, assetPath: 'assets/icons/alerts_icon.svg'),
+                        AppNavTab(label: context.l10n.navProfile, assetPath: 'assets/icons/profile_icon.svg'),
+                      ],
                     ),
                   ),
                 ],

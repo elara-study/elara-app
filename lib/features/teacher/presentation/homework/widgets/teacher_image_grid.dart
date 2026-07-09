@@ -31,12 +31,11 @@ class TeacherImageGrid extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: resources.length,
         separatorBuilder: (_, __) => SizedBox(width: AppSpacing.spacingMd.w),
-        itemBuilder: (_, i) =>
-            TeacherImageCell(
-              resource: resources[i],
-              onTap: onTap,
-              showActions: showActions,
-            ),
+        itemBuilder: (_, i) => TeacherImageCell(
+          resource: resources[i],
+          onTap: onTap,
+          showActions: showActions,
+        ),
       ),
     );
   }

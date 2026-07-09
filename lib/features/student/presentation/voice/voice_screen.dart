@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class VoiceScreen extends StatelessWidget {
   const VoiceScreen({super.key});
@@ -36,14 +37,23 @@ class _VoiceView extends StatelessWidget {
           prev.status != curr.status || curr.status == VoiceStatus.error,
       listener: (context, state) {
         if (state.status == VoiceStatus.error) {
-          AppSnackBar.error(
+           ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage ?? context.l10n.commonErrorOccurred),
+              backgroundColor: AppColors.error600,
+              action: SnackBarAction(
+                label: context.l10n.commonTryAgain,
+                textColor: AppColors.white,
+                onPressed: () => context.read<VoiceCubit>().startSession(),
+              ),
+           AppSnackBar.error(
             context,
             state.errorMessage ?? 'An error occurred',
             action: SnackBarAction(
               label: 'Retry',
               textColor: AppColors.white,
               onPressed: () => context.read<VoiceCubit>().startSession(),
-            ),
+             ),
           );
         }
       },

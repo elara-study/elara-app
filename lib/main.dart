@@ -1,6 +1,7 @@
 import 'package:elara/config/app_router.dart';
 import 'package:elara/config/app_theme.dart';
 import 'package:elara/config/dependency_injection.dart';
+import 'package:elara/core/localization/locale_cubit.dart';
 import 'package:elara/core/network/dio_client.dart';
 import 'package:elara/core/services/notification_service.dart';
 import 'package:elara/core/theme/theme_cubit.dart';
@@ -8,6 +9,7 @@ import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/notifications/domain/usecases/register_device_token_use_case.dart';
 import 'package:elara/features/notifications/domain/usecases/remove_device_token_use_case.dart';
+import 'package:elara/l10n/generated/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +25,7 @@ Future<void> main() async {
   
   await dotenv.load(fileName: ".env");
   await setupDependencyInjection();
+  await getIt<LocaleCubit>().loadSavedLocale();
 
   final notificationService = getIt<NotificationService>();
   final authCubit = getIt<AuthCubit>();
@@ -102,17 +105,26 @@ class _ElaraState extends State<Elara> {
           providers: [
             BlocProvider<AuthCubit>.value(value: _authCubit),
             BlocProvider<ThemeCubit>(create: (_) => getIt<ThemeCubit>()),
+            BlocProvider<LocaleCubit>.value(value: getIt<LocaleCubit>()),
           ],
           child: BlocBuilder<ThemeCubit, ThemeMode>(
             buildWhen: (previous, current) => previous != current,
             builder: (context, themeMode) {
-              return MaterialApp.router(
-                title: 'Elara',
-                debugShowCheckedModeBanner: false,
-                theme: AppTheme.lightTheme,
-                darkTheme: AppTheme.darkTheme,
-                themeMode: themeMode,
-                routerConfig: _router,
+              return BlocBuilder<LocaleCubit, Locale>(
+                buildWhen: (previous, current) => previous != current,
+                builder: (context, locale) {
+                  return MaterialApp.router(
+                    title: 'Elara',
+                    debugShowCheckedModeBanner: false,
+                    theme: AppTheme.lightTheme,
+                    darkTheme: AppTheme.darkTheme,
+                    themeMode: themeMode,
+                    locale: locale,
+                    localizationsDelegates: AppLocalizations.localizationsDelegates,
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    routerConfig: _router,
+                  );
+                },
               );
             },
           ),

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Standalone roadmap detail screen matching the Figma learning-path layout.
 class TeacherRoadmapDetailScreen extends StatelessWidget {
@@ -44,7 +45,7 @@ class TeacherRoadmapDetailScreen extends StatelessWidget {
                 PopupMenuItem(
                   value: 'delete',
                   child: Text(
-                    'Delete Roadmap',
+                    context.l10n.teacherDeleteRoadmap,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,
                     ),
@@ -66,7 +67,7 @@ class TeacherRoadmapDetailScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.spacing2xl),
                 child: Text(
-                  state.message ?? 'Something went wrong',
+                  state.message ?? context.l10n.commonSomethingWentWrong,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -89,15 +90,12 @@ class TeacherRoadmapDetailScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Roadmap'),
-        content: const Text(
-          'Are you sure you want to delete this roadmap? '
-          'This action cannot be undone.',
-        ),
+        title: Text(context.l10n.teacherDeleteRoadmap),
+        content: Text(context.l10n.teacherDeleteRoadmapConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.commonCancel),
           ),
           TextButton(
             onPressed: () {
@@ -107,7 +105,7 @@ class TeacherRoadmapDetailScreen extends StatelessWidget {
               Navigator.of(context).pop();
             },
             child: Text(
-              'Delete',
+              context.l10n.commonDelete,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),

@@ -7,6 +7,7 @@ import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' hide TextDirection;
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Draft insight card with Edit / Send actions (Figma Insight, 1417:7510).
 class TeacherStudentInsightCard extends StatelessWidget {
@@ -68,7 +69,7 @@ class TeacherStudentInsightCard extends StatelessWidget {
                   if (onEdit != null)
                     Expanded(
                       child: AppOutlineButton(
-                        text: 'Edit',
+                        text: context.l10n.commonEdit,
                         padding: EdgeInsets.symmetric(
                           horizontal: AppSpacing.spacingLg.w,
                           vertical: AppSpacing.spacingMd.h,
@@ -89,7 +90,7 @@ class TeacherStudentInsightCard extends StatelessWidget {
                   if (onSend != null)
                     Expanded(
                       child: AppPrimaryButton(
-                        text: 'Send Insight',
+                        text: context.l10n.teacherSendInsight,
                         padding: EdgeInsets.symmetric(
                           horizontal: AppSpacing.spacingLg.w,
                           vertical: AppSpacing.spacingMd.h,

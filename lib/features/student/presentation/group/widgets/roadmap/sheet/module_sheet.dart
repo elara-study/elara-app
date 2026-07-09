@@ -11,6 +11,7 @@ import 'package:elara/features/student/presentation/group/widgets/roadmap/sheet/
 import 'package:elara/features/student/presentation/group/widgets/roadmap/sheet/module_primary_tile.dart';
 import 'package:elara/features/teacher/presentation/homework/route_args/teacher_module_route_args.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Opens the module interaction bottom sheet (Figma: Interaction Options).
 Future<void> showModuleSheet(
@@ -92,7 +93,7 @@ class ModuleSheet extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: Text('Interaction Options', style: titleStyle)),
+              Expanded(child: Text(context.l10n.roadmapInteractionOptions, style: titleStyle)),
               IconButton(
                 icon: const Icon(Icons.close_rounded),
                 tooltip: MaterialLocalizations.of(context).closeButtonLabel,
@@ -109,7 +110,7 @@ class ModuleSheet extends StatelessWidget {
               Expanded(
                 child: ModuleOutlineTile(
                   icon: Icons.quiz_outlined,
-                  label: 'Take a Quiz',
+                  label: context.l10n.roadmapTakeAQuiz,
                   labelStyle: optionLabelStyle?.copyWith(
                     color: ButtonColors.outlineText,
                   ),
@@ -132,7 +133,7 @@ class ModuleSheet extends StatelessWidget {
               Expanded(
                 child: ModuleOutlineTile(
                   icon: Icons.assignment_outlined,
-                  label: 'Homework',
+                  label: context.l10n.homeworkTitle,
                   labelStyle: optionLabelStyle?.copyWith(
                     color: ButtonColors.outlineText,
                   ),
@@ -154,7 +155,7 @@ class ModuleSheet extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.spacingMd),
           ModulePrimaryTile(
-            label: 'Chat with elara',
+            label: context.l10n.roadmapChatWithElara,
             foreground: cs.onPrimary,
             labelStyle: optionLabelStyle?.copyWith(color: cs.onPrimary),
             background: cs.primary,
@@ -172,7 +173,7 @@ class ModuleSheet extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.spacingMd),
           ModuleOutlineRow(
-            label: 'Resources',
+            label: context.l10n.resourcesTitle,
             labelStyle: optionLabelStyle?.copyWith(
               color: ButtonColors.outlineText,
             ),
@@ -184,7 +185,7 @@ class ModuleSheet extends StatelessWidget {
                 arguments: TeacherModuleRouteArgs(
                   moduleId: moduleId ?? '',
                   moduleTitle: moduleTitle,
-                  moduleLabel: 'MODULE',
+                  moduleLabel: context.l10n.commonModule.toUpperCase(),
                   groupId: groupId ?? '',
                   subject: subject ?? '',
                 ),

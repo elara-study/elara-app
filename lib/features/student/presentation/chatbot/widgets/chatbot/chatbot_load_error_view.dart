@@ -1,6 +1,7 @@
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Full-screen error when the thread fails to load initially.
@@ -29,7 +30,7 @@ class ChatbotLoadErrorView extends StatelessWidget {
               style: AppTypography.bodyMedium(color: cs.error),
             ),
             SizedBox(height: AppSpacing.spacingLg.h),
-            FilledButton(onPressed: onRetry, child: const Text('Retry')),
+            FilledButton(onPressed: onRetry, child: Text(context.l10n.commonTryAgain)),
           ],
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/shared/widgets/progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileLevelProgressCard extends StatelessWidget {
@@ -44,7 +45,7 @@ class ProfileLevelProgressCard extends StatelessWidget {
         child: Column(
           children: [
             ProgressBar(
-              completedLabel: 'Progress to Level $nextLevel',
+              completedLabel: context.l10n.profileProgressToLevel(nextLevel),
               percentLabel:
                   '${formatThousands(xpCurrent)} / ${formatThousands(xpGoal)} XP',
               progress: progress,
@@ -55,7 +56,7 @@ class ProfileLevelProgressCard extends StatelessWidget {
             ),
             SizedBox(height: AppSpacing.spacingXs.h),
             Text(
-              '$remainder XP to next level',
+              context.l10n.profileXpToNextLevel(remainder),
               textAlign: TextAlign.center,
               style: AppTypography.labelSmall(
                 color: AppColors.neutral200,

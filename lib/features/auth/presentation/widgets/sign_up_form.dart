@@ -4,8 +4,9 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/core/utils/app_snackbar.dart';
-import 'package:elara/features/auth/auth.dart';
+ import 'package:elara/core/localization/localization_extension.dart';
+ import 'package:elara/core/utils/app_snackbar.dart';
+ import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:elara/shared/widgets/app_calendar_widget.dart';
 import 'package:elara/shared/widgets/app_dropdown_field.dart';
@@ -82,12 +83,53 @@ class _SignUpFormState extends State<SignUpForm> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     if (_birthday == null) {
-      AppSnackBar.error(context, 'Please select your date of birth');
+       ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.authBirthdayRequired),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: AppColors.error500,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.radiusSm),
+            ),
+            margin: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.spacingLg,
+              vertical: AppSpacing.spacingSm,
+            ),
+            duration: const Duration(seconds: 3),
+            animation: CurvedAnimation(
+              parent: const AlwaysStoppedAnimation(1),
+              curve: Curves.easeOutCubic,
+            ),
+          ),
+        );
+      return;
+    }
+    if (widget.role == UserRole.student && _selectedGrade == null) {
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.authGradeRequired),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: AppColors.error500,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.radiusSm),
+            ),
+            margin: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.spacingLg,
+              vertical: AppSpacing.spacingSm,
+            ),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+       AppSnackBar.error(context, 'Please select your date of birth');
       return;
     }
     if (widget.role == UserRole.student && _selectedGrade == null) {
       AppSnackBar.error(context, 'Please select your grade');
-      return;
+       return;
     }
     widget.onSubmit(
       name: _fullNameCtrl.text.trim(),
@@ -119,11 +161,11 @@ class _SignUpFormState extends State<SignUpForm> {
         children: [
           AuthCardHeader(
             title: widget.isGoogleFlow
-                ? 'Complete your profile'
-                : 'Enter your credentials',
+                ? context.l10n.authCompleteProfile
+                : context.l10n.authEnterCredentials,
             subtitle: widget.isGoogleFlow
-                ? 'Just a few more details'
-                : 'Please enter your details to continue',
+                ? context.l10n.authCompleteProfileSubtitle
+                : context.l10n.authEnterCredentialsSubtitle,
           ),
 
           const SizedBox(height: AppSpacing.spacingLg),
@@ -132,91 +174,91 @@ class _SignUpFormState extends State<SignUpForm> {
           if (!widget.isGoogleFlow) ...[
             //   Full Name
             AuthCardField(
-            label: 'Full Name',
-            hint: 'Enter your full name',
-            controller: _fullNameCtrl,
-            textInputAction: TextInputAction.next,
-            validator: (val) {
-              if (val == null || val.trim().isEmpty) {
-                return 'Full name is required';
-              }
-              if (val.trim().length < 3) {
-                return 'Name must be at least 3 characters';
-              }
-              return null;
-            },
-          ),
+              label: context.l10n.authFullName,
+              hint: context.l10n.authFullNameHint,
+              controller: _fullNameCtrl,
+              textInputAction: TextInputAction.next,
+              validator: (val) {
+                if (val == null || val.trim().isEmpty) {
+                  return context.l10n.authFullNameRequired;
+                }
+                if (val.trim().length < 3) {
+                  return context.l10n.authNameTooShort;
+                }
+                return null;
+              },
+            ),
 
-          const SizedBox(height: AppSpacing.spacingSm),
+            const SizedBox(height: AppSpacing.spacingSm),
 
-          //    Username
-          AuthCardField(
-            label: 'Username',
-            hint: '@ Enter a unique username',
-            controller: _usernameCtrl,
-            textInputAction: TextInputAction.next,
-            validator: (val) {
-              if (val == null || val.trim().isEmpty) {
-                return 'Username is required';
-              }
-              return null;
-            },
-          ),
+            //    Username
+            AuthCardField(
+              label: context.l10n.authUsername,
+              hint: '@ ${context.l10n.authUsernameHint}',
+              controller: _usernameCtrl,
+              textInputAction: TextInputAction.next,
+              validator: (val) {
+                if (val == null || val.trim().isEmpty) {
+                  return context.l10n.authUsernameRequired;
+                }
+                return null;
+              },
+            ),
 
-          const SizedBox(height: AppSpacing.spacingSm),
+            const SizedBox(height: AppSpacing.spacingSm),
 
-          //    Email
-          AuthCardField(
-            label: 'Email',
-            hint: 'Enter your email address',
-            controller: _emailCtrl,
-            keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.next,
-            validator: (val) {
-              if (val == null || val.isEmpty) return 'Email is required';
-              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(val)) {
-                return 'Enter a valid email';
-              }
-              return null;
-            },
-          ),
+            //    Email
+            AuthCardField(
+              label: context.l10n.authEmail,
+              hint: context.l10n.authEmailHint,
+              controller: _emailCtrl,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              validator: (val) {
+                if (val == null || val.isEmpty) return context.l10n.authEmailRequired;
+                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(val)) {
+                  return context.l10n.authEmailInvalid;
+                }
+                return null;
+              },
+            ),
 
-          const SizedBox(height: AppSpacing.spacingSm),
+            const SizedBox(height: AppSpacing.spacingSm),
 
-          //    Password
-          AuthCardField(
-            label: 'Password',
-            hint: 'Enter a secure password',
-            controller: _passwordCtrl,
-            isPassword: true,
-            textInputAction: TextInputAction.next,
-            validator: (val) {
-              if (val == null || val.isEmpty) return 'Password is required';
-              if (val.length < 8) {
-                return 'Password must be at least 8 characters';
-              }
-              return null;
-            },
-          ),
+            //    Password
+            AuthCardField(
+              label: context.l10n.authPassword,
+              hint: context.l10n.authPasswordHintSecure,
+              controller: _passwordCtrl,
+              isPassword: true,
+              textInputAction: TextInputAction.next,
+              validator: (val) {
+                if (val == null || val.isEmpty) return context.l10n.authNewPasswordRequired;
+                if (val.length < 8) {
+                  return context.l10n.authNewPasswordTooShort;
+                }
+                return null;
+              },
+            ),
 
-          const SizedBox(height: AppSpacing.spacingSm),
+            const SizedBox(height: AppSpacing.spacingSm),
 
-          //    Confirm Password
-          AuthCardField(
-            label: 'Confirm Password',
-            hint: 'Enter your password again',
-            controller: _confirmPasswordCtrl,
-            isPassword: true,
-            textInputAction: TextInputAction.done,
-            onFieldSubmitted: (_) => _submit(),
-            validator: (val) {
-              if (val == null || val.isEmpty) {
-                return 'Please confirm your password';
-              }
-              if (val != _passwordCtrl.text) return 'Passwords do not match';
-              return null;
-            },
-          ),
+            //    Confirm Password
+            AuthCardField(
+              label: context.l10n.authConfirmPassword,
+              hint: context.l10n.authPasswordConfirmHint,
+              controller: _confirmPasswordCtrl,
+              isPassword: true,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) => _submit(),
+              validator: (val) {
+                if (val == null || val.isEmpty) {
+                  return context.l10n.authConfirmPasswordRequired;
+                }
+                if (val != _passwordCtrl.text) return context.l10n.authPasswordsMustMatch;
+                return null;
+              },
+            ),
           ], // end if (!widget.isGoogleFlow)
 
           //   Date of Birth — all roles
@@ -224,7 +266,7 @@ class _SignUpFormState extends State<SignUpForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Date of Birth',
+                context.l10n.authBirthday,
                 style: AppTypography.labelRegular(color: labelColor),
               ),
               const SizedBox(height: 6),
@@ -271,8 +313,8 @@ class _SignUpFormState extends State<SignUpForm> {
           if (widget.role == UserRole.teacher) ...[
             const SizedBox(height: AppSpacing.spacingSm),
             AppDropdownField(
-              label: 'Subject',
-              hint: 'Select your subject',
+              label: context.l10n.authSubject,
+              hint: context.l10n.authSubjectHint,
               prefixIcon: Icon(Icons.school_outlined, size: 16.w),
               options: SubjectType.displayNames,
               onChanged: (v) => setState(() => _selectedSubject = v),
@@ -283,13 +325,13 @@ class _SignUpFormState extends State<SignUpForm> {
           if (widget.role == UserRole.student) ...[
             const SizedBox(height: AppSpacing.spacingSm),
             AppDropdownField(
-              label: 'Grade',
-              hint: 'Select your grade',
+              label: context.l10n.authGrade,
+              hint: context.l10n.authGradeHint,
               prefixIcon: Icon(Icons.school_outlined, size: 16.w),
-              options: const [
-                'Grade 10',
-                'Grade 11',
-                'Grade 12',
+              options: [
+                '${context.l10n.authGrade} 10',
+                '${context.l10n.authGrade} 11',
+                '${context.l10n.authGrade} 12',
               ],
               onChanged: (v) {
                 // Parse grade number out of selected option name (e.g. 'Grade 12' -> 12)
@@ -307,7 +349,7 @@ class _SignUpFormState extends State<SignUpForm> {
           SizedBox(
             width: double.infinity,
             child: AppPrimaryButton(
-              text: widget.isGoogleFlow ? 'Complete Registration' : 'Sign Up',
+              text: widget.isGoogleFlow ? context.l10n.authCompleteRegistration : context.l10n.authSignUp,
               isLoading: widget.isLoading,
               onPressed: _submit,
               leading: SvgPicture.asset(

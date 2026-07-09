@@ -5,6 +5,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_rated_student_entity.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_student_answer_entity.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_student_submission_detail_entity.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -325,7 +326,7 @@ class TeacherAnswerBadge extends StatelessWidget {
             SizedBox(width: AppSpacing.spacing2xs.w),
           ],
           Text(
-            'ANSWER $number',
+            context.l10n.teacherAnswerBadge(number),
             style: AppTypography.labelSmall(color: textColor),
           ),
         ],
@@ -384,7 +385,7 @@ class TeacherScoreInputRow extends StatelessWidget {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 // Figma: placeholder 'XP' bodySmall center
-                hintText: 'XP',
+                hintText: context.l10n.teacherXpHint,
                 hintStyle: AppTypography.bodySmall(
                   color: cs.onSurfaceVariant,
                 ).copyWith(fontSize: 12.sp),
@@ -425,7 +426,9 @@ class TeacherScoreInputRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  isGrading ? 'Submit Score' : 'Save Score',
+                  isGrading
+                      ? context.l10n.teacherSubmitScore
+                      : context.l10n.teacherSaveScore,
                   // Figma: font/typo/label/large = SemiBold 16px
                   style: AppTypography.labelLarge(color: AppColors.white),
                 ),

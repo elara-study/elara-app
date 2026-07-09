@@ -9,6 +9,7 @@ import 'package:elara/features/teacher/presentation/profile/widgets/teacher_prof
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class TeacherProfileScreen extends StatelessWidget {
   const TeacherProfileScreen({super.key});
@@ -30,7 +31,7 @@ class TeacherProfileScreen extends StatelessWidget {
             final user = authState is AuthAuthenticated ? authState.user : null;
             final handle = user != null
                 ? '@${user.fullName.split(' ').first.toLowerCase()}'
-                : '@teacher';
+                : context.l10n.teacherHandleFallback;
 
             return Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -57,7 +58,7 @@ class TeacherProfileScreen extends StatelessWidget {
                               user: user,
                               profileData: profileState.profileData!,
                             )
-                          : const Center(child: Text('No profile data available.')),
+                          : Center(child: Text(context.l10n.teacherNoProfileData)),
             );
           },
         );

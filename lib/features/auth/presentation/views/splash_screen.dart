@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -213,7 +214,7 @@ class _SplashScreenState extends State<SplashScreen>
                   child: SlideTransition(
                     position: _taglineSlide,
                     child: Text(
-                      'Learn. Grow. Succeed.',
+                      context.l10n.appTagline,
                       style: AppTypography.bodySmall(
                         color: isDark
                             ? AppColors.neutral400

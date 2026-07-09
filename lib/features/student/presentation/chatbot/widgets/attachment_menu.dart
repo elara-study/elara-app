@@ -5,6 +5,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 Future<ImageSource?> showAttachmentMenu({
   required BuildContext context,
@@ -57,7 +58,7 @@ Future<ImageSource?> showAttachmentMenu({
               color: AppColors.brandPrimary500,
             ),
             SizedBox(width: AppSpacing.spacingXs.w),
-            Text('Upload Photo', style: labelStyle),
+            Text(context.l10n.commonUploadPhoto, style: labelStyle),
           ],
         ),
       ),
@@ -77,7 +78,7 @@ Future<ImageSource?> showAttachmentMenu({
               color: AppColors.brandPrimary500,
             ),
             SizedBox(width: AppSpacing.spacingXs.w),
-            Text('Use Camera', style: labelStyle),
+            Text(context.l10n.commonUseCamera, style: labelStyle),
           ],
         ),
       ),

@@ -14,6 +14,7 @@ import 'package:elara/features/student/presentation/chatbot/widgets/chatbot/chat
 import 'package:elara/features/student/presentation/chatbot/widgets/chatbot/chatbot_screen_dimensions.dart';
 import 'package:elara/features/student/presentation/chatbot/widgets/image_preview_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -115,8 +116,13 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     if (status.isGranted && mounted) {
       context.push('/voice');
     } else if (mounted) {
-      AppSnackBar.warning(context, 'Microphone permission is required for voice mode.');
-    }
+       ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.chatbotMicPermissionRequired),
+        ),
+      );
+       AppSnackBar.warning(context, 'Microphone permission is required for voice mode.');
+     }
   }
 
   @override

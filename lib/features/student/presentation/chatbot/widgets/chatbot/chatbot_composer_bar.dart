@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/presentation/chatbot/widgets/chatbot/chatbot_screen_dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Bottom composer: rounded shell, attachment, text field, mic placeholder, send.
@@ -76,7 +77,7 @@ class ChatbotComposerBar extends StatelessWidget {
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: cs.surfaceContainer,
-                        hintText: 'Type a message...',
+                        hintText: context.l10n.chatbotTypeMessageHint,
                         hintStyle: AppTypography.bodyMedium(
                           color: cs.onSurfaceVariant,
                         ),
@@ -99,7 +100,7 @@ class ChatbotComposerBar extends StatelessWidget {
                     child: GestureDetector(
                       onTap: onMicTap,
                       child: Tooltip(
-                        message: 'Voice input',
+                        message: context.l10n.chatbotVoiceInputTooltip,
                         child: Icon(
                           Icons.mic_rounded,
                           color: ButtonColors.ghostText,

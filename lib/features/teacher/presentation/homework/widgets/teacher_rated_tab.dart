@@ -5,6 +5,7 @@ import 'package:elara/features/teacher/domain/homework/entities/teacher_rated_st
 import 'package:elara/features/teacher/presentation/homework/widgets/teacher_answer_section.dart';
 import 'package:elara/shared/widgets/student_row_card.dart';
 import 'package:elara/shared/widgets/app_dialog.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,7 +24,7 @@ class TeacherRatedTab extends StatelessWidget {
     AppDialog.show(
       context: context,
       builder: (_) => AppDialog(
-        title: "${student.studentName}'s Score",
+        title: context.l10n.teacherStudentScore(student.studentName),
         content: TeacherScoreDialogContent(student: student),
       ),
     );
@@ -44,7 +45,7 @@ class TeacherRatedTab extends StatelessWidget {
             AppSpacing.spacingMd.h,
           ),
           child: Text(
-            'Rated Submissions',
+            context.l10n.teacherRatedSubmissions,
             style: AppTypography.h5(
               color: cs.onSurface,
             ).copyWith(fontWeight: AppTypography.extraBold),
@@ -99,7 +100,7 @@ class _XpBadge extends StatelessWidget {
         ),
         SizedBox(width: AppSpacing.spacing2xs.w),
         Text(
-          '$xp XP',
+          context.l10n.teacherXpLabel(xp),
           style: AppTypography.labelSmall(color: AppColors.brandPrimary500),
         ),
       ],

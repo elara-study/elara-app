@@ -1,5 +1,6 @@
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class VoiceControls extends StatelessWidget {
@@ -22,7 +23,7 @@ class VoiceControls extends StatelessWidget {
         // Mute button
         _ControlButton(
           icon: isMuted ? Icons.mic_off_rounded : Icons.mic_rounded,
-          label: isMuted ? 'Unmute' : 'Mute',
+          label: isMuted ? context.l10n.voiceUnmute : context.l10n.voiceMute,
           onTap: onMuteToggle,
           isActive: isMuted,
           activeColor: AppColors.neutral600,
@@ -132,7 +133,7 @@ class _EndCallButton extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'End',
+            context.l10n.voiceEndCall,
             style: TextStyle(
               color: AppColors.error400,
               fontSize: 11.sp,

@@ -25,7 +25,7 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
 
       result.fold(
         (failure) =>
-            emit(TeacherHomeError('Failed to load home: ${failure.message}')),
+            emit(TeacherHomeError(failure.message)),
         (dashboard) => emit(
           TeacherHomeLoaded(
             profile: dashboard.profile,
@@ -36,7 +36,7 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
         ),
       );
     } catch (e) {
-      emit(TeacherHomeError('Failed to load home: ${e.toString()}'));
+      emit(TeacherHomeError(e.toString()));
     }
   }
 
@@ -56,12 +56,12 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
 
       result.fold(
         (failure) => emit(
-          TeacherHomeError('Failed to create group: ${failure.message}'),
+          TeacherHomeError(failure.message),
         ),
         (_) => loadHome(), // refresh the list
       );
     } catch (e) {
-      emit(TeacherHomeError('Failed to create group: ${e.toString()}'));
+      emit(TeacherHomeError(e.toString()));
     }
   }
 
@@ -79,12 +79,12 @@ class TeacherHomeCubit extends Cubit<TeacherHomeState> {
 
       result.fold(
         (failure) => emit(
-          TeacherHomeError('Failed to create roadmap: ${failure.message}'),
+          TeacherHomeError(failure.message),
         ),
         (_) => loadHome(), // refresh the list
       );
     } catch (e) {
-      emit(TeacherHomeError('Failed to create roadmap: ${e.toString()}'));
+      emit(TeacherHomeError(e.toString()));
     }
   }
 }

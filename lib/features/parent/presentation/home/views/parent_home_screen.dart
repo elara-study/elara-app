@@ -10,6 +10,7 @@ import 'package:elara/features/parent/presentation/home/widgets/parent_stat_card
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_refresh_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -41,7 +42,7 @@ class ParentHomeScreen extends StatelessWidget {
                     FilledButton(
                       onPressed: () =>
                           context.read<ParentHomeCubit>().loadHome(),
-                      child: const Text('Retry'),
+                      child: Text(context.l10n.commonRetry),
                     ),
                   ],
                 ),
@@ -71,14 +72,14 @@ class ParentHomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Welcome back!',
+                    context.l10n.parentWelcomeBack,
                     style: AppTypography.h3(
                       color: cs.onSurface,
                     ).copyWith(fontWeight: AppTypography.black),
                   ),
                   SizedBox(height: AppSpacing.spacing2xs.h),
                   Text(
-                    'Here’s how your children are doing',
+                    context.l10n.parentChildrenProgressSub,
                     style: AppTypography.bodyLarge(color: cs.onSurfaceVariant),
                   ),
                   SizedBox(height: AppSpacing.spacing2xl.h),
@@ -86,7 +87,7 @@ class ParentHomeScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          'My Children',
+                          context.l10n.parentMyChildren,
                           style: AppTypography.h4(color: cs.onSurface),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -108,7 +109,7 @@ class ParentHomeScreen extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'See All',
+                              context.l10n.commonSeeAll,
                               style: AppTypography.labelMedium(
                                 color: AppColors.brandPrimary500,
                               ),
@@ -132,7 +133,7 @@ class ParentHomeScreen extends StatelessWidget {
                   ParentStatCardsRow(stats: overview.stats),
                   SizedBox(height: AppSpacing.spacing2xl.h),
                   Text(
-                    'Recent Activity',
+                    context.l10n.parentRecentActivity,
                     style: AppTypography.h4(color: cs.onSurface),
                   ),
                   SizedBox(height: AppSpacing.spacingLg.h),

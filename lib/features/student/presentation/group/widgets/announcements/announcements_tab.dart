@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/features/student/presentation/group/cubits/announcements_cubit.dart';
 import 'package:elara/shared/widgets/announcement_card.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Tab body: list of announcements from [AnnouncementsCubit].
@@ -17,14 +18,14 @@ class AnnouncementsTab extends StatelessWidget {
           case AnnouncementsLoadStatus.loading:
             return const Center(child: CircularProgressIndicator());
           case AnnouncementsLoadStatus.failure:
-            return _Failure(message: state.message ?? 'Something went wrong');
+            return _Failure(message: state.message ?? context.l10n.commonSomethingWentWrong);
           case AnnouncementsLoadStatus.loaded:
             if (state.items.isEmpty) {
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.spacing2xl),
                   child: Text(
-                    'No announcements yet.',
+                    context.l10n.groupNoAnnouncements,
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),

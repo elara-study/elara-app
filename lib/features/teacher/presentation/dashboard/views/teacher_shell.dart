@@ -9,6 +9,7 @@ import 'package:elara/features/teacher/presentation/roadmap/views/teacher_roadma
 import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
 import 'package:elara/features/teacher/presentation/profile/views/teacher_profile_screen.dart';
 import 'package:elara/shared/widgets/app_bottom_nav_bar.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -58,7 +59,13 @@ class _TeacherShellState extends State<TeacherShell> {
               right: 0,
               bottom: 0,
               child: AppBottomNavBar(
-                tabs: AppBottomNavBar.teacherTabs,
+                tabs: [
+                  AppNavTab(label: context.l10n.navHome, assetPath: 'assets/icons/home_icon.svg'),
+                  AppNavTab(label: context.l10n.navGroups, assetPath: 'assets/icons/people_outline.svg'),
+                  AppNavTab(label: context.l10n.navRoadmaps, assetPath: 'assets/icons/roadmap_icon.svg'),
+                  AppNavTab(label: context.l10n.navAlerts, assetPath: 'assets/icons/alerts_icon.svg'),
+                  AppNavTab(label: context.l10n.navProfile, assetPath: 'assets/icons/profile_icon.svg'),
+                ],
                 currentIndex: _currentTab,
                 onTap: (i) => setState(() => _currentTab = i),
               ),

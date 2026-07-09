@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
@@ -193,7 +194,7 @@ class _OtpCardContentState extends State<_OtpCardContent> {
       if (!mounted) return;
       setState(() {
         _hasError = true;
-        _errorMessage = 'Failed to resend code. Please try again.';
+        _errorMessage = context.l10n.commonSomethingWentWrong;
       });
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -241,8 +242,8 @@ class _OtpCardContentState extends State<_OtpCardContent> {
       children: [
         //   Header
         AuthCardHeader(
-          title: 'Enter OTP code',
-          subtitle: 'We sent a 6-digit code to\n$maskedEmail',
+          title: context.l10n.authOtpTitle,
+          subtitle: '${context.l10n.authOtpSubtitle}\n$maskedEmail',
           isCompact: m.isCompact,
         ),
         SizedBox(height: m.sectionGap),
@@ -265,7 +266,7 @@ class _OtpCardContentState extends State<_OtpCardContent> {
                   child: Text(
                     _errorMessage.isNotEmpty
                         ? _errorMessage
-                        : 'Invalid code. Please try again.',
+                        : context.l10n.authOtpInvalid,
                     textAlign: TextAlign.center,
                     style: AppTypography.labelSmall(color: AppColors.error500),
                   ),
@@ -279,7 +280,7 @@ class _OtpCardContentState extends State<_OtpCardContent> {
         SizedBox(
           width: double.infinity,
           child: AppPrimaryButton(
-            text: 'Verify',
+            text: context.l10n.authOtpVerify,
             isLoading: _isLoading,
             onPressed: _isCodeComplete ? _submit : null,
             leading: SvgPicture.asset(
@@ -488,12 +489,12 @@ class _ResendRow extends StatelessWidget {
       spacing: AppSpacing.spacingXs,
       children: [
         Text(
-          "Didn't receive the code?",
+          context.l10n.authOtpDidntReceive,
           style: AppTypography.labelSmall(color: cs.onSurface),
         ),
         if (cooldown > 0)
           Text(
-            'Resend in ${cooldown}s',
+            context.l10n.authOtpResendIn(cooldown.toString()),
             style: AppTypography.labelSmall(color: cs.onSurfaceVariant),
           )
         else
@@ -505,7 +506,7 @@ class _ResendRow extends StatelessWidget {
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Text(
-              'Resend',
+              context.l10n.authOtpResend,
               style: AppTypography.labelSmall(
                 color: canResend ? ButtonColors.ghostText : cs.onSurfaceVariant,
               ),

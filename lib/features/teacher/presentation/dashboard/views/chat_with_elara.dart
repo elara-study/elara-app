@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:elara/core/theme/app_spacing.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class ChatWithElaraCard extends StatelessWidget {
   final VoidCallback onTap;
@@ -45,7 +46,7 @@ class ChatWithElaraCard extends StatelessWidget {
             ),
             SizedBox(width: AppSpacing.spacingMd.w),
             Text(
-              'Chat with elara',
+              context.l10n.teacherChatWithElara,
               style: AppTypography.h6(
                 color: ButtonColors.primaryText,
               ).copyWith(fontWeight: AppTypography.extraBold),

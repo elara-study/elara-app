@@ -16,6 +16,7 @@ import 'package:elara/shared/widgets/app_action_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_refresh_indicator.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -110,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   extendBodyBehindAppBar: true,
                   appBar: AppGlassHeader(
-                    title: 'elara',
+                    title: context.l10n.appName.toLowerCase(),
                     actions: [
                       _HeaderChip(
                         iconAsset: 'assets/icons/fire_icon.svg',
@@ -177,7 +178,7 @@ class _HomeContent extends StatelessWidget {
         children: [
           //SizedBox(height: AppSpacing.spacingXl.h),
           Text(
-            '${UiHelpers.getGreeting()}, ${state.profile.firstName}!',
+            '${UiHelpers.getGreeting(context)}, ${state.profile.firstName}!',
             style: AppTypography.h3(
               color: cs.onSurface,
             ).copyWith(fontWeight: AppTypography.black, fontSize: 25.sp),
@@ -186,7 +187,7 @@ class _HomeContent extends StatelessWidget {
           SizedBox(height: AppSpacing.spacing2xs.h),
 
           Text(
-            'Ready to continue your learning journey?',
+            context.l10n.homeReadyToContinue,
             style: AppTypography.bodyLarge(color: cs.onSurfaceVariant),
           ),
 
@@ -203,9 +204,9 @@ class _HomeContent extends StatelessWidget {
 
           // ── Daily Goals ──────────────────────────────────────────────────
           AppSectionHeader(
-            title: 'Daily Goals',
+            title: context.l10n.homeDailyGoals,
             seeAllLabel:
-                '$completedGoalsCount/${dailyGoals.length} completed',
+                context.l10n.homeComplete(completedGoalsCount, dailyGoals.length),
           ),
 
           SizedBox(height: AppSpacing.spacingLg.h),
@@ -240,7 +241,7 @@ class _HomeContent extends StatelessWidget {
 
           // ── My Groups ────────────────────────────────────────────────────
           AppSectionHeader(
-            title: 'My Groups',
+            title: context.l10n.homeMyGroups,
             onSeeAll: () => context.read<StudentTabCubit>().goToLearn(),
           ),
 
@@ -251,7 +252,7 @@ class _HomeContent extends StatelessWidget {
               padding: EdgeInsets.only(bottom: AppSpacing.spacingMd.h),
               child: AppActionCard(
                 title: group.name,
-                subtitle: '${(group.progressPercent * 100).round()}% complete',
+                subtitle: context.l10n.homeGroupProgress((group.progressPercent * 100).round()),
                 icon: _iconForGroup(group),
                 primaryColor: UiHelpers.getGroupPrimaryColor(group.colorKey),
                 secondaryColor: UiHelpers.getGroupSecondaryColor(
@@ -321,7 +322,7 @@ class _ErrorView extends StatelessWidget {
             TextButton(
               onPressed: onRetry,
               child: Text(
-                'Try again',
+                context.l10n.commonTryAgain,
                 style: AppTypography.button(color: AppColors.brandPrimary500),
               ),
             ),

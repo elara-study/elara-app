@@ -14,12 +14,16 @@ class RoleCard extends StatelessWidget {
   final double contentPadding;
   final double iconSize;
   final VoidCallback onTap;
+  final String? title;
+  final String? subtitle;
 
   const RoleCard({
     super.key,
     required this.role,
     required this.isSelected,
     required this.onTap,
+    this.title,
+    this.subtitle,
     this.height = 76,
     this.contentPadding = AppSpacing.spacingLg,
     this.iconSize = 44,
@@ -162,7 +166,7 @@ class RoleCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                role.displayName,
+                                title ?? role.displayName,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: AppTypography.labelLarge(
@@ -170,7 +174,7 @@ class RoleCard extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                _subtitle,
+                                subtitle ?? _subtitle,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: AppTypography.bodySmall(

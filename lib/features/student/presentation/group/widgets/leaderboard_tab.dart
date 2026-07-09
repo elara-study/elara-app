@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/features/student/presentation/group/cubits/student_group_cubit.dart';
 import 'package:elara/features/student/presentation/group/widgets/leaderboard/leaderboard_content.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LeaderboardTab extends StatelessWidget {
@@ -16,7 +17,7 @@ class LeaderboardTab extends StatelessWidget {
           case StudentGroupStatus.loading:
             return const Center(child: CircularProgressIndicator());
           case StudentGroupStatus.failure:
-            return _Failure(message: state.message ?? 'Something went wrong');
+            return _Failure(message: state.message ?? context.l10n.commonSomethingWentWrong);
           case StudentGroupStatus.loaded:
             return LeaderboardContent(entries: state.leaderboard);
         }

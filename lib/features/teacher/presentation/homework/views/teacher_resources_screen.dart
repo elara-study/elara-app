@@ -14,6 +14,7 @@ import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -66,14 +67,14 @@ class TeacherResourcesScreen extends StatelessWidget {
         builder: (context, state) => switch (state) {
           TeacherResourcesInitial() || TeacherResourcesLoading() => Scaffold(
             appBar: AppGlassHeader(
-              title: 'Resources',
+              title: context.l10n.teacherResourcesTitle,
               subtitle: '$subject • $moduleTitle',
             ),
             body: const Center(child: CircularProgressIndicator()),
           ),
           TeacherResourcesError(:final message) => Scaffold(
             appBar: AppGlassHeader(
-              title: 'Resources',
+              title: context.l10n.teacherResourcesTitle,
               subtitle: '$subject • $moduleTitle',
             ),
             body: Center(
@@ -94,7 +95,7 @@ class TeacherResourcesScreen extends StatelessWidget {
                       onPressed: () => context
                           .read<TeacherResourcesCubit>()
                           .load(moduleId: moduleId, groupId: groupId),
-                      child: const Text('Try again'),
+                      child: Text(context.l10n.commonTryAgain),
                     ),
                   ],
                 ),
@@ -153,7 +154,10 @@ class _ResourcesViewState extends State<_ResourcesView> {
         .toList();
   }
 
-  void _handleResourceTap(BuildContext context, TeacherResourceEntity resource) async {
+  void _handleResourceTap(
+    BuildContext context,
+    TeacherResourceEntity resource,
+  ) async {
     if (resource.type == TeacherResourceType.image) {
       _showImageFullScreen(context, resource.url);
       return;
@@ -167,15 +171,19 @@ class _ResourcesViewState extends State<_ResourcesView> {
           mode: LaunchMode.externalApplication,
         );
         if (!launched) {
-          await launchUrl(
-            uri,
-            mode: LaunchMode.platformDefault,
-          );
+          await launchUrl(uri, mode: LaunchMode.platformDefault);
         }
       } catch (_) {
         if (context.mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(context.l10n.teacherCouldNotOpenResource(resource.title)),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+ 
           AppSnackBar.error(context, 'Could not open resource: ${resource.title}');
-        }
+         }
       }
     }
   }
@@ -217,16 +225,16 @@ class _ResourcesViewState extends State<_ResourcesView> {
     AppDialog.show(
       context: context,
       builder: (_) => AppDialog(
-        title: 'Add Resource',
+        title: context.l10n.teacherAddResourceDialog,
         content: TeacherAddResourceDialogContent(
           type: type,
           onSubmit: (title, url, description) {
             context.read<TeacherResourcesCubit>().addResource(
-                  moduleId: widget.moduleId,
-                  groupId: widget.groupId,
-                  title: title,
-                  filePath: url,
-                );
+              moduleId: widget.moduleId,
+              groupId: widget.groupId,
+              title: title,
+              filePath: url,
+            );
           },
         ),
       ),
@@ -294,7 +302,7 @@ class _ResourcesViewState extends State<_ResourcesView> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppGlassHeader(
-        title: 'Resources',
+        title: context.l10n.teacherResourcesTitle,
         subtitle: '${widget.subject} • ${widget.moduleTitle}',
       ),
       body: Column(
@@ -346,7 +354,7 @@ class _SearchBar extends StatelessWidget {
       onChanged: onChanged,
       style: AppTypography.bodyMedium(color: cs.onSurface),
       decoration: InputDecoration(
-        hintText: 'Search resources...',
+        hintText: context.l10n.teacherSearchResources,
         hintStyle: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
         prefixIcon: Icon(
           Icons.search_rounded,

@@ -8,6 +8,7 @@ import 'package:elara/shared/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Modal dialog shown when teacher taps "+ Add Student".
 class AddStudentDialog extends StatefulWidget {
@@ -49,14 +50,14 @@ class _AddStudentDialogState extends State<AddStudentDialog> {
     final cs = Theme.of(context).colorScheme;
 
     return AppDialog(
-      title: 'Add a Student',
+      title: context.l10n.teacherAddStudentTitle,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Join Code Display
           Text(
-            'Group Join Code',
+            context.l10n.teacherGroupJoinCode,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: cs.onSurface,
@@ -90,7 +91,7 @@ class _AddStudentDialogState extends State<AddStudentDialog> {
             children: [
               Expanded(
                 child: AppTextField(
-                  hintText: "Enter student's username",
+                  hintText: context.l10n.teacherEnterStudentUsername,
                   controller: _usernameController,
                 ),
               ),
@@ -128,7 +129,7 @@ class _AddStudentDialogState extends State<AddStudentDialog> {
                 horizontal: AppSpacing.spacingSm.w,
                 vertical: AppSpacing.spacing2xs.h,
               ),
-              text: 'Add Student',
+              text: context.l10n.teacherAddStudentTitle,
               borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
               onPressed: () {
                 final username = _usernameController.text.trim();

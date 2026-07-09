@@ -6,6 +6,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/group/entities/group_leaderboard_entry.dart';
 import 'package:elara/shared/widgets/progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class LeaderboardRow extends StatelessWidget {
   final GroupLeaderboardEntry entry;
@@ -59,8 +60,8 @@ class LeaderboardRow extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.spacingLg),
             ProgressBar(
-              completedLabel:
-                  'Lesson ${entry.completedLessons} of ${entry.totalLessons}',
+              completedLabel: context.l10n.groupLessonProgress(
+                  entry.completedLessons, entry.totalLessons),
               percentLabel: '${(entry.progress * 100).round()}%',
               progress: entry.progress,
               metaLabelColor: cs.onSurface,

@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_shadows.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// App bar overflow (⋮): “Remove from Group”, then confirmation dialog.
 class TeacherStudentProfileOverflowMenu extends StatefulWidget {
@@ -109,7 +110,7 @@ class _TeacherStudentProfileOverflowMenuState
                             ),
                             const SizedBox(width: AppSpacing.spacingSm),
                             Text(
-                              'Remove from Group',
+                              context.l10n.teacherRemoveStudent,
                               style: AppTypography.labelRegular(
                                 color: overlayCs.onSurface,
                               ),
@@ -126,7 +127,7 @@ class _TeacherStudentProfileOverflowMenuState
         },
         child: IconButton(
           icon: const Icon(Icons.more_vert_rounded),
-          tooltip: 'More options',
+          tooltip: context.l10n.teacherMoreOptions,
           onPressed: _portal.toggle,
         ),
       ),
@@ -183,41 +184,17 @@ class _RemoveFromGroupConfirmationDialog extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.spacingLg),
               Text(
-                'Remove $studentName?',
+                context.l10n.teacherRemoveStudentConfirmTitle(studentName),
                 textAlign: TextAlign.center,
                 style: AppTypography.h5(
                   color: cs.onSurface,
                 ).copyWith(fontWeight: FontWeight.w800, height: 24 / 18),
               ),
               const SizedBox(height: AppSpacing.spacingXs),
-              Text.rich(
-                TextSpan(
-                  style: AppTypography.bodySmall(
-                    color: onVar,
-                  ).copyWith(height: 18 / 12),
-                  children: [
-                    const TextSpan(text: 'Are you sure you want to remove '),
-                    TextSpan(
-                      text: studentName,
-                      style: AppTypography.bodySmall(
-                        color: cs.onSurface,
-                      ).copyWith(fontWeight: FontWeight.w600, height: 16 / 12),
-                    ),
-                    const TextSpan(text: ' from '),
-                    TextSpan(
-                      text: groupTitle,
-                      style: AppTypography.bodySmall(
-                        color: cs.onSurface,
-                      ).copyWith(fontWeight: FontWeight.w600, height: 16 / 12),
-                    ),
-                    const TextSpan(
-                      text:
-                          '? They will lose access to all shared materials and '
-                          'progress.',
-                    ),
-                  ],
-                ),
+              Text(
+                context.l10n.teacherRemoveStudentConfirmBody(studentName, groupTitle),
                 textAlign: TextAlign.center,
+                style: AppTypography.bodySmall(color: onVar).copyWith(height: 18 / 12),
               ),
               const SizedBox(height: AppSpacing.spacingLg),
               SizedBox(
@@ -234,7 +211,7 @@ class _RemoveFromGroupConfirmationDialog extends StatelessWidget {
                     shape: const StadiumBorder(),
                   ),
                   child: Text(
-                    'Remove',
+                    context.l10n.teacherRemove,
                     style: AppTypography.labelLarge(color: AppColors.white),
                   ),
                 ),
@@ -254,7 +231,7 @@ class _RemoveFromGroupConfirmationDialog extends StatelessWidget {
                     shape: const StadiumBorder(),
                   ),
                   child: Text(
-                    'Cancel',
+                    context.l10n.commonCancel,
                     style: AppTypography.labelLarge(
                       color: ButtonColors.outlineText,
                     ),

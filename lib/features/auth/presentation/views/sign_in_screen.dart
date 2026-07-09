@@ -4,8 +4,9 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/core/utils/app_snackbar.dart';
-import 'package:elara/features/auth/auth.dart';
+ import 'package:elara/core/localization/localization_extension.dart';
+ import 'package:elara/core/utils/app_snackbar.dart';
+ import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -110,34 +111,34 @@ class _SignInCardContentState extends State<_SignInCardContent> {
         children: [
           // Header
           AuthCardHeader(
-            title: 'Welcome back',
-            subtitle: 'Enter your details to sign in',
+            title: context.l10n.authWelcomeBack,
+            subtitle: context.l10n.authSignInSubtitle,
             isCompact: m.isCompact,
           ),
           SizedBox(height: m.sectionGap),
 
           // Email / Username
           AuthCardField(
-            label: 'Email or Username',
-            hint: 'Enter your email or username',
+            label: context.l10n.authEmailOrUsername,
+            hint: context.l10n.authEmailOrUsernameHint,
             controller: _emailCtrl,
             keyboardType: TextInputType.emailAddress,
             validator: (v) => (v == null || v.isEmpty)
-                ? 'Email or username is required'
+                ? context.l10n.authEmailOrUsernameRequired
                 : null,
           ),
           SizedBox(height: m.fieldGap),
 
           // Password
           AuthCardField(
-            label: 'Password',
-            hint: 'Enter your password',
+            label: context.l10n.authPassword,
+            hint: context.l10n.authPasswordHint,
             controller: _passwordCtrl,
             isPassword: true,
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _submit(),
             validator: (v) =>
-                (v == null || v.isEmpty) ? 'Password is required' : null,
+                (v == null || v.isEmpty) ? context.l10n.authPasswordRequired : null,
           ),
           const SizedBox(height: AppSpacing.spacingXs),
           // Forgot password
@@ -152,7 +153,7 @@ class _SignInCardContentState extends State<_SignInCardContent> {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Text(
-                'Forgot password?',
+                context.l10n.authForgotPassword,
                 style: AppTypography.labelSmall(color: ButtonColors.ghostText),
               ),
             ),
@@ -164,7 +165,7 @@ class _SignInCardContentState extends State<_SignInCardContent> {
           SizedBox(
             width: double.infinity,
             child: AppPrimaryButton(
-              text: 'Login',
+              text: context.l10n.authLoginButton,
               isLoading: widget.isLoading,
               onPressed: _submit,
               leading: SvgPicture.asset(
@@ -184,7 +185,7 @@ class _SignInCardContentState extends State<_SignInCardContent> {
           SizedBox(height: m.sectionGap),
 
           // Social auth
-          const AuthDivider(label: 'OR LOGIN WITH'),
+          AuthDivider(label: context.l10n.authOrLoginWith),
           SizedBox(height: m.sectionGap),
           AuthSocialRow(
             gap: m.socialGap,
@@ -200,8 +201,8 @@ class _SignInCardContentState extends State<_SignInCardContent> {
 
           // Footer
           AuthCardFooter(
-            prompt: "Don't have an account?",
-            actionLabel: 'Sign up',
+            prompt: context.l10n.authDontHaveAccount,
+            actionLabel: context.l10n.authSignUp,
             onTap: () => AppNavigation.pushNamed(context, AppRoutes.signUpRole),
           ),
         ],

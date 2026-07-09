@@ -11,6 +11,7 @@ import 'package:elara/shared/widgets/segmented_progress_bar.dart';
 import 'package:elara/features/teacher/presentation/group/views/attendance_history_route_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// A single attendance history day entry.
 class AttendanceHistoryEntry {
@@ -84,8 +85,8 @@ class AttendanceHistoryScreen extends StatelessWidget {
       backgroundColor: theme.scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       appBar: AppGlassHeader(
-        title: groupName.isEmpty ? 'Group' : groupName,
-        subtitle: 'Attendance History',
+        title: groupName.isEmpty ? context.l10n.teacherGroupsAppBar : groupName,
+        subtitle: context.l10n.teacherAttendanceHistorySubtitle,
       ),
       body: ListView(
         padding: EdgeInsets.fromLTRB(
@@ -99,11 +100,11 @@ class AttendanceHistoryScreen extends StatelessWidget {
         children: [
           GroupStatsHeader(
             icon1: 'assets/icons/join_icon.svg',
-            label1: 'Avg. Attendance',
+            label1: context.l10n.teacherAvgAttendance,
             value1: '${(_avgAttendance * 100).round()}%',
             color1: AppColors.brandSecondary500,
             icon2: 'assets/icons/history_icon.svg',
-            label2: 'Perfect Days',
+            label2: context.l10n.teacherPerfectDays,
             value2: '$_perfectDays',
             color2: AppColors.success500,
           ),
@@ -186,7 +187,7 @@ class _HistoryRow extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          'Present',
+                          context.l10n.teacherPresent,
                           style: AppTypography.bodyMedium(color: cs.onSurface),
                         ),
                         const Spacer(),

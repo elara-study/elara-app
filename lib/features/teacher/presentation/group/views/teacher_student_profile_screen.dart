@@ -14,6 +14,7 @@ import 'package:elara/features/teacher/presentation/group/widgets/teacher_studen
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -93,7 +94,7 @@ class TeacherStudentProfileBody extends StatelessWidget {
                       ),
                       SizedBox(width: AppSpacing.spacingXs.w),
                       Text(
-                        'Level ${profile.level}',
+                        context.l10n.profileProgressToLevel(profile.level),
                         style: AppTypography.labelSmall(
                           color: cs.onSurfaceVariant,
                         ),
@@ -115,6 +116,7 @@ class TeacherStudentProfileBody extends StatelessWidget {
           SizedBox(height: AppSpacing.spacing2xl.h),
           TeacherStudentStatsGrid(
             totalXpDisplay: formatThousands(student.xp),
+            xp: student.xp,
             lessonsLabel: profile.lessonsStatLabel,
             streakLabel: '${profile.streakDays} days',
             attendanceLabel: profile.attendanceLabel,
@@ -122,7 +124,7 @@ class TeacherStudentProfileBody extends StatelessWidget {
           SizedBox(height: AppSpacing.spacing2xl.h),
           TeacherStudentParentsSection(parents: profile.parents),
           SizedBox(height: AppSpacing.spacing2xl.h),
-          AppSectionHeader(title: 'Insights', onAdd: onAddInsight),
+          AppSectionHeader(title: context.l10n.teacherInsights, onAdd: onAddInsight),
           SizedBox(height: AppSpacing.spacingLg.h),
           if (profile.insight != null)
             TeacherStudentInsightCard(
@@ -134,8 +136,11 @@ class TeacherStudentProfileBody extends StatelessWidget {
               ),
               onSend: () {
                 context.read<TeacherStudentProfileCubit>().sendInsight();
-                AppSnackBar.success(context, 'Insight sent to parents');
-              },
+                 ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(context.l10n.teacherInsightSent)),
+                );
+                 AppSnackBar.success(context, 'Insight sent to parents');
+               },
             ),
         ],
       ),

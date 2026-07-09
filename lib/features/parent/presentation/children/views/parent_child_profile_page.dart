@@ -180,6 +180,7 @@ class ParentChildProfilePage extends StatelessWidget {
                     // ── Stats Grid ──────────────────────────────────────────────────
                     TeacherStudentStatsGrid(
                       totalXpDisplay: _formatThousands(profile.child.xpPoints),
+                      xp: profile.child.xpPoints,
                       lessonsLabel:
                           '${profile.child.currentLesson}/${profile.child.totalLessons}',
                       streakLabel: '${profile.child.streakDays} days',

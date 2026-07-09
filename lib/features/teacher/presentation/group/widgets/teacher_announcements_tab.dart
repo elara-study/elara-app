@@ -9,6 +9,7 @@ import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Teacher version of the Announcements tab.
 /// Shows "Announcements" header + "+ Add" button.
@@ -53,9 +54,9 @@ class _TeacherAnnouncementsContent extends StatelessWidget {
     AppDialog.show(
       context: context,
       builder: (_) => AppDialog(
-        title: 'Add Announcement',
+        title: context.l10n.teacherAddAnnouncement,
         content: AnnouncementFormContent(
-          submitLabel: 'Add Announcement',
+          submitLabel: context.l10n.teacherAddAnnouncement,
           onSubmit: (title, body) {
             Navigator.of(context).pop();
             context.read<TeacherAnnouncementsCubit>().addAnnouncement(
@@ -72,11 +73,11 @@ class _TeacherAnnouncementsContent extends StatelessWidget {
     AppDialog.show(
       context: context,
       builder: (_) => AppDialog(
-        title: 'Edit Announcement',
+        title: context.l10n.teacherEditAnnouncement,
         content: AnnouncementFormContent(
           initialTitle: item.title,
           initialBody: item.content,
-          submitLabel: 'Save Changes',
+          submitLabel: context.l10n.teacherSaveChanges,
           onSubmit: (title, body) {
             Navigator.of(context).pop();
             // TODO: dispatch edit announcement cubit event
@@ -99,7 +100,7 @@ class _TeacherAnnouncementsContent extends StatelessWidget {
       ),
       children: [
         AppSectionHeader(
-          title: 'Announcements',
+          title: context.l10n.teacherAnnouncements,
           onAdd: () => _showAddDialog(context),
         ),
         SizedBox(height: AppSpacing.spacingXl.h),
@@ -108,7 +109,7 @@ class _TeacherAnnouncementsContent extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: AppSpacing.spacing3xl.h),
             child: Text(
-              'No announcements yet.',
+              context.l10n.teacherNoAnnouncementsYet,
               style: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),

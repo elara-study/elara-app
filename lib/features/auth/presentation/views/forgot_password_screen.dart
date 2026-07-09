@@ -3,6 +3,7 @@ import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
+ import 'package:elara/core/localization/localization_extension.dart';
 import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
@@ -106,24 +107,24 @@ class _ForgotPasswordCardContentState
         children: [
           // Header
           AuthCardHeader(
-            title: 'Forgot password?',
-            subtitle: "Enter your email and we'll send you a reset code",
+            title: context.l10n.authForgotPasswordTitle,
+            subtitle: context.l10n.authForgotPasswordSubtitle,
             isCompact: m.isCompact,
           ),
           SizedBox(height: m.sectionGap),
 
           // Email field
           AuthCardField(
-            label: 'Email',
-            hint: 'Enter your email address',
+            label: context.l10n.authEmail,
+            hint: context.l10n.authEmailHint,
             controller: _emailCtrl,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _submit(),
             validator: (v) {
-              if (v == null || v.isEmpty) return 'Email is required';
+              if (v == null || v.isEmpty) return context.l10n.authEmailRequired;
               final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-              if (!emailRegex.hasMatch(v)) return 'Enter a valid email address';
+              if (!emailRegex.hasMatch(v)) return context.l10n.authEmailInvalid;
               return null;
             },
           ),
@@ -134,7 +135,7 @@ class _ForgotPasswordCardContentState
           SizedBox(
             width: double.infinity,
             child: AppPrimaryButton(
-              text: 'Send reset code',
+              text: context.l10n.authSendResetLink,
               isLoading: widget.isLoading,
               onPressed: _submit,
               leading: SvgPicture.asset(
@@ -155,8 +156,8 @@ class _ForgotPasswordCardContentState
 
           // Footer — back to sign in
           AuthCardFooter(
-            prompt: 'Remember your password?',
-            actionLabel: 'Sign in',
+            prompt: context.l10n.authRememberPassword,
+            actionLabel: context.l10n.authSignIn,
             onTap: () => Navigator.of(context).pop(),
           ),
         ],

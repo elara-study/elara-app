@@ -7,6 +7,7 @@ import 'package:elara/features/teacher/domain/homework/entities/teacher_homework
 import 'package:elara/features/teacher/presentation/homework/widgets/teacher_homework_problem_card.dart';
 import 'package:elara/shared/widgets/app_dialog.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,10 +33,10 @@ class TeacherProblemListTab extends StatelessWidget {
   void _showAddProblemDialog(BuildContext context) {
     AppDialog.show(
       context: context,
-      builder: (_) => AppDialog(
-        title: 'Add a Problem',
+      builder: (ctx) => AppDialog(
+        title: ctx.l10n.teacherAddProblem,
         content: _ProblemFormContent(
-          submitLabel: 'Add Problem',
+          submitLabel: ctx.l10n.teacherAddProblem,
           onSubmit: onAddProblem,
         ),
       ),
@@ -48,11 +49,11 @@ class TeacherProblemListTab extends StatelessWidget {
   ) {
     AppDialog.show(
       context: context,
-      builder: (_) => AppDialog(
-        title: 'Edit Problem',
+      builder: (ctx) => AppDialog(
+        title: ctx.l10n.teacherEditProblem,
         content: _ProblemFormContent(
           initialDescription: problem.questionText,
-          submitLabel: 'Save Changes',
+          submitLabel: context.l10n.teacherSaveChanges,
           onSubmit: (description) =>
               onUpdateProblem(problemId: problem.id, description: description),
         ),
@@ -76,7 +77,7 @@ class TeacherProblemListTab extends StatelessWidget {
       itemBuilder: (ctx, index) {
         if (index == 0) {
           return AppSectionHeader(
-            title: 'Problem List',
+            title: context.l10n.teacherProblemList,
             onAdd: () => _showAddProblemDialog(ctx),
           );
         }
@@ -143,7 +144,7 @@ class _ProblemFormContentState extends State<_ProblemFormContent> {
             maxLines: 3,
             style: AppTypography.bodyMedium(color: cs.onSurface),
             decoration: InputDecoration(
-              hintText: 'Enter problem description',
+              hintText: context.l10n.teacherEnterProblemDesc,
               hintStyle: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(AppSpacing.spacingMd.w),

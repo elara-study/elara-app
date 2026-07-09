@@ -41,7 +41,7 @@ class TeacherResourcesCubit extends Cubit<TeacherResourcesState> {
   final AddTeacherModuleResourceUseCase _addUseCase;
 
   TeacherResourcesCubit(this._useCase, this._addUseCase)
-      : super(const TeacherResourcesInitial());
+    : super(const TeacherResourcesInitial());
 
   Future<void> load({required String moduleId, required String groupId}) async {
     emit(const TeacherResourcesLoading());
@@ -53,6 +53,7 @@ class TeacherResourcesCubit extends Cubit<TeacherResourcesState> {
       ),
     );
   }
+
   Future<void> addResource({
     required String moduleId,
     required String groupId,

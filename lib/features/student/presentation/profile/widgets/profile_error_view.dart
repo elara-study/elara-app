@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileErrorView extends StatelessWidget {
@@ -38,7 +39,7 @@ class ProfileErrorView extends StatelessWidget {
             TextButton(
               onPressed: onRetry,
               child: Text(
-                'Try again',
+                context.l10n.commonTryAgain,
                 style: AppTypography.button(color: AppColors.brandPrimary500),
               ),
             ),

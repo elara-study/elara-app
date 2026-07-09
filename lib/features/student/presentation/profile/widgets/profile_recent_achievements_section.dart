@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/profile/entities/profile_achievement_preview_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileRecentAchievementsSection extends StatelessWidget {
@@ -21,7 +22,7 @@ class ProfileRecentAchievementsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Recent Achievements',
+          context.l10n.profileRecentAchievementsTitle,
           style: AppTypography.h4(color: cs.onSurface),
         ),
         SizedBox(height: AppSpacing.spacingLg.h),

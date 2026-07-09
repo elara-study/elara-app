@@ -1,3 +1,4 @@
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
@@ -105,7 +106,7 @@ class InsightFormDialogShell extends StatelessWidget {
                         ),
                         child: AppFormDialogTextField(
                           controller: controllers[index],
-                          hintText: 'Enter a report paragraph',
+                          hintText: context.l10n.teacherEnterReport,
                           maxLines: 4,
                           onChanged: (_) => cubit.notifyChanged(),
                         ),
@@ -181,8 +182,8 @@ class AddInsightManualDialog extends StatelessWidget {
       child: Builder(
         builder: (dialogContext) {
           return InsightFormDialogShell(
-            title: 'Add an Insight',
-            submitButtonLabel: 'Save Insight',
+            title: context.l10n.teacherAddInsightTitle,
+            submitButtonLabel: context.l10n.teacherSaveInsight,
             onSubmit: () {
               final paragraphs = dialogContext
                   .read<InsightFormCubit>()
@@ -193,8 +194,11 @@ class AddInsightManualDialog extends StatelessWidget {
                 paragraphs,
               );
               Navigator.pop(dialogContext);
-              AppSnackBar.success(parentContext, 'Insight saved as draft');
-            },
+               ScaffoldMessenger.of(parentContext).showSnackBar(
+                SnackBar(content: Text(context.l10n.teacherInsightSavedDraft)),
+              );
+               AppSnackBar.success(parentContext, 'Insight saved as draft');
+             },
           );
         },
       ),

@@ -2,8 +2,9 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/core/utils/app_snackbar.dart';
-import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
+ import 'package:elara/core/localization/localization_extension.dart';
+ import 'package:elara/core/utils/app_snackbar.dart';
+ import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/password_security_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/settings/settings_card.dart';
@@ -39,8 +40,24 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
       listener: (context, state) {
         final msg = state.pendingSnackMessage;
         if (msg != null) {
+           final String localizedMsg;
+          if (msg == 'Password updated (demo).') {
+            localizedMsg = context.l10n.passwordUpdated;
+          } else if (msg == 'Please fill all fields.') {
+            localizedMsg = context.l10n.passwordFillFields;
+          } else if (msg == 'New passwords do not match.') {
+            localizedMsg = context.l10n.passwordMismatch;
+          } else {
+            localizedMsg = msg;
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(localizedMsg)),
+          );
+
+ 
           AppSnackBar.info(context, msg);
-          final cubit = context.read<PasswordSecurityCubit>();
+           final cubit = context.read<PasswordSecurityCubit>();
           if (msg == 'Password updated (demo).') {
             _current.clear();
             _fresh.clear();
@@ -58,7 +75,7 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppGlassHeader(
-            title: 'Password & Security',
+            title: context.l10n.passwordTitle,
             titleStyle: AppTypography.h4(
               color: scheme.onSurface,
               font: AppTypography.comfortaa,
@@ -89,7 +106,7 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                       SizedBox(width: AppSpacing.spacingMd.w),
                       Expanded(
                         child: Text(
-                          'Password',
+                          context.l10n.passwordSectionLabel,
                           style: AppTypography.h5(color: scheme.onSurface),
                         ),
                       ),
@@ -97,7 +114,7 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                   ),
                   SizedBox(height: AppSpacing.spacingLg.h),
                   _PasswordField(
-                    label: 'Current Password',
+                    label: context.l10n.passwordCurrent,
                     controller: _current,
                     obscure: state.obscureCurrent,
                     onToggleObscure: context
@@ -106,7 +123,7 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                   ),
                   SizedBox(height: AppSpacing.spacingLg.h),
                   _PasswordField(
-                    label: 'New Password',
+                    label: context.l10n.passwordNew,
                     controller: _fresh,
                     obscure: state.obscureNew,
                     onToggleObscure: context
@@ -115,7 +132,7 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                   ),
                   SizedBox(height: AppSpacing.spacingLg.h),
                   _PasswordField(
-                    label: 'Confirm New Password',
+                    label: context.l10n.passwordConfirm,
                     controller: _confirm,
                     obscure: state.obscureConfirm,
                     onToggleObscure: context
@@ -136,7 +153,7 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                       },
                       icon: Icon(Icons.vpn_key_rounded, size: 16.sp),
                       label: Text(
-                        'Change Password',
+                        context.l10n.passwordChangeButton,
                         style: AppTypography.labelSmall(
                           color: scheme.onPrimary,
                         ),

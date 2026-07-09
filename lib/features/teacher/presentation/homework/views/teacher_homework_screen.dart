@@ -10,6 +10,7 @@ import 'package:elara/features/teacher/presentation/homework/widgets/teacher_rat
 import 'package:elara/features/teacher/presentation/homework/widgets/teacher_submissions_tab.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/pill_tab_bar.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,14 +54,14 @@ class TeacherHomeworkScreen extends StatelessWidget {
         builder: (context, state) => switch (state) {
           TeacherHomeworkInitial() || TeacherHomeworkLoading() => Scaffold(
             appBar: AppGlassHeader(
-              title: 'Homework',
+              title: context.l10n.teacherHomeworkLabel,
               subtitle: '$subject • $moduleTitle',
             ),
             body: const Center(child: CircularProgressIndicator()),
           ),
-          TeacherHomeworkError(:final message) => Scaffold(
+          TeacherHomeworkError(:final message, :final errorType) => Scaffold(
             appBar: AppGlassHeader(
-              title: 'Homework',
+              title: context.l10n.teacherHomeworkLabel,
               subtitle: '$subject • $moduleTitle',
             ),
             body: Center(
@@ -76,7 +77,13 @@ class TeacherHomeworkScreen extends StatelessWidget {
                     ),
                     SizedBox(height: AppSpacing.spacingLg.h),
                     Text(
-                      message,
+                      message
+                          ?? switch (errorType) {
+                            TeacherHomeworkErrorType.add => context.l10n.teacherFailedAddProblem,
+                            TeacherHomeworkErrorType.update => context.l10n.teacherFailedUpdateProblem,
+                            TeacherHomeworkErrorType.delete => context.l10n.teacherFailedDeleteProblem,
+                            null => context.l10n.teacherFailedAddProblem,
+                          },
                       textAlign: TextAlign.center,
                       style: AppTypography.bodyMedium(
                         color: Theme.of(context).colorScheme.onSurface,
@@ -87,7 +94,7 @@ class TeacherHomeworkScreen extends StatelessWidget {
                       onPressed: () => context
                           .read<TeacherHomeworkCubit>()
                           .load(moduleId: moduleId, groupId: groupId),
-                      child: const Text('Try again'),
+                      child: Text(context.l10n.commonTryAgain),
                     ),
                   ],
                 ),
@@ -131,7 +138,7 @@ class _HomeworkView extends StatelessWidget {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppGlassHeader(
-          title: 'Homework',
+          title: context.l10n.teacherHomeworkLabel,
           subtitle:
               '${homework.subject.isEmpty ? fallbackSubject : homework.subject} • '
               '${homework.moduleTitle.isEmpty ? fallbackModuleTitle : homework.moduleTitle}',
@@ -150,10 +157,10 @@ class _HomeworkView extends StatelessWidget {
               child: AssignmentOverviewCard(totalXp: homework.totalXp),
             ),
             PillTabBar(
-              tabs: const [
-                Tab(text: 'Problem List'),
-                Tab(text: 'Submissions'),
-                Tab(text: 'Rated'),
+              tabs: [
+                Tab(text: context.l10n.teacherProblemList),
+                Tab(text: context.l10n.teacherSubmissions),
+                Tab(text: context.l10n.teacherRatedTab),
               ],
               padding: EdgeInsets.fromLTRB(
                 AppSpacing.spacingLg.w,

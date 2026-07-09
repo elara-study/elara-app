@@ -7,6 +7,7 @@ import 'package:elara/features/student/presentation/quiz/widgets/quiz_load_error
 import 'package:elara/features/student/presentation/quiz/widgets/quiz_results_body.dart';
 import 'package:elara/features/student/presentation/quiz/widgets/quiz_session_body.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Quiz route: provides [QuizCubit], shows the difficulty sheet on first load,
@@ -123,8 +124,14 @@ class _QuizFlowPageState extends State<QuizFlowPage> {
         listener: (context, state) {
           switch (state.status) {
             case QuizStatus.failure:
-              AppSnackBar.error(context, state.message ?? 'Something went wrong');
-            case QuizStatus.hintLoaded:
+               ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message ?? context.l10n.commonSomethingWentWrong),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+               AppSnackBar.error(context, state.message ?? 'Something went wrong');
+             case QuizStatus.hintLoaded:
               final hint = state.hint;
               if (hint != null) {
                 AppSnackBar.info(
@@ -156,7 +163,7 @@ class _QuizFlowPageState extends State<QuizFlowPage> {
               body: Center(child: CircularProgressIndicator()),
             ),
             QuizStatus.failure => QuizLoadErrorView(
-              message: state.message ?? 'Something went wrong',
+              message: state.message ?? context.l10n.commonSomethingWentWrong,
               onRetry: () => context.read<QuizCubit>().retry(),
             ),
             QuizStatus.inProgress ||

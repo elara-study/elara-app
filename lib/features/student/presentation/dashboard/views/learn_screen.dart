@@ -7,6 +7,7 @@ import 'package:elara/features/student/presentation/dashboard/cubits/learn/stude
 import 'package:elara/features/student/presentation/dashboard/widgets/learn/join_group_sheet.dart';
 import 'package:elara/shared/widgets/subject_group_card.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,7 +26,7 @@ class LearnScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const AppGlassHeader(title: 'Learn'),
+      appBar: AppGlassHeader(title: context.l10n.navLearn),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(
           left: AppSpacing.spacingLg.w,
@@ -122,13 +123,13 @@ class _MyGroupsHeaderRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'My Groups',
+              context.l10n.learnMyGroups,
               style: AppTypography.h3(
                 color: cs.onSurface,
               ).copyWith(fontWeight: AppTypography.black),
             ),
             Text(
-              'Your enrolled classes',
+              context.l10n.learnYourEnrolledClasses,
               style: AppTypography.bodyLarge(
                 color: cs.onSurfaceVariant,
               ).copyWith(fontWeight: AppTypography.regular),
@@ -147,7 +148,7 @@ class _MyGroupsHeaderRow extends StatelessWidget {
             ),
           ),
           label: Text(
-            'Join',
+            context.l10n.commonJoin,
             style: AppTypography.labelLarge(color: ButtonColors.outlineText),
           ),
           style: OutlinedButton.styleFrom(
@@ -178,10 +179,10 @@ class _EmptyGroupsView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('No groups yet', style: AppTypography.h6(color: cs.onSurface)),
+          Text(context.l10n.learnNoGroupsYet, style: AppTypography.h6(color: cs.onSurface)),
           SizedBox(height: 6.h),
           Text(
-            'Ask your teacher for a group code\nand tap Join to get started.',
+            context.l10n.learnNoGroupsHint,
             style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
             textAlign: TextAlign.center,
           ),
@@ -221,7 +222,7 @@ class _ErrorView extends StatelessWidget {
           TextButton(
             onPressed: onRetry,
             child: Text(
-              'Try again',
+              context.l10n.commonTryAgain,
               style: AppTypography.button(color: AppColors.brandPrimary500),
             ),
           ),
