@@ -13,6 +13,7 @@ import 'package:elara/shared/widgets/subject_group_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class TeacherRoadmapsScreen extends StatelessWidget {
   const TeacherRoadmapsScreen({super.key});
@@ -22,7 +23,7 @@ class TeacherRoadmapsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const AppGlassHeader(title: 'Roadmaps'),
+      appBar: AppGlassHeader(title: context.l10n.teacherMyRoadmaps),
       body: BlocBuilder<TeacherRoadmapsCubit, TeacherRoadmapsState>(
         builder: (context, state) {
           return switch (state) {
@@ -48,9 +49,9 @@ class TeacherRoadmapsScreen extends StatelessWidget {
                         children: [
                           // Page subtitle
                           AppSectionHeader(
-                            title: 'Learning Paths',
-                            dialogConfig: const GroupDialogConfig(
-                              title: 'Create a roadmap',
+                            title: context.l10n.teacherLearningPaths,
+                            dialogConfig: GroupDialogConfig(
+                              title: context.l10n.teacherCreateRoadmap,
                               showRoadmapName: false,
                             ),
                             onCreateGroup: (title, subject, grade, _) {
@@ -163,10 +164,10 @@ class _EmptyGroupsView extends StatelessWidget {
           onTap: () {
             GroupDialog.show(
               context,
-              config: const GroupDialogConfig(
-                title: 'Create a roadmap',
-                showRoadmapName: false,
-              ),
+                config: GroupDialogConfig(
+                  title: context.l10n.teacherCreateRoadmap,
+                  showRoadmapName: false,
+                ),
               onSubmit: (title, subject, grade, _) {
                 context.read<TeacherRoadmapsCubit>().createRoadmap(
                   title: title,
@@ -187,12 +188,12 @@ class _EmptyGroupsView extends StatelessWidget {
               ),
               SizedBox(height: AppSpacing.spacingMd.h),
               Text(
-                'No roadmaps yet',
+                context.l10n.teacherNoRoadmaps,
                 style: AppTypography.h6(color: cs.onSurface),
               ),
               SizedBox(height: 6.h),
               Text(
-                'Tap Create to add your first roadmap.',
+                context.l10n.teacherTapCreateFirstRoadmap,
                 style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
@@ -236,7 +237,7 @@ class _ErrorView extends StatelessWidget {
             TextButton(
               onPressed: onRetry,
               child: Text(
-                'Try again',
+                context.l10n.commonTryAgain,
                 style: AppTypography.button(color: AppColors.brandPrimary500),
               ),
             ),
