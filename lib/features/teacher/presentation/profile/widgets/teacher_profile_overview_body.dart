@@ -9,6 +9,7 @@ import 'package:elara/features/teacher/presentation/dashboard/cubits/teacher_hom
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class TeacherProfileOverviewBody extends StatelessWidget {
   const TeacherProfileOverviewBody({
@@ -162,7 +163,7 @@ class _StatsGrid extends StatelessWidget {
                 color: AppColors.brandPrimary500,
                 icon: Icons.person_outline_rounded,
                 value: '${profileData.totalStudentsCount}',
-                label: 'Total Students',
+                label: context.l10n.teacherTotalStudents,
               ),
             ),
             SizedBox(width: AppSpacing.spacingMd.w),
@@ -171,7 +172,7 @@ class _StatsGrid extends StatelessWidget {
                 color: AppColors.brandSecondary500,
                 icon: Icons.people_outline_rounded,
                 value: '${profileData.groupCount}',
-                label: 'Active Groups',
+                label: context.l10n.teacherActiveGroups,
               ),
             ),
           ],
@@ -184,7 +185,7 @@ class _StatsGrid extends StatelessWidget {
                 color: AppColors.brandAccent500,
                 icon: Icons.route_outlined,
                 value: '${profileData.roadmapsCreated}',
-                label: 'Roadmaps Created',
+                label: context.l10n.teacherRoadmapsCreated,
               ),
             ),
             SizedBox(width: AppSpacing.spacingMd.w),
@@ -193,7 +194,7 @@ class _StatsGrid extends StatelessWidget {
                 color: AppColors.success500,
                 icon: Icons.timelapse_outlined,
                 value: '${profileData.yearsTeaching}',
-                label: 'Years Teaching',
+                label: context.l10n.teacherYearsTeaching,
               ),
             ),
           ],
