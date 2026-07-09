@@ -1,11 +1,9 @@
 import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/enums/user_role.dart';
- import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/localization/localization_extension.dart';
- 
 import 'package:elara/core/utils/app_snackbar.dart';
- import 'package:elara/features/auth/auth.dart';
+import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,34 +50,35 @@ class SignUpCredentialsScreen extends StatelessWidget {
             role: role,
             isLoading: state is AuthLoading,
             isGoogleFlow: isGoogleFlow,
-            onSubmit: ({
-              required name,
-              required email,
-              required password,
-              required dateOfBirth,
-              String? subjectDisplayName,
-              int? grade,
-            }) {
-              if (isGoogleFlow) {
-                context.read<AuthCubit>().completeRegistration(
-                  pendingToken: googleData!.pendingToken,
-                  role: role,
-                  dateOfBirth: dateOfBirth,
-                  subjectDisplayName: subjectDisplayName,
-                  grade: grade,
-                );
-              } else {
-                context.read<AuthCubit>().signUp(
-                  name: name,
-                  email: email,
-                  password: password,
-                  role: role,
-                  dateOfBirth: dateOfBirth,
-                  subjectDisplayName: subjectDisplayName,
-                  grade: grade,
-                );
-              }
-            },
+            onSubmit:
+                ({
+                  required name,
+                  required email,
+                  required password,
+                  required dateOfBirth,
+                  String? subjectDisplayName,
+                  int? grade,
+                }) {
+                  if (isGoogleFlow) {
+                    context.read<AuthCubit>().completeRegistration(
+                      pendingToken: googleData!.pendingToken,
+                      role: role,
+                      dateOfBirth: dateOfBirth,
+                      subjectDisplayName: subjectDisplayName,
+                      grade: grade,
+                    );
+                  } else {
+                    context.read<AuthCubit>().signUp(
+                      name: name,
+                      email: email,
+                      password: password,
+                      role: role,
+                      dateOfBirth: dateOfBirth,
+                      subjectDisplayName: subjectDisplayName,
+                      grade: grade,
+                    );
+                  }
+                },
           ),
         ),
       ),

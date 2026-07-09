@@ -103,21 +103,14 @@ class _TeacherAddResourceDialogContentState
         : _pickedFilePath;
 
     if (title.isEmpty || url == null || url.isEmpty) {
-       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.l10n.teacherTitleAndFileRequired(
-              widget.type == TeacherResourceType.link
-                  ? context.l10n.teacherUrlResource
-                  : context.l10n.teacherFileResource,
-            ),
-          ),
-        ),
- 
       AppSnackBar.warning(
         context,
-        'Title and ${widget.type == TeacherResourceType.link ? 'URL' : 'File'} are required',
-       );
+        context.l10n.teacherTitleAndFileRequired(
+          widget.type == TeacherResourceType.link
+              ? context.l10n.teacherUrlResource
+              : context.l10n.teacherFileResource,
+        ),
+      );
       return;
     }
     widget.onSubmit(title, url, _descCtrl.text.trim());

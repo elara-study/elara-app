@@ -37,23 +37,14 @@ class _VoiceView extends StatelessWidget {
           prev.status != curr.status || curr.status == VoiceStatus.error,
       listener: (context, state) {
         if (state.status == VoiceStatus.error) {
-           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage ?? context.l10n.commonErrorOccurred),
-              backgroundColor: AppColors.error600,
-              action: SnackBarAction(
-                label: context.l10n.commonTryAgain,
-                textColor: AppColors.white,
-                onPressed: () => context.read<VoiceCubit>().startSession(),
-              ),
-           AppSnackBar.error(
+          AppSnackBar.error(
             context,
-            state.errorMessage ?? 'An error occurred',
+            state.errorMessage ?? context.l10n.commonErrorOccurred,
             action: SnackBarAction(
-              label: 'Retry',
+              label: context.l10n.commonTryAgain,
               textColor: AppColors.white,
               onPressed: () => context.read<VoiceCubit>().startSession(),
-             ),
+            ),
           );
         }
       },

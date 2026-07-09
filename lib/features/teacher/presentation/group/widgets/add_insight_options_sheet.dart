@@ -64,16 +64,10 @@ Future<void> showAddInsightOptionsSheet(
                           onTap: () {
                             Navigator.of(dialogContext).pop();
                             if (!context.mounted) return;
-                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  context.l10n.teacherElaraDrafting(studentName),
-                                ),
-                              ),
-                             AppSnackBar.info(
+                            AppSnackBar.info(
                               context,
-                              'Elara is drafting an insight for $studentName',
-                             );
+                              context.l10n.teacherElaraDrafting(studentName),
+                            );
                           },
                           child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 24.h),
