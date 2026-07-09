@@ -1142,7 +1142,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teacherResourceLink => 'Resource Link';
 
   @override
-  String get teacherResourceTitleHint => 'Enter resource title';
+  String get teacherResourceTitleHint => 'Resource title…';
 
   @override
   String get teacherResourceLinkHint => 'https://...';
@@ -1692,6 +1692,349 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get studentGroupNoAnnouncements => 'No announcements yet';
+
+  @override
+  String get teacherReadyToInspire => 'Ready to inspire today';
+
+  @override
+  String get teacherMyRoadmaps => 'My Roadmaps';
+
+  @override
+  String get teacherRecentActivity => 'Recent Activity';
+
+  @override
+  String get teacherAvgAttendance => 'Avg. Attendance';
+
+  @override
+  String get teacherPerfectDays => 'Perfect Days';
+
+  @override
+  String get teacherPresent => 'Present';
+
+  @override
+  String get teacherSearchStudents => 'Search students...';
+
+  @override
+  String teacherNoStudentsMatch(Object query) {
+    return 'No students match \"$query\".';
+  }
+
+  @override
+  String get teacherAddStudentTitle => 'Add a Student';
+
+  @override
+  String get teacherGroupJoinCode => 'Group Join Code';
+
+  @override
+  String get teacherEnterStudentUsername => 'Enter student\'s username';
+
+  @override
+  String get teacherSaveAttendance => 'Save Attendance';
+
+  @override
+  String get teacherEditAnnouncement => 'Edit Announcement';
+
+  @override
+  String get teacherAddAnnouncementTitle => 'Add an Announcement';
+
+  @override
+  String get teacherAnnouncementTitleField => 'Title';
+
+  @override
+  String get teacherAnnouncementBodyField => 'Body';
+
+  @override
+  String get teacherEnterAnnouncementTitle => 'Enter announcement title';
+
+  @override
+  String get teacherEnterAnnouncementBody => 'Enter announcement body';
+
+  @override
+  String get teacherSaveChanges => 'Save Changes';
+
+  @override
+  String get teacherAddModule => 'Add Module';
+
+  @override
+  String get teacherModuleTitle => 'Title';
+
+  @override
+  String get teacherEnterModuleTitle => 'Enter module title…';
+
+  @override
+  String get teacherModuleDescription => 'Description';
+
+  @override
+  String get teacherEnterModuleDescription => 'Enter module description…';
+
+  @override
+  String get teacherEditModule => 'Edit Module';
+
+  @override
+  String get teacherLearningPath => 'Learning Path';
+
+  @override
+  String get teacherInsightOptions => 'Insight Options';
+
+  @override
+  String teacherElaraDrafting(String name) {
+    return 'Elara is drafting an insight for $name';
+  }
+
+  @override
+  String get teacherManually => 'Manually';
+
+  @override
+  String get teacherAddInsightTitle => 'Add an Insight';
+
+  @override
+  String get teacherSaveInsight => 'Save Insight';
+
+  @override
+  String get teacherInsightSavedDraft => 'Insight saved as draft';
+
+  @override
+  String get teacherEditInsight => 'Edit Insight';
+
+  @override
+  String get teacherInsightUpdated => 'Insight updated successfully';
+
+  @override
+  String get teacherSendInsight => 'Send Insight';
+
+  @override
+  String get teacherInsightSent => 'Insight sent to parents';
+
+  @override
+  String get teacherMoreOptions => 'More options';
+
+  @override
+  String teacherRemoveStudentConfirmTitle(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String teacherRemoveStudentConfirmBody(String name, String group) {
+    return 'Are you sure you want to remove $name from $group? They will lose access to all shared materials and progress.';
+  }
+
+  @override
+  String get teacherAddProblem => 'Add a Problem';
+
+  @override
+  String get teacherEditProblem => 'Edit Problem';
+
+  @override
+  String get teacherEnterProblemDesc => 'Enter problem description';
+
+  @override
+  String teacherProblemBadge(int number) {
+    return 'PROBLEM $number';
+  }
+
+  @override
+  String teacherAnswerBadge(int number) {
+    return 'ANSWER $number';
+  }
+
+  @override
+  String get teacherSubmitScore => 'Submit Score';
+
+  @override
+  String get teacherSaveScore => 'Save Score';
+
+  @override
+  String get teacherRatedSubmissions => 'Rated Submissions';
+
+  @override
+  String teacherStudentScore(String name) {
+    return '$name\'s Score';
+  }
+
+  @override
+  String get teacherFailedLoadSubmission =>
+      'Failed to load submission details.';
+
+  @override
+  String get teacherTitleResource => 'Title';
+
+  @override
+  String get teacherUrlResource => 'URL';
+
+  @override
+  String get teacherFileResource => 'File';
+
+  @override
+  String get teacherTapSelectFile => 'Tap to select file...';
+
+  @override
+  String get teacherDescriptionOptional => 'Description (optional)';
+
+  @override
+  String get teacherBriefDescription => 'Brief description…';
+
+  @override
+  String teacherTitleAndFileRequired(String field) {
+    return 'Title and $field are required';
+  }
+
+  @override
+  String teacherFailedPickFile(String error) {
+    return 'Failed to pick file: $error';
+  }
+
+  @override
+  String get teacherCreateRoadmap => 'Create a roadmap';
+
+  @override
+  String get teacherNoRoadmaps => 'No roadmaps yet';
+
+  @override
+  String get teacherTapCreateFirstRoadmap =>
+      'Tap Create to add your first roadmap.';
+
+  @override
+  String get teacherTapCreateFirstClass =>
+      'Tap Create to add your first class.';
+
+  @override
+  String get teacherNoProfileData => 'No profile data available.';
+
+  @override
+  String get teacherTotalStudents => 'Total Students';
+
+  @override
+  String get teacherActiveGroups => 'Active Groups';
+
+  @override
+  String get teacherRoadmapsCreated => 'Roadmaps Created';
+
+  @override
+  String get teacherYearsTeaching => 'Years Teaching';
+
+  @override
+  String get teacherStudentsCount => 'Students';
+
+  @override
+  String get teacherAvgCompletion => 'Avg. Completion';
+
+  @override
+  String get teacherNoAnnouncementsYet => 'No announcements yet.';
+
+  @override
+  String teacherXpLabel(Object xp) {
+    return '$xp XP';
+  }
+
+  @override
+  String teacherModuleLabel(int number) {
+    return 'MODULE $number';
+  }
+
+  @override
+  String get teacherDeleteGroup => 'Delete Group';
+
+  @override
+  String get teacherDeleteGroupConfirm =>
+      'Are you sure you want to delete this group? This action cannot be undone.';
+
+  @override
+  String get teacherDeleteRoadmap => 'Delete Roadmap';
+
+  @override
+  String get teacherDeleteRoadmapConfirm =>
+      'Are you sure you want to delete this roadmap? This action cannot be undone.';
+
+  @override
+  String teacherStudentsCountProgress(int count, int percent) {
+    return '$count students • $percent% complete';
+  }
+
+  @override
+  String get teacherLessons => 'Lessons';
+
+  @override
+  String get teacherStreak => 'Streak';
+
+  @override
+  String get teacherParents => 'Parents';
+
+  @override
+  String get teacherAttendanceToday => 'Today\'s Attendance';
+
+  @override
+  String get teacherHomeworkLabel => 'Homework';
+
+  @override
+  String get teacherResourcesLabel => 'Resources';
+
+  @override
+  String get teacherProblemList => 'Problem List';
+
+  @override
+  String get teacherRatedTab => 'Rated';
+
+  @override
+  String get teacherSubmissionDetails => 'Submission Details';
+
+  @override
+  String get teacherUrlHint => 'https://...';
+
+  @override
+  String get teacherXpHint => 'XP';
+
+  @override
+  String get teacherGroupsAppBar => 'Groups';
+
+  @override
+  String get teacherEnterReport => 'Enter a report paragraph';
+
+  @override
+  String get teacherInteractionOptions => 'Interaction Options';
+
+  @override
+  String get teacherAddResourceDialog => 'Add Resource';
+
+  @override
+  String get teacherSearchResources => 'Search resources...';
+
+  @override
+  String get teacherRemove => 'Remove';
+
+  @override
+  String get teacherAttendanceHistorySubtitle => 'Attendance History';
+
+  @override
+  String get teacherLearningPaths => 'Learning Paths';
+
+  @override
+  String teacherCouldNotOpenResource(String title) {
+    return 'Could not open resource: $title';
+  }
+
+  @override
+  String get teacherFailedAddProblem => 'Failed to add homework problem';
+
+  @override
+  String get teacherFailedUpdateProblem => 'Failed to update homework problem';
+
+  @override
+  String get teacherFailedDeleteProblem => 'Failed to delete homework problem';
+
+  @override
+  String teacherFailedLoadHome(String message) {
+    return 'Failed to load home: $message';
+  }
+
+  @override
+  String teacherFailedCreateGroup(String message) {
+    return 'Failed to create group: $message';
+  }
+
+  @override
+  String teacherFailedCreateRoadmap(String message) {
+    return 'Failed to create roadmap: $message';
+  }
 
   @override
   String get teacherNameFallback => 'Teacher Name';

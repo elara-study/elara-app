@@ -2273,7 +2273,7 @@ abstract class AppLocalizations {
   /// No description provided for @teacherResourceTitleHint.
   ///
   /// In en, this message translates to:
-  /// **'Enter resource title'**
+  /// **'Resource title…'**
   String get teacherResourceTitleHint;
 
   /// No description provided for @teacherResourceLinkHint.
@@ -3355,6 +3355,618 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No announcements yet'**
   String get studentGroupNoAnnouncements;
+
+  /// No description provided for @teacherReadyToInspire.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to inspire today'**
+  String get teacherReadyToInspire;
+
+  /// No description provided for @teacherMyRoadmaps.
+  ///
+  /// In en, this message translates to:
+  /// **'My Roadmaps'**
+  String get teacherMyRoadmaps;
+
+  /// No description provided for @teacherRecentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activity'**
+  String get teacherRecentActivity;
+
+  /// No description provided for @teacherAvgAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Attendance'**
+  String get teacherAvgAttendance;
+
+  /// No description provided for @teacherPerfectDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect Days'**
+  String get teacherPerfectDays;
+
+  /// No description provided for @teacherPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get teacherPresent;
+
+  /// No description provided for @teacherSearchStudents.
+  ///
+  /// In en, this message translates to:
+  /// **'Search students...'**
+  String get teacherSearchStudents;
+
+  /// No description provided for @teacherNoStudentsMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No students match \"{query}\".'**
+  String teacherNoStudentsMatch(Object query);
+
+  /// No description provided for @teacherAddStudentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a Student'**
+  String get teacherAddStudentTitle;
+
+  /// No description provided for @teacherGroupJoinCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Join Code'**
+  String get teacherGroupJoinCode;
+
+  /// No description provided for @teacherEnterStudentUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter student\'s username'**
+  String get teacherEnterStudentUsername;
+
+  /// No description provided for @teacherSaveAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Attendance'**
+  String get teacherSaveAttendance;
+
+  /// No description provided for @teacherEditAnnouncement.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Announcement'**
+  String get teacherEditAnnouncement;
+
+  /// No description provided for @teacherAddAnnouncementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an Announcement'**
+  String get teacherAddAnnouncementTitle;
+
+  /// No description provided for @teacherAnnouncementTitleField.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get teacherAnnouncementTitleField;
+
+  /// No description provided for @teacherAnnouncementBodyField.
+  ///
+  /// In en, this message translates to:
+  /// **'Body'**
+  String get teacherAnnouncementBodyField;
+
+  /// No description provided for @teacherEnterAnnouncementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter announcement title'**
+  String get teacherEnterAnnouncementTitle;
+
+  /// No description provided for @teacherEnterAnnouncementBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter announcement body'**
+  String get teacherEnterAnnouncementBody;
+
+  /// No description provided for @teacherSaveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get teacherSaveChanges;
+
+  /// No description provided for @teacherAddModule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Module'**
+  String get teacherAddModule;
+
+  /// No description provided for @teacherModuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get teacherModuleTitle;
+
+  /// No description provided for @teacherEnterModuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter module title…'**
+  String get teacherEnterModuleTitle;
+
+  /// No description provided for @teacherModuleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get teacherModuleDescription;
+
+  /// No description provided for @teacherEnterModuleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter module description…'**
+  String get teacherEnterModuleDescription;
+
+  /// No description provided for @teacherEditModule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Module'**
+  String get teacherEditModule;
+
+  /// No description provided for @teacherLearningPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Path'**
+  String get teacherLearningPath;
+
+  /// No description provided for @teacherInsightOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Insight Options'**
+  String get teacherInsightOptions;
+
+  /// No description provided for @teacherElaraDrafting.
+  ///
+  /// In en, this message translates to:
+  /// **'Elara is drafting an insight for {name}'**
+  String teacherElaraDrafting(String name);
+
+  /// No description provided for @teacherManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Manually'**
+  String get teacherManually;
+
+  /// No description provided for @teacherAddInsightTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an Insight'**
+  String get teacherAddInsightTitle;
+
+  /// No description provided for @teacherSaveInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Insight'**
+  String get teacherSaveInsight;
+
+  /// No description provided for @teacherInsightSavedDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Insight saved as draft'**
+  String get teacherInsightSavedDraft;
+
+  /// No description provided for @teacherEditInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Insight'**
+  String get teacherEditInsight;
+
+  /// No description provided for @teacherInsightUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Insight updated successfully'**
+  String get teacherInsightUpdated;
+
+  /// No description provided for @teacherSendInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Insight'**
+  String get teacherSendInsight;
+
+  /// No description provided for @teacherInsightSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Insight sent to parents'**
+  String get teacherInsightSent;
+
+  /// No description provided for @teacherMoreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get teacherMoreOptions;
+
+  /// No description provided for @teacherRemoveStudentConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String teacherRemoveStudentConfirmTitle(String name);
+
+  /// No description provided for @teacherRemoveStudentConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove {name} from {group}? They will lose access to all shared materials and progress.'**
+  String teacherRemoveStudentConfirmBody(String name, String group);
+
+  /// No description provided for @teacherAddProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a Problem'**
+  String get teacherAddProblem;
+
+  /// No description provided for @teacherEditProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Problem'**
+  String get teacherEditProblem;
+
+  /// No description provided for @teacherEnterProblemDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter problem description'**
+  String get teacherEnterProblemDesc;
+
+  /// No description provided for @teacherProblemBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'PROBLEM {number}'**
+  String teacherProblemBadge(int number);
+
+  /// No description provided for @teacherAnswerBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'ANSWER {number}'**
+  String teacherAnswerBadge(int number);
+
+  /// No description provided for @teacherSubmitScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Score'**
+  String get teacherSubmitScore;
+
+  /// No description provided for @teacherSaveScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Score'**
+  String get teacherSaveScore;
+
+  /// No description provided for @teacherRatedSubmissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Rated Submissions'**
+  String get teacherRatedSubmissions;
+
+  /// No description provided for @teacherStudentScore.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s Score'**
+  String teacherStudentScore(String name);
+
+  /// No description provided for @teacherFailedLoadSubmission.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load submission details.'**
+  String get teacherFailedLoadSubmission;
+
+  /// No description provided for @teacherTitleResource.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get teacherTitleResource;
+
+  /// No description provided for @teacherUrlResource.
+  ///
+  /// In en, this message translates to:
+  /// **'URL'**
+  String get teacherUrlResource;
+
+  /// No description provided for @teacherFileResource.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get teacherFileResource;
+
+  /// No description provided for @teacherTapSelectFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to select file...'**
+  String get teacherTapSelectFile;
+
+  /// No description provided for @teacherDescriptionOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get teacherDescriptionOptional;
+
+  /// No description provided for @teacherBriefDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief description…'**
+  String get teacherBriefDescription;
+
+  /// No description provided for @teacherTitleAndFileRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Title and {field} are required'**
+  String teacherTitleAndFileRequired(String field);
+
+  /// No description provided for @teacherFailedPickFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to pick file: {error}'**
+  String teacherFailedPickFile(String error);
+
+  /// No description provided for @teacherCreateRoadmap.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a roadmap'**
+  String get teacherCreateRoadmap;
+
+  /// No description provided for @teacherNoRoadmaps.
+  ///
+  /// In en, this message translates to:
+  /// **'No roadmaps yet'**
+  String get teacherNoRoadmaps;
+
+  /// No description provided for @teacherTapCreateFirstRoadmap.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Create to add your first roadmap.'**
+  String get teacherTapCreateFirstRoadmap;
+
+  /// No description provided for @teacherTapCreateFirstClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Create to add your first class.'**
+  String get teacherTapCreateFirstClass;
+
+  /// No description provided for @teacherNoProfileData.
+  ///
+  /// In en, this message translates to:
+  /// **'No profile data available.'**
+  String get teacherNoProfileData;
+
+  /// No description provided for @teacherTotalStudents.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Students'**
+  String get teacherTotalStudents;
+
+  /// No description provided for @teacherActiveGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Groups'**
+  String get teacherActiveGroups;
+
+  /// No description provided for @teacherRoadmapsCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Roadmaps Created'**
+  String get teacherRoadmapsCreated;
+
+  /// No description provided for @teacherYearsTeaching.
+  ///
+  /// In en, this message translates to:
+  /// **'Years Teaching'**
+  String get teacherYearsTeaching;
+
+  /// No description provided for @teacherStudentsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Students'**
+  String get teacherStudentsCount;
+
+  /// No description provided for @teacherAvgCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Completion'**
+  String get teacherAvgCompletion;
+
+  /// No description provided for @teacherNoAnnouncementsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No announcements yet.'**
+  String get teacherNoAnnouncementsYet;
+
+  /// No description provided for @teacherXpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{xp} XP'**
+  String teacherXpLabel(Object xp);
+
+  /// No description provided for @teacherModuleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'MODULE {number}'**
+  String teacherModuleLabel(int number);
+
+  /// No description provided for @teacherDeleteGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Group'**
+  String get teacherDeleteGroup;
+
+  /// No description provided for @teacherDeleteGroupConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this group? This action cannot be undone.'**
+  String get teacherDeleteGroupConfirm;
+
+  /// No description provided for @teacherDeleteRoadmap.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Roadmap'**
+  String get teacherDeleteRoadmap;
+
+  /// No description provided for @teacherDeleteRoadmapConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this roadmap? This action cannot be undone.'**
+  String get teacherDeleteRoadmapConfirm;
+
+  /// No description provided for @teacherStudentsCountProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} students • {percent}% complete'**
+  String teacherStudentsCountProgress(int count, int percent);
+
+  /// No description provided for @teacherLessons.
+  ///
+  /// In en, this message translates to:
+  /// **'Lessons'**
+  String get teacherLessons;
+
+  /// No description provided for @teacherStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get teacherStreak;
+
+  /// No description provided for @teacherParents.
+  ///
+  /// In en, this message translates to:
+  /// **'Parents'**
+  String get teacherParents;
+
+  /// No description provided for @teacherAttendanceToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Attendance'**
+  String get teacherAttendanceToday;
+
+  /// No description provided for @teacherHomeworkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Homework'**
+  String get teacherHomeworkLabel;
+
+  /// No description provided for @teacherResourcesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Resources'**
+  String get teacherResourcesLabel;
+
+  /// No description provided for @teacherProblemList.
+  ///
+  /// In en, this message translates to:
+  /// **'Problem List'**
+  String get teacherProblemList;
+
+  /// No description provided for @teacherRatedTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Rated'**
+  String get teacherRatedTab;
+
+  /// No description provided for @teacherSubmissionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Submission Details'**
+  String get teacherSubmissionDetails;
+
+  /// No description provided for @teacherUrlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://...'**
+  String get teacherUrlHint;
+
+  /// No description provided for @teacherXpHint.
+  ///
+  /// In en, this message translates to:
+  /// **'XP'**
+  String get teacherXpHint;
+
+  /// No description provided for @teacherGroupsAppBar.
+  ///
+  /// In en, this message translates to:
+  /// **'Groups'**
+  String get teacherGroupsAppBar;
+
+  /// No description provided for @teacherEnterReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a report paragraph'**
+  String get teacherEnterReport;
+
+  /// No description provided for @teacherInteractionOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Interaction Options'**
+  String get teacherInteractionOptions;
+
+  /// No description provided for @teacherAddResourceDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Resource'**
+  String get teacherAddResourceDialog;
+
+  /// No description provided for @teacherSearchResources.
+  ///
+  /// In en, this message translates to:
+  /// **'Search resources...'**
+  String get teacherSearchResources;
+
+  /// No description provided for @teacherRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get teacherRemove;
+
+  /// No description provided for @teacherAttendanceHistorySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance History'**
+  String get teacherAttendanceHistorySubtitle;
+
+  /// No description provided for @teacherLearningPaths.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Paths'**
+  String get teacherLearningPaths;
+
+  /// No description provided for @teacherCouldNotOpenResource.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open resource: {title}'**
+  String teacherCouldNotOpenResource(String title);
+
+  /// No description provided for @teacherFailedAddProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add homework problem'**
+  String get teacherFailedAddProblem;
+
+  /// No description provided for @teacherFailedUpdateProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update homework problem'**
+  String get teacherFailedUpdateProblem;
+
+  /// No description provided for @teacherFailedDeleteProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete homework problem'**
+  String get teacherFailedDeleteProblem;
+
+  /// No description provided for @teacherFailedLoadHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load home: {message}'**
+  String teacherFailedLoadHome(String message);
+
+  /// No description provided for @teacherFailedCreateGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create group: {message}'**
+  String teacherFailedCreateGroup(String message);
+
+  /// No description provided for @teacherFailedCreateRoadmap.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create roadmap: {message}'**
+  String teacherFailedCreateRoadmap(String message);
 
   /// No description provided for @teacherNameFallback.
   ///

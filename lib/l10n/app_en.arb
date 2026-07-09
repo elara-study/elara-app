@@ -678,6 +678,182 @@
   "studentGroupAnnouncements": "Announcements",
   "studentGroupNoAnnouncements": "No announcements yet",
 
+  "teacherReadyToInspire": "Ready to inspire today",
+  "teacherMyRoadmaps": "My Roadmaps",
+  "teacherRecentActivity": "Recent Activity",
+  "teacherAvgAttendance": "Avg. Attendance",
+  "teacherPerfectDays": "Perfect Days",
+  "teacherPresent": "Present",
+  "teacherSearchStudents": "Search students...",
+  "teacherNoStudentsMatch": "No students match \"{query}\".",
+  "teacherAddStudentTitle": "Add a Student",
+  "teacherGroupJoinCode": "Group Join Code",
+  "teacherEnterStudentUsername": "Enter student's username",
+  "teacherSaveAttendance": "Save Attendance",
+  "teacherEditAnnouncement": "Edit Announcement",
+  "teacherAddAnnouncementTitle": "Add an Announcement",
+  "teacherAnnouncementTitleField": "Title",
+  "teacherAnnouncementBodyField": "Body",
+  "teacherEnterAnnouncementTitle": "Enter announcement title",
+  "teacherEnterAnnouncementBody": "Enter announcement body",
+  "teacherSaveChanges": "Save Changes",
+  "teacherAddModule": "Add Module",
+  "teacherModuleTitle": "Title",
+  "teacherEnterModuleTitle": "Enter module title…",
+  "teacherModuleDescription": "Description",
+  "teacherEnterModuleDescription": "Enter module description…",
+  "teacherEditModule": "Edit Module",
+  "teacherLearningPath": "Learning Path",
+  "teacherInsightOptions": "Insight Options",
+  "teacherElaraDrafting": "Elara is drafting an insight for {name}",
+  "@teacherElaraDrafting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "teacherManually": "Manually",
+  "teacherAddInsightTitle": "Add an Insight",
+  "teacherSaveInsight": "Save Insight",
+  "teacherInsightSavedDraft": "Insight saved as draft",
+  "teacherEditInsight": "Edit Insight",
+  "teacherInsightUpdated": "Insight updated successfully",
+  "teacherSendInsight": "Send Insight",
+  "teacherInsightSent": "Insight sent to parents",
+  "teacherMoreOptions": "More options",
+  "teacherRemoveStudentConfirmTitle": "Remove {name}?",
+  "@teacherRemoveStudentConfirmTitle": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "teacherRemoveStudentConfirmBody": "Are you sure you want to remove {name} from {group}? They will lose access to all shared materials and progress.",
+  "@teacherRemoveStudentConfirmBody": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "group": { "type": "String" }
+    }
+  },
+  "teacherAddProblem": "Add a Problem",
+  "teacherEditProblem": "Edit Problem",
+  "teacherEnterProblemDesc": "Enter problem description",
+  "teacherProblemBadge": "PROBLEM {number}",
+  "@teacherProblemBadge": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "teacherAnswerBadge": "ANSWER {number}",
+  "@teacherAnswerBadge": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "teacherSubmitScore": "Submit Score",
+  "teacherSaveScore": "Save Score",
+  "teacherRatedSubmissions": "Rated Submissions",
+  "teacherStudentScore": "{name}'s Score",
+  "@teacherStudentScore": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "teacherFailedLoadSubmission": "Failed to load submission details.",
+  "teacherTitleResource": "Title",
+  "teacherUrlResource": "URL",
+  "teacherFileResource": "File",
+  "teacherResourceTitleHint": "Resource title…",
+  "teacherTapSelectFile": "Tap to select file...",
+  "teacherDescriptionOptional": "Description (optional)",
+  "teacherBriefDescription": "Brief description…",
+  "teacherTitleAndFileRequired": "Title and {field} are required",
+  "@teacherTitleAndFileRequired": {
+    "placeholders": {
+      "field": { "type": "String" }
+    }
+  },
+  "teacherFailedPickFile": "Failed to pick file: {error}",
+  "@teacherFailedPickFile": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "teacherCreateRoadmap": "Create a roadmap",
+  "teacherNoRoadmaps": "No roadmaps yet",
+  "teacherTapCreateFirstRoadmap": "Tap Create to add your first roadmap.",
+  "teacherTapCreateFirstClass": "Tap Create to add your first class.",
+  "teacherNoProfileData": "No profile data available.",
+  "teacherTotalStudents": "Total Students",
+  "teacherActiveGroups": "Active Groups",
+  "teacherRoadmapsCreated": "Roadmaps Created",
+  "teacherYearsTeaching": "Years Teaching",
+  "teacherStudentsCount": "Students",
+  "teacherAvgCompletion": "Avg. Completion",
+  "teacherNoAnnouncementsYet": "No announcements yet.",
+  "teacherXpLabel": "{xp} XP",
+  "teacherModuleLabel": "MODULE {number}",
+  "@teacherModuleLabel": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "teacherDeleteGroup": "Delete Group",
+  "teacherDeleteGroupConfirm": "Are you sure you want to delete this group? This action cannot be undone.",
+  "teacherDeleteRoadmap": "Delete Roadmap",
+  "teacherDeleteRoadmapConfirm": "Are you sure you want to delete this roadmap? This action cannot be undone.",
+  "teacherStudentsCountProgress": "{count} students • {percent}% complete",
+  "@teacherStudentsCountProgress": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "percent": { "type": "int" }
+    }
+  },
+  "teacherLessons": "Lessons",
+  "teacherStreak": "Streak",
+  "teacherParents": "Parents",
+  "teacherAttendanceToday": "Today's Attendance",
+  "teacherHomeworkLabel": "Homework",
+  "teacherResourcesLabel": "Resources",
+  "teacherProblemList": "Problem List",
+  "teacherRatedTab": "Rated",
+  "teacherSubmissionDetails": "Submission Details",
+  "teacherUrlHint": "https://...",
+  "teacherXpHint": "XP",
+  "teacherGroupsAppBar": "Groups",
+  "teacherEnterReport": "Enter a report paragraph",
+  "teacherInteractionOptions": "Interaction Options",
+  "teacherAddResourceDialog": "Add Resource",
+  "teacherSearchResources": "Search resources...",
+  "teacherRemove": "Remove",
+  "teacherAttendanceHistorySubtitle": "Attendance History",
+  "teacherLearningPaths": "Learning Paths",
+  "teacherCouldNotOpenResource": "Could not open resource: {title}",
+  "@teacherCouldNotOpenResource": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "teacherFailedAddProblem": "Failed to add homework problem",
+  "teacherFailedUpdateProblem": "Failed to update homework problem",
+  "teacherFailedDeleteProblem": "Failed to delete homework problem",
+  "teacherFailedLoadHome": "Failed to load home: {message}",
+  "@teacherFailedLoadHome": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "teacherFailedCreateGroup": "Failed to create group: {message}",
+  "@teacherFailedCreateGroup": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "teacherFailedCreateRoadmap": "Failed to create roadmap: {message}",
+  "@teacherFailedCreateRoadmap": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+
   "teacherNameFallback": "Teacher Name",
   "teacherHandleFallback": "@handle",
   "parentNameFallback": "Parent Name",

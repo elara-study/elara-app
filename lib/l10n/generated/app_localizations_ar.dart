@@ -1140,7 +1140,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get teacherResourceLink => 'رابط المصدر';
 
   @override
-  String get teacherResourceTitleHint => 'أدخل عنوان المصدر';
+  String get teacherResourceTitleHint => 'عنوان المصدر...';
 
   @override
   String get teacherResourceLinkHint => 'https://...';
@@ -1687,6 +1687,347 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get studentGroupNoAnnouncements => 'لا توجد إعلانات بعد';
+
+  @override
+  String get teacherReadyToInspire => 'هل أنت مستعد لإلهام اليوم؟';
+
+  @override
+  String get teacherMyRoadmaps => 'خرائط طرقي';
+
+  @override
+  String get teacherRecentActivity => 'النشاط الأخير';
+
+  @override
+  String get teacherAvgAttendance => 'متوسط الحضور';
+
+  @override
+  String get teacherPerfectDays => 'الأيام المثالية';
+
+  @override
+  String get teacherPresent => 'حاضر';
+
+  @override
+  String get teacherSearchStudents => 'البحث عن طلاب...';
+
+  @override
+  String teacherNoStudentsMatch(Object query) {
+    return 'لا يوجد طلاب يطابقون \"$query\".';
+  }
+
+  @override
+  String get teacherAddStudentTitle => 'إضافة طالب';
+
+  @override
+  String get teacherGroupJoinCode => 'رمز انضمام المجموعة';
+
+  @override
+  String get teacherEnterStudentUsername => 'أدخل اسم المستخدم للطالب';
+
+  @override
+  String get teacherSaveAttendance => 'حفظ الحضور';
+
+  @override
+  String get teacherEditAnnouncement => 'تعديل الإعلان';
+
+  @override
+  String get teacherAddAnnouncementTitle => 'إضافة إعلان';
+
+  @override
+  String get teacherAnnouncementTitleField => 'العنوان';
+
+  @override
+  String get teacherAnnouncementBodyField => 'المحتوى';
+
+  @override
+  String get teacherEnterAnnouncementTitle => 'أدخل عنوان الإعلان';
+
+  @override
+  String get teacherEnterAnnouncementBody => 'أدخل محتوى الإعلان';
+
+  @override
+  String get teacherSaveChanges => 'حفظ التغييرات';
+
+  @override
+  String get teacherAddModule => 'إضافة وحدة';
+
+  @override
+  String get teacherModuleTitle => 'العنوان';
+
+  @override
+  String get teacherEnterModuleTitle => 'أدخل عنوان الوحدة...';
+
+  @override
+  String get teacherModuleDescription => 'الوصف';
+
+  @override
+  String get teacherEnterModuleDescription => 'أدخل وصف الوحدة...';
+
+  @override
+  String get teacherEditModule => 'تعديل الوحدة';
+
+  @override
+  String get teacherLearningPath => 'مسار التعلم';
+
+  @override
+  String get teacherInsightOptions => 'خيارات الرؤية';
+
+  @override
+  String teacherElaraDrafting(String name) {
+    return 'إيلارا بصدد إنشاء رؤية لـ $name';
+  }
+
+  @override
+  String get teacherManually => 'يدوياً';
+
+  @override
+  String get teacherAddInsightTitle => 'إضافة رؤية';
+
+  @override
+  String get teacherSaveInsight => 'حفظ الرؤية';
+
+  @override
+  String get teacherInsightSavedDraft => 'تم حفظ الرؤية كمسودة';
+
+  @override
+  String get teacherEditInsight => 'تعديل الرؤية';
+
+  @override
+  String get teacherInsightUpdated => 'تم تحديث الرؤية بنجاح';
+
+  @override
+  String get teacherSendInsight => 'إرسال الرؤية';
+
+  @override
+  String get teacherInsightSent => 'تم إرسال الرؤية إلى ولي الأمر';
+
+  @override
+  String get teacherMoreOptions => 'خيارات إضافية';
+
+  @override
+  String teacherRemoveStudentConfirmTitle(String name) {
+    return 'إزالة $name؟';
+  }
+
+  @override
+  String teacherRemoveStudentConfirmBody(String name, String group) {
+    return 'هل أنت متأكد من رغبتك في إزالة $name من $group؟ سيفقد الوصول إلى جميع المواد المشتركة والتقدم.';
+  }
+
+  @override
+  String get teacherAddProblem => 'إضافة مسألة';
+
+  @override
+  String get teacherEditProblem => 'تعديل المسألة';
+
+  @override
+  String get teacherEnterProblemDesc => 'أدخل وصف المسألة';
+
+  @override
+  String teacherProblemBadge(int number) {
+    return 'مسألة $number';
+  }
+
+  @override
+  String teacherAnswerBadge(int number) {
+    return 'إجابة $number';
+  }
+
+  @override
+  String get teacherSubmitScore => 'إرسال الدرجة';
+
+  @override
+  String get teacherSaveScore => 'حفظ الدرجة';
+
+  @override
+  String get teacherRatedSubmissions => 'التسليمات المقيمة';
+
+  @override
+  String teacherStudentScore(String name) {
+    return 'درجة $name';
+  }
+
+  @override
+  String get teacherFailedLoadSubmission => 'فشل تحميل تفاصيل التسليم.';
+
+  @override
+  String get teacherTitleResource => 'العنوان';
+
+  @override
+  String get teacherUrlResource => 'الرابط';
+
+  @override
+  String get teacherFileResource => 'الملف';
+
+  @override
+  String get teacherTapSelectFile => 'انقر لاختيار ملف...';
+
+  @override
+  String get teacherDescriptionOptional => 'الوصف (اختياري)';
+
+  @override
+  String get teacherBriefDescription => 'وصف مختصر...';
+
+  @override
+  String teacherTitleAndFileRequired(String field) {
+    return 'العنوان و$field مطلوبان';
+  }
+
+  @override
+  String teacherFailedPickFile(String error) {
+    return 'فشل اختيار الملف: $error';
+  }
+
+  @override
+  String get teacherCreateRoadmap => 'إنشاء خارطة طريق';
+
+  @override
+  String get teacherNoRoadmaps => 'لا توجد خرائط طريق بعد';
+
+  @override
+  String get teacherTapCreateFirstRoadmap =>
+      'انقر على إنشاء لإضافة أول خارطة طريق.';
+
+  @override
+  String get teacherTapCreateFirstClass => 'انقر على إنشاء لإضافة أول صف.';
+
+  @override
+  String get teacherNoProfileData => 'لا توجد بيانات ملف شخصي متاحة.';
+
+  @override
+  String get teacherTotalStudents => 'إجمالي الطلاب';
+
+  @override
+  String get teacherActiveGroups => 'المجموعات النشطة';
+
+  @override
+  String get teacherRoadmapsCreated => 'خرائط الطريق المنشأة';
+
+  @override
+  String get teacherYearsTeaching => 'سنوات التدريس';
+
+  @override
+  String get teacherStudentsCount => 'الطلاب';
+
+  @override
+  String get teacherAvgCompletion => 'متوسط الإكمال';
+
+  @override
+  String get teacherNoAnnouncementsYet => 'لا توجد إعلانات بعد.';
+
+  @override
+  String teacherXpLabel(Object xp) {
+    return '$xp نقطة خبرة';
+  }
+
+  @override
+  String teacherModuleLabel(int number) {
+    return 'الوحدة $number';
+  }
+
+  @override
+  String get teacherDeleteGroup => 'حذف المجموعة';
+
+  @override
+  String get teacherDeleteGroupConfirm =>
+      'هل أنت متأكد من رغبتك في حذف هذه المجموعة؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get teacherDeleteRoadmap => 'حذف خارطة الطريق';
+
+  @override
+  String get teacherDeleteRoadmapConfirm =>
+      'هل أنت متأكد من رغبتك في حذف خارطة الطريق هذه؟ لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String teacherStudentsCountProgress(int count, int percent) {
+    return '$count طلاب • $percent% مكتمل';
+  }
+
+  @override
+  String get teacherLessons => 'الدروس';
+
+  @override
+  String get teacherStreak => 'الحماس';
+
+  @override
+  String get teacherParents => 'أولياء الأمور';
+
+  @override
+  String get teacherAttendanceToday => 'حضور اليوم';
+
+  @override
+  String get teacherHomeworkLabel => 'الواجبات';
+
+  @override
+  String get teacherResourcesLabel => 'المصادر';
+
+  @override
+  String get teacherProblemList => 'قائمة المسائل';
+
+  @override
+  String get teacherRatedTab => 'مقيم';
+
+  @override
+  String get teacherSubmissionDetails => 'تفاصيل التسليم';
+
+  @override
+  String get teacherUrlHint => 'https://...';
+
+  @override
+  String get teacherXpHint => 'نقاط الخبرة';
+
+  @override
+  String get teacherGroupsAppBar => 'المجموعات';
+
+  @override
+  String get teacherEnterReport => 'أدخل فقرة التقرير';
+
+  @override
+  String get teacherInteractionOptions => 'خيارات التفاعل';
+
+  @override
+  String get teacherAddResourceDialog => 'إضافة مصدر';
+
+  @override
+  String get teacherSearchResources => 'البحث عن مصادر...';
+
+  @override
+  String get teacherRemove => 'إزالة';
+
+  @override
+  String get teacherAttendanceHistorySubtitle => 'سجل الحضور';
+
+  @override
+  String get teacherLearningPaths => 'مسارات التعلم';
+
+  @override
+  String teacherCouldNotOpenResource(String title) {
+    return 'تعذر فتح المصدر: $title';
+  }
+
+  @override
+  String get teacherFailedAddProblem => 'فشل إضافة مسألة الواجب';
+
+  @override
+  String get teacherFailedUpdateProblem => 'فشل تحديث مسألة الواجب';
+
+  @override
+  String get teacherFailedDeleteProblem => 'فشل حذف مسألة الواجب';
+
+  @override
+  String teacherFailedLoadHome(String message) {
+    return 'فشل تحميل الصفحة الرئيسية: $message';
+  }
+
+  @override
+  String teacherFailedCreateGroup(String message) {
+    return 'فشل إنشاء المجموعة: $message';
+  }
+
+  @override
+  String teacherFailedCreateRoadmap(String message) {
+    return 'فشل إنشاء خارطة الطريق: $message';
+  }
 
   @override
   String get teacherNameFallback => 'اسم المعلم';
