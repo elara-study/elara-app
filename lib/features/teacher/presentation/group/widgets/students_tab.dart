@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Students tab: stats header, attendance card, action buttons, search, list.
 class StudentsTab extends StatelessWidget {
@@ -102,7 +103,7 @@ class _StudentsContentState extends State<_StudentsContent> {
       ),
       children: [
         // Stats tiles
-        GroupStatsHeader.fromDetail(widget.detail),
+        GroupStatsHeader.fromDetail(context, widget.detail),
         SizedBox(height: AppSpacing.spacingXl.h),
 
         // Today's Attendance card
@@ -130,7 +131,7 @@ class _StudentsContentState extends State<_StudentsContent> {
                   horizontal: AppSpacing.spacingLg.w,
                   vertical: AppSpacing.spacingMd.h,
                 ),
-                text: 'Add Student',
+                text: context.l10n.teacherAddStudentTitle,
                 borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
                 leading: SvgPicture.asset(
                   'assets/icons/plus_icon.svg',
@@ -160,7 +161,7 @@ class _StudentsContentState extends State<_StudentsContent> {
                   horizontal: AppSpacing.spacingLg.w,
                   vertical: AppSpacing.spacingMd.h,
                 ),
-                text: 'Attendance',
+                text: context.l10n.teacherAttendance,
                 borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
                 leading: SvgPicture.asset(
                   'assets/icons/join_icon.svg',
@@ -184,7 +185,7 @@ class _StudentsContentState extends State<_StudentsContent> {
         // Search bar
         AppTextField(
           fillColor: cs.surfaceContainerHighest,
-          hintText: 'Search students...',
+          hintText: context.l10n.teacherSearchStudents,
           controller: _searchCtrl,
           onChanged: (v) => setState(() => _query = v.trim()),
         ),
@@ -196,8 +197,8 @@ class _StudentsContentState extends State<_StudentsContent> {
             padding: EdgeInsets.only(top: AppSpacing.spacing3xl.h),
             child: Text(
               _query.isEmpty
-                  ? 'No students yet.'
-                  : 'No students match "$_query".',
+                  ? context.l10n.teacherNoStudents
+                  : context.l10n.teacherNoStudentsMatch(_query),
               style: AppTypography.bodyMedium(color: cs.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),
@@ -263,7 +264,7 @@ class _AttendanceCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  "Today's Attendance",
+                  context.l10n.teacherAttendanceToday,
                   style: AppTypography.h5(
                     color: cs.onSurface,
                   ).copyWith(fontWeight: AppTypography.extraBold),
@@ -287,7 +288,7 @@ class _AttendanceCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Present',
+                  context.l10n.teacherPresent,
                   style: AppTypography.bodyMedium(
                     color: cs.onSurfaceVariant,
                   ).copyWith(fontWeight: AppTypography.regular),

@@ -16,6 +16,7 @@ import 'package:elara/shared/widgets/module_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class TeacherRoadmapTab extends StatelessWidget {
   final String groupId;
@@ -40,7 +41,7 @@ class TeacherRoadmapTab extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.spacing2xl),
               child: Text(
-                state.message ?? 'Something went wrong',
+                state.message ?? context.l10n.commonSomethingWentWrong,
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
@@ -74,13 +75,13 @@ class TeacherRoadmapContent extends StatelessWidget {
     AppDialog.show(
       context: context,
       builder: (_) => AppDialog(
-        title: 'Add Module',
+        title: context.l10n.teacherAddModule,
         content: AnnouncementFormContent(
-          firstFieldLabel: 'Title',
-          firstFieldPlaceholder: 'Enter module title…',
-          secondFieldLabel: 'Description',
-          secondFieldPlaceholder: 'Enter module description…',
-          submitLabel: 'Add Module',
+          firstFieldLabel: context.l10n.teacherModuleTitle,
+          firstFieldPlaceholder: context.l10n.teacherEnterModuleTitle,
+          secondFieldLabel: context.l10n.teacherModuleDescription,
+          secondFieldPlaceholder: context.l10n.teacherEnterModuleDescription,
+          submitLabel: context.l10n.teacherAddModule,
           onSubmit: (title, description) {
             Navigator.of(context).pop();
             // TODO: dispatch add module cubit event
@@ -105,7 +106,7 @@ class TeacherRoadmapContent extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.only(bottom: AppSpacing.spacingXl.h),
             child: AppSectionHeader(
-              title: 'Learning Path',
+              title: context.l10n.teacherLearningPath,
               onAdd: () => _showAddModuleDialog(context),
             ),
           );
@@ -114,7 +115,7 @@ class TeacherRoadmapContent extends StatelessWidget {
         final moduleIndex = index;
         final moduleEntity = roadmap.modules[index - 1];
         final moduleShim = GroupRoadmapModule(
-          moduleLabel: 'MODULE ${moduleIndex.toString().padLeft(2, '0')}',
+          moduleLabel: context.l10n.teacherModuleLabel(moduleIndex),
           title: moduleEntity.title,
           description: moduleEntity.description,
           status: RoadmapModuleStatus.completed,
@@ -158,7 +159,7 @@ class _TeacherModuleCard extends StatelessWidget {
     AppDialog.show(
       context: context,
       builder: (_) => AppDialog(
-        title: 'Interaction Options',
+        title: context.l10n.teacherInteractionOptions,
         content: _InteractionOptionsContent(
           moduleId: moduleId,
           moduleTitle: module.title,
@@ -174,15 +175,15 @@ class _TeacherModuleCard extends StatelessWidget {
     AppDialog.show(
       context: context,
       builder: (_) => AppDialog(
-        title: 'Edit Module',
+        title: context.l10n.teacherEditModule,
         content: AnnouncementFormContent(
           initialTitle: module.title,
           initialBody: module.description,
-          firstFieldLabel: 'Title',
-          firstFieldPlaceholder: 'Enter module title…',
-          secondFieldLabel: 'Description',
-          secondFieldPlaceholder: 'Enter module description…',
-          submitLabel: 'Save Changes',
+          firstFieldLabel: context.l10n.teacherModuleTitle,
+          firstFieldPlaceholder: context.l10n.teacherEnterModuleTitle,
+          secondFieldLabel: context.l10n.teacherModuleDescription,
+          secondFieldPlaceholder: context.l10n.teacherEnterModuleDescription,
+          submitLabel: context.l10n.teacherSaveChanges,
           onSubmit: (title, description) {
             Navigator.of(context).pop();
             // TODO: dispatch edit module cubit event
@@ -210,13 +211,13 @@ class _TeacherModuleCard extends StatelessWidget {
         iconSize: 16,
         items: [
           AppOverflowMenuItem(
-            label: 'Edit',
+            label: context.l10n.commonEdit,
             icon: Icons.mode,
             backgroundColor: AppColors.brandPrimary500,
             onTap: () => _showEditModuleDialog(context),
           ),
           AppOverflowMenuItem(
-            label: 'Delete',
+            label: context.l10n.commonDelete,
             icon: Icons.delete,
             backgroundColor: AppColors.brandSecondary500,
             onTap: () {
@@ -274,7 +275,7 @@ class _InteractionOptionsContent extends StatelessWidget {
             Expanded(
               child: _InteractionOptionButton(
                 icon: Icons.assignment_rounded,
-                label: 'Homework',
+                label: context.l10n.teacherHomeworkLabel,
                 filled: true,
                 onTap: () {
                   Navigator.of(context).pop();
@@ -290,7 +291,7 @@ class _InteractionOptionsContent extends StatelessWidget {
             Expanded(
               child: _InteractionOptionButton(
                 icon: Icons.folder_rounded,
-                label: 'Resources',
+                label: context.l10n.teacherResourcesLabel,
                 filled: false,
                 onTap: () {
                   Navigator.of(context).pop();

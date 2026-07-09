@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/features/student/domain/profile/entities/profile_linked_parent_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Parents row on the group student profile (Figma Parents section).
 class TeacherStudentParentsSection extends StatelessWidget {
@@ -16,7 +17,7 @@ class TeacherStudentParentsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Parents', style: AppTypography.h4(color: cs.onSurface)),
+        Text(context.l10n.teacherParents, style: AppTypography.h4(color: cs.onSurface)),
         SizedBox(height: AppSpacing.spacingLg.h),
         Row(
           children: [

@@ -1,3 +1,4 @@
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
@@ -35,7 +36,7 @@ Future<void> showAddInsightOptionsSheet(
                 Row(
                   children: [
                     Text(
-                      'Insight Options',
+                      context.l10n.teacherInsightOptions,
                       style: AppTypography.h4(
                         color: cs.onSurface,
                       ).copyWith(fontWeight: FontWeight.w800),
@@ -65,7 +66,7 @@ Future<void> showAddInsightOptionsSheet(
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Elara is drafting an insight for $studentName',
+                                  context.l10n.teacherElaraDrafting(studentName),
                                 ),
                               ),
                             );
@@ -82,7 +83,7 @@ Future<void> showAddInsightOptionsSheet(
                                 ),
                                 SizedBox(height: AppSpacing.spacingXs.h),
                                 Text(
-                                  'elara',
+                                  context.l10n.appName,
                                   style: AppTypography.labelLarge(
                                     color: AppColors.white,
                                   ).copyWith(fontWeight: FontWeight.w800),
@@ -133,7 +134,7 @@ Future<void> showAddInsightOptionsSheet(
                                   ),
                                   SizedBox(height: AppSpacing.spacingXs.h),
                                   Text(
-                                    'Manually',
+                                    context.l10n.teacherManually,
                                     style: AppTypography.labelLarge(
                                       color: AppColors.brandPrimary500,
                                     ).copyWith(fontWeight: FontWeight.w800),

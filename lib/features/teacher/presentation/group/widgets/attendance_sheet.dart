@@ -9,6 +9,7 @@ import 'package:elara/shared/widgets/student_row_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Modal dialog for marking attendance.
 class AttendanceDialog extends StatefulWidget {
@@ -58,7 +59,7 @@ class _AttendanceDialogState extends State<AttendanceDialog> {
   @override
   Widget build(BuildContext context) {
     return AppDialog(
-      title: 'Attendance',
+      title: context.l10n.teacherAttendance,
       content: SizedBox(
         height: MediaQuery.of(context).size.height * 0.55,
         child: Column(
@@ -125,7 +126,7 @@ class _AttendanceDialogState extends State<AttendanceDialog> {
             SizedBox(
               width: double.infinity,
               child: AppPrimaryButton(
-                text: 'Save Attendance',
+                text: context.l10n.teacherSaveAttendance,
                 borderRadius: BorderRadius.circular(AppRadius.radiusFull.r),
                 onPressed: () {
                   // TODO: save attendance to backend
@@ -158,7 +159,7 @@ class _AttendanceSearchBar extends StatelessWidget {
         Expanded(
           child: AppTextField(
             controller: controller,
-            hintText: 'Search students...',
+            hintText: context.l10n.teacherSearchStudents,
             onChanged: onChanged,
           ),
         ),

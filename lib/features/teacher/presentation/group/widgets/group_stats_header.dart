@@ -4,6 +4,7 @@ import 'package:elara/features/teacher/domain/group/entities/teacher_group_detai
 import 'package:elara/shared/widgets/app_stat_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Two colored stat tiles arranged in a row.
 class GroupStatsHeader extends StatelessWidget {
@@ -29,14 +30,14 @@ class GroupStatsHeader extends StatelessWidget {
     required this.color2,
   });
 
-  factory GroupStatsHeader.fromDetail(TeacherGroupDetailEntity detail) {
+  factory GroupStatsHeader.fromDetail(BuildContext context, TeacherGroupDetailEntity detail) {
     return GroupStatsHeader(
       icon1: 'assets/icons/profile_icon_filled.svg',
-      label1: 'Students',
+      label1: context.l10n.teacherStudents,
       value1: '${detail.studentCount}',
       color1: AppColors.brandPrimary500,
       icon2: 'assets/icons/check_circle_icon.svg',
-      label2: 'Avg. Completion',
+      label2: context.l10n.teacherAvgCompletion,
       value2: detail.avgCompletionLabel,
       color2: AppColors.brandSecondary500,
     );

@@ -4,6 +4,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Bottom sheet for adding or editing an announcement.
 /// [isEdit] = true shows "Edit Announcement" title and pre-fills fields.
@@ -84,7 +85,7 @@ class _AddAnnouncementSheetState extends State<AddAnnouncementSheet> {
           Row(
             children: [
               Text(
-                widget.isEdit ? 'Edit Announcement' : 'Add an Announcement',
+                widget.isEdit ? context.l10n.teacherEditAnnouncement : context.l10n.teacherAddAnnouncementTitle,
                 style: AppTypography.h5(color: cs.onSurface)
                     .copyWith(fontWeight: AppTypography.bold),
               ),
@@ -98,21 +99,21 @@ class _AddAnnouncementSheetState extends State<AddAnnouncementSheet> {
           SizedBox(height: AppSpacing.spacing2xl.h),
 
           // Title field
-          _FormLabel(text: 'Title', cs: cs),
+          _FormLabel(text: context.l10n.teacherAnnouncementTitleField, cs: cs),
           SizedBox(height: AppSpacing.spacingSm.h),
           _FormField(
             controller: _titleController,
-            hintText: 'Enter announcement title',
+            hintText: context.l10n.teacherEnterAnnouncementTitle,
             onChanged: (_) => setState(() {}),
           ),
           SizedBox(height: AppSpacing.spacingLg.h),
 
           // Body field
-          _FormLabel(text: 'Body', cs: cs),
+          _FormLabel(text: context.l10n.teacherAnnouncementBodyField, cs: cs),
           SizedBox(height: AppSpacing.spacingSm.h),
           _FormField(
             controller: _bodyController,
-            hintText: 'Enter announcement body',
+            hintText: context.l10n.teacherEnterAnnouncementBody,
             maxLines: 4,
             onChanged: (_) => setState(() {}),
           ),
@@ -137,7 +138,7 @@ class _AddAnnouncementSheetState extends State<AddAnnouncementSheet> {
                 padding: EdgeInsets.symmetric(vertical: AppSpacing.spacingMd.h),
               ),
               child: Text(
-                widget.isEdit ? 'Save Changes' : 'Add Announcement',
+                widget.isEdit ? context.l10n.teacherSaveChanges : context.l10n.teacherAddAnnouncement,
                 style: AppTypography.labelLarge(color: AppColors.white)
                     .copyWith(fontWeight: AppTypography.semiBold),
               ),

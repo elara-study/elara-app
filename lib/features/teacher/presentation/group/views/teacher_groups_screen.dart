@@ -15,6 +15,7 @@ import 'package:elara/shared/widgets/subject_group_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class TeacherGroupsScreen extends StatelessWidget {
   const TeacherGroupsScreen({super.key});
@@ -24,7 +25,7 @@ class TeacherGroupsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const AppGlassHeader(title: 'Groups'),
+      appBar: AppGlassHeader(title: context.l10n.teacherGroupsAppBar),
       body: Builder(
         builder: (context) {
           final roadmapsState = context.watch<TeacherRoadmapsCubit>().state;
@@ -57,7 +58,7 @@ class TeacherGroupsScreen extends StatelessWidget {
                             children: [
                               // Page subtitle
                               AppSectionHeader(
-                                title: 'My Groups',
+                                title: context.l10n.teacherGroupsTitle,
                                 dialogConfig: GroupDialogConfig(
                                   roadmaps: availableRoadmaps,
                                 ),
@@ -155,12 +156,12 @@ class _EmptyGroupsView extends StatelessWidget {
               ),
               SizedBox(height: AppSpacing.spacingMd.h),
               Text(
-                'No groups yet',
+                context.l10n.teacherNoGroups,
                 style: AppTypography.h6(color: cs.onSurface),
               ),
               SizedBox(height: 6.h),
               Text(
-                'Tap Create to add your first class.',
+                context.l10n.teacherTapCreateFirstClass,
                 style: AppTypography.bodySmall(color: cs.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
@@ -204,7 +205,7 @@ class _ErrorView extends StatelessWidget {
             TextButton(
               onPressed: onRetry,
               child: Text(
-                'Try again',
+                context.l10n.commonTryAgain,
                 style: AppTypography.button(color: AppColors.brandPrimary500),
               ),
             ),

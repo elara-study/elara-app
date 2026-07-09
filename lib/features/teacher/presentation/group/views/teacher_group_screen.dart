@@ -11,20 +11,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_group_cubit.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 class TeacherGroupScreen extends StatelessWidget {
   final TeacherGroupEntity group;
 
   const TeacherGroupScreen({super.key, required this.group});
 
-  static const _tabs = [
-    Tab(text: 'Students'),
-    Tab(text: 'Roadmap'),
-    Tab(text: 'Announcements'),
-  ];
+
 
   @override
   Widget build(BuildContext context) {
+    final tabs = [
+      Tab(text: context.l10n.teacherStudents),
+      Tab(text: context.l10n.teacherRoadmapsTitle),
+      Tab(text: context.l10n.teacherAnnouncements),
+    ];
     return BlocListener<TeacherGroupCubit, TeacherGroupState>(
       listener: (context, state) {
         if (state is TeacherGroupDeleted) {
@@ -36,7 +38,7 @@ class TeacherGroupScreen extends StatelessWidget {
         }
       },
       child: DefaultTabController(
-        length: _tabs.length,
+        length: tabs.length,
         child: Scaffold(
           appBar: AppGlassHeader(
             title: group.name,
@@ -63,7 +65,7 @@ class TeacherGroupScreen extends StatelessWidget {
                     PopupMenuItem(
                       value: 'delete',
                       child: Text(
-                        'Delete Group',
+                        context.l10n.teacherDeleteGroup,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.error,
                         ),
@@ -78,7 +80,7 @@ class TeacherGroupScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PillTabBar(
-                tabs: _tabs,
+                tabs: tabs,
                 padding: EdgeInsets.fromLTRB(
                   AppSpacing.spacingLg.w,
                   AppSpacing.spacingMd.h,
@@ -109,14 +111,12 @@ class TeacherGroupScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Group'),
-        content: const Text(
-          'Are you sure you want to delete this group? This action cannot be undone.',
-        ),
+        title: Text(context.l10n.teacherDeleteGroup),
+        content: Text(context.l10n.teacherDeleteGroupConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.commonCancel),
           ),
           TextButton(
             onPressed: () {
@@ -124,7 +124,7 @@ class TeacherGroupScreen extends StatelessWidget {
               context.read<TeacherGroupCubit>().deleteGroup(group.id);
             },
             child: Text(
-              'Delete',
+              context.l10n.commonDelete,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),

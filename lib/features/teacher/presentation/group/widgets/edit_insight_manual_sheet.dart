@@ -3,6 +3,7 @@ import 'package:elara/features/teacher/presentation/group/cubits/teacher_student
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'add_insight_manual_sheet.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 /// Manual insight form overlay dialog for editing an existing insight.
 Future<void> showEditInsightManualSheet(
@@ -53,8 +54,8 @@ class EditInsightManualDialog extends StatelessWidget {
       child: Builder(
         builder: (dialogContext) {
           return InsightFormDialogShell(
-            title: 'Edit Insight',
-            submitButtonLabel: 'Save Changes',
+            title: context.l10n.teacherEditInsight,
+            submitButtonLabel: context.l10n.teacherSaveChanges,
             onSubmit: () {
               final paragraphs = dialogContext
                   .read<InsightFormCubit>()
@@ -66,7 +67,7 @@ class EditInsightManualDialog extends StatelessWidget {
               );
               Navigator.pop(dialogContext);
               ScaffoldMessenger.of(parentContext).showSnackBar(
-                const SnackBar(content: Text('Insight updated successfully')),
+                SnackBar(content: Text(context.l10n.teacherInsightUpdated)),
               );
             },
           );
