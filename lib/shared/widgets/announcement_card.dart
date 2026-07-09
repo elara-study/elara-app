@@ -5,6 +5,7 @@ import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
 import 'package:elara/shared/widgets/app_overflow_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 
 //  AnnouncementCard
 
@@ -59,14 +60,14 @@ class AnnouncementCard extends StatelessWidget {
     final menuItems = <AppOverflowMenuItem>[
       if (onEdit != null)
         AppOverflowMenuItem(
-          label: 'Edit',
+          label: context.l10n.commonEdit,
           icon: Icons.mode,
           backgroundColor: AppColors.brandPrimary500,
           onTap: onEdit!,
         ),
       if (onDelete != null)
         AppOverflowMenuItem(
-          label: 'Delete',
+          label: context.l10n.commonDelete,
           icon: Icons.delete,
           backgroundColor: AppColors.brandSecondary500,
           onTap: onDelete!,
