@@ -12,6 +12,7 @@ import 'package:elara/shared/widgets/app_stat_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:elara/core/localization/localization_extension.dart';
 import 'package:elara/core/utils/ui_helpers.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/navigation/app_navigation.dart';
@@ -31,9 +32,9 @@ class TeacherHomeScreen extends StatelessWidget {
           ),
           TeacherHomeError(:final message) => Scaffold(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            appBar: const AppGlassHeader(title: 'elara'),
+            appBar: AppGlassHeader(title: context.l10n.appName),
             body: _ErrorView(
-              message: message,
+              message: context.l10n.teacherFailedLoadHome(message),
               onRetry: () => context.read<TeacherHomeCubit>().loadHome(),
             ),
           ),
@@ -46,7 +47,7 @@ class TeacherHomeScreen extends StatelessWidget {
             Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               extendBodyBehindAppBar: true,
-              appBar: const AppGlassHeader(title: 'elara'),
+              appBar: AppGlassHeader(title: context.l10n.appName),
               body: SingleChildScrollView(
                 padding: EdgeInsets.only(
                   left: AppSpacing.spacingLg.w,
@@ -70,7 +71,7 @@ class TeacherHomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: AppSpacing.spacing2xs.h),
                     Text(
-                      'Ready to inspire today',
+                      context.l10n.teacherReadyToInspire,
                       style: AppTypography.bodyLarge(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
@@ -89,7 +90,7 @@ class TeacherHomeScreen extends StatelessWidget {
 
                     // ── My Groups ─────────────────────────────────────────
                     AppSectionHeader(
-                      title: 'My Groups',
+                      title: context.l10n.teacherGroupsTitle,
                       onSeeAll: () {
                         //   navigate to Groups tab
                       },
@@ -128,7 +129,7 @@ class TeacherHomeScreen extends StatelessWidget {
                         ),
                     //my roadmaps
                     AppSectionHeader(
-                      title: 'My Roadmaps',
+                      title: context.l10n.teacherMyRoadmaps,
                       onSeeAll: () {
                         // navigate to Groups tab
                       },
@@ -175,7 +176,7 @@ class TeacherHomeScreen extends StatelessWidget {
                           Expanded(
                             child: AppStatTile(
                               icon: 'assets/icons/profile_icon_filled.svg',
-                              label: 'Active Students',
+                              label: context.l10n.teacherActiveStudents,
                               value: '${profile.activeStudentCount}',
                               backgroundColor: AppColors.brandPrimary500,
                             ),
@@ -184,7 +185,7 @@ class TeacherHomeScreen extends StatelessWidget {
                           Expanded(
                             child: AppStatTile(
                               icon: 'assets/icons/check_circle_icon.svg',
-                              label: 'Avg. Completion',
+                              label: context.l10n.teacherAvgCompletion,
                               value: '${(profile.avgCompletion * 100).round()}%',
                               backgroundColor: AppColors.brandSecondary500,
                             ),
@@ -195,7 +196,7 @@ class TeacherHomeScreen extends StatelessWidget {
                     SizedBox(height: AppSpacing.spacing2xl.h),
 
                     // ── Recent Activity ───────────────────────────────────
-                    const AppSectionHeader(title: 'Recent Activity'),
+                    AppSectionHeader(title: context.l10n.teacherRecentActivity),
                     SizedBox(height: AppSpacing.spacingSm.h),
                     _ActivityCard(activities: recentActivity),
                   ],
@@ -327,7 +328,7 @@ class _ErrorView extends StatelessWidget {
             TextButton(
               onPressed: onRetry,
               child: Text(
-                'Try again',
+                context.l10n.commonTryAgain,
                 style: AppTypography.button(color: AppColors.brandPrimary500),
               ),
             ),
