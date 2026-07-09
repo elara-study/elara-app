@@ -2,6 +2,7 @@ import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
 import 'package:elara/features/student/presentation/resources/cubits/student_resources_cubit.dart';
 import 'package:elara/features/teacher/presentation/homework/route_args/teacher_module_route_args.dart';
@@ -171,13 +172,15 @@ class _ResourcesViewState extends State<_ResourcesView> {
         }
       } catch (_) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(context.l10n.resourcesOpenError(resource.title)),
               behavior: SnackBarBehavior.floating,
             ),
           );
-        }
+ 
+          AppSnackBar.error(context, 'Could not open resource: ${resource.title}');
+         }
       }
     }
   }

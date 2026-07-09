@@ -174,6 +174,11 @@ class MockTeacherGroupDataSource implements TeacherGroupDataSource {
   }
 
   @override
+  Future<void> deleteRoadmap(String roadmapId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  @override
   Future<TeacherStudentInsightEntity?> getStudentInsights(
     String studentId,
   ) async {

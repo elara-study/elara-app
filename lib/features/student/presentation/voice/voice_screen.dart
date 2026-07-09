@@ -1,5 +1,6 @@
 import 'package:elara/config/dependency_injection.dart';
 import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/student/presentation/voice/cubit/voice_cubit.dart';
 import 'package:elara/features/student/presentation/voice/cubit/voice_state.dart';
 import 'package:elara/features/student/presentation/voice/widgets/voice_controls.dart';
@@ -36,7 +37,7 @@ class _VoiceView extends StatelessWidget {
           prev.status != curr.status || curr.status == VoiceStatus.error,
       listener: (context, state) {
         if (state.status == VoiceStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
+           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage ?? context.l10n.commonErrorOccurred),
               backgroundColor: AppColors.error600,
@@ -45,7 +46,14 @@ class _VoiceView extends StatelessWidget {
                 textColor: AppColors.white,
                 onPressed: () => context.read<VoiceCubit>().startSession(),
               ),
-            ),
+           AppSnackBar.error(
+            context,
+            state.errorMessage ?? 'An error occurred',
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: AppColors.white,
+              onPressed: () => context.read<VoiceCubit>().startSession(),
+             ),
           );
         }
       },

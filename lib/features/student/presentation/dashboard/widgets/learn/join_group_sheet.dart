@@ -1,6 +1,7 @@
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/learn/student_learn_cubit.dart';
 import 'package:elara/features/student/presentation/dashboard/cubits/learn/student_learn_state.dart';
 import 'package:flutter/material.dart';
@@ -70,21 +71,16 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
       listener: (context, state) {
         if (state is StudentLearnJoinSuccess) {
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
+           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(context.l10n.learnJoinSuccess),
               backgroundColor: AppColors.success500,
               behavior: SnackBarBehavior.floating,
             ),
           );
-        } else if (state is StudentLearnError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: AppColors.error500,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+           AppSnackBar.success(context, 'Successfully joined the group!');
+         } else if (state is StudentLearnError) {
+          AppSnackBar.error(context, state.message);
         }
       },
       child: Center(

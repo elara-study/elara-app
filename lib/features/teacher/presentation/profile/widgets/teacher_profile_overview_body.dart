@@ -69,7 +69,7 @@ class TeacherProfileOverviewBody extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(AppSpacing.spacingLg.w),
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(AppRadius.radiusXl.r),
               boxShadow: [
                 BoxShadow(
@@ -87,9 +87,9 @@ class TeacherProfileOverviewBody extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 12.h),
-                  child: const Divider(
+                  child: Divider(
                     height: 1,
-                    color: AppColors.neutral200,
+                    color: Theme.of(context).colorScheme.outlineVariant,
                   ),
                 ),
                 _InfoRow(

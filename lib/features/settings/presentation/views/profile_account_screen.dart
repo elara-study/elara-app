@@ -3,6 +3,7 @@ import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/core/enums/user_role.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
@@ -33,7 +34,7 @@ class ProfileAccountScreen extends StatelessWidget {
       listener: (context, state) {
         if (state case ProfileAccountLoaded(:final pendingSnackMessage)) {
           if (pendingSnackMessage != null) {
-            final String localizedMsg;
+             final String localizedMsg;
             if (pendingSnackMessage == 'Profile updated (demo).') {
               localizedMsg = context.l10n.profileUpdatedDemo;
             } else if (pendingSnackMessage == 'Account deletion is not available yet.') {
@@ -44,7 +45,8 @@ class ProfileAccountScreen extends StatelessWidget {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(localizedMsg)));
-            context.read<ProfileAccountCubit>().clearSnackMessage();
+             AppSnackBar.info(context, pendingSnackMessage);
+             context.read<ProfileAccountCubit>().clearSnackMessage();
           }
         }
       },

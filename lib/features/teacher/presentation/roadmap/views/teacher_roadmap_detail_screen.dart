@@ -1,5 +1,6 @@
 import 'package:elara/core/theme/app_icon_sizes.dart';
 import 'package:elara/core/theme/app_spacing.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/teacher/domain/group/entities/teacher_group_entity.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_roadmap_cubit.dart';
 import 'package:elara/features/teacher/presentation/group/widgets/teacher_roadmap_tab.dart';
@@ -72,6 +73,7 @@ class TeacherRoadmapDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
+            TeacherRoadmapLoadStatus.deleted => const SizedBox.shrink(),
             TeacherRoadmapLoadStatus.loaded => TeacherRoadmapContent(
               roadmap: state.roadmap!,
               groupId: roadmap.id,
@@ -84,6 +86,7 @@ class TeacherRoadmapDetailScreen extends StatelessWidget {
   }
 
   void _showDeleteConfirmation(BuildContext context) {
+    final cubit = context.read<TeacherRoadmapDetailCubit>();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -97,7 +100,9 @@ class TeacherRoadmapDetailScreen extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
-              // TODO: dispatch delete roadmap when API is available
+              cubit.deleteRoadmap();
+              AppSnackBar.success(context, 'Roadmap deleted');
+              Navigator.of(context).pop();
             },
             child: Text(
               context.l10n.commonDelete,

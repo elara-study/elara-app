@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/teacher/domain/homework/entities/teacher_resource_entity.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:elara/core/localization/localization_extension.dart';
@@ -87,10 +88,11 @@ class _TeacherAddResourceDialogContentState
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.teacherFailedPickFile('$e'))),
         );
-      }
+         AppSnackBar.error(context, 'Failed to pick file: $e');
+       }
     }
   }
 
@@ -101,7 +103,7 @@ class _TeacherAddResourceDialogContentState
         : _pickedFilePath;
 
     if (title.isEmpty || url == null || url.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             context.l10n.teacherTitleAndFileRequired(
@@ -111,7 +113,11 @@ class _TeacherAddResourceDialogContentState
             ),
           ),
         ),
-      );
+ 
+      AppSnackBar.warning(
+        context,
+        'Title and ${widget.type == TeacherResourceType.link ? 'URL' : 'File'} are required',
+       );
       return;
     }
     widget.onSubmit(title, url, _descCtrl.text.trim());

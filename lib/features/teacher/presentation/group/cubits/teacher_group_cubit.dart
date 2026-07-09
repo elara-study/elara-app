@@ -70,9 +70,10 @@ class TeacherGroupCubit extends Cubit<TeacherGroupState> {
     required String username,
   }) async {
     final result = await _addStudent(groupId, username);
-    result.fold((failure) {
-      // Ignored for now
-    }, (_) => loadGroup(groupId));
+    result.fold(
+      (failure) => emit(TeacherGroupError(failure.message)),
+      (_) => loadGroup(groupId),
+    );
   }
 
   Future<void> deleteGroup(String groupId) async {

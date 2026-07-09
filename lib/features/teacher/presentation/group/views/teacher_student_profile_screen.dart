@@ -2,6 +2,7 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/teacher/domain/group/entities/teacher_student_profile_entity.dart';
 import 'package:elara/features/teacher/presentation/group/cubits/teacher_student_profile_cubit.dart';
 import 'package:elara/features/teacher/presentation/group/widgets/edit_insight_manual_sheet.dart';
@@ -135,10 +136,11 @@ class TeacherStudentProfileBody extends StatelessWidget {
               ),
               onSend: () {
                 context.read<TeacherStudentProfileCubit>().sendInsight();
-                ScaffoldMessenger.of(context).showSnackBar(
+                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(context.l10n.teacherInsightSent)),
                 );
-              },
+                 AppSnackBar.success(context, 'Insight sent to parents');
+               },
             ),
         ],
       ),

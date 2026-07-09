@@ -3,8 +3,9 @@ import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
-import 'package:elara/core/localization/localization_extension.dart';
-import 'package:elara/features/auth/auth.dart';
+ import 'package:elara/core/localization/localization_extension.dart';
+ import 'package:elara/core/utils/app_snackbar.dart';
+ import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +44,7 @@ class ResetPasswordScreen extends StatelessWidget {
 
   static void _onAuthStateChange(BuildContext context, AuthState state) {
     if (state is PasswordResetSuccess) {
-      ScaffoldMessenger.of(context)
+       ScaffoldMessenger.of(context)
         ..clearSnackBars()
         ..showSnackBar(
           SnackBar(
@@ -52,15 +53,10 @@ class ResetPasswordScreen extends StatelessWidget {
             behavior: SnackBarBehavior.floating,
           ),
         );
-      AppNavigation.pushNamedAndRemoveUntil(context, AppRoutes.login);
+       AppSnackBar.success(context, 'Password reset successfully. Please sign in.');
+       AppNavigation.pushNamedAndRemoveUntil(context, AppRoutes.login);
     } else if (state is AuthError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.message),
-          backgroundColor: AppColors.error500,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      AppSnackBar.error(context, state.message);
     }
   }
 }

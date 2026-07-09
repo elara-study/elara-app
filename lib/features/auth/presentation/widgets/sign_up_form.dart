@@ -4,8 +4,9 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/core/localization/localization_extension.dart';
-import 'package:elara/features/auth/auth.dart';
+ import 'package:elara/core/localization/localization_extension.dart';
+ import 'package:elara/core/utils/app_snackbar.dart';
+ import 'package:elara/features/auth/auth.dart';
 import 'package:elara/shared/widgets/app_buttons.dart';
 import 'package:elara/shared/widgets/app_calendar_widget.dart';
 import 'package:elara/shared/widgets/app_dropdown_field.dart';
@@ -82,7 +83,7 @@ class _SignUpFormState extends State<SignUpForm> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     if (_birthday == null) {
-      ScaffoldMessenger.of(context)
+       ScaffoldMessenger.of(context)
         ..clearSnackBars()
         ..showSnackBar(
           SnackBar(
@@ -123,7 +124,12 @@ class _SignUpFormState extends State<SignUpForm> {
             duration: const Duration(seconds: 3),
           ),
         );
+       AppSnackBar.error(context, 'Please select your date of birth');
       return;
+    }
+    if (widget.role == UserRole.student && _selectedGrade == null) {
+      AppSnackBar.error(context, 'Please select your grade');
+       return;
     }
     widget.onSubmit(
       name: _fullNameCtrl.text.trim(),

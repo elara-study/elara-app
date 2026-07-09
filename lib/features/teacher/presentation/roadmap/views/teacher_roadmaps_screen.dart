@@ -7,6 +7,7 @@ import 'package:elara/features/teacher/domain/group/entities/teacher_group_entit
 import 'package:elara/features/teacher/presentation/roadmap/cubits/teacher_roadmaps_cubit.dart';
 import 'package:elara/features/teacher/presentation/roadmap/cubits/teacher_roadmaps_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
+import 'package:elara/shared/widgets/app_refresh_indicator.dart';
 import 'package:elara/shared/widgets/app_section_header.dart';
 import 'package:elara/shared/widgets/create_group_dialog.dart';
 import 'package:elara/shared/widgets/subject_group_card.dart';
@@ -37,7 +38,11 @@ class TeacherRoadmapsScreen extends StatelessWidget {
             TeacherRoadmapsLoaded(:final roadmaps) =>
               roadmaps.isEmpty
                   ? const _EmptyGroupsView()
-                  : SingleChildScrollView(
+                  : AppRefreshIndicator(
+                      onRefresh: () async {
+                        context.read<TeacherRoadmapsCubit>().loadRoadmaps();
+                      },
+                      child: SingleChildScrollView(
                       padding: EdgeInsets.only(
                         left: AppSpacing.spacingLg.w,
                         right: AppSpacing.spacingLg.w,
@@ -78,6 +83,7 @@ class TeacherRoadmapsScreen extends StatelessWidget {
                                 _buildRoadmapCard(roadmaps[index]),
                           ),
                         ],
+                      ),
                       ),
                     ),
           };

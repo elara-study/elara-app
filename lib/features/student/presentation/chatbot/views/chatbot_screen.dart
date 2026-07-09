@@ -1,5 +1,6 @@
 import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/student/presentation/chatbot/chatbot_route_args.dart';
 import 'package:elara/features/student/presentation/chatbot/cubits/chatbot_cubit.dart';
 import 'package:elara/features/student/presentation/chatbot/cubits/chatbot_state.dart';
@@ -115,12 +116,13 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     if (status.isGranted && mounted) {
       context.push('/voice');
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(context.l10n.chatbotMicPermissionRequired),
         ),
       );
-    }
+       AppSnackBar.warning(context, 'Microphone permission is required for voice mode.');
+     }
   }
 
   @override
@@ -158,9 +160,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         listener: (context, state) {
           final banner = state.bannerMessage;
           if (banner != null && banner.isNotEmpty) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(banner)));
+            AppSnackBar.info(context, banner);
             context.read<ChatbotCubit>().clearBanner();
           }
           if (state.messages.isNotEmpty) {

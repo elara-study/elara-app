@@ -48,6 +48,8 @@ abstract class TeacherGroupRepository {
 
   Future<Either<Failure, TeacherRoadmapEntity>> getRoadmap(String groupId);
 
+  Future<Either<Failure, void>> deleteRoadmap(String roadmapId);
+
   Future<Either<Failure, TeacherStudentInsightEntity?>> getStudentInsights(
     String studentId,
   );

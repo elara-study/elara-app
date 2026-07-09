@@ -1,13 +1,14 @@
 import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
 import 'package:elara/core/theme/theme_cubit.dart';
-import 'package:elara/core/theme/app_spacing.dart';
-import 'package:elara/core/enums/user_role.dart';
 import 'package:elara/core/theme/app_radius.dart';
+import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/core/localization/locale_constants.dart';
+ import 'package:elara/core/localization/locale_constants.dart';
 import 'package:elara/core/localization/localization_extension.dart';
-import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
+ import 'package:elara/core/enums/user_role.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
+ import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
 import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_state.dart';
@@ -28,9 +29,7 @@ class TeacherSettingsScreen extends StatelessWidget {
       listener: (context, profileState) {
         final snack = profileState.pendingSnackMessage;
         if (snack != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(snack)));
+          AppSnackBar.info(context, snack);
           context.read<TeacherProfileCubit>().clearSnackMessage();
         }
       },

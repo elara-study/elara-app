@@ -5,9 +5,10 @@ import 'package:elara/core/theme/theme_cubit.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
 import 'package:elara/core/enums/user_role.dart';
-import 'package:elara/core/localization/locale_constants.dart';
+ import 'package:elara/core/localization/locale_constants.dart';
 import 'package:elara/core/localization/localization_extension.dart';
-import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
+ import 'package:elara/core/utils/app_snackbar.dart';
+ import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/student/presentation/profile/cubits/student_settings_cubit.dart';
 import 'package:elara/features/student/presentation/profile/cubits/student_settings_state.dart';
@@ -36,9 +37,7 @@ class StudentSettingsScreen extends StatelessWidget {
         }
         final snack = settingsState.pendingSnackMessage;
         if (snack != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(snack)));
+          AppSnackBar.info(context, snack);
           context.read<StudentSettingsCubit>().clearSnackMessage();
         }
       },

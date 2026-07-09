@@ -1,5 +1,6 @@
 import 'package:elara/core/navigation/app_navigation.dart';
 import 'package:elara/config/routes.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:elara/features/auth/presentation/cubits/auth_state.dart';
 import 'package:elara/features/teacher/presentation/profile/cubits/teacher_profile_cubit.dart';
@@ -20,7 +21,7 @@ class TeacherProfileScreen extends StatelessWidget {
       listener: (context, profileState) {
         final snack = profileState.pendingSnackMessage;
         if (snack != null) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(snack)));
+          AppSnackBar.info(context, snack);
           context.read<TeacherProfileCubit>().clearSnackMessage();
         }
       },

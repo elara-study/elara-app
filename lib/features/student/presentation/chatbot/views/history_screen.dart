@@ -1,3 +1,4 @@
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/student/domain/chatbot/entities/chatbot_session_summary.dart';
 import 'package:elara/features/student/presentation/chatbot/chatbot_route_args.dart';
 import 'package:elara/features/student/presentation/chatbot/cubits/sessions_cubit.dart';
@@ -85,9 +86,7 @@ class _HistoryPanelState extends State<HistoryPanel> {
               listener: (context, state) {
                 final m = state.message;
                 if (m != null && m.isNotEmpty) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(m)));
+                  AppSnackBar.info(context, m);
                 }
               },
               builder: (context, state) {

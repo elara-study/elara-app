@@ -1,5 +1,5 @@
 import 'package:elara/config/dependency_injection.dart';
-import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/utils/app_snackbar.dart';
 import 'package:elara/features/notifications/presentation/views/notifications_screen.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_cubit.dart';
 import 'package:elara/features/parent/presentation/children/cubits/parent_children_state.dart';
@@ -53,22 +53,12 @@ class ParentShell extends StatelessWidget {
         listener: (context, state) {
           if (state is ParentChildrenLoaded) {
             if (state.successMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.successMessage!),
-                  backgroundColor: AppColors.success500,
-                ),
-              );
+              AppSnackBar.success(context, state.successMessage!);
               context.read<ParentChildrenCubit>().clearMessages();
               context.read<ParentHomeCubit>().loadHome();
               context.read<ParentProfileCubit>().loadProfile();
             } else if (state.errorMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage!),
-                  backgroundColor: Theme.of(context).colorScheme.error,
-                ),
-              );
+              AppSnackBar.error(context, state.errorMessage!);
               context.read<ParentChildrenCubit>().clearMessages();
             }
           }

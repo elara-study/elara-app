@@ -2,8 +2,9 @@ import 'package:elara/core/theme/app_colors.dart';
 import 'package:elara/core/theme/app_radius.dart';
 import 'package:elara/core/theme/app_spacing.dart';
 import 'package:elara/core/theme/app_typography.dart';
-import 'package:elara/core/localization/localization_extension.dart';
-import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
+ import 'package:elara/core/localization/localization_extension.dart';
+ import 'package:elara/core/utils/app_snackbar.dart';
+ import 'package:elara/features/settings/presentation/cubits/password_security_cubit.dart';
 import 'package:elara/features/settings/presentation/cubits/password_security_state.dart';
 import 'package:elara/shared/widgets/app_glass_header.dart';
 import 'package:elara/shared/widgets/settings/settings_card.dart';
@@ -39,7 +40,7 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
       listener: (context, state) {
         final msg = state.pendingSnackMessage;
         if (msg != null) {
-          final String localizedMsg;
+           final String localizedMsg;
           if (msg == 'Password updated (demo).') {
             localizedMsg = context.l10n.passwordUpdated;
           } else if (msg == 'Please fill all fields.') {
@@ -54,7 +55,9 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
             SnackBar(content: Text(localizedMsg)),
           );
 
-          final cubit = context.read<PasswordSecurityCubit>();
+ 
+          AppSnackBar.info(context, msg);
+           final cubit = context.read<PasswordSecurityCubit>();
           if (msg == 'Password updated (demo).') {
             _current.clear();
             _fresh.clear();
