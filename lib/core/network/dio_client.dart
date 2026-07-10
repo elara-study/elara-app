@@ -1,11 +1,25 @@
 import 'package:dio/dio.dart';
-import '../constants/api_constants.dart';
-import '../utils/logger.dart';
+import 'package:elara/core/constants/api_constants.dart';
+import 'package:elara/core/network/auth_interceptor.dart';
+import 'package:elara/core/storage/secure_token_storage.dart';
+import 'package:elara/core/utils/logger.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DioClient {
   late Dio _dio;
+  late final AuthInterceptor _authInterceptor;
 
-  DioClient() {
+  DioClient({
+    required SecureTokenStorage tokenStorage,
+    required GlobalKey<NavigatorState> navigatorKey,
+  }) {
+    _authInterceptor = AuthInterceptor(
+      tokenStorage: tokenStorage,
+      navigatorKey: navigatorKey,
+    );
+
     _dio = Dio(
       BaseOptions(
         baseUrl: ApiConstants.baseUrl,
@@ -22,37 +36,35 @@ class DioClient {
       ),
     );
 
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          AppLogger.log('REQUEST[${options.method}] => PATH: ${options.path}');
-          return handler.next(options);
-        },
-        onResponse: (response, handler) {
-          AppLogger.log(
-            'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
-          );
-          return handler.next(response);
-        },
-        onError: (DioException e, handler) {
-          AppLogger.log(
-            'ERROR[${e.response?.statusCode}] => PATH: ${e.requestOptions.path}',
-          );
-          AppLogger.log('ERROR MESSAGE: ${e.message}');
-          return handler.next(e);
-        },
-      ),
-    );
+    _dio.interceptors.add(_authInterceptor);
+
+    if (kDebugMode) {
+      _dio.interceptors.add(
+        LogInterceptor(
+          request: true,
+          requestHeader: true,
+          requestBody: true,
+          responseHeader: false,
+          responseBody: true,
+          error: true,
+          logPrint: (object) => AppLogger.log(object),
+        ),
+      );
+    }
   }
 
   Dio get dio => _dio;
 
-  // Add authorization token
-  void setAuthToken(String token) {
+  AuthInterceptor get authInterceptor => _authInterceptor;
+
+  void bindRouter(GoRouter router) {
+    _authInterceptor.bindRouter(router);
+  }
+
+  Future<void> setAuthToken(String token) async {
     _dio.options.headers['Authorization'] = 'Bearer $token';
   }
 
-  // Remove authorization token
   void removeAuthToken() {
     _dio.options.headers.remove('Authorization');
   }

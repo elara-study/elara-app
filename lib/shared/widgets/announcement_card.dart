@@ -1,0 +1,117 @@
+import 'package:elara/core/theme/app_colors.dart';
+import 'package:elara/core/theme/app_radius.dart';
+import 'package:elara/core/theme/app_shadows.dart';
+import 'package:elara/core/theme/app_spacing.dart';
+import 'package:elara/features/student/domain/group/entities/group_announcement.dart';
+import 'package:elara/shared/widgets/app_overflow_menu.dart';
+import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
+
+//  AnnouncementCard
+
+/// Shared announcement card used by both teacher and student group screens.
+///
+/// Layout: left orange accent border + card body (title row + body copy).
+///
+/// The overflow menu (⋮) is shown **only** when [onEdit] or [onDelete] are
+/// provided — so the student view (which passes neither) renders without it,
+/// and the teacher view gets full Edit / Delete actions.
+class AnnouncementCard extends StatelessWidget {
+  final GroupAnnouncement announcement;
+
+  /// Called when the user selects "Edit" from the overflow menu.
+  /// Pass `null` (default) to hide the Edit option.
+  final VoidCallback? onEdit;
+
+  /// Called when the user selects "Delete" from the overflow menu.
+  /// Pass `null` (default) to hide the Delete option.
+  final VoidCallback? onDelete;
+
+  const AnnouncementCard({
+    super.key,
+    required this.announcement,
+    this.onEdit,
+    this.onDelete,
+  });
+
+  static const double _accentWidth = 3;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final onMuted = cs.onSurfaceVariant;
+
+    final titleStyle = theme.textTheme.headlineSmall?.copyWith(
+      fontWeight: FontWeight.w900,
+    );
+    final metaStyle = theme.textTheme.labelSmall?.copyWith(
+      fontSize: 10,
+      height: 1.2,
+      color: onMuted,
+    );
+    final bodyStyle = theme.textTheme.bodySmall?.copyWith(
+      fontSize: 10,
+      height: 1.45,
+      color: onMuted,
+    );
+
+    // Build the menu items list from whichever callbacks are provided.
+    final menuItems = <AppOverflowMenuItem>[
+      if (onEdit != null)
+        AppOverflowMenuItem(
+          label: context.l10n.commonEdit,
+          icon: Icons.mode,
+          backgroundColor: AppColors.brandPrimary500,
+          onTap: onEdit!,
+        ),
+      if (onDelete != null)
+        AppOverflowMenuItem(
+          label: context.l10n.commonDelete,
+          icon: Icons.delete,
+          backgroundColor: AppColors.brandSecondary500,
+          onTap: onDelete!,
+        ),
+    ];
+
+    return Semantics(
+      container: true,
+      label: announcement.title,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: cs.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(AppRadius.radiusLg),
+          border: const Border(
+            left: BorderSide(
+              width: _accentWidth,
+              color: AppColors.brandSecondary500,
+            ),
+          ),
+          boxShadow: AppShadows.elevation(theme.brightness),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.spacingLg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(child: Text(announcement.title, style: titleStyle)),
+                  const SizedBox(width: AppSpacing.spacingSm),
+                  Text(announcement.relativeTimeLabel, style: metaStyle),
+                  if (menuItems.isNotEmpty) ...[
+                    const SizedBox(width: AppSpacing.spacingXs),
+                    AppOverflowMenu(items: menuItems),
+                  ],
+                ],
+              ),
+              const SizedBox(height: AppSpacing.spacingSm),
+              Text(announcement.content, style: bodyStyle),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

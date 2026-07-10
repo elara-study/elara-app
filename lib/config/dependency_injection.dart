@@ -1,23 +1,31 @@
-import 'package:elara/core/network/dio_client.dart';
 import 'package:get_it/get_it.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'di/core_di.dart';
+import 'di/auth_di.dart';
+import 'di/student_di.dart';
+import 'di/teacher_di.dart';
+import 'di/parent_di.dart';
+import 'di/chatbot_di.dart';
+import 'di/settings_di.dart';
+import 'di/voice_di.dart';
+import 'di/notification_di.dart';
+import 'di/locale_di.dart';
 
 final getIt = GetIt.instance;
 
 Future<void> setupDependencyInjection() async {
-  // External
-  final sharedPreferences = await SharedPreferences.getInstance();
-  getIt.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+  // Core Services (External, network client, local storage setup, theme, etc.)
+  await setupCoreDI();
 
-  // Core
-  getIt.registerLazySingleton<DioClient>(() => DioClient());
+  // Localization registration (must happen after core SharedPreferences is ready)
+  setupLocaleDI();
 
-  // Data Sources
-  // Register   remote data sources here
-
-  // Repositories
-  // Register   repositories here
-
-  // Cubits
-  // Register   cubits here
+  // Feature Registrations
+  setupAuthDI();
+  setupStudentDI();
+  setupTeacherDI();
+  setupParentDI();
+  setupChatbotDI();
+  setupSettingsDI();
+  setupVoiceDI();
+  setupNotificationDI();
 }

@@ -1,3 +1,6 @@
+.env
+.vscode/mcp.json
+
 # Miscellaneous
 *.class
 *.log

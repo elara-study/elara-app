@@ -1,0 +1,120 @@
+import 'package:elara/features/student/presentation/group/cubits/student_group_cubit.dart';
+import 'package:elara/features/student/presentation/group/widgets/announcements/announcements_tab.dart';
+import 'package:elara/features/student/presentation/group/widgets/group_progress_card.dart';
+import 'package:elara/features/student/presentation/group/widgets/leaderboard_tab.dart';
+import 'package:elara/features/student/presentation/group/widgets/roadmap/tab/roadmap_tab.dart';
+import 'package:elara/features/student/presentation/group/widgets/student_group_app_bar_title.dart';
+import 'package:elara/features/student/presentation/group/widgets/student_group_overflow_menu.dart';
+import 'package:elara/shared/widgets/pill_tab_bar.dart';
+import 'package:elara/core/theme/app_spacing.dart';
+import 'package:flutter/material.dart';
+import 'package:elara/core/localization/localization_extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+/// Student group shell: app bar, progress card, segmented tabs, tab bodies.
+/// Data loading is triggered from [StudentGroupPage] (BlocProvider + Cubit).
+class StudentGroupScreen extends StatelessWidget {
+  const StudentGroupScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tabs = [
+      Tab(text: context.l10n.rewardsLeaderboard),
+      Tab(text: context.l10n.groupRoadmap),
+      Tab(text: context.l10n.groupAnnouncements),
+    ];
+
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          forceMaterialTransparency: true,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+          foregroundColor: theme.colorScheme.onSurface,
+          iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
+          centerTitle: false,
+          titleSpacing: 0,
+          title: BlocBuilder<StudentGroupCubit, StudentGroupState>(
+            buildWhen: (prev, next) => prev.overview != next.overview,
+            builder: (context, state) {
+              final o = state.overview;
+              return StudentGroupAppBarTitle(
+                title: o?.courseTitle ?? '…',
+                subtitle: o?.courseSubtitle ?? '',
+              );
+            },
+          ),
+          actions: [
+            BlocBuilder<StudentGroupCubit, StudentGroupState>(
+              buildWhen: (prev, next) =>
+                  prev.overview?.courseTitle != next.overview?.courseTitle,
+              builder: (context, state) {
+                final title = state.overview?.courseTitle ?? context.l10n.commonThisGroup;
+                return StudentGroupOverflowMenu(courseTitle: title);
+              },
+            ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color:
+                  theme.dividerTheme.color ?? theme.colorScheme.outlineVariant,
+            ),
+          ),
+        ),
+        body: BlocBuilder<StudentGroupCubit, StudentGroupState>(
+          builder: (context, state) {
+            final o = state.overview;
+            final loaded =
+                state.status == StudentGroupStatus.loaded && o != null;
+            final completed = o?.completedLessons ?? 0;
+            final rawTotal = o?.totalLessons ?? 1;
+            final total = rawTotal > 0 ? rawTotal : 1;
+            final progress = loaded ? (completed / total).clamp(0.0, 1.0) : 0.0;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: AppSpacing.spacingLg),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacingLg,
+                  ),
+                  child: GroupProgressCard(
+                    completedLabel: loaded
+                        ? context.l10n.groupLessonProgress(completed, total)
+                        : context.l10n.groupLessonProgressPlaceholder,
+                    progress: progress,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.spacingLg),
+                PillTabBar(
+                  tabs: tabs,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spacingLg,
+                  ),
+                ),
+                const Expanded(
+                  child: TabBarView(
+                    children: [
+                      LeaderboardTab(),
+                      RoadmapTab(),
+                      AnnouncementsTab(),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

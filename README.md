@@ -1,9 +1,12 @@
 # 📚 Elara LMS
 
+<p align="center">
+  <img src="assets/images/logo.svg" width="200">
+</p>
 A modern, feature-rich learning management system built with Flutter, supporting three distinct user roles: Students, Teachers, and Parents.
 
-[![Flutter Version](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev/)
-  
+[![Flutter Version](https://img.shields.io/badge/Flutter-3.32+-blue.svg)](https://flutter.dev/)
+
 ## 📖 Table of Contents
 
 - [Features](#-features)
@@ -14,12 +17,13 @@ A modern, feature-rich learning management system built with Flutter, supporting
 - [User Roles](#-user-roles)
 - [Development](#-development)
 - [Design System](#-design-system)
- 
+
 ---
 
 ## ✨ Features
 
 ### 👨‍🎓 For Students
+
 - 📚 **Course Enrollment** - Browse and enroll in available courses
 - 📝 **Assignment Submission** - Submit assignments and track deadlines
 - 📊 **Grade Tracking** - View grades and performance analytics
@@ -28,6 +32,7 @@ A modern, feature-rich learning management system built with Flutter, supporting
 - 📈 **Progress Dashboard** - Monitor learning progress
 
 ### 👨‍🏫 For Teachers
+
 - 🏫 **Class Management** - Create and manage classes
 - 📋 **Assignment Creation** - Create and distribute assignments
 - ✅ **Grading System** - Grade student submissions
@@ -36,6 +41,7 @@ A modern, feature-rich learning management system built with Flutter, supporting
 - 📊 **Analytics** - View class performance metrics
 
 ### 👨‍👩‍👧 For Parents
+
 - 👶 **Child Monitoring** - Track multiple children's progress
 - 📈 **Progress Reports** - View detailed progress reports
 - 💬 **Teacher Communication** - Message teachers directly
@@ -44,6 +50,7 @@ A modern, feature-rich learning management system built with Flutter, supporting
 - 🔔 **Real-time Updates** - Receive notifications about child's activities
 
 ### 🔄 Shared Features
+
 - 🔐 **Secure Authentication** - Role-based access control
 - 👤 **Profile Management** - Customizable user profiles
 - 🔔 **Push Notifications** - Real-time updates
@@ -89,6 +96,7 @@ This project follows **MVVM (Model-View-ViewModel)** architecture with **Clean A
 ## 🛠️ Tech Stack
 
 ### Core
+
 - ![Flutter](https://img.shields.io/badge/Flutter-3.0+-02569B?logo=flutter) **Framework**
 - ![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?logo=dart) **Language**
 - **State Management:** flutter_bloc / Cubit
@@ -97,6 +105,7 @@ This project follows **MVVM (Model-View-ViewModel)** architecture with **Clean A
 - **Code Generation:** json_serializable, build_runner
 
 ### UI/UX
+
 - **Design System:** Custom design tokens
 - **Theming:** Material Design 3
 - **Responsive:** Custom responsive utilities
@@ -108,40 +117,46 @@ This project follows **MVVM (Model-View-ViewModel)** architecture with **Clean A
 
 ### Prerequisites
 
-- Flutter SDK (3.0 or higher)
-- Dart SDK (3.0 or higher)
+- Flutter SDK (3.32.0 or higher)
+- Dart SDK (3.9.0 or higher)
 - Android Studio / VS Code
 - Git
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/elara-study/elara-app
    cd  elara-app
    ```
 
 2. **Install dependencies**
+
    ```bash
    flutter pub get
    ```
 
 3. **Generate code**
+
    ```bash
    flutter pub run build_runner build --delete-conflicting-outputs
    ```
 
-4. **Download fonts** (Important!)
-   
+4. **Configure Environment Variables**
+   Create a `.env` file in the root directory and add the required environment variables (e.g., `API_URL`).
+
+5. **Download fonts** (Important!)
+
    Download [Nunito font](https://fonts.google.com/specimen/Nunito), extract and copy these files to `assets/fonts/`:
    - Nunito-Regular.ttf
    - Nunito-Medium.ttf
    - Nunito-SemiBold.ttf
    - Nunito-Bold.ttf
-   
+
    📚 **[Detailed font installation guide →](HOW_TO_ADD_FONTS.md)**
 
-5. **Run the app**
+6. **Run the app**
    ```bash
    flutter run
    ```
@@ -194,6 +209,7 @@ lib/
 ```
 
 Each feature module follows MVVM structure:
+
 ```
 feature/
 ├── data/
@@ -213,16 +229,19 @@ feature/
 ## 👥 User Roles
 
 ### 1. 👨‍🎓 Student
+
 Access course materials, complete assignments, track grades, and monitor progress.
 
 **Key Screens:** Dashboard, My Courses, Assignments, Grades, Profile
 
 ### 2. 👨‍🏫 Teacher
+
 Create courses, distribute assignments, grade submissions, and manage students.
 
 **Key Screens:** Dashboard, My Classes, Grade Assignments, Student Management, Analytics
 
 ### 3. 👨‍👩‍👧 Parent
+
 Monitor child's progress, communicate with teachers, and track performance.
 
 **Key Screens:** Dashboard, Children's Progress, Teacher Messages, Attendance, Reports
@@ -244,17 +263,20 @@ flutter pub run build_runner watch --delete-conflicting-outputs
 ### Git Workflow
 
 **1. Create feature branch**
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
 
 **2. Make changes and commit**
+
 ```bash
 git add .
 git commit -m "feat: add your feature"
 ```
 
 **3. Push and create Pull Request**
+
 ```bash
 git push origin feature/your-feature-name
 ```
@@ -338,43 +360,48 @@ ResponsiveBuilder(
 📚 **[Responsive design guide →](RESPONSIVE_DESIGN.md)**
 
 ---
-  
+
 ## 🗺️ Roadmap
 
 ### ✅ Phase 1: Foundation (Completed)
+
 - [x] Project setup
 - [x] MVVM architecture
 - [x] Design system
 - [x] Responsive design
 
 ### 🚧 Phase 2: Authentication (In Progress)
-- [ ] Login/Register
-- [ ] User type selection
-- [ ] Role-based routing
+
+- [x] Login/Register
+- [x] User type selection
+- [x] Role-based routing
 
 ### 📅 Phase 3: Student Features
-- [ ] Student dashboard
-- [ ] Course enrollment
-- [ ] Assignment submission
-- [ ] Grade viewing
+
+- [x] Student dashboard
+- [x] Course enrollment
+- [x] Assignment submission
+- [x] Grade viewing
 
 ### 📅 Phase 4: Teacher Features
-- [ ] Teacher dashboard
-- [ ] Class management
-- [ ] Grading system
+
+- [x] Teacher dashboard
+- [x] Class management
+- [x] Grading system
 
 ### 📅 Phase 5: Parent Features
-- [ ] Parent dashboard
-- [ ] Progress monitoring
-- [ ] Teacher communication
+
+- [x] Parent dashboard
+- [x] Progress monitoring
+- [x] Teacher communication
 
 ### 📅 Phase 6: Shared Features
-- [ ] Notifications
-- [ ] Messaging
-- [ ] Profile management
+
+- [x] Notifications
+- [x] Messaging
+- [x] Profile management
 
 ---
- 
 
 ## 🙏 Acknowledgments
 
@@ -392,5 +419,5 @@ Give a ⭐️ if this project helped you!
 
 <p align="center">Made with ❤️ using Flutter</p>
 <p align="center">
-  <img src="https://storage.googleapis.com/cms-storage-bucket/ec64036b4eacc9f3fd73.svg" width="200">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" width="100">
 </p>
