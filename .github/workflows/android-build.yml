@@ -2,9 +2,9 @@ name: elara Ci/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -17,8 +17,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
-          distribution: 'temurin' # See 'Supported distributions' for available options
-          java-version: '17'
+          distribution: "temurin" # See 'Supported distributions' for available options
+          java-version: "17"
 
       - name: Install Flutter
         uses: britannio/action-install-flutter@v1
@@ -27,6 +27,19 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Decode Android Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
+
+      - name: Create key.properties
+        run: |
+          cat <<EOF > android/key.properties
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=app/upload-keystore.jks
+          EOF
 
       - name: Build Apk
         run: flutter build apk --release
@@ -37,5 +50,5 @@ jobs:
         with:
           appId: ${{secrets.APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.GOOGLE_APP_CREDS }}
-          groups:  app-tests 
-          file:  build/app/outputs/flutter-apk/app-release.apk
+          groups: app-tests
+          file: build/app/outputs/flutter-apk/app-release.apk
