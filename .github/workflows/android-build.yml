@@ -28,6 +28,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Create .env
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
       - name: Decode Android Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
